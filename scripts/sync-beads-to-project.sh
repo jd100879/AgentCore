@@ -76,10 +76,24 @@ SCRIPTS=(
 )
 
 # Copy scripts (update if different)
+# Skip files that are symlinks to AgentCore (installed via flywheel_tools/install.sh)
 copied=0
+skipped_symlinks=0
 for script in "${SCRIPTS[@]}"; do
     if [ -f "$SOURCE_DIR/$script" ]; then
         dst="$TARGET_PROJECT/scripts/$script"
+
+        # Check if destination is a symlink to AgentCore
+        if [ -L "$dst" ]; then
+            link_target=$(readlink "$dst" 2>/dev/null || echo "")
+            if [[ "$link_target" == *"/AgentCore/"* ]]; then
+                # Skip - already symlinked to AgentCore (installed via install.sh)
+                skipped_symlinks=$((skipped_symlinks + 1))
+                continue
+            fi
+        fi
+
+        # Copy if file does not exist or differs
         if [ ! -f "$dst" ] || ! diff -q "$SOURCE_DIR/$script" "$dst" >/dev/null 2>&1; then
             cp "$SOURCE_DIR/$script" "$dst"
             chmod +x "$dst"
@@ -92,14 +106,27 @@ if [ "$copied" -gt 0 ]; then
     echo "  Updated $copied scripts in $TARGET_PROJECT/scripts/"
 fi
 
+if [ "$skipped_symlinks" -gt 0 ]; then
+    echo "  Skipped $skipped_symlinks scripts (already symlinked to AgentCore)"
+fi
+
 # Copy lib/ directory (shared libraries, update if different)
 if [ -d "$SOURCE_DIR/lib" ]; then
     mkdir -p "$TARGET_PROJECT/scripts/lib"
     lib_copied=0
+    lib_skipped_symlinks=0
     for libfile in "$SOURCE_DIR/lib/"*; do
         [ -f "$libfile" ] || continue
         fname=$(basename "$libfile")
         dst="$TARGET_PROJECT/scripts/lib/$fname"
+        # Check if destination is a symlink to AgentCore
+        if [ -L "$dst" ]; then
+            link_target=$(readlink "$dst" 2>/dev/null || echo "")
+            if [[ "$link_target" == *"/AgentCore/"* ]]; then
+                lib_skipped_symlinks=$((lib_skipped_symlinks + 1))
+                continue
+            fi
+        fi
         if [ ! -f "$dst" ] || ! diff -q "$libfile" "$dst" >/dev/null 2>&1; then
             cp "$libfile" "$dst"
             lib_copied=$((lib_copied + 1))
@@ -115,10 +142,19 @@ PANES_SRC="$SOURCE_DIR/../panes"
 if [ -d "$PANES_SRC" ]; then
     mkdir -p "$TARGET_PROJECT/panes"
     panes_copied=0
+    panes_skipped_symlinks=0
     for panefile in "$PANES_SRC"/*.sh; do
         [ -f "$panefile" ] || continue
         fname=$(basename "$panefile")
         dst="$TARGET_PROJECT/panes/$fname"
+        # Check if destination is a symlink to AgentCore
+        if [ -L "$dst" ]; then
+            link_target=$(readlink "$dst" 2>/dev/null || echo "")
+            if [[ "$link_target" == *"/AgentCore/"* ]]; then
+                panes_skipped_symlinks=$((panes_skipped_symlinks + 1))
+                continue
+            fi
+        fi
         if [ ! -f "$dst" ] || ! diff -q "$panefile" "$dst" >/dev/null 2>&1; then
             cp "$panefile" "$dst"
             chmod +x "$dst"
