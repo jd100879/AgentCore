@@ -1,0 +1,127 @@
+package dashboard
+
+import (
+	"os"
+	"strconv"
+	"strings"
+	"time"
+)
+
+// applyDashboardEnvOverrides applies environment variable overrides to dashboard configuration
+func applyDashboardEnvOverrides(m *Model) {
+	if m == nil {
+		return
+	}
+
+	// NTM_REDUCE_MOTION: disable animations for reduced flicker (fixes #32)
+	// Aligns with styles.reducedMotionEnabled() - any truthy value enables reduce motion
+	if v := strings.TrimSpace(strings.ToLower(os.Getenv("NTM_REDUCE_MOTION"))); v != "" && v != "0" && v != "false" && v != "no" && v != "off" {
+		m.reduceMotion = true
+	}
+
+	// NTM_DASHBOARD_TICK_MS: base tick interval in milliseconds (default 100ms)
+	if ms, ok := envPositiveInt("NTM_DASHBOARD_TICK_MS"); ok {
+		m.baseTick = time.Duration(ms) * time.Millisecond
+	}
+
+	// NTM_IDLE_TICK_MS: tick interval when idle (default 500ms)
+	if ms, ok := envPositiveInt("NTM_IDLE_TICK_MS"); ok {
+		m.idleTick = time.Duration(ms) * time.Millisecond
+	}
+
+	// NTM_IDLE_TIMEOUT_SECS: seconds of inactivity before entering idle (default 5)
+	if secs, ok := envPositiveInt("NTM_IDLE_TIMEOUT_SECS"); ok {
+		m.idleTimeout = time.Duration(secs) * time.Second
+	}
+
+	if v := os.Getenv("NTM_DASHBOARD_REFRESH"); v != "" {
+		if d, err := time.ParseDuration(v); err == nil {
+			m.refreshInterval = d
+		}
+	}
+
+	if seconds, ok := envPositiveInt("NTM_DASH_PANE_REFRESH_SECS"); ok {
+		m.paneRefreshInterval = time.Duration(seconds) * time.Second
+	}
+	if seconds, ok := envPositiveInt("NTM_DASH_CONTEXT_REFRESH_SECS"); ok {
+		m.contextRefreshInterval = time.Duration(seconds) * time.Second
+	}
+	if seconds, ok := envPositiveInt("NTM_DASH_ALERTS_REFRESH_SECS"); ok {
+		m.alertsRefreshInterval = time.Duration(seconds) * time.Second
+	}
+	if seconds, ok := envPositiveInt("NTM_DASH_BEADS_REFRESH_SECS"); ok {
+		m.beadsRefreshInterval = time.Duration(seconds) * time.Second
+	}
+	if seconds, ok := envPositiveInt("NTM_DASH_CASS_REFRESH_SECS"); ok {
+		m.cassContextRefreshInterval = time.Duration(seconds) * time.Second
+	}
+	if seconds, ok := envPositiveInt("NTM_DASH_HANDOFF_REFRESH_SECS"); ok {
+		m.handoffRefreshInterval = time.Duration(seconds) * time.Second
+	}
+	// NTM_DASH_SCAN_REFRESH_SECS: set to 0 to disable UBS scanning entirely
+	if seconds, ok := envNonNegativeInt("NTM_DASH_SCAN_REFRESH_SECS"); ok {
+		if seconds == 0 {
+			m.scanRefreshInterval = 0 // Disables scanning
+		} else {
+			m.scanRefreshInterval = time.Duration(seconds) * time.Second
+		}
+	}
+
+	if lines, ok := envPositiveInt("NTM_DASH_CAPTURE_LINES"); ok {
+		m.paneOutputLines = lines
+	}
+	if budget, ok := envNonNegativeInt("NTM_DASH_CAPTURE_BUDGET"); ok {
+		m.paneOutputCaptureBudget = budget
+	}
+	// NTM_DASH_SPAWN_REFRESH_MS: spawn polling interval in milliseconds (default 500ms when active, 2000ms when idle)
+	if ms, ok := envPositiveInt("NTM_DASH_SPAWN_REFRESH_MS"); ok {
+		m.spawnRefreshInterval = time.Duration(ms) * time.Millisecond
+	}
+
+	// NTM_DASH_BUDGET_DAILY_USD: enable budget display/alerts for the cost panel
+	if usd, ok := envNonNegativeFloat("NTM_DASH_BUDGET_DAILY_USD"); ok {
+		m.costDailyBudgetUSD = usd
+	}
+}
+
+func envPositiveInt(name string) (int, bool) {
+	value := strings.TrimSpace(os.Getenv(name))
+	if value == "" {
+		return 0, false
+	}
+
+	parsed, err := strconv.Atoi(value)
+	if err != nil || parsed <= 0 {
+		return 0, false
+	}
+
+	return parsed, true
+}
+
+func envNonNegativeInt(name string) (int, bool) {
+	value := strings.TrimSpace(os.Getenv(name))
+	if value == "" {
+		return 0, false
+	}
+
+	parsed, err := strconv.Atoi(value)
+	if err != nil || parsed < 0 {
+		return 0, false
+	}
+
+	return parsed, true
+}
+
+func envNonNegativeFloat(name string) (float64, bool) {
+	value := strings.TrimSpace(os.Getenv(name))
+	if value == "" {
+		return 0, false
+	}
+
+	parsed, err := strconv.ParseFloat(value, 64)
+	if err != nil || parsed < 0 {
+		return 0, false
+	}
+
+	return parsed, true
+}

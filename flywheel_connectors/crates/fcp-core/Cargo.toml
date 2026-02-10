@@ -1,0 +1,41 @@
+[package]
+name = "fcp-core"
+description = "Core types and traits for the Flywheel Connector Protocol"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+async-trait.workspace = true
+base64 = "0.22"
+blake3.workspace = true
+bytes.workspace = true
+chrono.workspace = true
+ciborium.workspace = true
+ed25519-dalek.workspace = true
+fcp-cbor = { path = "../fcp-cbor" }
+fcp-crypto = { path = "../fcp-crypto" }
+futures-util.workspace = true
+hex.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+semver.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["sync", "time"] }
+tokio-stream.workspace = true
+tracing.workspace = true
+uuid.workspace = true
+zeroize = { version = "1.8", features = ["derive"] }
+
+[dev-dependencies]
+ciborium.workspace = true
+fcp-testkit = { path = "../fcp-testkit" }
+semver.workspace = true
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
+rand = "0.8"

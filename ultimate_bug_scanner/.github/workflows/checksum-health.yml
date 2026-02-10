@@ -1,0 +1,149 @@
+name: Checksum Health Check
+
+# Scheduled canary that detects stale checksums even if no pushes occur.
+# Runs twice daily and creates a GitHub issue if checksums are out of sync.
+
+on:
+  schedule:
+    # Run at 06:00 and 18:00 UTC every day
+    - cron: '0 6,18 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Verify SHA256SUMS integrity
+        id: verify
+        run: |
+          set -euo pipefail
+
+          # Compute actual checksums
+          ACTUAL_UBS=$(sha256sum ubs | awk '{print $1}')
+          ACTUAL_INSTALL=$(sha256sum install.sh | awk '{print $1}')
+
+          # Extract expected checksums (2>/dev/null suppresses error if file missing)
+          EXPECTED_UBS=$(grep '  ubs$' SHA256SUMS 2>/dev/null | awk '{print $1}' || echo "")
+          EXPECTED_INSTALL=$(grep '  install.sh$' SHA256SUMS 2>/dev/null | awk '{print $1}' || echo "")
+
+          echo "ubs:"
+          echo "  Expected: $EXPECTED_UBS"
+          echo "  Actual:   $ACTUAL_UBS"
+          echo ""
+          echo "install.sh:"
+          echo "  Expected: $EXPECTED_INSTALL"
+          echo "  Actual:   $ACTUAL_INSTALL"
+
+          ERRORS=""
+          if [[ "$ACTUAL_UBS" != "$EXPECTED_UBS" ]]; then
+            ERRORS="${ERRORS}ubs checksum mismatch\n"
+          fi
+          if [[ "$ACTUAL_INSTALL" != "$EXPECTED_INSTALL" ]]; then
+            ERRORS="${ERRORS}install.sh checksum mismatch\n"
+          fi
+
+          # Always output the checksum values (needed for issue body even if only modules fail)
+          echo "actual_ubs=$ACTUAL_UBS" >> "$GITHUB_OUTPUT"
+          echo "expected_ubs=$EXPECTED_UBS" >> "$GITHUB_OUTPUT"
+          echo "actual_install=$ACTUAL_INSTALL" >> "$GITHUB_OUTPUT"
+          echo "expected_install=$EXPECTED_INSTALL" >> "$GITHUB_OUTPUT"
+
+          if [[ -n "$ERRORS" ]]; then
+            echo "healthy=false" >> "$GITHUB_OUTPUT"
+            echo "errors<<EOF" >> "$GITHUB_OUTPUT"
+            echo -e "$ERRORS" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          else
+            echo "healthy=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::All checksums are healthy"
+          fi
+
+      - name: Verify module checksums
+        id: verify_modules
+        run: |
+          if ./scripts/verify_checksums.sh; then
+            echo "modules_healthy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "modules_healthy=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check for existing issue
+        id: check_issue
+        if: steps.verify.outputs.healthy == 'false' || steps.verify_modules.outputs.modules_healthy == 'false'
+        run: |
+          # Check if there's already an open issue with our label
+          EXISTING=$(gh issue list --label "checksum-drift" --state open --json number --jq '.[0].number // empty')
+          if [[ -n "$EXISTING" ]]; then
+            echo "existing_issue=$EXISTING" >> "$GITHUB_OUTPUT"
+            echo "::notice::Existing issue #$EXISTING found, skipping creation"
+          else
+            echo "existing_issue=" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Ensure checksum-drift label exists
+        if: (steps.verify.outputs.healthy == 'false' || steps.verify_modules.outputs.modules_healthy == 'false') && steps.check_issue.outputs.existing_issue == ''
+        run: |
+          # Create label if it doesn't exist (ignore error if it already exists)
+          gh label create "checksum-drift" --description "Automated: SHA256SUMS out of sync" --color "B60205" 2>/dev/null || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create issue for checksum drift
+        if: (steps.verify.outputs.healthy == 'false' || steps.verify_modules.outputs.modules_healthy == 'false') && steps.check_issue.outputs.existing_issue == ''
+        run: |
+          gh issue create \
+            --title "URGENT: Checksum drift detected - users cannot install" \
+            --label "checksum-drift" \
+            --body "$(cat <<'EOF'
+## Checksum Health Check Failed
+
+The scheduled health check detected that `SHA256SUMS` does not match the actual file checksums.
+
+**This means users attempting to install UBS will get checksum mismatch errors and installation will fail.**
+
+### Current Status
+
+| File | Expected | Actual | Status |
+|------|----------|--------|--------|
+| `ubs` | `${{ steps.verify.outputs.expected_ubs }}` | `${{ steps.verify.outputs.actual_ubs }}` | ${{ steps.verify.outputs.expected_ubs == steps.verify.outputs.actual_ubs && '✅' || '❌' }} |
+| `install.sh` | `${{ steps.verify.outputs.expected_install }}` | `${{ steps.verify.outputs.actual_install }}` | ${{ steps.verify.outputs.expected_install == steps.verify.outputs.actual_install && '✅' || '❌' }} |
+
+### Fix Required
+
+Run the checksum update script and push:
+
+```bash
+./scripts/update_checksums.sh
+git add SHA256SUMS ubs
+git commit -m "fix(checksum): sync SHA256SUMS"
+git push
+```
+
+### Why This Happened
+
+The Checksum Sync workflow should auto-fix this on push to master. If you're seeing this issue, the workflow may have failed silently. Check the [Checksum Sync workflow runs](https://github.com/${{ github.repository }}/actions/workflows/checksum-sync.yml).
+
+---
+*This issue was automatically created by the Checksum Health Check workflow.*
+EOF
+          )"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail if unhealthy
+        if: steps.verify.outputs.healthy == 'false' || steps.verify_modules.outputs.modules_healthy == 'false'
+        run: |
+          echo "::error::Checksum drift detected! SHA256SUMS is out of sync."
+          exit 1

@@ -1,0 +1,66 @@
+# .github/workflows/notify-acfs.yml
+#
+# Notifies ACFS (Agentic Coding Flywheel Setup) when installer scripts change
+# or new releases are published, triggering checksum updates.
+#
+# Setup:
+#   1. Create a PAT with 'contents:read' on agentic_coding_flywheel_setup
+#   2. Add it as a secret named ACFS_REPO_DISPATCH_TOKEN in this repo
+#
+# Related: agentic_coding_flywheel_setup
+#
+name: Notify ACFS
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'install.sh'
+      - 'scripts/install.sh'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    name: Dispatch to ACFS
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Validate dispatch token
+        env:
+          TOKEN: ${{ secrets.ACFS_REPO_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::Missing secret ACFS_REPO_DISPATCH_TOKEN"
+            echo "Add a PAT with repo access for Dicklesworthstone/agentic_coding_flywheel_setup"
+            exit 1
+          fi
+
+      - name: Trigger ACFS checksum update
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.ACFS_REPO_DISPATCH_TOKEN }}
+          repository: Dicklesworthstone/agentic_coding_flywheel_setup
+          event-type: upstream-changed
+          client-payload: |
+            {
+              "tool": "${{ github.event.repository.name }}",
+              "repo": "${{ github.repository }}",
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}",
+              "event": "${{ github.event_name }}",
+              "actor": "${{ github.actor }}",
+              "timestamp": "${{ github.event.head_commit.timestamp || github.event.release.created_at }}"
+            }
+
+      - name: Log dispatch
+        run: |
+          echo "Dispatched upstream-changed event to ACFS"
+          echo "  Tool: ${{ github.event.repository.name }}"
+          echo "  Event: ${{ github.event_name }}"
+          echo "  SHA: ${{ github.sha }}"
+          echo "  Triggered by: ${{ github.actor }}"

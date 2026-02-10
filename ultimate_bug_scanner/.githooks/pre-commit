@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+# Pre-commit hook to ensure pinned checksums stay up-to-date.
+
+set -euo pipefail
+
+compute_sha256() {
+  local file="$1"
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$file" | awk '{print $1}'
+    return 0
+  fi
+  if command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$file" | awk '{print $1}'
+    return 0
+  fi
+  if command -v openssl >/dev/null 2>&1; then
+    openssl dgst -sha256 "$file" | awk '{print $NF}'
+    return 0
+  fi
+  if command -v python3 >/dev/null 2>&1; then
+    python3 - "$file" <<'PY'
+import hashlib
+import sys
+from pathlib import Path
+
+data = Path(sys.argv[1]).read_bytes()
+print(hashlib.sha256(data).hexdigest())
+PY
+    return 0
+  fi
+  return 1
+}
+
+# Check if any pinned checksum inputs changed.
+# - Pinned module sources: modules/ubs-*.sh, modules/helpers/*.{py,go,js}
+# - Release checksums: install.sh, ubs
+CHECKSUM_TRIGGER_CHANGED="$(
+  git diff --cached --name-only | grep -E '^(install\.sh|ubs|modules/(ubs-.*\.sh|helpers/[^/]+\.(py|go|js))$)' || true
+)"
+
+if [[ -n "$CHECKSUM_TRIGGER_CHANGED" ]]; then
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📦 Checksum inputs changed - updating checksums..."
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  
+  ./scripts/update_checksums.sh
+  
+  if ! git diff --exit-code ubs >/dev/null 2>&1; then
+    echo "✓ Updated pinned checksums in 'ubs'"
+    git add ubs
+  fi
+  if ! git diff --exit-code SHA256SUMS >/dev/null 2>&1; then
+    echo "✓ Updated release checksums in SHA256SUMS"
+    git add SHA256SUMS
+  fi
+  echo ""
+fi
+
+# Always verify checksums match before allowing commit
+echo "Verifying all checksums match..."
+if ! ./scripts/verify_checksums.sh; then
+  echo ""
+  echo "❌ PRE-COMMIT HOOK FAILED"
+  echo "Module checksums do NOT match!"
+  echo ""
+  echo "This should not happen if auto-update worked."
+  echo "Please run: ./scripts/update_checksums.sh"
+  exit 1
+fi
+
+verify_sha256sums_entry() {
+  local file="$1"
+  local expected actual
+  expected="$(awk -v f="$file" '$2==f{print $1}' SHA256SUMS | head -n 1)"
+  if [[ -z "${expected:-}" ]]; then
+    echo "❌ SHA256SUMS missing entry for $file" >&2
+    exit 1
+  fi
+  actual="$(compute_sha256 "$file")" || {
+    echo "❌ Could not compute SHA256 (need sha256sum, shasum, openssl, or python3)" >&2
+    exit 1
+  }
+  if [[ "$expected" != "$actual" ]]; then
+    echo "❌ SHA256SUMS mismatch for $file" >&2
+    echo "  Expected: $expected" >&2
+    echo "  Actual:   $actual" >&2
+    echo "  Fix: ./scripts/update_checksums.sh" >&2
+    exit 1
+  fi
+}
+
+verify_sha256sums_entry install.sh
+verify_sha256sums_entry ubs
+
+echo "✓ Pre-commit checks passed"

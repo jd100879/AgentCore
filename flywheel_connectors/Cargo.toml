@@ -1,0 +1,187 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/fcp-audit",
+    "crates/fcp-bootstrap",
+    "crates/fcp-cbor",
+    "crates/fcp-core",
+    "crates/fcp-cli",
+    "crates/fcp-conformance",
+    "crates/fcp-crypto",
+    "crates/fcp-e2e",
+    "crates/fcp-graphql",
+    "crates/fcp-host",
+    "crates/fcp-manifest",
+    "crates/fcp-mesh",
+    "crates/fcp-oauth",
+    "crates/fcp-protocol",
+    "crates/fcp-raptorq",
+    "crates/fcp-ratelimit",
+    "crates/fcp-registry",
+    "crates/fcp-sandbox",
+    "crates/fcp-sdk",
+    "crates/fcp-streaming",
+    "crates/fcp-store",
+    "crates/fcp-tailscale",
+    "crates/fcp-telemetry",
+    "crates/fcp-testkit",
+    "crates/fcp-webhook",
+    "connectors/anthropic",
+    "connectors/discord",
+    "connectors/openai",
+    "connectors/telegram",
+    "connectors/twitter",
+    "connectors/vectordb",
+]
+
+# Default to the FCP2 platform core crates (connectors are explicitly targeted).
+default-members = [
+    "crates/fcp-audit",
+    "crates/fcp-bootstrap",
+    "crates/fcp-cbor",
+    "crates/fcp-core",
+    "crates/fcp-crypto",
+    "crates/fcp-graphql",
+    "crates/fcp-host",
+    "crates/fcp-manifest",
+    "crates/fcp-mesh",
+    "crates/fcp-protocol",
+    "crates/fcp-raptorq",
+    "crates/fcp-registry",
+    "crates/fcp-sandbox",
+    "crates/fcp-sdk",
+    "crates/fcp-store",
+    "crates/fcp-tailscale",
+    "crates/fcp-conformance",
+    "crates/fcp-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+repository = "https://github.com/flywheel/flywheel_connectors"
+authors = ["Flywheel Core Team <core@flywheel.dev>"]
+
+[workspace.dependencies]
+# Async runtime
+tokio = { version = "1.43", features = ["full"] }
+async-trait = "0.1"
+futures-util = "0.3"
+parking_lot = "0.12"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+ciborium = "0.2.2"
+semver = { version = "1.0.27", features = ["serde"] }
+toml = "0.8"
+
+# Error handling
+thiserror = "2.0"
+anyhow = "1.0"
+
+# Logging/tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# Cryptography
+ed25519-dalek = { version = "2.1", features = ["rand_core", "zeroize"] }
+x25519-dalek = { version = "2.0", features = ["static_secrets", "zeroize"] }
+blake3 = "1.8.3"
+hmac = "0.12.1"
+hkdf = "0.12"
+sha2 = "0.10"
+chacha20poly1305 = "0.10"
+hpke = "0.12"
+coset = "0.3"
+zeroize = { version = "1.8", features = ["derive"] }
+subtle = "2.6"
+rand = "0.8"
+rand_core = "0.6"
+
+# Identifiers
+uuid = { version = "1.11", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# Bytes
+bytes = "1.9"
+hex = { version = "0.4", features = ["serde"] }
+base64 = "0.22"
+bitflags = "2.6"
+percent-encoding = "2.3"
+
+# Fountain codes
+raptorq = "2.0"
+
+# WASI runtime
+wasmtime = { version = "29.0", features = ["component-model"] }
+wasmtime-wasi = "29.0"
+
+# HTTP client
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
+
+# WebSocket
+tokio-tungstenite = { version = "0.26", features = ["rustls-tls-native-roots"] }
+
+# Streams
+tokio-stream = "0.1"
+
+# Testing
+wiremock = "0.6"
+pretty_assertions = "1.4"
+jsonschema = "0.29"
+regex = "1.11"
+proptest = "1.6"
+criterion = { version = "0.5", features = ["html_reports"] }
+
+# CLI
+clap = { version = "4.5", features = ["derive"] }
+
+# Supply-chain hardening
+tough = { version = "0.21.0", features = ["http"] }
+sigstore = { version = "0.13.0", default-features = false, features = ["cosign", "verify", "rekor", "sigstore-trust-root", "rustls-tls"] }
+sigstore-trust-root = { version = "0.4.0", features = ["tuf"] }
+url = "2.5"
+
+# Internal crates
+fcp-audit = { path = "crates/fcp-audit" }
+fcp-bootstrap = { path = "crates/fcp-bootstrap" }
+fcp-cbor = { path = "crates/fcp-cbor" }
+fcp-core = { path = "crates/fcp-core" }
+fcp-conformance = { path = "crates/fcp-conformance" }
+fcp-crypto = { path = "crates/fcp-crypto" }
+fcp-graphql = { path = "crates/fcp-graphql" }
+fcp-host = { path = "crates/fcp-host" }
+fcp-manifest = { path = "crates/fcp-manifest" }
+fcp-mesh = { path = "crates/fcp-mesh" }
+fcp-oauth = { path = "crates/fcp-oauth" }
+fcp-protocol = { path = "crates/fcp-protocol" }
+fcp-raptorq = { path = "crates/fcp-raptorq" }
+fcp-ratelimit = { path = "crates/fcp-ratelimit" }
+fcp-registry = { path = "crates/fcp-registry" }
+fcp-sandbox = { path = "crates/fcp-sandbox" }
+fcp-sdk = { path = "crates/fcp-sdk" }
+fcp-store = { path = "crates/fcp-store" }
+fcp-streaming = { path = "crates/fcp-streaming" }
+fcp-tailscale = { path = "crates/fcp-tailscale" }
+fcp-telemetry = { path = "crates/fcp-telemetry" }
+fcp-testkit = { path = "crates/fcp-testkit" }
+fcp-webhook = { path = "crates/fcp-webhook" }
+
+[workspace.lints.rust]
+# Default deny, but allow override for crates that legitimately need unsafe (e.g., fcp-sandbox)
+unsafe_code = "deny"
+
+[workspace.lints.clippy]
+all = "warn"
+pedantic = "warn"
+nursery = "warn"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

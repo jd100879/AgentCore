@@ -1,0 +1,71 @@
+# Rust build artifacts
+target/
+target-*/
+**/*.rs.bk
+Cargo.lock.bak
+
+# Local Cargo overrides (use .cargo/config.toml.example as template)
+.cargo/config.toml
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# macOS resource forks
+._*
+
+# Environment and secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Beads viewer local config
+.bv/
+
+# bv creates a local lock file inside .beads/; it must not be committed.
+.beads/.bv.lock
+
+# Legacy WezTerm source (vendored for reference)
+legacy_wezterm/
+
+# SQLite databases (runtime)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Log files
+*.log
+logs/
+
+# Test artifacts
+test_output/
+coverage/
+*.profraw
+*.profdata
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Generated documentation (build on demand)
+doc/
+.ntm/
+
+# E2E test artifacts (runtime)
+e2e-artifacts/
+
+# Local wa runtime/config
+.wa/
+
+# Fuzzing artifacts
+fuzz/artifacts/
+
+# Compiled binaries
+a.out

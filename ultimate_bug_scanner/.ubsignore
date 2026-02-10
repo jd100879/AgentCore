@@ -1,0 +1,8 @@
+## Ultimate Bug Scanner ignore list
+# Paths/globs listed here are skipped by `./ubs` (similar to .gitignore semantics).
+# Useful for excluding intentionally buggy fixtures, generated assets, or vendor dirs.
+
+test-suite/
+modules/helpers/*.go
+modules/helpers/resource_lifecycle_go.go
+modules/helpers/type_narrowing_ts.js

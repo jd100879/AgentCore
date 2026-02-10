@@ -1,0 +1,15 @@
+# Bun configuration for cass-memory
+# See: https://bun.sh/docs/runtime/bunfig
+
+[test]
+# Preload global test setup
+preload = ["./test/setup.ts"]
+
+# Test timeout in milliseconds (30 seconds for E2E tests)
+timeout = 30000
+
+# Root directory for test discovery
+root = "."
+
+# Smol mode for faster test execution
+smol = true

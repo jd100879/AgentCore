@@ -1,0 +1,34 @@
+name: UBS Manifest
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up uv with caching
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.13"
+          enable-cache: true
+          cache-dependency-glob: |
+            uv.lock
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 jq ripgrep >/dev/null
+      - name: Install ast-grep (npm)
+        run: npm install -g @ast-grep/cli >/dev/null
+      - name: Run UBS manifest suite
+        env:
+          NO_COLOR: "1"
+          UBS_NO_AUTO_UPDATE: "1"
+          UBS_LOG_JSON: "1"
+        run: |
+          cd test-suite
+          uv run python run_manifest.py --fail-fast

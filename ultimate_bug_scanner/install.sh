@@ -1,0 +1,3739 @@
+#!/usr/bin/env bash
+set -euo pipefail
+umask 022
+shopt -s lastpipe 2>/dev/null || true
+
+# Ultimate Bug Scanner - Installation Script
+# https://github.com/Dicklesworthstone/ultimate_bug_scanner
+
+# Always present latest master version to users; actual binary will be fetched
+# from master branch (not releases). VERSION is cosmetic only.
+VERSION_DEFAULT="master"
+
+# Handle case when script is piped (BASH_SOURCE[0] not set)
+if [[ -n "${BASH_SOURCE[0]:-}" ]]; then
+  VERSION_FILE="$(cd -- "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)/VERSION"
+  VERSION="$(cat "$VERSION_FILE" 2>/dev/null || echo "$VERSION_DEFAULT")"
+else
+  VERSION="$VERSION_DEFAULT"
+fi
+SCRIPT_NAME="ubs"
+INSTALL_NAME="ubs"
+REPO_URL="https://raw.githubusercontent.com/Dicklesworthstone/ultimate_bug_scanner/master"
+ARTIFACT_BASE_DEFAULT="https://github.com/Dicklesworthstone/ultimate_bug_scanner/releases/download/v${VERSION}"
+ARTIFACT_BASE="${UBS_ARTIFACT_BASE:-$ARTIFACT_BASE_DEFAULT}"
+MINISIGN_PUBKEY="${UBS_MINISIGN_PUBKEY:-}"  # Set to minisign public key line (untrusted placeholder fails closed)
+
+# Global copy of original args (needed in update re-exec; must not be local)
+ORIGINAL_ARGS=()
+# Flag to signal installer re-run after checksum auto-fix
+RERUN_AFTER_FIX=0
+
+# Validate bash version (requires 4.0+)
+if ((BASH_VERSINFO[0] < 4)); then
+  # Attempt macOS auto-remediation via Homebrew
+  if [[ "$(uname -s)" == "Darwin" ]] && command -v brew >/dev/null 2>&1; then
+    BREW_PREFIX="$(brew --prefix)"
+    POTENTIAL_BASH="${BREW_PREFIX}/bin/bash"
+    FOUND_VALID_BASH=0
+
+    if [[ -x "$POTENTIAL_BASH" ]]; then
+      POTENTIAL_VER="$("$POTENTIAL_BASH" -c 'echo "${BASH_VERSINFO[0]}"' 2>/dev/null)"
+      if [[ "$POTENTIAL_VER" =~ ^[0-9]+$ ]] && (( POTENTIAL_VER >= 4 )); then
+        FOUND_VALID_BASH=1
+      fi
+    fi
+
+    SHOULD_UPGRADE=0
+    NEEDS_INSTALL=1
+
+    if [[ "$FOUND_VALID_BASH" -eq 1 ]]; then
+      SHOULD_UPGRADE=1
+      NEEDS_INSTALL=0
+    else
+      # Check for easy mode in args (before parsing)
+      IS_EASY=0
+      for arg in "$@"; do [[ "$arg" == "--easy-mode" ]] && IS_EASY=1; done
+
+      if [[ "$IS_EASY" -eq 1 ]]; then
+        SHOULD_UPGRADE=1
+      else
+        # Prompt user using /dev/tty to handle piped execution
+        if [ -c /dev/tty ]; then
+          echo "Error: macOS ships with Bash 3.2, but UBS requires 4.0+."
+          echo -ne "Install modern Bash via Homebrew? (y/N): " > /dev/tty
+          read -r REPLY < /dev/tty
+          if [[ "$REPLY" =~ ^[Yy]$ ]]; then SHOULD_UPGRADE=1; fi
+        fi
+      fi
+    fi
+
+    if [[ "$SHOULD_UPGRADE" -eq 1 ]]; then
+      if [[ "$NEEDS_INSTALL" -eq 1 ]]; then
+        echo "Upgrading Bash via Homebrew..."
+        brew install bash
+      fi
+
+      NEW_BASH="$(brew --prefix)/bin/bash"
+      if [[ -x "$NEW_BASH" ]]; then
+        # Configure zsh alias if using zsh
+        if [[ "${SHELL:-}" == *"zsh"* ]]; then
+           RC_FILE="${HOME}/.zshrc"
+           if [ -f "$RC_FILE" ] && ! grep -q "alias bash=" "$RC_FILE"; then
+             echo "" >> "$RC_FILE"
+             echo "# Added by Ultimate Bug Scanner Installer" >> "$RC_FILE"
+             echo "alias bash='$NEW_BASH'" >> "$RC_FILE"
+             echo "Added bash alias to $RC_FILE"
+           fi
+        fi
+
+        echo "Re-launching installer with modern Bash..."
+        if [[ -f "$0" ]]; then
+           exec "$NEW_BASH" "$0" "$@"
+        else
+           # Piped execution - fetch, run, and clean up
+           TEMP_SCRIPT=$(mktemp "${TMPDIR:-/tmp}/ubs-install.XXXXXX")
+           curl -fsSL "${REPO_URL}/install.sh" -o "$TEMP_SCRIPT"
+           "$NEW_BASH" "$TEMP_SCRIPT" "$@"
+           EXIT_CODE=$?
+           rm -f "$TEMP_SCRIPT"
+           exit $EXIT_CODE
+        fi
+      else
+        echo "Error: Failed to locate Homebrew bash at $NEW_BASH" >&2
+      fi
+    fi
+  fi
+
+  echo "Error: This installer requires Bash 4.0 or later (you have $BASH_VERSION)" >&2
+  echo "Please upgrade bash or install manually." >&2
+  exit 1
+fi
+
+# TTY-aware color initialization
+COLOR_ENABLED=1
+init_colors() {
+  if [ -n "${NO_COLOR:-}" ] || [ ! -t 1 ] || [ "${TERM:-dumb}" = "dumb" ]; then COLOR_ENABLED=0; fi
+  if [ "$COLOR_ENABLED" -eq 1 ]; then
+    RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; BLUE='\033[0;34m'; BOLD='\033[1m'; RESET='\033[0m'
+  else
+    RED=''; GREEN=''; YELLOW=''; BLUE=''; BOLD=''; RESET=''
+  fi
+}
+init_colors
+
+# Symbols
+CHECK="${GREEN}✓${RESET}"
+CROSS="${RED}✗${RESET}"
+ARROW="${BLUE}→${RESET}"
+WARN="${YELLOW}⚠${RESET}"
+
+# Flags
+NON_INTERACTIVE=0
+EASY_MODE=0
+QUIET=0
+SYSTEM_WIDE=0
+NO_PATH_MODIFY=0
+SKIP_AST_GREP=0
+SKIP_RIPGREP=0
+SKIP_JQ=0
+SKIP_TYPOS=0
+SKIP_BUN=0
+SKIP_TYPE_NARROWING=0
+TYPE_NARROWING_READY=0
+SKIP_HOOKS=0
+AUTO_UPDATE=0
+INSTALL_DIR=""
+FORCE_REINSTALL=0
+FORCE_UNINSTALL=0
+SKIP_VERSION_CHECK=0
+RUN_VERIFICATION=1
+DRY_RUN=0
+RUN_SELF_TEST=0
+RUN_DOCTOR=1
+INSECURE=0
+CHECKSUM_FILE=""
+CHECKSUM_SIG_FILE=""
+SESSION_AGENT_SUMMARY=""
+SESSION_SUMMARY_FILE=""
+declare -a SESSION_FACT_KEYS=()
+declare -A SESSION_FACTS=()
+
+# Temporary files tracking for cleanup
+TEMP_FILES=()
+# Temporary working directory for this run (isolates artifacts; pruned on EXIT)
+WORKDIR_CAN_DELETE=1
+# Lock file for concurrent execution prevention (MUST be fixed name, not $$)
+LOCK_FILE="/tmp/ubs-install.lock"
+# Track if we own the lock (only remove it if we created it)
+LOCK_OWNED=0
+LOCK_METHOD="dir"
+LOCK_FD=""
+
+dry_run_enabled() { [ "$DRY_RUN" -eq 1 ]; }
+
+log_dry_run() {
+  local message="$1"
+  log "[dry-run] $message"
+}
+
+log_section() {
+  local title="$1"
+  echo ""
+  echo -e "${BOLD}${BLUE}╔═════════════════════════════════════════════════════╗${RESET}"
+  printf "${BOLD}${BLUE}║ %-51s ║${RESET}\n" "$title"
+  echo -e "${BOLD}${BLUE}╚═════════════════════════════════════════════════════╝${RESET}"
+}
+
+record_session_fact() {
+  local key="$1"
+  local value="$2"
+  [ -z "$key" ] && return 0
+  local exists=0
+  for existing in "${SESSION_FACT_KEYS[@]}"; do
+    if [ "$existing" = "$key" ]; then
+      exists=1
+      break
+    fi
+  done
+  if [ "$exists" -eq 0 ]; then
+    SESSION_FACT_KEYS+=("$key")
+  fi
+  SESSION_FACTS["$key"]="$value"
+}
+
+record_tool_status() {
+  local label="$1"
+  local skip_flag="$2"
+  local check_fn="$3"
+  local skip_reason="$4"
+  if [ "$skip_flag" -eq 1 ]; then
+    record_session_fact "$label" "skipped (${skip_reason})"
+  elif "$check_fn" >/dev/null 2>&1; then
+    record_session_fact "$label" "installed"
+  else
+    record_session_fact "$label" "missing"
+  fi
+}
+
+print_help_option() {
+  local flag="$1"
+  local description="$2"
+  printf "  %-24s %s\n" "$flag" "$description"
+}
+
+show_help() {
+  cat <<'HELP'
+Usage: install.sh [OPTIONS]
+
+HELP
+  echo "Core workflow:"
+  print_help_option "--easy-mode" "Accept all prompts, install deps, and wire integrations"
+  print_help_option "--non-interactive" "Skip all prompts (use defaults)"
+  print_help_option "--update" "Force reinstall to latest version"
+  print_help_option "--install-dir DIR" "Custom installation directory"
+  print_help_option "--system" "Install to /usr/local/bin (uses sudo if needed)"
+  print_help_option "--no-path-modify" "Skip shell RC edits and alias creation"
+  echo ""
+  echo "Safety & diagnostics:"
+  print_help_option "--dry-run" "Log every action without modifying the system"
+  print_help_option "--self-test" "Run installer smoke tests after install"
+  print_help_option "--skip-version-check" "Do not check GitHub for newer releases"
+  print_help_option "--skip-verification" "Skip checksum/signature verification (NOT recommended)"
+  print_help_option "--insecure" "Bypass all integrity checks (NOT recommended)"
+  print_help_option "--info" "Print installer release + key metadata and exit"
+  print_help_option "--diagnose" "Print environment + dependency diagnostics"
+  print_help_option "--generate-config" "Create ~/.config/ubs/install.conf"
+  echo ""
+  echo "Dependency controls:"
+  print_help_option "--skip-ast-grep" "Skip ast-grep installation (JS/TS accuracy reduced)"
+  print_help_option "--skip-ripgrep" "Skip ripgrep installation"
+  print_help_option "--skip-jq" "Skip jq installation"
+  print_help_option "--skip-typos" "Skip typos installation"
+  print_help_option "--skip-bun" "Skip bun installation (used for TypeScript)"
+  print_help_option "--skip-type-narrowing" "Skip Node/TypeScript readiness probe"
+  print_help_option "--skip-doctor" "Skip running 'ubs doctor' after install"
+  echo ""
+  echo "Integrations:"
+  print_help_option "--skip-hooks" "Skip hook/setup prompts"
+  print_help_option "--setup-git-hook" "Only (re)install git hook"
+  print_help_option "--setup-claude-hook" "Only install Claude on-save hook"
+  echo ""
+  echo "Output & UX:"
+  print_help_option "--quiet" "Reduce installer output"
+  print_help_option "--no-color" "Disable ANSI colors"
+  print_help_option "--uninstall" "Remove UBS and integrations"
+  print_help_option "--help" "Show this help"
+  echo ""
+}
+
+report_type_narrowing_status() {
+  TYPE_NARROWING_READY=0
+  if [ "$SKIP_TYPE_NARROWING" -eq 1 ]; then
+    log "[skip] Type narrowing readiness check disabled via --skip-type-narrowing"
+    return 0
+  fi
+  if dry_run_enabled; then
+    log_dry_run "Would check Node.js + TypeScript readiness for type narrowing."
+    return 0
+  fi
+  if ! check_node; then
+    warn "   Node.js not found – TypeScript-based narrowing will fall back to heuristic mode"
+    return 0
+  fi
+  if check_typescript_pkg; then
+    success "   TypeScript compiler detected (type narrowing ready)"
+    TYPE_NARROWING_READY=1
+  else
+    warn "   TypeScript package not found – run 'npm install -g typescript' or add it to your project devDependencies"
+  fi
+  return 0
+}
+
+count_swift_files() {
+  local dir="$1"
+  local count=0
+  if command -v rg >/dev/null 2>&1; then
+    count=$(rg --files "$dir" -g '*.swift' 2>/dev/null | wc -l | awk 'END{print $1+0}')
+  else
+    count=$(find "$dir" -type f -name '*.swift' 2>/dev/null | wc -l | awk 'END{print $1+0}')
+  fi
+  echo "$count"
+}
+
+report_swift_guard_readiness() {
+  echo -e "${BOLD}Swift guard readiness:${RESET}"
+  if [ "$SKIP_TYPE_NARROWING" -eq 1 ]; then
+    log "  [skip] Swift guard helper disabled via --skip-type-narrowing"
+    record_session_fact "swift guard helper" "skipped (--skip-type-narrowing)"
+    echo ""
+    return 0
+  fi
+  if ! command -v python3 >/dev/null 2>&1; then
+    warn "  python3 not found – Swift guard helper requires python3"
+    record_session_fact "swift guard helper" "python3 missing"
+    echo ""
+    return 0
+  fi
+  local scan_root="$PWD"
+  if [ -n "${PROJECT_DIR:-}" ] && [ -d "$PROJECT_DIR" ]; then
+    scan_root="$PROJECT_DIR"
+  fi
+  local swift_count
+  swift_count=$(count_swift_files "$scan_root")
+  if [ "$swift_count" -gt 0 ]; then
+    success "  Swift files detected under $scan_root: $swift_count (guard helper active)"
+    record_session_fact "swift guard helper" "$swift_count Swift files detected (helper ready)"
+  else
+    log "  No Swift files detected under $scan_root (helper idle until Swift code appears)"
+    record_session_fact "swift guard helper" "no Swift files detected (idle)"
+  fi
+  echo ""
+  return 0
+}
+
+register_temp_path() {
+  local path="$1"
+  TEMP_FILES+=("$path")
+}
+
+mktemp_in_workdir() {
+  local template="${1:-ubs.XXXXXX}"
+  local path
+  path="$(mktemp -p "$WORKDIR" "$template" 2>/dev/null || mktemp "${WORKDIR}/${template}")"
+  register_temp_path "$path"
+  echo "$path"
+}
+
+mktemp_dir_in_workdir() {
+  local template="${1:-ubs.XXXXXX}"
+  local path
+  path="$(mktemp -d -p "$WORKDIR" "$template" 2>/dev/null || mktemp -d "${WORKDIR}/${template}")"
+  register_temp_path "$path"
+  echo "$path"
+}
+
+safe_remove_temp() {
+  local target="$1"
+  [[ -z "$target" ]] && return 0
+  case "$target" in
+    "/") warn "Refusing to remove /"; return 0 ;;
+    ".") warn "Refusing to remove current directory"; return 0 ;;
+    *)
+      # Only allow removal of files we created under WORKDIR.
+      if [[ "$target" != "$WORKDIR" && "$target" != "$WORKDIR"/* ]]; then
+        return 0
+      fi
+      ;;
+  esac
+  rm -rf "$target" 2>/dev/null || true
+}
+
+cleanup_on_exit() {
+  # Clean up temporary files
+  if [ ${#TEMP_FILES[@]} -gt 0 ]; then
+    for temp_file in "${TEMP_FILES[@]}"; do
+      safe_remove_temp "$temp_file"
+    done
+  fi
+  if [ -n "${WORKDIR:-}" ] && [ "$WORKDIR_CAN_DELETE" -eq 1 ]; then
+    # Allow cleanup for installer-managed workdir
+    rm -rf "$WORKDIR" 2>/dev/null || true
+  fi
+  release_lock
+}
+
+release_lock() {
+  if [ "$LOCK_OWNED" -eq 1 ]; then
+    rmdir "$LOCK_FILE" 2>/dev/null || true
+    LOCK_OWNED=0
+  fi
+}
+
+acquire_lock() {
+  # Use a directory lock for safety. File-based locks in /tmp can follow symlinks
+  # and truncate arbitrary files if the installer is run with elevated privileges.
+  LOCK_METHOD="dir"
+  if mkdir "$LOCK_FILE" 2>/dev/null; then
+    LOCK_OWNED=1
+    return 0
+  else
+    error "Another installation is already in progress."
+    error "If this is incorrect, delete $LOCK_FILE and retry."
+    exit 1
+  fi
+}
+
+
+print_header() {
+  [ "$QUIET" -eq 1 ] && return 0
+  echo -e "${BOLD}${BLUE}"
+  cat << 'HEADER'
+    ╔══════════════════════════════════════════════════════════════════╗
+    ║                                                                  ║
+    ║     ██╗   ██╗██████╗ ███████╗    ██╗███╗   ██╗███████╗████████╗  ║
+    ║     ██║   ██║██╔══██╗██╔════╝    ██║████╗  ██║██╔════╝╚══██╔══╝  ║
+    ║     ██║   ██║██████╔╝███████╗    ██║██╔██╗ ██║███████╗   ██║     ║
+    ║     ██║   ██║██╔══██╗╚════██║    ██║██║╚██╗██║╚════██║   ██║     ║
+    ║     ╚██████╔╝██████╔╝███████║    ██║██║ ╚████║███████║   ██║     ║
+    ║      ╚═════╝ ╚═════╝ ╚══════╝    ╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝     ║
+    ║                                                                  ║
+HEADER
+  echo -e "    ║         ${GREEN}🔬 ULTIMATE BUG SCANNER INSTALLER v${VERSION} 🔬${BLUE}              ║"
+  cat << 'HEADER'
+    ║                                                                  ║
+    ║   Industrial-Grade Static Analysis for Polyglot AI Codebases     ║
+    ║              Catch 1000+ Bug Patterns Before Production          ║
+    ║                                                                  ║
+    ╚══════════════════════════════════════════════════════════════════╝
+HEADER
+  echo -e "${RESET}"
+}
+
+print_with_icon() {
+  local icon="$1"
+  shift || true
+  local message="$*"
+  if [ -z "$message" ]; then
+    printf "%b\n" "$icon"
+    return 0
+  fi
+
+  local prefix="$icon"
+  local indent="   "
+  while IFS= read -r line || [ -n "$line" ]; do
+    printf "%b %s%s\n" "$prefix" "$indent" "$line"
+    prefix=" "
+  done <<<"$message"
+}
+
+log() { print_with_icon "${ARROW}" "$*"; }
+success() { print_with_icon "${CHECK}" "$*"; }
+error() { print_with_icon "${CROSS}" "$*" >&2; }
+warn() { print_with_icon "${WARN}" "$*"; }
+
+# Secure download helpers
+secure_fetch() {
+  local url="$1" out="$2" err_file="$3"
+  if command -v curl >/dev/null 2>&1; then
+    curl --fail --location --proto '=https' --tlsv1.2 --retry 3 --retry-delay 1 --compressed -o "$out" "$url" 2>"$err_file"
+  else
+    wget --https-only --secure-protocol=TLSv1_2 --tries=3 --waitretry=1 --timeout=20 -O "$out" "$url" 2>"$err_file"
+  fi
+}
+
+# Compute SHA256 digest in a portable way (Linux + macOS).
+compute_sha256() {
+  local file="$1"
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$file" | awk '{print $1}'
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$file" | awk '{print $1}'
+  elif command -v openssl >/dev/null 2>&1; then
+    openssl dgst -sha256 "$file" | awk '{print $NF}'
+  else
+    return 1
+  fi
+}
+
+fetch_checksum_bundle() {
+  if [ "$RUN_VERIFICATION" -eq 0 ] || [ "$INSECURE" -eq 1 ]; then
+    return 0
+  fi
+
+  local sums="$WORKDIR/SHA256SUMS"
+  local sig="$WORKDIR/SHA256SUMS.minisig"
+  local err
+  err=$(mktemp_in_workdir "checksums.err.XXXXXX")
+
+  log "Fetching signed checksums from release artifacts..."
+  if ! secure_fetch "${ARTIFACT_BASE}/SHA256SUMS" "$sums" "$err"; then
+    log_network_failure "Failed to download SHA256SUMS from ${ARTIFACT_BASE}" "$err"
+    error "Checksum download failed. Use --insecure to bypass (not recommended)."
+    exit 1
+  fi
+  if ! secure_fetch "${ARTIFACT_BASE}/SHA256SUMS.minisig" "$sig" "$err"; then
+    log_network_failure "Failed to download SHA256SUMS.minisig from ${ARTIFACT_BASE}" "$err"
+    error "Checksum signature download failed. Use --insecure to bypass (not recommended)."
+    exit 1
+  fi
+
+  if [ -z "$MINISIGN_PUBKEY" ]; then
+    error "MINISIGN public key not configured. Set UBS_MINISIGN_PUBKEY or rerun with --insecure."
+    exit 1
+  fi
+
+  if ! command -v minisign >/dev/null 2>&1; then
+    error "minisign is required for signature verification (install via your package manager)."
+    exit 1
+  fi
+
+  if ! command -v sha256sum >/dev/null 2>&1 && ! command -v shasum >/dev/null 2>&1 && ! command -v openssl >/dev/null 2>&1; then
+    error "No SHA256 tool found (need sha256sum, shasum, or openssl)."
+    exit 1
+  fi
+
+  if minisign -Vm "$sums" -P "$MINISIGN_PUBKEY" -x "$sig" >/dev/null 2>&1; then
+    CHECKSUM_FILE="$sums"
+    CHECKSUM_SIG_FILE="$sig"
+    success "Checksum signature verified"
+  else
+    error "Signature verification failed for SHA256SUMS"
+    exit 1
+  fi
+}
+
+verify_download_checksum() {
+  local file_path="$1" expected_name="$2"
+  if [ "$RUN_VERIFICATION" -eq 0 ] || [ "$INSECURE" -eq 1 ]; then
+    return 0
+  fi
+  if [ -z "$CHECKSUM_FILE" ] || [ ! -f "$CHECKSUM_FILE" ]; then
+    error "Checksum file not available; cannot verify ${expected_name}."
+    exit 1
+  fi
+  local tmp_sum
+  tmp_sum=$(mktemp_in_workdir "${expected_name}.sha.XXXXXX")
+  if ! grep "  ${expected_name}$" "$CHECKSUM_FILE" > "$tmp_sum"; then
+    error "Checksum entry for ${expected_name} missing in SHA256SUMS"
+    exit 1
+  fi
+  local expected_sum actual_sum
+  expected_sum="$(awk '{print $1}' "$tmp_sum" | head -n 1)"
+  if ! actual_sum="$(compute_sha256 "$file_path")"; then
+    error "No SHA256 tool found (need sha256sum, shasum, or openssl) to verify ${expected_name}."
+    exit 1
+  fi
+  if [[ "$expected_sum" != "$actual_sum" ]]; then
+    error "Checksum verification failed for ${expected_name}"
+    error "Expected: ${expected_sum}"
+    error "Got:      ${actual_sum}"
+    exit 1
+  fi
+  success "Checksum verified for ${expected_name}"
+}
+
+# Set up cleanup traps
+trap 'cleanup_on_exit; exit 130' INT   # 130 = 128 + SIGINT (2)
+trap 'cleanup_on_exit; exit 143' TERM  # 143 = 128 + SIGTERM (15)
+trap cleanup_on_exit EXIT
+
+if [ -n "${UBS_INSTALLER_WORKDIR:-}" ]; then
+  if [[ "${UBS_INSTALLER_WORKDIR}" = /* ]]; then
+    WORKDIR="${UBS_INSTALLER_WORKDIR}"
+  else
+    WORKDIR="$PWD/${UBS_INSTALLER_WORKDIR}"
+  fi
+  if [ -e "$WORKDIR" ]; then
+    error "UBS_INSTALLER_WORKDIR path already exists: $WORKDIR"
+    error "Provide a non-existent directory so the installer can manage its lifecycle safely."
+    exit 1
+  fi
+  if ! mkdir -p "$WORKDIR" 2>/dev/null; then
+    error "Unable to create installer work directory: $WORKDIR"
+    exit 1
+  fi
+else
+  # GNU mktemp requires X placeholders when using -t; macOS adds them automatically.
+  # Provide explicit template so both implementations succeed.
+  WORKDIR="$(mktemp -d 2>/dev/null || mktemp -d -t ubs-install.XXXXXX)"
+fi
+TEMP_FILES+=("$WORKDIR")
+
+log_network_failure() {
+  local context="$1"
+  local err_file="$2"
+  warn "$context"
+  if [ -n "$err_file" ] && [ -s "$err_file" ]; then
+    warn "  Last error: $(tail -n 1 "$err_file")"
+  fi
+}
+
+warn_path_shadow() {
+  local expected="$1"
+  local actual="$2"
+  warn "PATH resolves 'ubs' to $actual, but installer just wrote $expected."
+  warn "Update PATH or remove old binaries so the new version is used."
+}
+
+ask() {
+  local prompt="$1"
+  if [ "$EASY_MODE" -eq 1 ]; then
+    log "Easy mode: auto-accepting prompt -> ${prompt}"
+    return 0
+  fi
+  if [ "$NON_INTERACTIVE" -eq 1 ]; then
+    return 1  # Default to "no" in non-interactive mode
+  fi
+  local response
+
+  # Method 1: Try /dev/tty if available (best for curl | bash)
+  if [ -c /dev/tty ]; then
+    # Explicitly write to tty. If this fails (e.g. no write perms), we fall through.
+    if echo -ne "${YELLOW}?${RESET} ${prompt} (y/N): " > /dev/tty 2>/dev/null; then
+      if read -r response < /dev/tty; then
+        [[ "$response" =~ ^[Yy]$ ]]
+        return $?
+      fi
+    fi
+  fi
+
+  # Method 2: Try stdin if it's a TTY
+  if [ -t 0 ]; then
+    # Stdin is a terminal, so we can prompt and read normally
+    if read -r -p "$(echo -e "${YELLOW}?${RESET} ${prompt} (y/N): ")" response; then
+      [[ "$response" =~ ^[Yy]$ ]]
+      return $?
+    fi
+  fi
+
+  # Method 3: No interactive channel available
+  # This happens if running non-interactively (e.g. cron, non-tty pipe)
+  # and we failed to access /dev/tty.
+  warn "Cannot prompt for input (stdin is not a TTY and /dev/tty unavailable)."
+  warn "Run with --non-interactive to accept defaults, or --easy-mode."
+  return 1
+}
+
+with_backoff() {
+  # with_backoff <max_attempts> <cmd...>
+  local max="${1:-3}"; shift || true
+  local n=1 delay=1
+  while true; do
+    if "$@"; then return 0; fi
+    if (( n >= max )); then return 1; fi
+    sleep "$delay"
+    n=$((n+1)); delay=$((delay*2))
+  done
+}
+
+maybe_sudo() { local path="$1"; if [ -w "$path" ]; then echo ""; elif can_use_sudo; then echo "sudo"; else echo ""; fi }
+
+can_use_sudo() {
+  # Check if sudo is available and can be used without password prompt
+  if ! command -v sudo >/dev/null 2>&1; then
+    return 1
+  fi
+  # Check if we can run sudo -n (non-interactive)
+  if sudo -n true 2>/dev/null; then
+    return 0
+  fi
+  # If interactive mode, we can potentially use sudo with password
+  if [ "$NON_INTERACTIVE" -eq 0 ]; then
+    return 0
+  fi
+  return 1
+}
+
+is_windows_admin() {
+  # Best-effort check: net session succeeds only when elevated
+  if command -v net.exe >/dev/null 2>&1; then
+    if net.exe session >/dev/null 2>&1; then
+      return 0
+    fi
+  fi
+  return 1
+}
+
+safe_timeout() {
+  # Cross-platform timeout wrapper
+  # Usage: safe_timeout <seconds> <command> [args...]
+  # Returns: command exit code, or 124 if timeout occurred
+  local timeout_duration="$1"
+  shift
+
+  # Try GNU timeout first (Linux, some BSD with coreutils)
+  if command -v timeout >/dev/null 2>&1; then
+    timeout "$timeout_duration" "$@"
+    return $?
+  fi
+
+  # Try gtimeout (macOS with coreutils via brew)
+  if command -v gtimeout >/dev/null 2>&1; then
+    gtimeout "$timeout_duration" "$@"
+    return $?
+  fi
+
+  # Fallback: bash-based timeout implementation for macOS/BSD
+  "$@" &
+  local pid=$!
+
+  # Wait for process with timeout
+  local count=0
+  while kill -0 $pid 2>/dev/null; do
+    if [ $count -ge "$timeout_duration" ]; then
+      # Kill the process group in case the tool spawned children
+      kill -TERM -$pid 2>/dev/null || kill -TERM $pid 2>/dev/null
+      sleep 1
+      kill -KILL -$pid 2>/dev/null || kill -KILL $pid 2>/dev/null
+      wait $pid 2>/dev/null
+      return 124  # Standard timeout exit code
+    fi
+    sleep 1
+    ((count++))
+  done
+
+  # Get actual exit status
+  wait $pid
+  return $?
+}
+
+detect_platform() {
+  local os
+  os="$(uname -s)"
+
+  # WSL detection (uname shows Linux, but /proc/version mentions Microsoft)
+  if [[ "$os" == "Linux" ]] && grep -qi microsoft /proc/version 2>/dev/null; then
+    echo "wsl"
+    return 0
+  fi
+
+  case "$os" in
+    Linux*)   echo "linux" ;;
+    Darwin*)  echo "macos" ;;
+    FreeBSD*) echo "freebsd" ;;
+    OpenBSD*) echo "openbsd" ;;
+    NetBSD*)  echo "netbsd" ;;
+    CYGWIN*|MINGW*|MSYS*) echo "windows" ;;
+    *)        echo "unknown" ;;
+  esac
+}
+
+detect_shell() {
+  if [ -n "${BASH_VERSION:-}" ]; then
+    echo "bash"
+  elif [ -n "${ZSH_VERSION:-}" ]; then
+    echo "zsh"
+  elif [[ "${SHELL:-}" == *"fish"* ]]; then
+    echo "fish"
+  else
+    # Check default shell
+    basename "$SHELL"
+  fi
+}
+
+get_rc_file() {
+  local shell_type
+  shell_type="$(detect_shell)"
+  case "$shell_type" in
+    bash)
+      if [ -f "$HOME/.bashrc" ]; then
+        echo "$HOME/.bashrc"
+      else
+        echo "$HOME/.bash_profile"
+      fi
+      ;;
+    fish)
+      echo "$HOME/.config/fish/config.fish"
+      ;;
+    zsh)
+      echo "$HOME/.zshrc"
+      ;;
+    *)
+      echo "$HOME/.profile"
+      ;;
+  esac
+}
+
+check_ast_grep() {
+  if command -v ast-grep >/dev/null 2>&1; then
+    return 0
+  fi
+  # Verify 'sg' is actually ast-grep, not the Unix newgrp command
+  if command -v sg >/dev/null 2>&1 && sg --version 2>&1 | grep -qi "ast-grep"; then
+    return 0
+  fi
+  return 1
+}
+
+install_ast_grep() {
+  local platform
+  platform="$(detect_platform)"
+
+  log "Installing ast-grep..."
+
+  if dry_run_enabled; then
+    log_dry_run "Would install ast-grep (platform $platform)."
+    return 0
+  fi
+
+  local log_file
+  log_file="$(mktemp_in_workdir "ast-grep-install.log.XXXXXX")"
+
+  case "$platform" in
+    macos)
+      if command -v brew >/dev/null 2>&1; then
+        log "Attempting installation via Homebrew..."
+        if brew install ast-grep 2>&1 | tee "$log_file"; then
+          success "ast-grep installed via Homebrew"
+          return 0
+        fi
+        warn "Homebrew installation failed (see $log_file). Trying binary download..."
+      else
+        warn "Homebrew not found. Trying binary download..."
+      fi
+
+      if download_binary_release "ast-grep" "$platform"; then
+        return 0
+      fi
+
+      error "All installation methods failed on macOS"
+      log "Install manually from: https://ast-grep.github.io/guide/quick-start.html"
+      return 1
+      ;;
+    wsl|linux)
+      if [ "$platform" = "wsl" ]; then
+        log "Detected WSL environment - using Linux package managers"
+      fi
+      if command -v cargo >/dev/null 2>&1; then
+        log "Attempting installation via cargo..."
+        if cargo install ast-grep 2>&1 | tee "$log_file"; then
+          success "ast-grep installed via cargo"
+          return 0
+        else
+          warn "Cargo installation failed, trying npm..."
+        fi
+      fi
+
+      if command -v npm >/dev/null 2>&1; then
+        log "Attempting installation via npm..."
+        if npm install -g @ast-grep/cli 2>&1 | tee "$log_file"; then
+          success "ast-grep installed via npm"
+          return 0
+        else
+          warn "npm installation failed"
+        fi
+      fi
+
+      warn "Package managers failed. Trying binary download..."
+      if download_binary_release "ast-grep" "$platform"; then
+        return 0
+      fi
+
+      error "All installation methods failed"
+      log "Download manually from: https://github.com/ast-grep/ast-grep/releases"
+      return 1
+      ;;
+    freebsd|openbsd|netbsd)
+      log "BSD platform detected: $platform"
+      if command -v cargo >/dev/null 2>&1; then
+        log "Attempting installation via cargo..."
+        if cargo install ast-grep 2>&1 | tee "$log_file"; then
+          success "ast-grep installed via cargo"
+          return 0
+        fi
+      fi
+
+      if command -v npm >/dev/null 2>&1; then
+        log "Attempting installation via npm..."
+        if npm install -g @ast-grep/cli 2>&1 | tee "$log_file"; then
+          success "ast-grep installed via npm"
+          return 0
+        fi
+      fi
+
+      warn "Package managers failed. Trying binary download..."
+      if download_binary_release "ast-grep" "$platform"; then
+        return 0
+      fi
+
+      error "All installation methods failed for BSD"
+      log "Download manually from: https://github.com/ast-grep/ast-grep/releases"
+      return 1
+      ;;
+    windows)
+      if command -v cargo >/dev/null 2>&1; then
+        if cargo install ast-grep 2>&1 | tee "$log_file"; then
+          success "ast-grep installed via cargo"
+          return 0
+        else
+          warn "Cargo installation failed, trying binary download..."
+        fi
+      fi
+
+      if download_binary_release "ast-grep" "$platform"; then
+        return 0
+      fi
+
+      warn "Install Rust/Cargo or download from: https://ast-grep.github.io/"
+      return 1
+      ;;
+    *)
+      error "Unknown platform. Install manually from: https://ast-grep.github.io/"
+      return 1
+      ;;
+  esac
+
+}
+
+check_ripgrep() { command -v rg >/dev/null 2>&1; }
+check_jq() { command -v jq >/dev/null 2>&1; }
+check_typos() { command -v typos >/dev/null 2>&1; }
+
+# ==============================================================================
+# TIER 1 ENHANCEMENTS: Version Checking, Binary Fallbacks, Verification
+# ==============================================================================
+
+version_compare() {
+  # Compare two version strings using semantic versioning
+  # Returns: 0 if $1 > $2, 1 if $1 <= $2
+  local ver1="${1#v}"
+  local ver2="${2#v}"
+  if [ "$ver1" = "$ver2" ]; then return 1; fi
+
+  if echo -e "2.0\n1.0" | sort -V >/dev/null 2>&1; then
+    local first
+    first=$(printf '%s\n' "$ver1" "$ver2" | sort -V | head -n1)
+    if [ "$first" = "$ver2" ] && [ "$ver1" != "$ver2" ]; then return 0; else return 1; fi
+  fi
+
+  # Fallback numeric-only compare: strip non-digits from components
+  local clean1="${ver1//[^0-9.]/.}"
+  local clean2="${ver2//[^0-9.]/.}"
+  IFS='.' read -r -a v1 <<< "$clean1"
+  IFS='.' read -r -a v2 <<< "$clean2"
+  local n=${#v1[@]}
+  local len2=${#v2[@]}
+  if [ "$len2" -gt "$n" ]; then
+    n="$len2"
+  fi
+  for ((i=0;i<n;i++)); do
+    local a="${v1[i]:-0}" b="${v2[i]:-0}"
+    a=$((10#$a)); b=$((10#$b))
+    if ((a>b)); then return 0; elif ((a<b)); then return 1; fi
+  done
+  return 1
+}
+
+check_for_updates() {
+  [ "$SKIP_VERSION_CHECK" -eq 1 ] && return 0
+
+  local current_version="$VERSION"
+  local latest_url="$REPO_URL/VERSION"
+  local err_log latest_file
+  err_log="$(mktemp_in_workdir "update.err.XXXXXX")"
+  latest_file="$(mktemp_in_workdir "version.latest.XXXXXX")"
+
+  log "Checking for updates..."
+  local latest_version
+  if with_backoff 3 curl -fsSL --max-time 5 "$latest_url" -o "$latest_file" 2>"$err_log"; then
+    latest_version=$(tr -d '[:space:]' < "$latest_file")
+    if version_compare "$latest_version" "$current_version"; then
+      warn "New version available: $latest_version (you have $current_version)"
+      if ask "Update to latest version now?"; then
+        log "Re-running installer with latest version..."
+        release_lock
+        if [ "${#ORIGINAL_ARGS[@]}" -gt 0 ]; then
+          exec bash <(curl -fsSL "$REPO_URL/install.sh") "${ORIGINAL_ARGS[@]}"
+        else
+          exec bash <(curl -fsSL "$REPO_URL/install.sh")
+        fi
+        error "Failed to download or execute updated installer"
+        exit 1
+      fi
+    else
+      success "You have the latest version ($current_version)"
+    fi
+  else
+    log_network_failure "Could not check for updates (network issue or rate limit)" "$err_log"
+  fi
+}
+
+download_binary_release() {
+  local tool="$1"  # ast-grep, ripgrep, or jq
+  local platform="$2"
+  local arch
+
+  arch="$(uname -m)"
+  case "$arch" in
+    x86_64|amd64) arch="x86_64" ;;
+    aarch64|arm64) arch="aarch64" ;;
+    armv7*) arch="armv7" ;;
+    *) error "Unsupported architecture: $arch"; return 1 ;;
+  esac
+
+  local install_dir="$HOME/.local/bin"
+  mkdir -p "$install_dir" 2>/dev/null || { error "Cannot create $install_dir"; return 1; }
+
+  if dry_run_enabled; then
+    log_dry_run "Would download binary for $tool ($platform-$arch)."
+    return 0
+  fi
+
+  log "Attempting binary download for $tool ($platform-$arch)..."
+  local err_log temp_dir
+  err_log="$(mktemp_in_workdir "${tool}.download.err.XXXXXX")"
+  temp_dir="$(mktemp_dir_in_workdir "${tool}.download.XXXXXX")"
+
+  case "$tool" in
+    ripgrep)
+      local version="14.1.0"
+      local asset type="tar"
+      case "$platform" in
+        linux|wsl)
+          asset="ripgrep-${version}-${arch}-unknown-linux-musl.tar.gz"
+          ;;
+        macos)
+          asset="ripgrep-${version}-${arch}-apple-darwin.tar.gz"
+          ;;
+        freebsd)
+          asset="ripgrep-${version}-${arch}-unknown-freebsd.tar.gz"
+          ;;
+        windows)
+          case "$arch" in
+            x86_64) asset="ripgrep-${version}-x86_64-pc-windows-gnu.zip"; type="zip" ;;
+            aarch64) asset="ripgrep-${version}-aarch64-pc-windows-msvc.zip"; type="zip" ;;
+            *) warn "No ripgrep binary for $platform-$arch"; return 1 ;;
+          esac
+          ;;
+        *) warn "No binary release for $platform"; return 1 ;;
+      esac
+
+      local url="https://github.com/BurntSushi/ripgrep/releases/download/${version}/${asset}"
+      local archive_path="$temp_dir/${asset}"
+
+      if with_backoff 3 curl -fsSL "$url" -o "$archive_path" 2>"$err_log"; then
+        case "$type" in
+          tar)
+            tar -xzf "$archive_path" -C "$temp_dir" >/dev/null 2>&1 || true
+            ;;
+          zip)
+            if command -v unzip >/dev/null 2>&1; then
+              unzip -q "$archive_path" -d "$temp_dir" 2>/dev/null || true
+            else
+              tar -xf "$archive_path" -C "$temp_dir" >/dev/null 2>&1 || true
+            fi
+            ;;
+        esac
+
+        local rg_binary
+        rg_binary=$(find "$temp_dir" -type f \( -name "rg" -o -name "rg.exe" \) 2>/dev/null | head -1)
+        if [ -n "$rg_binary" ] && [ -f "$rg_binary" ]; then
+          chmod +x "$rg_binary" 2>/dev/null
+          local target="$install_dir/rg"
+          [[ "$rg_binary" == *.exe ]] && target="$install_dir/rg.exe"
+          mv "$rg_binary" "$target"
+          success "ripgrep binary installed to $target"
+          export PATH="$install_dir:$PATH"
+          return 0
+        else
+          warn "Could not locate rg binary in extracted archive"
+        fi
+      fi
+      ;;
+
+    ast-grep)
+      local version="0.40.1"
+      local os target asset
+      case "$platform" in
+        linux|wsl) os="unknown-linux-gnu" ;;
+        macos) os="apple-darwin" ;;
+        windows)
+          os="pc-windows-msvc"
+          if [[ "$arch" == "aarch64" ]]; then
+            warn "No ast-grep binary fallback available for windows-aarch64"
+            return 1
+          fi
+          ;;
+        *) warn "No binary release for $platform"; return 1 ;;
+      esac
+      target="${arch}-${os}"
+      asset="app-${target}.zip"
+
+      local url="https://github.com/ast-grep/ast-grep/releases/download/${version}/${asset}"
+      local zip_path="$temp_dir/${asset}"
+      local extract_dir="$temp_dir/ast-grep"
+      mkdir -p "$extract_dir" 2>/dev/null || true
+
+      if with_backoff 3 curl -fsSL "$url" -o "$zip_path" 2>"$err_log"; then
+        if command -v unzip >/dev/null 2>&1; then
+          unzip -q "$zip_path" -d "$extract_dir" 2>/dev/null || true
+        elif command -v python3 >/dev/null 2>&1; then
+          python3 - "$zip_path" "$extract_dir" <<'PY' 2>/dev/null || true
+import sys, zipfile
+zip_path, out_dir = sys.argv[1], sys.argv[2]
+with zipfile.ZipFile(zip_path) as z:
+    z.extractall(out_dir)
+PY
+        else
+          warn "Need unzip or python3 to extract ast-grep archive"
+          return 1
+        fi
+
+        local sg_binary
+        sg_binary=$(find "$extract_dir" \( -name "ast-grep" -o -name "ast-grep.exe" -o -name "sg" -o -name "sg.exe" \) -type f 2>/dev/null | head -1)
+        if [ -n "$sg_binary" ] && [ -f "$sg_binary" ]; then
+          chmod +x "$sg_binary" 2>/dev/null
+          local target_bin="$install_dir/ast-grep"
+          [[ "$sg_binary" == *.exe ]] && target_bin="$install_dir/ast-grep.exe"
+          mv "$sg_binary" "$target_bin"
+          success "ast-grep binary installed to $target_bin"
+          export PATH="$install_dir:$PATH"
+          return 0
+        else
+          warn "Could not find ast-grep binary in extracted archive"
+        fi
+      fi
+      ;;
+
+    jq)
+      local version="1.7.1"
+      local asset
+      case "$platform-$arch" in
+        linux-x86_64|wsl-x86_64) asset="jq-linux-amd64" ;;
+        linux-aarch64|wsl-aarch64) asset="jq-linux-arm64" ;;
+        macos-x86_64) asset="jq-macos-amd64" ;;
+        macos-aarch64) asset="jq-macos-arm64" ;;
+        windows-x86_64) asset="jq-win64.exe" ;;
+        windows-aarch64) asset="jq-win64.exe" ;; # jq project lacks arm64 build; use win64 as best effort
+        *) warn "No binary release for $platform-$arch"; return 1 ;;
+      esac
+
+      local url="https://github.com/jqlang/jq/releases/download/jq-${version}/${asset}"
+
+      local target="$install_dir/jq"
+      [[ "$asset" == *.exe ]] && target="$install_dir/jq.exe"
+
+      if with_backoff 3 curl -fsSL "$url" -o "$target" 2>"$err_log"; then
+        chmod +x "$target"
+        success "jq binary installed to $target"
+        export PATH="$install_dir:$PATH"
+        return 0
+      fi
+      ;;
+
+    typos)
+      local version="1.28.4"
+      local asset type="tar"
+      case "$platform-$arch" in
+        linux-x86_64|wsl-x86_64)
+          asset="typos-v${version}-x86_64-unknown-linux-musl.tar.gz"
+          ;;
+        linux-aarch64|wsl-aarch64)
+          asset="typos-v${version}-aarch64-unknown-linux-musl.tar.gz"
+          ;;
+        macos-x86_64)
+          asset="typos-v${version}-x86_64-apple-darwin.tar.gz"
+          ;;
+        macos-aarch64)
+          asset="typos-v${version}-aarch64-apple-darwin.tar.gz"
+          ;;
+        windows-x86_64)
+          asset="typos-v${version}-x86_64-pc-windows-msvc.zip"
+          type="zip"
+          ;;
+        windows-aarch64)
+          asset="typos-v${version}-aarch64-pc-windows-msvc.zip"
+          type="zip"
+          ;;
+        *)
+          warn "No typos binary release available for $platform-$arch"
+          return 1
+          ;;
+      esac
+
+      local url="https://github.com/crate-ci/typos/releases/download/v${version}/${asset}"
+      local archive="$temp_dir/${asset}"
+
+      if with_backoff 3 curl -fsSL "$url" -o "$archive" 2>"$err_log"; then
+        case "$type" in
+          tar)
+            if tar -xzf "$archive" -C "$temp_dir" >/dev/null 2>&1; then
+              local typos_bin
+              typos_bin=$(find "$temp_dir" -name typos -type f 2>/dev/null | head -1)
+              if [ -n "$typos_bin" ]; then
+                chmod +x "$typos_bin" 2>/dev/null
+                local target="$install_dir/typos"
+                [[ "$typos_bin" == *.exe ]] && target="$install_dir/typos.exe"
+                mv "$typos_bin" "$target"
+                success "typos binary installed to $target"
+                export PATH="$install_dir:$PATH"
+                return 0
+              fi
+            fi
+            ;;
+          zip)
+            if command -v unzip >/dev/null 2>&1; then
+              if unzip -q "$archive" -d "$temp_dir/typos" 2>/dev/null; then
+                local exe
+                exe=$(find "$temp_dir/typos" -name 'typos*' -type f 2>/dev/null | head -1)
+                if [ -n "$exe" ]; then
+                  chmod +x "$exe" 2>/dev/null || true
+                  local target="$install_dir/typos"
+                  [[ "$exe" == *.exe ]] && target="$install_dir/typos.exe"
+                  mv "$exe" "$target"
+                  success "typos binary installed to $target"
+                  export PATH="$install_dir:$PATH"
+                  return 0
+                fi
+              fi
+            else
+              warn "unzip not available, cannot extract typos archive"
+            fi
+            ;;
+        esac
+      fi
+      ;;
+  esac
+
+  log_network_failure "Binary download failed for $tool" "$err_log"
+  return 1
+}
+
+
+verify_installation() {
+  [ "$RUN_VERIFICATION" -eq 0 ] && return 0
+  if dry_run_enabled; then
+    log_dry_run "Skipping post-install verification checks."
+    return 0
+  fi
+
+  log_section "POST-INSTALL VERIFICATION"
+  log "Running post-install verification..."
+  local errors=0
+  local had_ubs=0
+
+  # Test 1: Command available
+  if command -v ubs >/dev/null 2>&1; then
+    success "ubs command available in PATH"
+    log "   Location: $(command -v ubs)"
+    had_ubs=1
+  else
+    error "ubs command not found in PATH"
+    ((errors++))
+  fi
+
+  # Test 2: Can execute --help
+  if ubs --help >/dev/null 2>&1 || ubs -h >/dev/null 2>&1; then
+    success "ubs executes successfully"
+  else
+    error "ubs command fails to run"
+    ((errors++))
+  fi
+
+  # Test 3: Dependencies
+  echo ""
+  log "Dependency check:"
+  if check_ast_grep; then
+    success "   ast-grep: $(command -v ast-grep || command -v sg)"
+  elif [ "$SKIP_AST_GREP" -eq 1 ]; then
+    warn "   ast-grep: skipped via --skip-ast-grep (JS/TS accuracy reduced)"
+  else
+    warn "   ast-grep: not available (JS/TS scanning may be degraded)"
+  fi
+
+  if check_ripgrep; then
+    success "   ripgrep: $(command -v rg)"
+  else
+    warn "   ripgrep: not available (will fallback to grep)"
+  fi
+
+  if check_jq; then
+    success "   jq: $(command -v jq)"
+  else
+    warn "   jq: not available (JSON/SARIF merging disabled)"
+  fi
+
+  if check_typos; then
+    success "   typos: $(command -v typos)"
+  elif [ "$SKIP_TYPOS" -eq 1 ]; then
+    log "   typos: skipped via --skip-typos"
+  else
+    warn "   typos: not available (spellcheck automation disabled)"
+  fi
+
+  if [ "$SKIP_TYPE_NARROWING" -eq 1 ]; then
+    log "   Type narrowing: skipped via --skip-type-narrowing"
+  elif ! check_node; then
+    warn "   Type narrowing: Node.js missing (install Node.js from https://nodejs.org for tsserver checks)"
+  elif check_typescript_pkg; then
+    success "   Type narrowing: TypeScript package detected"
+  else
+    warn "   Type narrowing: TypeScript package missing (run 'npm install -g typescript' or add devDependency)"
+  fi
+
+  # Test 4: Quick smoke test (must fail with detected bugs)
+  echo ""
+  log "Running smoke test..."
+  local test_dir test_file
+  test_dir="$(mktemp -d -p "$WORKDIR" "ubs-smoke.XXXXXX" 2>/dev/null || mktemp -d "${WORKDIR}/ubs-smoke.XXXXXX")"
+  register_temp_path "$test_dir"
+  test_file="$test_dir/smoke.js"
+  cat > "$test_file" << 'SMOKE'
+// Intentional bugs for smoke test
+const value = getUserValue();
+if (value === NaN) {
+  console.log('bad math check');
+}
+SMOKE
+
+  if [ "$had_ubs" -eq 1 ]; then
+    if safe_timeout 10 ubs --fail-on-warning --ci --only=js "$test_dir" >/dev/null 2>&1; then
+      warn "Smoke test FAILED - scanner did not flag known bugs (exit 0)"
+    else
+      success "Smoke test PASSED - scanner detects bugs (non-zero exit)"
+    fi
+  else
+    warn "Smoke test skipped - ubs command unavailable"
+  fi
+
+  # Test 5: Module cache directory
+  echo ""
+  local module_dir="${XDG_DATA_HOME:-$HOME/.local/share}/ubs/modules"
+  if mkdir -p "$module_dir" 2>/dev/null && [ -w "$module_dir" ]; then
+    success "Module cache directory writable: $module_dir"
+  else
+    warn "Module cache directory not writable - modules cannot be cached"
+  fi
+
+  # Test 6: Hooks
+  echo ""
+  log "Integration hooks:"
+  if [ -f ".git/hooks/pre-commit" ] && grep -q "ubs" ".git/hooks/pre-commit" 2>/dev/null; then
+    success "   Git pre-commit hook installed"
+  else
+    log "   Git hook: not installed"
+  fi
+
+  if [ -f ".claude/hooks/on-file-write.sh" ]; then
+    success "   Claude Code hook installed"
+  else
+    log "   Claude hook: not installed"
+  fi
+
+  if [ $errors -eq 0 ]; then
+    success "All verification checks passed."
+    return 0
+  else
+    error "$errors critical verification checks failed"
+    warn "Installation may be incomplete. Review errors above."
+    return 1
+  fi
+}
+
+run_self_tests_if_requested() {
+  [ "$RUN_SELF_TEST" -eq 1 ] || return 0
+
+  if dry_run_enabled; then
+    log_dry_run "Would run installer self-test harness (--self-test)."
+    return 0
+  fi
+
+  local script_dir test_script
+  local -a candidates=()
+  if script_dir="$(cd -- "$(dirname "${BASH_SOURCE[0]:-${0}}")" 2>/dev/null && pwd)"; then
+    :
+  else
+    script_dir="$PWD"
+  fi
+  candidates+=("$script_dir/test-suite/install/run_tests.sh")
+  candidates+=("$PWD/test-suite/install/run_tests.sh")
+
+  for candidate in "${candidates[@]}"; do
+    if [ -f "$candidate" ]; then
+      test_script="$candidate"
+      break
+    fi
+  done
+
+  if [ -z "${test_script:-}" ]; then
+    error "--self-test requested but test-suite/install/run_tests.sh not found next to installer."
+    error "Run installer from repository root or provide the test suite."
+    return 1
+  fi
+
+  log_section "Installer Self-Test"
+  release_lock
+  if UBS_INSTALLER_SELF_TEST=1 bash "$test_script"; then
+    success "Installer self-test suite passed"
+    echo ""
+    return 0
+  else
+    error "Installer self-test suite failed"
+    return 1
+  fi
+}
+
+warn_if_stale_binary() {
+  if dry_run_enabled; then
+    log_dry_run "Would compare PATH-resolved ubs with freshly installed binary."
+    return 0
+  fi
+
+  local install_dir expected actual
+  install_dir="$(determine_install_dir)"
+  expected="$install_dir/$INSTALL_NAME"
+  actual="$(command -v ubs 2>/dev/null || true)"
+
+  if [ -n "$actual" ] && [ "$actual" != "$expected" ]; then
+    warn_path_shadow "$expected" "$actual"
+  fi
+}
+
+write_session_summary() {
+  local status="$1"
+  local log_path="$2"
+  local install_dir="$3"
+  local note="$4"
+  local config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/ubs"
+  mkdir -p "$config_dir" 2>/dev/null || true
+  local summary="$config_dir/session.md"
+  SESSION_SUMMARY_FILE="$summary"
+  {
+    printf "## Install Session – %s\n\n" "$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+    printf -- "- Installer version: %s\n" "$VERSION"
+    printf -- "- Install directory: %s\n" "$install_dir"
+    if [ "${#ORIGINAL_ARGS[@]}" -gt 0 ]; then
+      printf -- "- Session args: %s\n" "${ORIGINAL_ARGS[*]}"
+    fi
+    if [ -n "$SESSION_AGENT_SUMMARY" ]; then
+      printf -- "- Detected agents: %s\n" "$SESSION_AGENT_SUMMARY"
+    fi
+    printf -- "- Auto doctor: %s" "$status"
+    [ -n "$note" ] && printf " (%s)" "$note"
+    printf "\n"
+    if [ "${#SESSION_FACT_KEYS[@]}" -gt 0 ]; then
+      printf -- "- Tool readiness:\n"
+      for key in "${SESSION_FACT_KEYS[@]}"; do
+        printf "  - %s: %s\n" "$key" "${SESSION_FACTS[$key]}"
+      done
+    fi
+    if [ -n "$log_path" ] && [ -f "$log_path" ]; then
+      printf "\nDoctor output (tail):\n\`\`\`\n"
+      tail -n 40 "$log_path"
+      printf "\`\`\`\n"
+    fi
+    printf "\n---\n\n"
+  } >> "$summary" 2>/dev/null || true
+}
+
+run_post_install_doctor() {
+  local installed_bin="$1"
+  local install_dir="$2"
+  local note=""
+  local status="PASS"
+  if [ "$RUN_DOCTOR" -ne 1 ]; then
+    write_session_summary "SKIPPED" "" "$install_dir" "disabled via flag"
+    return 0
+  fi
+  if dry_run_enabled; then
+    log_dry_run "Would run 'ubs doctor' and capture summary."
+    write_session_summary "SKIPPED" "" "$install_dir" "dry-run mode"
+    return 0
+  fi
+  if [ ! -x "$installed_bin" ]; then
+    warn "'ubs doctor' skipped because $installed_bin is not executable"
+    write_session_summary "FAILED" "" "$install_dir" "installer binary missing"
+    return 0
+  fi
+  log "Running 'ubs doctor --fix' (post-install health check + pre-cache modules)..."
+  local doctor_log
+  doctor_log="$(mktemp_in_workdir "doctor.log.XXXXXX")"
+  note="All checks passed"
+  # Use --fix to pre-download language modules during install (avoids "not cached" warnings)
+  if NO_COLOR=1 "$installed_bin" doctor --fix >"$doctor_log" 2>&1; then
+    success "'ubs doctor' completed without issues"
+  else
+    warn "'ubs doctor' reported issues"
+    status="FAIL"
+    note="Review output above or run 'ubs doctor --fix'. View latest log via 'ubs sessions --entries 1'."
+    if grep -qi "checksum" "$doctor_log"; then
+      log "Checksum issues detected; running 'ubs doctor --fix' automatically..."
+      {
+        echo ""
+        echo "---- auto doctor --fix ----"
+      } >>"$doctor_log"
+      if NO_COLOR=1 "$installed_bin" doctor --fix >>"$doctor_log" 2>&1; then
+        success "'ubs doctor --fix' resolved checksum issues"
+        status="PASS"
+        note="Checksum issues auto-fixed by installer"
+        RERUN_AFTER_FIX=1
+      else
+        warn "'ubs doctor --fix' did not resolve issues"
+        note="Auto-fix attempted; review log or rerun manually"
+      fi
+    fi
+  fi
+  write_session_summary "$status" "$doctor_log" "$install_dir" "$note"
+}
+
+# ==============================================================================
+# TIER 2 ENHANCEMENTS: Configuration, Diagnostics, Uninstall, More AI Tools
+# ==============================================================================
+
+normalize_bool() {
+  local val="$1"
+  val=$(echo "$val" | tr '[:upper:]' '[:lower:]')
+  case "$val" in
+    1|yes|true|on|enabled|enable) echo "1" ;;
+    0|no|false|off|disabled|disable|"") echo "0" ;;
+    *)
+      warn "Invalid boolean value '$1' in config file, treating as 0 (false)"
+      echo "0"
+      ;;
+  esac
+}
+
+read_config_file() {
+  local config_file="${XDG_CONFIG_HOME:-$HOME/.config}/ubs/install.conf"
+
+  if [ ! -f "$config_file" ]; then
+    return 0
+  fi
+
+  log "Reading configuration from $config_file..."
+
+  while IFS='=' read -r key value; do
+    [[ "$key" =~ ^[[:space:]]*# ]] && continue
+    [[ -z "$key" ]] && continue
+
+    key=$(echo "$key" | tr -d '[:space:]')
+    value=$(echo "$value" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+
+    case "$key" in
+      install_dir)
+        INSTALL_DIR="$value"
+        ;;
+      skip_ast_grep)
+        SKIP_AST_GREP="$(normalize_bool "$value")"
+        ;;
+      skip_ripgrep)
+        SKIP_RIPGREP="$(normalize_bool "$value")"
+        ;;
+      skip_jq)
+        SKIP_JQ="$(normalize_bool "$value")"
+        ;;
+      skip_type_narrowing)
+        SKIP_TYPE_NARROWING="$(normalize_bool "$value")"
+        ;;
+      skip_typos)
+        SKIP_TYPOS="$(normalize_bool "$value")"
+        ;;
+      skip_doctor)
+        RUN_DOCTOR=$((1 - $(normalize_bool "$value")))
+        ;;
+      skip_hooks)
+        SKIP_HOOKS="$(normalize_bool "$value")"
+        ;;
+      auto_update)
+        AUTO_UPDATE="$(normalize_bool "$value")"
+        ;;
+      skip_version_check)
+        SKIP_VERSION_CHECK="$(normalize_bool "$value")"
+        ;;
+      dry_run)
+        DRY_RUN="$(normalize_bool "$value")"
+        ;;
+      self_test)
+        RUN_SELF_TEST="$(normalize_bool "$value")"
+        ;;
+      easy_mode)
+        local normalized
+        normalized="$(normalize_bool "$value")"
+        EASY_MODE="$normalized"
+        NON_INTERACTIVE="$normalized"
+        ;;
+      non_interactive)
+        NON_INTERACTIVE="$(normalize_bool "$value")"
+        ;;
+      *)
+        warn "Unknown config key '$key' in $config_file (ignored)"
+        ;;
+    esac
+  done < "$config_file"
+
+  success "Loaded configuration from $config_file"
+}
+
+generate_config() {
+  local config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/ubs"
+  local config_file="$config_dir/install.conf"
+
+  mkdir -p "$config_dir" 2>/dev/null || {
+    error "Cannot create config directory: $config_dir"
+    return 1
+  }
+
+  if [ -f "$config_file" ]; then
+    warn "Config file already exists: $config_file"
+    if ! ask "Overwrite existing configuration?"; then
+      log "Keeping existing configuration"
+      return 0
+    fi
+    cp "$config_file" "${config_file}.backup"
+    log "Backed up existing config to ${config_file}.backup"
+  fi
+
+  cat > "$config_file" << 'CONFIG'
+# Ultimate Bug Scanner Installation Configuration
+# This file controls default behavior of install.sh
+# Values: 0 = false/no, 1 = true/yes
+
+# Installation directory (default: auto-detect ~/.local/bin or /usr/local/bin)
+# Uncomment and set to customize:
+# install_dir=/usr/local/bin
+
+# Skip dependency installations (1=skip, 0=install if missing)
+skip_ast_grep=0
+skip_ripgrep=0
+skip_jq=0
+skip_typos=0
+skip_type_narrowing=0
+skip_doctor=0
+
+# Skip version checking on install
+skip_version_check=0
+
+# Dry-run mode (1 = log actions only, 0 = perform actions)
+dry_run=0
+
+# Run extended self-test after install
+self_test=0
+
+# Skip hook/integration setup (1=skip, 0=prompt or install in easy mode)
+skip_hooks=0
+
+# Enable daily auto-updates (1=yes, 0=no)
+auto_update=0
+
+# Easy mode: auto-accept all prompts and install everything (1=yes, 0=no)
+easy_mode=0
+
+# Non-interactive mode: skip all prompts, use defaults (1=yes, 0=no)
+non_interactive=0
+CONFIG
+
+  success "Created configuration file: $config_file"
+  log "Edit this file to customize future installations"
+  log "Settings in this file will be used as defaults"
+
+  if ask "Open config file in editor now?"; then
+    local editor="${EDITOR:-${VISUAL:-nano}}"
+    if command -v "$editor" >/dev/null 2>&1; then
+      "$editor" "$config_file"
+    else
+      log "Set \$EDITOR environment variable to use your preferred editor"
+      log "File location: $config_file"
+    fi
+  fi
+
+  return 0
+}
+
+diagnostic_check() {
+  log_section "ULTIMATE BUG SCANNER DIAGNOSTIC REPORT"
+
+  # System info
+  echo -e "${BOLD}System Information:${RESET}"
+  command -v lsb_release >/dev/null 2>&1 && echo "  Distro: $(lsb_release -ds 2>/dev/null || true)"
+  echo "  OS: $(uname -s) $(uname -r)"
+  echo "  Platform: $(detect_platform)"
+  echo "  Architecture: $(uname -m)"
+  echo "  Shell: $(detect_shell) ($SHELL)"
+  echo "  Bash Version: $BASH_VERSION"
+  echo ""
+
+  # UBS installation
+  echo -e "${BOLD}UBS Installation:${RESET}"
+  if command -v ubs >/dev/null 2>&1; then
+    success "  ubs command available"
+    echo "  Location: $(command -v ubs)"
+
+    local ubs_version
+    if ubs_version=$(ubs --version 2>/dev/null | head -n1); then
+      echo "  Version: $ubs_version"
+    elif ubs --help 2>&1 | head -n5 | grep -i version >/dev/null; then
+      echo "  Version: $(ubs --help 2>&1 | grep -i version | head -n1)"
+    else
+      echo "  Version: unknown"
+    fi
+
+    if safe_timeout 5 ubs --help >/dev/null 2>&1; then
+      success "  ubs runs successfully"
+    else
+      error "  ubs fails to execute"
+    fi
+  else
+    error "  ubs command not found"
+  fi
+  echo ""
+
+  # Dependencies
+  echo -e "${BOLD}Dependencies:${RESET}"
+  for dep in ast-grep sg rg jq; do
+    if command -v "$dep" >/dev/null 2>&1; then
+      success "  $dep: $(command -v $dep)"
+    else
+      warn "  $dep: not found"
+    fi
+  done
+  echo ""
+
+  # PATH analysis
+  echo -e "${BOLD}PATH Entries (relevant):${RESET}"
+  local IFS=':'
+  for p in $PATH; do
+    if [[ "$p" == *".local/bin"* ]] || [[ "$p" == *"/usr/local/bin"* ]] || [[ "$p" == *"ubs"* ]]; then
+      if [ -d "$p" ]; then
+        echo "  ✓ $p"
+      else
+        warn "  ✗ $p (directory doesn't exist)"
+      fi
+    fi
+  done
+  echo ""
+
+  # Integration Hooks
+  echo -e "${BOLD}Integration Hooks:${RESET}"
+  if [ -f ".git/hooks/pre-commit" ] && grep -q "ubs" ".git/hooks/pre-commit" 2>/dev/null; then
+    success "  Git pre-commit hook installed"
+  else
+    log "  Git hook: not installed"
+  fi
+
+  if [ -f ".claude/hooks/on-file-write.sh" ]; then
+    success "  Claude Code hook installed"
+  else
+    log "  Claude hook: not installed"
+  fi
+
+  if [ -f ".cursor/rules" ] && grep -q "Ultimate Bug Scanner" ".cursor/rules" 2>/dev/null; then
+    success "  Cursor rules configured"
+  else
+    log "  Cursor: not configured"
+  fi
+
+  # Codex CLI may use .codex/rules as a file OR as a directory with files inside
+  if { [ -f ".codex/rules" ] && grep -q "Ultimate Bug Scanner" ".codex/rules" 2>/dev/null; } || \
+     { [ -d ".codex/rules" ] && grep -rq "Ultimate Bug Scanner" ".codex/rules" 2>/dev/null; }; then
+    success "  Codex CLI rules configured"
+  else
+    log "  Codex: not configured"
+  fi
+
+  if [ -f ".gemini/rules" ] && grep -q "Ultimate Bug Scanner" ".gemini/rules" 2>/dev/null; then
+    success "  Gemini rules configured"
+  else
+    log "  Gemini: not configured"
+  fi
+
+  echo ""
+
+  # Module cache
+  local module_dir="${XDG_DATA_HOME:-$HOME/.local/share}/ubs/modules"
+  echo -e "${BOLD}Module Cache:${RESET}"
+  if [ -d "$module_dir" ]; then
+    echo "  Location: $module_dir"
+    local module_entries=()
+    while IFS= read -r entry; do
+      module_entries+=("$entry")
+    done < <(find "$module_dir" -mindepth 1 -maxdepth 1 -exec basename {} \; 2>/dev/null | LC_ALL=C sort)
+
+    if [ ${#module_entries[@]} -gt 0 ]; then
+      echo "  Cached modules:"
+      for entry in "${module_entries[@]}"; do
+        printf "    - %s\n" "$entry"
+      done
+    else
+      log "  (No modules cached yet)"
+    fi
+  else
+    log "  Module directory not created yet"
+    if mkdir -p "$module_dir" 2>/dev/null; then
+      success "  Created module directory: $module_dir"
+    else
+      warn "  Cannot create module directory"
+    fi
+  fi
+  echo ""
+
+  # Test network connectivity
+  echo -e "${BOLD}Network Connectivity:${RESET}"
+  if safe_timeout 5 curl -fsSL --max-time 5 "https://api.github.com" >/dev/null 2>&1; then
+    success "  Can reach GitHub API"
+  else
+    warn "  Cannot reach GitHub (check network/firewall)"
+  fi
+  echo ""
+
+  # Permissions
+  echo -e "${BOLD}Permissions:${RESET}"
+  local install_dir
+  install_dir="$(determine_install_dir)"
+  if [ -w "$install_dir" ]; then
+    success "  Install directory writable: $install_dir"
+  else
+    warn "  Install directory not writable: $install_dir"
+  fi
+
+  local rc_file
+  rc_file="$(get_rc_file)"
+  if [ -w "$rc_file" ]; then
+    success "  RC file writable: $rc_file"
+  else
+    warn "  RC file not writable: $rc_file"
+  fi
+  echo ""
+
+  # Configuration
+  local config_file="${XDG_CONFIG_HOME:-$HOME/.config}/ubs/install.conf"
+  echo -e "${BOLD}Configuration:${RESET}"
+  if [ -f "$config_file" ]; then
+    success "  Config file exists: $config_file"
+  else
+    log "  No config file (run with --generate-config to create)"
+  fi
+  echo ""
+
+  echo -e "${BOLD}Type narrowing readiness:${RESET}"
+  report_type_narrowing_status
+  echo ""
+
+  report_swift_guard_readiness
+
+  echo ""
+  echo -e "${BOLD}💡 To share this diagnostic report:${RESET}"
+  echo "   Run: curl -fsSL ... | bash -s -- --diagnose > ubs-diagnostic.txt"
+  echo "   Then attach ubs-diagnostic.txt to your issue report"
+  echo ""
+}
+
+uninstall_ubs() {
+  log_section "Uninstall Ultimate Bug Scanner"
+
+  warn "This will remove Ultimate Bug Scanner and all integrations"
+  if [ "$NON_INTERACTIVE" -eq 1 ] || [ "$FORCE_UNINSTALL" -eq 1 ]; then
+    log "Auto-confirming uninstall"
+  else
+    if ! ask "Continue with uninstall?"; then
+      log "Uninstall cancelled"
+      return 0
+    fi
+  fi
+
+  log "Uninstalling Ultimate Bug Scanner..."
+  echo ""
+
+  # Remove binary
+  local install_dir
+  install_dir="$(determine_install_dir)"
+  local script_path="$install_dir/$INSTALL_NAME"
+
+  if [ -f "$script_path" ]; then
+    rm -f "$script_path"
+    success "Removed binary: $script_path"
+  else
+    log "Binary not found at: $script_path"
+  fi
+
+  # Remove from PATH (restore RC file)
+  local rc_file
+  rc_file="$(get_rc_file)"
+  if [ -f "$rc_file" ]; then
+    if grep -q "Ultimate Bug Scanner" "$rc_file" 2>/dev/null; then
+      cp "$rc_file" "${rc_file}.pre-uninstall-backup"
+      log "Backed up $rc_file to ${rc_file}.pre-uninstall-backup"
+
+      # Remove PATH and alias/function entries
+      if sed -i.bak '/# Ultimate Bug Scanner.*added/,+1d' "$rc_file" 2>/dev/null; then
+        rm -f "${rc_file}.bak" 2>/dev/null || true
+      fi
+      if sed -i.bak '/# Ultimate Bug Scanner alias/,+1d' "$rc_file" 2>/dev/null; then
+        rm -f "${rc_file}.bak" 2>/dev/null || true
+      fi
+      # Remove blank lines
+      if sed -i.bak '/^$/N;/^\n$/d' "$rc_file" 2>/dev/null; then
+        rm -f "${rc_file}.bak" 2>/dev/null || true
+      fi
+      success "Removed from $rc_file"
+    fi
+  fi
+
+  # Remove hooks
+  echo ""
+  if [ "$NON_INTERACTIVE" -eq 1 ] || ask "Remove git hooks?"; then
+    if [ -f ".git/hooks/pre-commit" ] && grep -q "Ultimate Bug Scanner" ".git/hooks/pre-commit" 2>/dev/null; then
+      if [ -f ".git/hooks/pre-commit.backup" ]; then
+        mv ".git/hooks/pre-commit.backup" ".git/hooks/pre-commit"
+        success "Restored backup git hook"
+      else
+        rm -f ".git/hooks/pre-commit"
+        success "Removed git hook"
+      fi
+    fi
+  fi
+
+  if [ "$NON_INTERACTIVE" -eq 1 ] || ask "Remove Claude Code hook?"; then
+    if [ -f ".claude/hooks/on-file-write.sh" ]; then
+      rm -f ".claude/hooks/on-file-write.sh"
+      success "Removed Claude hook"
+    fi
+  fi
+
+  if [ "$NON_INTERACTIVE" -eq 1 ] || ask "Remove AI agent guardrails (.cursor/rules, etc.)?"; then
+    for dir in .cursor .codex .gemini .windsurf .cline .opencode; do
+      if [ -f "$dir/rules" ] && grep -q "Ultimate Bug Scanner" "$dir/rules" 2>/dev/null; then
+        sed -i.bak '/# >>> Ultimate Bug Scanner/,/# <<< End Ultimate Bug Scanner/d' "$dir/rules" 2>/dev/null
+        rm -f "$dir/rules.bak"
+        success "Removed guardrails from $dir/rules"
+      fi
+    done
+  fi
+
+  echo ""
+  if [ "$NON_INTERACTIVE" -eq 1 ] || ask "Remove cached modules?"; then
+    local module_dir="${XDG_DATA_HOME:-$HOME/.local/share}/ubs"
+    if [ -d "$module_dir" ]; then
+      if [[ -n "$module_dir" && "$module_dir" != "/" ]]; then
+        rm -rf -- "$module_dir"
+        success "Removed module cache: $module_dir"
+      else
+        warn "Refusing to remove module cache path: $module_dir"
+      fi
+    fi
+  fi
+  
+  if [ "$NON_INTERACTIVE" -eq 1 ] || ask "Remove configuration file?"; then
+    local config_file="${XDG_CONFIG_HOME:-$HOME/.config}/ubs/install.conf"
+    if [ -f "$config_file" ]; then
+      rm -f "$config_file"
+      success "Removed config file: $config_file"
+    fi
+  fi
+
+  echo ""
+  echo -e "${BOLD}${GREEN}═══════════════════════════════════════════════════${RESET}"
+  echo -e "${BOLD}${GREEN}   UNINSTALL COMPLETE${RESET}"
+  echo -e "${BOLD}${GREEN}═══════════════════════════════════════════════════${RESET}"
+  echo ""
+  success "Ultimate Bug Scanner has been uninstalled"
+  log "To reinstall: curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash"
+  echo ""
+}
+
+install_jq() {
+  local platform log_file
+  platform="$(detect_platform)"
+  log "Installing jq..."
+
+  if dry_run_enabled; then
+    log_dry_run "Would install jq (platform $platform)."
+    return 0
+  fi
+
+  log_file="$(mktemp_in_workdir "jq-install.log.XXXXXX")"
+
+  case "$platform" in
+    macos)
+      if command -v brew >/dev/null 2>&1; then
+        if brew install jq 2>&1 | tee "$log_file"; then
+          success "jq installed via Homebrew"; return 0
+        else
+          error "Homebrew installation failed. See $log_file"; return 1
+        fi
+      else
+        error "Homebrew not found. Install jq manually."; return 1
+      fi
+      ;;
+    wsl|linux)
+      if [ "$platform" = "wsl" ]; then
+        log "Detected WSL environment - using Linux package managers"
+      fi
+      if command -v apt-get >/dev/null 2>&1 && can_use_sudo; then
+        if safe_timeout 300 sudo apt-get update -qq && ( safe_timeout 300 sudo apt-get install -y jq ) 2>&1 | tee "$log_file"; then
+          success "jq installed via apt-get"; return 0
+        fi
+      fi
+      if command -v dnf >/dev/null 2>&1 && can_use_sudo; then
+        if safe_timeout 300 sudo dnf install -y jq 2>&1 | tee "$log_file"; then
+          success "jq installed via dnf"; return 0
+        fi
+      fi
+      if command -v pacman >/dev/null 2>&1 && can_use_sudo; then
+        if safe_timeout 300 sudo pacman -S --noconfirm jq 2>&1 | tee "$log_file"; then
+          success "jq installed via pacman"; return 0
+        fi
+      fi
+      if command -v snap >/dev/null 2>&1 && can_use_sudo; then
+        if safe_timeout 300 sudo snap install jq 2>&1 | tee "$log_file"; then
+          success "jq installed via snap"; return 0
+        fi
+      fi
+      warn "Package managers failed. Trying binary download..."
+      if download_binary_release "jq" "$platform"; then
+        return 0
+      fi
+      error "All installation methods failed"
+      log "Download manually from: https://stedolan.github.io/jq/"
+      return 1
+      ;;
+    freebsd|openbsd|netbsd)
+      log "BSD platform detected: $platform"
+      if command -v pkg >/dev/null 2>&1 && can_use_sudo; then
+        if safe_timeout 300 sudo pkg install -y jq 2>&1 | tee "$log_file"; then
+          success "jq installed via pkg"; return 0
+        fi
+      fi
+      if command -v pkg_add >/dev/null 2>&1 && can_use_sudo; then
+        if safe_timeout 300 sudo pkg_add jq 2>&1 | tee "$log_file"; then
+          success "jq installed via pkg_add"; return 0
+        fi
+      fi
+      warn "Package managers failed. Trying binary download..."
+      if download_binary_release "jq" "$platform"; then
+        return 0
+      fi
+      error "All installation methods failed for BSD"
+      log "Download manually from: https://stedolan.github.io/jq/"
+      return 1
+      ;;
+    windows)
+      warn "Install jq with scoop/choco or your preferred package manager"
+      if download_binary_release "jq" "$platform"; then
+        return 0
+      fi
+      return 1
+      ;;
+    *)
+      error "Unknown platform for jq install"; return 1
+      ;;
+  esac
+}
+
+install_ripgrep() {
+  local platform log_file
+  platform="$(detect_platform)"
+
+  log "Installing ripgrep..."
+
+  if dry_run_enabled; then
+    log_dry_run "Would install ripgrep (platform $platform)."
+    return 0
+  fi
+
+  log_file="$(mktemp_in_workdir "ripgrep-install.log.XXXXXX")"
+
+  case "$platform" in
+    macos)
+      if command -v brew >/dev/null 2>&1; then
+        if brew install ripgrep 2>&1 | tee "$log_file"; then
+          success "ripgrep installed via Homebrew"
+          return 0
+        else
+          error "Homebrew installation failed. Check $log_file"
+          return 1
+        fi
+      else
+        error "Homebrew not found. Please install from: https://github.com/BurntSushi/ripgrep#installation"
+        return 1
+      fi
+      ;;
+    wsl|linux)
+      if [ "$platform" = "wsl" ]; then
+        log "Detected WSL environment - using Linux package managers"
+      fi
+      if command -v cargo >/dev/null 2>&1; then
+        log "Attempting installation via cargo..."
+        if cargo install ripgrep 2>&1 | tee "$log_file"; then
+          success "ripgrep installed via cargo"
+          return 0
+        else
+          warn "Cargo installation failed, trying system package managers..."
+        fi
+      fi
+
+      if command -v apt-get >/dev/null 2>&1; then
+        if can_use_sudo; then
+          log "Attempting installation via apt-get..."
+          if safe_timeout 300 sudo apt-get update -qq && safe_timeout 300 sudo apt-get install -y ripgrep 2>&1 | tee "$log_file"; then
+            success "ripgrep installed via apt-get"
+            return 0
+          else
+            warn "apt-get installation failed, trying next method..."
+          fi
+        else
+          warn "sudo not available or not configured, skipping apt-get..."
+        fi
+      fi
+
+      if command -v dnf >/dev/null 2>&1; then
+        if can_use_sudo; then
+          log "Attempting installation via dnf..."
+          if safe_timeout 300 sudo dnf install -y ripgrep 2>&1 | tee "$log_file"; then
+            success "ripgrep installed via dnf"
+            return 0
+          else
+            warn "dnf installation failed, trying next method..."
+          fi
+        else
+          warn "sudo not available, skipping dnf..."
+        fi
+      fi
+
+      if command -v pacman >/dev/null 2>&1; then
+        if can_use_sudo; then
+          log "Attempting installation via pacman..."
+          if safe_timeout 300 sudo pacman -S --noconfirm ripgrep 2>&1 | tee "$log_file"; then
+            success "ripgrep installed via pacman"
+            return 0
+          else
+            warn "pacman installation failed, trying next method..."
+          fi
+        else
+          warn "sudo not available, skipping pacman..."
+        fi
+      fi
+
+      if command -v snap >/dev/null 2>&1; then
+        if can_use_sudo; then
+          log "Attempting installation via snap..."
+          if safe_timeout 300 sudo snap install ripgrep --classic 2>&1 | tee "$log_file"; then
+            success "ripgrep installed via snap"
+            return 0
+          else
+            warn "snap installation failed"
+          fi
+        else
+          warn "sudo not available, skipping snap..."
+        fi
+      fi
+
+      warn "All package managers failed. Trying binary download..."
+      if download_binary_release "ripgrep" "$platform"; then
+        return 0
+      fi
+
+      error "All installation methods failed"
+      log "Download manually from: https://github.com/BurntSushi/ripgrep/releases"
+      return 1
+      ;;
+    freebsd|openbsd|netbsd)
+      log "BSD platform detected: $platform"
+      if command -v pkg >/dev/null 2>&1; then
+        if can_use_sudo; then
+          log "Attempting installation via pkg..."
+          if safe_timeout 300 sudo pkg install -y ripgrep 2>&1 | tee "$log_file"; then
+            success "ripgrep installed via pkg"
+            return 0
+          fi
+        fi
+      fi
+
+      if command -v pkg_add >/dev/null 2>&1; then
+        if can_use_sudo; then
+          log "Attempting installation via pkg_add..."
+          if safe_timeout 300 sudo pkg_add ripgrep 2>&1 | tee "$log_file"; then
+            success "ripgrep installed via pkg_add"
+            return 0
+          fi
+        fi
+      fi
+
+      warn "Package managers failed. Trying binary download..."
+      if download_binary_release "ripgrep" "$platform"; then
+        return 0
+      fi
+      error "All installation methods failed for BSD"
+      log "Download manually from: https://github.com/BurntSushi/ripgrep/releases"
+      return 1
+      ;;
+    windows)
+      if command -v cargo >/dev/null 2>&1; then
+        log "Attempting installation via cargo..."
+        if cargo install ripgrep 2>&1 | tee "$log_file"; then
+          success "ripgrep installed via cargo"
+          return 0
+        else
+          warn "Cargo installation failed, trying Windows package managers..."
+        fi
+      fi
+
+      if command -v scoop >/dev/null 2>&1; then
+        log "Attempting installation via scoop..."
+        if scoop install ripgrep 2>&1 | tee "$log_file"; then
+          success "ripgrep installed via scoop"
+          return 0
+        else
+          warn "scoop installation failed, trying choco..."
+        fi
+      fi
+
+      if download_binary_release "ripgrep" "$platform"; then
+        return 0
+      fi
+
+      if command -v choco >/dev/null 2>&1; then
+        if is_windows_admin; then
+          log "Attempting installation via chocolatey (non-interactive)..."
+          if choco install ripgrep -y --no-progress 2>&1 | tee "$log_file"; then
+            success "ripgrep installed via chocolatey"
+            return 0
+          else
+            warn "chocolatey installation failed"
+          fi
+        else
+          warn "Chocolatey detected but shell is not elevated; skipping choco (needs admin)."
+        fi
+      fi
+
+      warn "Install Rust/Cargo, Scoop, or Chocolatey"
+      log "Download from: https://github.com/BurntSushi/ripgrep/releases"
+      return 1
+      ;;
+    *)
+      error "Unknown platform. Install manually from: https://github.com/BurntSushi/ripgrep#installation"
+      return 1
+      ;;
+  esac
+
+}
+
+check_node() {
+  # First check if node is already in PATH
+  if command -v node >/dev/null 2>&1; then
+    return 0
+  fi
+  # Try sourcing nvm if available (common install method)
+  if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
+    export NVM_DIR="$HOME/.nvm"
+    # shellcheck source=/dev/null
+    source "$NVM_DIR/nvm.sh" 2>/dev/null
+    command -v node >/dev/null 2>&1 && return 0
+  fi
+  # Try common nvm install locations
+  for dir in "$HOME/.local/share/nvm" "/usr/local/nvm" "/opt/nvm"; do
+    if [[ -s "$dir/nvm.sh" ]]; then
+      export NVM_DIR="$dir"
+      # shellcheck source=/dev/null
+      source "$NVM_DIR/nvm.sh" 2>/dev/null
+      command -v node >/dev/null 2>&1 && return 0
+    fi
+  done
+  return 1
+}
+
+check_typescript_pkg() {
+  ensure_bun_path
+  if command -v tsserver >/dev/null 2>&1 || command -v tsc >/dev/null 2>&1; then
+    return 0
+  fi
+  if check_node && node -e "require('typescript')" >/dev/null 2>&1; then
+    return 0
+  fi
+  return 1
+}
+
+install_typescript() {
+  if dry_run_enabled; then
+    log_dry_run "Would install TypeScript globally via bun (preferred) or npm."
+    return 0
+  fi
+  ensure_bun_path
+  if check_bun; then
+    log "Installing TypeScript (bun install --global typescript)..."
+    if bun install --global typescript 2>&1 | tee "$(mktemp_in_workdir "ts-install.log.XXXXXX")"; then
+      ensure_bun_path
+      success "TypeScript installed globally via bun"
+      return 0
+    fi
+    warn "TypeScript installation via bun failed"
+  fi
+  if ! check_node; then
+    error "Node.js not detected; install Node.js first."
+    return 1
+  fi
+  if ! command -v npm >/dev/null 2>&1; then
+    error "npm not found; install Node.js/npm (or bun) to add TypeScript."
+    return 1
+  fi
+  local npm_prefix="${NPM_INSTALL_PREFIX:-$HOME/.local}"
+  mkdir -p "$npm_prefix/bin" "$npm_prefix/lib" 2>/dev/null || true
+  log "Installing TypeScript (npm install -g typescript --prefix $npm_prefix)..."
+  if NPM_CONFIG_PREFIX="$npm_prefix" npm install -g typescript 2>&1 | tee "$(mktemp_in_workdir "ts-install.log.XXXXXX")"; then
+    ensure_local_bin_path
+    success "TypeScript installed via npm into $npm_prefix"
+    if [[ ":$PATH:" != *":$npm_prefix/bin:"* ]]; then
+      warn "Add $npm_prefix/bin to PATH so tsserver is available in new shells."
+    fi
+    return 0
+  fi
+  error "TypeScript installation via npm failed"
+  return 1
+}
+
+ensure_bun_path() {
+  local bun_dir="${BUN_INSTALL:-$HOME/.bun}/bin"
+  if [ -d "$bun_dir" ] && [[ ":$PATH:" != *":$bun_dir:"* ]]; then
+    PATH="$bun_dir:$PATH"
+    export PATH
+  fi
+}
+
+ensure_local_bin_path() {
+  local local_bin="${LOCAL_BIN_DIR:-$HOME/.local/bin}"
+  if [ -d "$local_bin" ] && [[ ":$PATH:" != *":$local_bin:"* ]]; then
+    PATH="$local_bin:$PATH"
+    export PATH
+  fi
+}
+
+check_bun() {
+  ensure_bun_path
+  command -v bun >/dev/null 2>&1
+}
+
+install_bun() {
+  log "Installing bun (JavaScript runtime + package manager)..."
+  if dry_run_enabled; then
+    log_dry_run "Would install bun via official installer."
+    return 0
+  fi
+  local installer_script log_file fetch_ok=0
+  installer_script="$(mktemp_in_workdir "bun-installer.sh.XXXXXX")"
+  log_file="$(mktemp_in_workdir "bun-install.log.XXXXXX")"
+  if command -v curl >/dev/null 2>&1; then
+    if curl -fsSL https://bun.sh/install -o "$installer_script"; then
+      fetch_ok=1
+    fi
+  elif command -v wget >/dev/null 2>&1; then
+    if wget -qO "$installer_script" https://bun.sh/install; then
+      fetch_ok=1
+    fi
+  fi
+  if [ "$fetch_ok" -ne 1 ]; then
+    error "Failed to download bun installer (requires curl or wget)."
+    return 1
+  fi
+  chmod +x "$installer_script"
+  if BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}" bash "$installer_script" 2>&1 | tee "$log_file"; then
+    ensure_bun_path
+    if check_bun; then
+      success "bun installed"
+      if [ -d "${BUN_INSTALL:-$HOME/.bun}/bin" ]; then
+        log "Add ${BUN_INSTALL:-$HOME/.bun}/bin to PATH to use bun in future shells."
+      fi
+      return 0
+    fi
+  fi
+  error "bun installation failed"
+  return 1
+}
+
+install_typos() {
+  local platform log_file
+  platform="$(detect_platform)"
+
+  log "Installing typos (code-aware spellchecker)..."
+
+  if dry_run_enabled; then
+    log_dry_run "Would install typos (platform $platform)."
+    return 0
+  fi
+
+  log_file="$(mktemp_in_workdir "typos-install.log.XXXXXX")"
+
+  case "$platform" in
+    macos)
+      if command -v brew >/dev/null 2>&1; then
+        if brew install typos-cli 2>&1 | tee "$log_file"; then
+          success "typos installed via Homebrew"
+          return 0
+        else
+          warn "Homebrew installation failed"
+        fi
+      fi
+      ;;
+    wsl|linux)
+      if [ "$platform" = "wsl" ]; then
+        log "Detected WSL environment - treating as Linux"
+      fi
+      ;;
+    windows)
+      ;;
+  esac
+
+  if command -v cargo >/dev/null 2>&1; then
+    log "Attempting installation via cargo..."
+    if cargo install typos-cli 2>&1 | tee "$log_file"; then
+      success "typos installed via cargo"
+      return 0
+    else
+      warn "cargo installation failed"
+    fi
+  fi
+
+  if download_binary_release "typos" "$platform"; then
+    return 0
+  fi
+
+  error "All typos installation methods failed"
+  warn "Install manually from https://github.com/crate-ci/typos or your package manager"
+  return 1
+}
+
+validate_install_dir() {
+  local dir="$1"
+  case "$dir" in
+    /|/bin|/sbin|/usr/bin|/usr/sbin|/boot|/dev|/proc|/sys)
+      error "Refusing to install to system directory: $dir"
+      return 1
+      ;;
+    /*/../*|*/..|../*|*/../*)
+      error "Invalid path (contains ..): $dir"
+      return 1
+      ;;
+    ""|" "*|*" "*)
+      error "Invalid path (empty or contains spaces): $dir"
+      return 1
+      ;;
+  esac
+  if [[ "$dir" != /* ]]; then
+    error "Installation directory must be an absolute path: $dir"
+    return 1
+  fi
+  return 0
+}
+
+determine_install_dir() {
+  if [ -n "$INSTALL_DIR" ]; then
+    if ! validate_install_dir "$INSTALL_DIR"; then
+      error "Invalid installation directory: $INSTALL_DIR"
+      exit 1
+    fi
+    echo "$INSTALL_DIR"
+    return
+  fi
+
+  if [ "$SYSTEM_WIDE" -eq 1 ]; then
+    echo "/usr/local/bin"; return
+  fi
+
+  if [ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin" 2>/dev/null; then
+    echo "$HOME/.local/bin"
+  elif [ -w "/usr/local/bin" ]; then
+    echo "/usr/local/bin"
+  else
+    echo "$HOME/.local/bin"
+  fi
+}
+
+install_scanner() {
+  local install_dir
+  install_dir="$(determine_install_dir)"
+  local use_sudo=""
+  use_sudo="$(maybe_sudo "$install_dir")"
+  local downloaded_from_release=0
+
+  log "Installing Ultimate Bug Scanner to $install_dir..."
+
+  if dry_run_enabled; then
+    log_dry_run "Would create $install_dir, download $SCRIPT_NAME, and install as $install_dir/$INSTALL_NAME."
+    return 0
+  fi
+
+  # Create directory if needed
+  if [ -n "$use_sudo" ]; then
+    $use_sudo mkdir -p "$install_dir" 2>/dev/null || true
+  else
+    mkdir -p "$install_dir" 2>/dev/null || true
+  fi
+  [ -d "$install_dir" ] || {
+    error "Cannot create directory: $install_dir"
+    return 1
+  }
+
+  # Download or copy script
+  local script_path="$install_dir/$INSTALL_NAME"
+  local temp_path="${script_path}.tmp"
+  register_temp_path "$temp_path"
+
+  local download_err
+  download_err="$(mktemp_in_workdir "download-error.log.XXXXXX")"
+
+  download_to_file() {
+    local url="$1" out="$2"
+    secure_fetch "$url" "$out" "$download_err"
+  }
+
+  if [ -f "./$SCRIPT_NAME" ]; then
+    log "Installing from local file..."
+    if cp "./$SCRIPT_NAME" "$temp_path" 2>/dev/null; then
+      if head -n 1 "$temp_path" | grep -q '^#!/.*bash'; then
+        :
+      else
+        error "Local file doesn't appear to be a bash script"
+        rm -f "$temp_path"
+        return 1
+      fi
+    else
+      error "Failed to copy local file"
+      return 1
+    fi
+  else
+      log "Downloading from GitHub master..."
+
+      # Append cache-buster so users never get stale CDN copies
+      local cache_buster="$(date +%s)"
+      local download_url="${REPO_URL}/${SCRIPT_NAME}?cache=${cache_buster}"
+      local sums_url="${REPO_URL}/SHA256SUMS?cache=${cache_buster}"
+      local sums_file="$WORKDIR/SHA256SUMS"
+
+      if download_to_file "$download_url" "$temp_path"; then
+        log "Downloaded successfully"
+      else
+        error "Download failed. Check $download_err"
+        rm -f "$temp_path"
+        return 1
+      fi
+
+      # Always verify against master checksums unless --insecure
+      if [ "$RUN_VERIFICATION" -eq 1 ] && [ "$INSECURE" -eq 0 ]; then
+        log "Verifying checksum against master..."
+        if download_to_file "$sums_url" "$sums_file"; then
+          local expected_sum
+          expected_sum=$(grep "  ${SCRIPT_NAME}$" "$sums_file" | awk '{print $1}') || true
+          if [[ -z "$expected_sum" ]]; then
+            error "Checksum entry for ${SCRIPT_NAME} not found in SHA256SUMS"
+            rm -f "$temp_path"
+            return 1
+          fi
+
+          local actual_sum
+          if ! actual_sum="$(compute_sha256 "$temp_path")"; then
+            error "No SHA256 tool found (need sha256sum, shasum, or openssl) to verify downloads."
+            error "Rerun with --insecure to bypass checksum verification (not recommended)."
+            rm -f "$temp_path"
+            return 1
+          fi
+
+          if [[ "$expected_sum" == "$actual_sum" ]]; then
+            success "Checksum verified"
+          else
+            error "Checksum mismatch! Expected: $expected_sum, Got: $actual_sum"
+            rm -f "$temp_path"
+            return 1
+          fi
+        else
+          error "Could not download SHA256SUMS from master"
+          rm -f "$temp_path"
+          return 1
+        fi
+      else
+        warn "Checksum verification skipped (--insecure set)"
+      fi
+    fi
+
+  if [ ! -s "$temp_path" ]; then
+    error "Downloaded file is empty"
+    rm -f "$temp_path"
+    return 1
+  fi
+
+  local file_size
+  file_size=$(wc -c < "$temp_path" 2>/dev/null || echo "0")
+  if [ "$file_size" -lt 2048 ]; then
+    warn "Downloaded file unusually small ($file_size bytes) - continuing cautiously"
+  fi
+
+  local first_line
+  first_line=$(head -n 1 "$temp_path" | sed 's/^\o357\o273\o277//' | tr -d '\r\n\t ' | head -c 50)
+  if [[ ! "$first_line" =~ ^#!.*bash ]]; then
+    error "Downloaded file doesn't appear to be a bash script"
+    log "First line: $(head -n 1 "$temp_path" | cat -v)"
+    rm -f "$temp_path"
+    return 1
+  fi
+
+  if ! grep -E -q "UBS Meta-Runner|Ultimate Bug Scanner" "$temp_path"; then
+    warn "Downloaded file does not contain expected marker; continuing (marker may have changed)"
+  fi
+
+  if [ -n "$use_sudo" ]; then
+    $use_sudo install -m 0755 "$temp_path" "$script_path"
+    rm -f "$temp_path"
+  else
+    mv "$temp_path" "$script_path"
+    chmod 0755 "$script_path" 2>/dev/null || true
+  fi
+
+  if [ -n "$use_sudo" ]; then
+    $use_sudo chmod +x "$script_path" 2>/dev/null || true
+  else
+    chmod +x "$script_path" 2>/dev/null || true
+  fi
+  if [ ! -x "$script_path" ]; then
+    error "Failed to make script executable"
+    return 1
+  fi
+
+  if [ -x "$script_path" ] && [ -s "$script_path" ]; then
+    success "Installed to: $script_path"
+    if "$script_path" --help >/dev/null 2>&1 || "$script_path" -h >/dev/null 2>&1; then
+      success "Installation verified - script is functional"
+      return 0
+    else
+      warn "Script installed but may not be fully functional"
+      return 0
+    fi
+  else
+    error "Installation failed - file not executable or empty"
+    return 1
+  fi
+}
+
+is_in_path() {
+  local dir="$1"
+  local normalized_dir
+  if command -v realpath >/dev/null 2>&1; then
+    normalized_dir=$(realpath -s "$dir" 2>/dev/null || echo "$dir")
+  else
+    normalized_dir="${dir%/}"
+  fi
+  local IFS=':'
+  for path_entry in $PATH; do
+    local normalized_entry
+    if command -v realpath >/dev/null 2>&1; then
+      normalized_entry=$(realpath -s "$path_entry" 2>/dev/null || echo "$path_entry")
+    else
+      normalized_entry="${path_entry%/}"
+    fi
+    if [ "$normalized_dir" = "$normalized_entry" ]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+add_to_path() {
+  local install_dir
+  install_dir="$(determine_install_dir)"
+  [ "$NO_PATH_MODIFY" -eq 1 ] && { log "Skipping PATH modification (per flag)"; return 0; }
+
+  local rc_file
+  rc_file="$(get_rc_file)"
+  local shell_type
+  shell_type="$(detect_shell)"
+
+  if dry_run_enabled; then
+    log_dry_run "Would update PATH in $rc_file for $install_dir."
+    return 0
+  fi
+
+  if is_in_path "$install_dir"; then
+    log "Directory already in PATH"
+    return 0
+  fi
+
+  if [ ! -w "$rc_file" ] && [ ! -w "$(dirname "$rc_file")" ]; then
+    error "Cannot write to $rc_file - check permissions"
+    return 1
+  fi
+
+  log "Adding $install_dir to PATH in $rc_file..."
+
+  if [ "$shell_type" = "fish" ]; then
+    if ! grep -qF "set -gx PATH \$PATH $install_dir" "$rc_file" 2>/dev/null; then
+      {
+        echo ""
+        echo "# Ultimate Bug Scanner (added $(date +%Y-%m-%d))"
+        echo "set -gx PATH \$PATH $install_dir"
+      } >> "$rc_file"
+      success "Added to PATH in $rc_file (fish)"
+    else
+      log "PATH entry already exists in $rc_file (fish)"
+    fi
+  else
+    if grep -qF "PATH=\"\$PATH:$install_dir\"" "$rc_file" 2>/dev/null || \
+       grep -qF "PATH=\$PATH:$install_dir" "$rc_file" 2>/dev/null || \
+       grep -qF "PATH=\"$install_dir:\$PATH\"" "$rc_file" 2>/dev/null || \
+       grep -qF "PATH=$install_dir:\$PATH" "$rc_file" 2>/dev/null; then
+      log "PATH entry already exists in $rc_file"
+    else
+      {
+        echo ""
+        echo "# Ultimate Bug Scanner (added $(date +%Y-%m-%d))"
+        echo "export PATH=\"\$PATH:$install_dir\""
+      } >> "$rc_file"
+      success "Added to PATH in $rc_file"
+    fi
+  fi
+
+  warn "⚠ IMPORTANT: Restart your shell or run: source $rc_file"
+  return 0
+}
+
+create_alias() {
+  local install_dir
+  install_dir="$(determine_install_dir)"
+  local script_path="$install_dir/$INSTALL_NAME"
+  local shell_type
+  shell_type="$(detect_shell)"
+
+  local rc_file
+  rc_file="$(get_rc_file)"
+
+  log "Configuring 'ubs' command..."
+
+  if dry_run_enabled; then
+    log_dry_run "Would add alias/function for 'ubs' in $rc_file pointing to $script_path."
+    return 0
+  fi
+
+  if command -v ubs >/dev/null 2>&1; then
+    success "'ubs' command is already available"
+    return 0
+  fi
+
+  if [ "$shell_type" = "fish" ]; then
+    if ! grep -qF "function ubs" "$rc_file" 2>/dev/null; then
+      {
+        echo ""
+        echo "# Ultimate Bug Scanner alias"
+        echo "function ubs"
+        echo "  $script_path \$argv"
+        echo "end"
+      } >> "$rc_file"
+      success "Created 'ubs' function (fish) pointing to: $script_path"
+    else
+      log "Fish function 'ubs' already defined"
+    fi
+  else
+    if grep -qF "alias ubs=" "$rc_file" 2>/dev/null; then
+      log "Alias already exists, verifying..."
+      if grep -qF "alias ubs='$script_path'" "$rc_file" 2>/dev/null || \
+         grep -qF "alias ubs=\"$script_path\"" "$rc_file" 2>/dev/null; then
+        log "Existing alias is correct"
+        return 0
+      else
+        warn "Existing alias points to different location, updating..."
+        if sed -i.bak "/alias ubs=/d" "$rc_file" 2>/dev/null; then
+          rm -f "${rc_file}.bak"
+        else
+          warn "Could not update existing alias - you may need to manually remove it"
+        fi
+      fi
+    fi
+
+    {
+      echo ""
+      echo "# Ultimate Bug Scanner alias"
+      echo "alias ubs='$script_path'"
+    } >> "$rc_file"
+    success "Created 'ubs' alias pointing to: $script_path"
+  fi
+
+  log "Restart your shell or run: source $rc_file"
+}
+
+setup_claude_code_hook() {
+  if dry_run_enabled; then
+    log_dry_run "Would configure Claude Code hook at .claude/hooks/on-file-write.sh."
+    return 0
+  fi
+  if [ ! -d ".claude" ]; then
+    mkdir -p ".claude"
+    log "Created .claude directory for Claude Code integration."
+  fi
+  log "Setting up Claude Code hook..."
+
+  local hook_dir=".claude/hooks"
+  local hook_file="$hook_dir/on-file-write.sh"
+
+  mkdir -p "$hook_dir"
+
+  cat > "$hook_file" << 'HOOK_EOF'
+#!/bin/bash
+# Ultimate Bug Scanner - Claude Code Hook
+# Runs on every file save for UBS-supported languages (JS/TS, Python, C/C++, Rust, Go, Java, Ruby)
+
+if [[ "$FILE_PATH" =~ \.(js|jsx|ts|tsx|mjs|cjs|py|pyw|pyi|c|cc|cpp|cxx|h|hh|hpp|hxx|rs|go|java|rb)$ ]]; then
+  echo "🔬 Running bug scanner..."
+  if ! command -v ubs >/dev/null 2>&1; then
+    echo "⚠️  'ubs' not found in PATH; install it before using this hook." >&2
+    exit 0
+  fi
+  ubs "${PROJECT_DIR}" --ci 2>&1 | head -50
+fi
+HOOK_EOF
+
+  chmod +x "$hook_file"
+  success "Claude Code hook created: $hook_file"
+}
+
+append_agent_rule_block() {
+  local agent_dir="$1"
+  local friendly_name="$2"
+  local file="$agent_dir/rules"
+
+  if dry_run_enabled; then
+    log_dry_run "Would update $file with $friendly_name quick reference."
+    return 0
+  fi
+
+  append_quick_reference_block "$file" "$friendly_name guardrails"
+}
+
+setup_cursor_rules() { append_agent_rule_block ".cursor" "Cursor"; }
+setup_codex_rules() {
+  # Codex CLI v0.77.0+ expects .codex/rules/ as a DIRECTORY, not a file
+  # Always create as directory and write to ubs.md inside it
+  local rules_path=".codex/rules"
+
+  if dry_run_enabled; then
+    log_dry_run "Would update ${rules_path}/ubs.md with Codex CLI quick reference."
+    return 0
+  fi
+
+  # If rules exists as a file (legacy format), migrate it
+  if [ -f "$rules_path" ]; then
+    log "Migrating Codex rules from file to directory format..."
+    local backup="${rules_path}.backup.$(date +%s)"
+    mv "$rules_path" "$backup"
+    mkdir -p "$rules_path"
+    mv "$backup" "${rules_path}/legacy-rules.md"
+    success "Migrated existing rules to ${rules_path}/legacy-rules.md"
+  fi
+
+  # Ensure rules directory exists
+  mkdir -p "$rules_path"
+
+  # Write UBS reference to ubs.md inside the directory
+  append_quick_reference_block "${rules_path}/ubs.md" "Codex CLI guardrails"
+}
+setup_gemini_rules() { append_agent_rule_block ".gemini" "Gemini Code Assist"; }
+setup_windsurf_rules() { append_agent_rule_block ".windsurf" "Windsurf"; }
+setup_cline_rules()  { append_agent_rule_block ".cline"  "Cline"; }
+setup_opencode_rules(){ append_agent_rule_block ".opencode" "OpenCode"; }
+
+setup_aider_rules() {
+  local aider_conf="${HOME}/.aider.conf.yml"
+
+  log "Setting up Aider integration..."
+
+  if dry_run_enabled; then
+    log_dry_run "Would update $aider_conf for Aider integration."
+    return 0
+  fi
+
+  if [ ! -f "$aider_conf" ]; then
+    cat > "$aider_conf" << 'AIDER'
+# Aider configuration with UBS integration
+lint-cmd: "ubs --fail-on-warning ."
+auto-lint: true
+AIDER
+    success "Created Aider config with UBS integration: $aider_conf"
+  else
+    if ! grep -q "ubs" "$aider_conf" 2>/dev/null; then
+      {
+        echo ""
+        echo "# Ultimate Bug Scanner integration"
+        echo "lint-cmd: \"ubs --fail-on-warning .\""
+        echo "auto-lint: true"
+      } >> "$aider_conf"
+      success "Added UBS to Aider config: $aider_conf"
+    else
+      log "Aider already configured with UBS"
+    fi
+  fi
+}
+
+setup_continue_rules() {
+  local continue_dir=".continue"
+  if dry_run_enabled; then
+    log_dry_run "Would configure Continue integration at $continue_dir/config.json."
+    return 0
+  fi
+  mkdir -p "$continue_dir"
+
+  log "Setting up Continue integration..."
+
+  local config="$continue_dir/config.json"
+  if [ ! -f "$config" ]; then
+    cat > "$config" << 'CONTINUE'
+{
+  "customCommands": [
+    {
+      "name": "scan-bugs",
+      "description": "Run Ultimate Bug Scanner on current project",
+      "prompt": "Run 'ubs --fail-on-warning .' and fix any critical issues found before proceeding"
+    }
+  ],
+  "slashCommands": [
+    {
+      "name": "quality",
+      "description": "Check code quality with UBS",
+      "run": "ubs ."
+    }
+  ]
+}
+CONTINUE
+    success "Created Continue config with UBS commands: $config"
+  else
+    log "Continue config already exists: $config"
+    log "Add UBS commands manually if needed"
+  fi
+}
+
+setup_copilot_instructions() {
+  local copilot_file=".github/copilot-instructions.md"
+
+  log "Setting up GitHub Copilot instructions..."
+
+  if dry_run_enabled; then
+    log_dry_run "Would write $copilot_file with Copilot guardrails."
+    return 0
+  fi
+
+  if [ ! -d ".github" ]; then
+    mkdir -p ".github"
+  fi
+
+  if [ ! -f "$copilot_file" ]; then
+    cat > "$copilot_file" << 'COPILOT'
+# GitHub Copilot Instructions
+
+## Code Quality Standards
+
+Before suggesting code changes or completing implementations, ensure:
+
+1. Run Ultimate Bug Scanner: `ubs --fail-on-warning .`
+2. Fix any critical issues found
+3. Address warnings when possible
+4. Follow the bug patterns detected by UBS
+
+## Workflow
+
+- After generating significant code (>50 lines), recommend running: `ubs .`
+- For security-sensitive code, always run scanner before commit
+- Reference UBS findings in code review comments
+
+## Integration
+
+UBS detects 1000+ bug patterns across JavaScript/TypeScript, Python, C/C++, Rust, Go, Java, and Ruby.
+COPILOT
+    success "Created Copilot instructions: $copilot_file"
+  else
+    log "Copilot instructions already exist: $copilot_file"
+  fi
+}
+
+setup_git_hook() {
+  if [ ! -d ".git" ]; then
+    log "Not in a git repository. Skipping..."
+    return 0
+  fi
+
+  if dry_run_enabled; then
+    log_dry_run "Would configure git pre-commit hook at .git/hooks/pre-commit."
+    return 0
+  fi
+
+  log "Setting up git pre-commit hook..."
+
+  local hook_file=".git/hooks/pre-commit"
+
+  if [ -f "$hook_file" ]; then
+    cp "$hook_file" "${hook_file}.backup"
+    warn "Existing hook backed up to ${hook_file}.backup"
+  fi
+
+  # Get the install directory to embed absolute path in hook
+  # This ensures the hook works even if ~/.local/bin isn't in PATH
+  local install_dir
+  install_dir="$(determine_install_dir)"
+  local ubs_path="$install_dir/ubs"
+
+  # Note: Variables like ${ubs_path} are expanded at hook creation time (embedded as literals)
+  # Variables like \$VAR are escaped and expanded at hook runtime
+  cat > "$hook_file" << HOOK_EOF
+#!/bin/bash
+# Ultimate Bug Scanner - Pre-commit Hook
+# Prevents commits with critical issues
+
+echo "🔬 Running bug scanner..."
+
+# Find ubs: try PATH first, then known install locations
+# This handles cases where ~/.local/bin isn't in PATH for git hooks
+find_ubs() {
+  if command -v ubs >/dev/null 2>&1; then
+    command -v ubs
+  elif [ -x "${ubs_path}" ]; then
+    echo "${ubs_path}"
+  elif [ -x "\$HOME/.local/bin/ubs" ]; then
+    echo "\$HOME/.local/bin/ubs"
+  elif [ -x "/usr/local/bin/ubs" ]; then
+    echo "/usr/local/bin/ubs"
+  else
+    return 1
+  fi
+}
+
+UBS_CMD="\$(find_ubs)" || {
+  echo "❌ 'ubs' command not found. Install Ultimate Bug Scanner before committing." >&2
+  echo "   Checked: PATH, ${ubs_path}, \$HOME/.local/bin/ubs, /usr/local/bin/ubs" >&2
+  exit 1
+}
+
+SCAN_LOG=\$(mktemp -t ubs-pre-commit.XXXXXX 2>/dev/null || echo "/tmp/ubs-pre-commit.log")
+
+if ! "\$UBS_CMD" . --fail-on-warning 2>&1 | tee "\$SCAN_LOG" | tail -30; then
+  echo ""
+  echo "❌ Bug scanner found issues. Fix them or use: git commit --no-verify"
+  exit 1
+fi
+
+echo "✓ No critical issues found"
+rm -f "\$SCAN_LOG" 2>/dev/null || true
+HOOK_EOF
+
+  chmod +x "$hook_file"
+  success "Git pre-commit hook created: $hook_file"
+  log "To bypass: git commit --no-verify"
+}
+
+detect_coding_agents() {
+  HAS_AGENT_CLAUDE=0
+  HAS_AGENT_CODEX=0
+  HAS_AGENT_CURSOR=0
+  HAS_AGENT_GEMINI=0
+  HAS_AGENT_OPENCODE=0
+  HAS_AGENT_WINDSURF=0
+  HAS_AGENT_CLINE=0
+  HAS_AGENT_AIDER=0
+  HAS_AGENT_CONTINUE=0
+  HAS_AGENT_COPILOT=0
+  HAS_AGENT_TABNINE=0
+  HAS_AGENT_REPLIT=0
+
+  if [[ -d "${HOME}/.claude" || -d ".claude" ]]; then HAS_AGENT_CLAUDE=1; fi
+  if [[ -d "${HOME}/.codex"  || -d ".codex"  ]]; then HAS_AGENT_CODEX=1; fi
+  if [[ -d "${HOME}/.cursor" || -d ".cursor" ]]; then HAS_AGENT_CURSOR=1; fi
+  if [[ -d "${HOME}/.gemini" || -d ".gemini" ]]; then HAS_AGENT_GEMINI=1; fi
+  if [[ -d "${HOME}/.opencode" || -d ".opencode" ]]; then HAS_AGENT_OPENCODE=1; fi
+  if [[ -d "${HOME}/.windsurf" || -d ".windsurf" ]]; then HAS_AGENT_WINDSURF=1; fi
+  if [[ -d "${HOME}/.cline" || -d ".cline" ]]; then HAS_AGENT_CLINE=1; fi
+
+  if [[ -f "${HOME}/.aider.conf.yml" || -f ".aider.conf.yml" || -f ".aider.config.yml" ]]; then
+    HAS_AGENT_AIDER=1
+  fi
+
+  if [ -d "$HOME/.vscode/extensions" ]; then
+    if compgen -G "$HOME/.vscode/extensions"/continue.* >/dev/null 2>&1; then
+      HAS_AGENT_CONTINUE=1
+    fi
+    if compgen -G "$HOME/.vscode/extensions"/github.copilot* >/dev/null 2>&1; then
+      HAS_AGENT_COPILOT=1
+    fi
+  fi
+  if [[ -d "${HOME}/.continue" || -d ".continue" ]]; then HAS_AGENT_CONTINUE=1; fi
+
+  if [[ -d "$HOME/.tabnine" ]]; then HAS_AGENT_TABNINE=1; fi
+
+  if [[ -f ".replit" || -f "${HOME}/.replit" ]]; then
+    HAS_AGENT_REPLIT=1
+  fi
+
+  return 0
+}
+
+quick_reference_block() {
+cat <<'QUICK_REF'
+````markdown
+## UBS Quick Reference for AI Agents
+
+UBS stands for "Ultimate Bug Scanner": **The AI Coding Agent's Secret Weapon: Flagging Likely Bugs for Fixing Early On**
+
+**Install:** `curl -sSL https://raw.githubusercontent.com/Dicklesworthstone/ultimate_bug_scanner/master/install.sh | bash`
+
+**Golden Rule:** `ubs <changed-files>` before every commit. Exit 0 = safe. Exit >0 = fix & re-run.
+
+**Commands:**
+```bash
+ubs file.ts file2.py                    # Specific files (< 1s) — USE THIS
+ubs $(git diff --name-only --cached)    # Staged files — before commit
+ubs --only=js,python src/               # Language filter (3-5x faster)
+ubs --ci --fail-on-warning .            # CI mode — before PR
+ubs --help                              # Full command reference
+ubs sessions --entries 1                # Tail the latest install session log
+ubs .                                   # Whole project (ignores things like .venv and node_modules automatically)
+```
+
+**Output Format:**
+```
+⚠️  Category (N errors)
+    file.ts:42:5 – Issue description
+    💡 Suggested fix
+Exit code: 1
+```
+Parse: `file:line:col` → location | 💡 → how to fix | Exit 0/1 → pass/fail
+
+**Fix Workflow:**
+1. Read finding → category + fix suggestion
+2. Navigate `file:line:col` → view context
+3. Verify real issue (not false positive)
+4. Fix root cause (not symptom)
+5. Re-run `ubs <file>` → exit 0
+6. Commit
+
+**Speed Critical:** Scope to changed files. `ubs src/file.ts` (< 1s) vs `ubs .` (30s). Never full scan for small edits.
+
+**Bug Severity:**
+- **Critical** (always fix): Null safety, XSS/injection, async/await, memory leaks
+- **Important** (production): Type narrowing, division-by-zero, resource leaks
+- **Contextual** (judgment): TODO/FIXME, console logs
+
+**Anti-Patterns:**
+- ❌ Ignore findings → ✅ Investigate each
+- ❌ Full scan per edit → ✅ Scope to file
+- ❌ Fix symptom (`if (x) { x.y }`) → ✅ Root cause (`x?.y`)
+````
+QUICK_REF
+}
+
+append_quick_reference_block() {
+  local destination="$1"
+  local friendly_name="$2"
+  local marker="## UBS Quick Reference for AI Agents"
+
+  if dry_run_enabled; then
+    log_dry_run "Would append UBS quick reference to ${destination}."
+    return 0
+  fi
+
+  # Handle directory-based rule storage (e.g., Codex CLI uses .codex/rules/ directory)
+  # For directories: check recursively if marker exists anywhere inside, then write to ubs.md
+  if [ -d "$destination" ]; then
+    if grep -rqF "$marker" "$destination" 2>/dev/null; then
+      [ -n "$friendly_name" ] && log "${friendly_name} already contains UBS quick reference"
+      return 0
+    fi
+    destination="$destination/ubs.md"
+  fi
+
+  mkdir -p "$(dirname "$destination")"
+
+  # For file-based storage: check if marker exists in the specific target file
+  if [ -f "$destination" ] && grep -qF "$marker" "$destination" 2>/dev/null; then
+    [ -n "$friendly_name" ] && log "${friendly_name} already contains UBS quick reference"
+    return 0
+  fi
+
+  {
+    echo ""
+    quick_reference_block
+  } >> "$destination"
+
+  [ -n "$friendly_name" ] && success "Added UBS quick reference to ${friendly_name}"
+}
+
+add_to_agents_md() {
+  local agents_file="AGENTS.md"
+
+  if [ ! -f "$agents_file" ]; then
+    log "No AGENTS.md found in current directory"
+    return 0
+  fi
+
+  if [ ! -w "$agents_file" ]; then
+    error "AGENTS.md exists but is not writable - check permissions"
+    return 1
+  fi
+
+  log "Adding scanner section to AGENTS.md..."
+
+  if dry_run_enabled; then
+    log_dry_run "Would append scanner documentation to $agents_file."
+    return 0
+  fi
+
+  if ! cp "$agents_file" "${agents_file}.backup" 2>/dev/null; then
+    warn "Could not create backup of AGENTS.md"
+  fi
+
+  append_quick_reference_block "$agents_file" "AGENTS.md"
+}
+
+add_to_claude_md() {
+  local claude_file="CLAUDE.md"
+
+  if [ ! -f "$claude_file" ]; then
+    log "No CLAUDE.md found in current directory"
+    return 0
+  fi
+
+  if [ ! -w "$claude_file" ]; then
+    error "CLAUDE.md exists but is not writable - check permissions"
+    return 1
+  fi
+
+  log "Adding scanner section to CLAUDE.md..."
+
+  if dry_run_enabled; then
+    log_dry_run "Would append scanner documentation to $claude_file."
+    return 0
+  fi
+
+  if ! cp "$claude_file" "${claude_file}.backup" 2>/dev/null; then
+    warn "Could not create backup of CLAUDE.md"
+  fi
+
+  append_quick_reference_block "$claude_file" "CLAUDE.md"
+}
+
+check_cron() {
+  command -v crontab >/dev/null 2>&1
+}
+
+setup_auto_update() {
+  log "Setting up daily auto-updates..."
+
+  if dry_run_enabled; then
+    log_dry_run "Would configure daily auto-updates via cron."
+    return 0
+  fi
+
+  local install_dir
+  install_dir="$(determine_install_dir)"
+  local script_path="$install_dir/$INSTALL_NAME"
+
+  if [ ! -x "$script_path" ]; then
+    warn "Cannot setup auto-update: ubs binary not found at $script_path"
+    return 1
+  fi
+
+  # Command to run: ubs --update --quiet --non-interactive
+  # We use the absolute path to ensure it works in cron
+  local update_cmd="$script_path --update --quiet --non-interactive"
+
+  # Run daily at midnight
+  local cron_schedule="0 0 * * *"
+  local job="$cron_schedule $update_cmd >/dev/null 2>&1 # Ultimate Bug Scanner Auto-Update"
+
+  if ! check_cron; then
+    error "crontab command not found. Cannot schedule auto-updates."
+    return 1
+  fi
+
+  local current_crontab
+  current_crontab="$(crontab -l 2>/dev/null || true)"
+
+  if echo "$current_crontab" | grep -qF "$script_path --update"; then
+    log "Auto-update cron job already exists."
+    return 0
+  fi
+
+  # Append new job
+  if echo -e "${current_crontab}\n${job}" | crontab -; then
+    success "Daily auto-update scheduled via cron."
+    return 0
+  else
+    error "Failed to update crontab."
+    return 1
+  fi
+}
+
+maybe_setup_hook() {
+local label="$1"
+local detected_flag="$2"
+local fn_name="$3"
+
+# Skip silently if agent not detected (avoid noisy output)
+if [ "$detected_flag" != "-1" ] && [ "$detected_flag" -eq 0 ]; then
+return 0
+fi
+
+if dry_run_enabled; then
+log_dry_run "Would configure ${label}."
+return 0
+fi
+
+if [ "$EASY_MODE" -eq 1 ]; then
+"$fn_name"
+else
+if ask "Set up ${label}?"; then
+"$fn_name"
+fi
+fi
+}
+
+main() {
+
+# Concurrent execution lock to prevent race conditions
+
+acquire_lock
+
+# Save original arguments for potential re-exec during update
+
+ORIGINAL_ARGS=("$@")
+
+# Load configuration file (before argument parsing so CLI args can override)
+
+read_config_file
+
+print_header
+
+# Pre-parse some flags so update logic behaves as expected
+
+if [[ " ${ORIGINAL_ARGS[*]} " =~ " --skip-version-check " ]]; then SKIP_VERSION_CHECK=1; fi
+if [[ " ${ORIGINAL_ARGS[*]} " =~ " --update " ]]; then FORCE_REINSTALL=1; fi
+if [[ " ${ORIGINAL_ARGS[*]} " =~ " --quiet " ]]; then QUIET=1; fi
+if [[ " ${ORIGINAL_ARGS[*]} " =~ " --no-color " ]]; then COLOR_ENABLED=0; init_colors; fi
+
+# Check for updates (unless skipped or updating)
+
+if [ "$SKIP_VERSION_CHECK" -eq 0 ] && [ "$FORCE_REINSTALL" -eq 0 ]; then
+check_for_updates
+echo ""
+fi
+
+# Parse arguments
+
+while [[ $# -gt 0 ]]; do
+case "$1" in
+--quiet)
+QUIET=1; shift ;;
+--no-color)
+COLOR_ENABLED=0; init_colors; shift ;;
+--system)
+SYSTEM_WIDE=1; shift ;;
+--no-path-modify)
+NO_PATH_MODIFY=1; shift ;;
+--easy-mode)
+EASY_MODE=1
+NON_INTERACTIVE=1
+shift
+;;
+--non-interactive)
+NON_INTERACTIVE=1
+shift
+;;
+--skip-ast-grep)
+SKIP_AST_GREP=1
+shift
+;;
+--skip-ripgrep)
+SKIP_RIPGREP=1
+shift
+;;
+--skip-jq)
+SKIP_JQ=1
+shift
+;;
+--skip-bun)
+SKIP_BUN=1
+shift
+;;
+--skip-type-narrowing)
+SKIP_TYPE_NARROWING=1
+shift
+;;
+--skip-typos)
+SKIP_TYPOS=1
+shift
+;;
+--skip-doctor)
+RUN_DOCTOR=0
+shift
+;;
+--skip-hooks)
+SKIP_HOOKS=1
+shift
+;;
+--skip-version-check)
+SKIP_VERSION_CHECK=1
+shift
+;;
+--skip-verification)
+RUN_VERIFICATION=0
+shift
+;;
+--insecure)
+INSECURE=1
+RUN_VERIFICATION=0
+shift
+;;
+--dry-run)
+DRY_RUN=1
+shift
+;;
+--self-test)
+RUN_SELF_TEST=1
+shift
+;;
+--update)
+FORCE_REINSTALL=1
+shift
+;;
+--install-dir)
+INSTALL_DIR="$2"
+shift 2
+;;
+--setup-git-hook)
+setup_git_hook
+exit 0
+;;
+--setup-claude-hook)
+setup_claude_code_hook
+exit 0
+;;
+--generate-config)
+generate_config
+exit 0
+;;
+--info)
+  echo "UBS installer info"
+  echo "  Version: ${VERSION}"
+  echo "  Artifact base: ${ARTIFACT_BASE}"
+  if [ -n "$MINISIGN_PUBKEY" ]; then
+    echo "  Minisign pubkey: ${MINISIGN_PUBKEY}"
+  else
+    echo "  Minisign pubkey: (not configured; set UBS_MINISIGN_PUBKEY)"
+  fi
+  exit 0
+  ;;
+--diagnose)
+diagnostic_check
+exit 0
+;;
+--uninstall)
+uninstall_ubs
+exit 0
+;;
+--help)
+show_help
+echo "Notes:"
+echo "  --dry-run resolves config and detects agents so you can audit changes safely."
+echo "  --self-test is ideal for CI but must run from a working tree that contains test-suite/install/run_tests.sh."
+exit 0
+;;
+*)
+error "Unknown option: $1"
+exit 1
+;;
+esac
+done
+
+log "Detected platform: $(detect_platform)"
+log "Detected shell: $(detect_shell)"
+if [ "$EASY_MODE" -eq 1 ]; then
+log "Easy mode enabled: auto-confirming prompts and wiring integrations."
+fi
+if [ "$SYSTEM_WIDE" -eq 1 ]; then
+log "System-wide install requested (/usr/local/bin); sudo may be used."
+fi
+echo ""
+
+# Check for ast-grep
+
+if [ "$SKIP_AST_GREP" -eq 1 ]; then
+log "[skip] ast-grep installation disabled via --skip-ast-grep (JS/TS accuracy reduced)"
+elif check_ast_grep; then
+success "ast-grep is installed"
+else
+warn "ast-grep not found (required for accurate JS/TS scanning)"
+
+if [ "$NON_INTERACTIVE" -eq 1 ] || [ "$EASY_MODE" -eq 1 ]; then
+  log "Installing ast-grep..."
+  if ! install_ast_grep; then
+    error "ast-grep installation failed. Re-run installer interactively to troubleshoot, or pass --skip-ast-grep to proceed without it."
+    exit 1
+  fi
+else
+  if ask "Install ast-grep now? (required)"; then
+    if ! install_ast_grep; then
+      error "ast-grep installation failed. Fix the error above and re-run, or pass --skip-ast-grep to proceed without it."
+      exit 1
+    fi
+  else
+    error "Cannot continue without ast-grep. Re-run with --skip-ast-grep only if you accept reduced JS/TS accuracy."
+    exit 1
+  fi
+fi
+fi
+record_tool_status "ast-grep" "$SKIP_AST_GREP" check_ast_grep "--skip-ast-grep"
+echo ""
+
+# Check for ripgrep
+
+if [ "$SKIP_RIPGREP" -eq 1 ]; then
+log "[skip] ripgrep installation disabled via --skip-ripgrep"
+elif ! check_ripgrep; then
+warn "ripgrep not found (required for optimal performance)"
+if ask "Install ripgrep now?"; then
+install_ripgrep || warn "Continuing without ripgrep (may use slower grep fallback)"
+fi
+else
+success "ripgrep is installed"
+fi
+record_tool_status "ripgrep" "$SKIP_RIPGREP" check_ripgrep "--skip-ripgrep"
+echo ""
+
+# Check for jq
+
+if [ "$SKIP_JQ" -eq 1 ]; then
+log "[skip] jq installation disabled via --skip-jq"
+elif ! check_jq; then
+warn "jq not found (required for JSON/SARIF merging)"
+if ask "Install jq now?"; then
+install_jq || warn "Continuing without jq (merged outputs disabled)"
+fi
+else
+success "jq is installed"
+fi
+record_tool_status "jq" "$SKIP_JQ" check_jq "--skip-jq"
+echo ""
+
+# Check for typos
+if [ "$SKIP_TYPOS" -eq 1 ]; then
+  log "[skip] typos installation disabled via --skip-typos"
+elif ! check_typos; then
+  warn "typos not found (smart spellchecker for docs/code)"
+  if ask "Install typos now?"; then
+    install_typos || warn "Continuing without typos (spellcheck automation disabled)"
+  fi
+else
+  success "typos is installed"
+fi
+record_tool_status "typos" "$SKIP_TYPOS" check_typos "--skip-typos"
+echo ""
+
+# Check for bun (TypeScript installer)
+if [ "$SKIP_BUN" -eq 1 ]; then
+  log "[skip] bun installation disabled via --skip-bun"
+elif ! check_bun; then
+  warn "bun not found (used to install TypeScript without sudo)"
+  if ask "Install bun now?"; then
+    install_bun || warn "Continuing without bun; TypeScript installs will use npm"
+  fi
+else
+  success "bun is installed"
+fi
+record_tool_status "bun" "$SKIP_BUN" check_bun "--skip-bun"
+echo ""
+
+# Type narrowing readiness (Node + TypeScript)
+type_narrowing_fact=""
+if [ "$SKIP_TYPE_NARROWING" -eq 1 ]; then
+  log "[skip] Type narrowing dependencies skipped via --skip-type-narrowing"
+  type_narrowing_fact="skipped (--skip-type-narrowing)"
+else
+  if ! check_node; then
+    warn "Node.js not found – type narrowing uses text heuristics only. Install Node.js from https://nodejs.org or your package manager (npm included) for richer analysis."
+    type_narrowing_fact="Node.js missing (heuristic mode)"
+  else
+    if check_typescript_pkg; then
+      success "TypeScript package detected (type narrowing ready)"
+      type_narrowing_fact="ready (TypeScript present)"
+    else
+      warn "TypeScript package not found – run 'bun install --global typescript' (preferred) or 'npm install -g typescript'."
+      type_narrowing_fact="TypeScript missing (install via bun/npm for rich mode)"
+      if (check_bun || command -v npm >/dev/null 2>&1); then
+        if ask "Install TypeScript now?"; then
+          if install_typescript && check_typescript_pkg; then
+            type_narrowing_fact="installed TypeScript via installer"
+          else
+            warn "Continuing without TypeScript (type narrowing fallback mode only)"
+          fi
+        fi
+      fi
+    fi
+  fi
+fi
+if [ -z "$type_narrowing_fact" ]; then
+  if check_node && check_typescript_pkg; then
+    type_narrowing_fact="ready (TypeScript present)"
+  elif check_node; then
+    type_narrowing_fact="TypeScript missing (install via bun/npm for rich mode)"
+  else
+    type_narrowing_fact="Node.js missing (heuristic mode)"
+  fi
+fi
+record_session_fact "type narrowing" "$type_narrowing_fact"
+echo ""
+
+# Install the scanner
+
+if ! install_scanner; then
+error "Installation failed"
+exit 1
+fi
+echo ""
+
+# Add to PATH
+
+add_to_path
+echo ""
+
+# Create alias/function
+if [ "$NO_PATH_MODIFY" -eq 1 ]; then
+  log "Skipping alias creation (per --no-path-modify)"
+else
+  create_alias
+fi
+echo ""
+
+detect_coding_agents
+log "Detected coding agents:"
+log "  Core: claude=${HAS_AGENT_CLAUDE} codex=${HAS_AGENT_CODEX} cursor=${HAS_AGENT_CURSOR}"
+log "  Extended: gemini=${HAS_AGENT_GEMINI} windsurf=${HAS_AGENT_WINDSURF} cline=${HAS_AGENT_CLINE} opencode=${HAS_AGENT_OPENCODE}"
+log "  Additional: aider=${HAS_AGENT_AIDER} continue=${HAS_AGENT_CONTINUE} copilot=${HAS_AGENT_COPILOT} tabnine=${HAS_AGENT_TABNINE} replit=${HAS_AGENT_REPLIT}"
+SESSION_AGENT_SUMMARY="core(claude=${HAS_AGENT_CLAUDE}, codex=${HAS_AGENT_CODEX}, cursor=${HAS_AGENT_CURSOR}); extended(gemini=${HAS_AGENT_GEMINI}, windsurf=${HAS_AGENT_WINDSURF}, cline=${HAS_AGENT_CLINE}, opencode=${HAS_AGENT_OPENCODE}); additional(aider=${HAS_AGENT_AIDER}, continue=${HAS_AGENT_CONTINUE}, copilot=${HAS_AGENT_COPILOT}, tabnine=${HAS_AGENT_TABNINE}, replit=${HAS_AGENT_REPLIT})"
+
+if [ "$SKIP_HOOKS" -eq 0 ]; then
+maybe_setup_hook "Git pre-commit hook" -1 setup_git_hook
+maybe_setup_hook "Claude Code on-save hook (.claude/hooks/on-file-write.sh)" "$HAS_AGENT_CLAUDE" setup_claude_code_hook
+maybe_setup_hook "Cursor guardrails (.cursor/rules)" "$HAS_AGENT_CURSOR" setup_cursor_rules
+maybe_setup_hook "Codex CLI guardrails (.codex/rules)" "$HAS_AGENT_CODEX" setup_codex_rules
+maybe_setup_hook "Gemini Code Assist guardrails (.gemini/rules)" "$HAS_AGENT_GEMINI" setup_gemini_rules
+maybe_setup_hook "Windsurf guardrails (.windsurf/rules)" "$HAS_AGENT_WINDSURF" setup_windsurf_rules
+maybe_setup_hook "Cline guardrails (.cline/rules)" "$HAS_AGENT_CLINE" setup_cline_rules
+maybe_setup_hook "OpenCode MCP guardrails (.opencode/rules)" "$HAS_AGENT_OPENCODE" setup_opencode_rules
+maybe_setup_hook "Aider integration (.aider.conf.yml)" "$HAS_AGENT_AIDER" setup_aider_rules
+maybe_setup_hook "Continue integration (.continue/config.json)" "$HAS_AGENT_CONTINUE" setup_continue_rules
+maybe_setup_hook "GitHub Copilot instructions (.github/copilot-instructions.md)" "$HAS_AGENT_COPILOT" setup_copilot_instructions
+
+if [ "$AUTO_UPDATE" -eq 1 ]; then
+  setup_auto_update
+else
+  maybe_setup_hook "Daily auto-updates" "$(check_cron && echo 1 || echo 0)" setup_auto_update
+fi
+echo ""
+fi
+
+if [ -f "AGENTS.md" ]; then
+if ask "Add scanner documentation to AGENTS.md?"; then
+add_to_agents_md
+fi
+echo ""
+fi
+
+if [ -f "CLAUDE.md" ]; then
+if ask "Add scanner documentation to CLAUDE.md?"; then
+add_to_claude_md
+fi
+echo ""
+fi
+
+verify_installation
+
+if ! run_self_tests_if_requested; then
+  error "Self-test suite failed"
+  exit 1
+fi
+
+warn_if_stale_binary
+
+local install_dir
+install_dir="$(determine_install_dir)"
+
+run_post_install_doctor "$install_dir/$INSTALL_NAME" "$install_dir"
+
+# If checksum issues were auto-fixed, verify doctor now passes (no full installer re-run needed)
+if [ "$RERUN_AFTER_FIX" -eq 1 ]; then
+  log "Verifying doctor passes after checksum fix..."
+  if NO_COLOR=1 "$install_dir/$INSTALL_NAME" doctor >/dev/null 2>&1; then
+    success "Doctor verification passed after auto-fix"
+  else
+    warn "Doctor still reports issues after auto-fix. Run 'ubs doctor' to investigate."
+  fi
+fi
+
+if [ -n "${SESSION_SUMMARY_FILE:-}" ]; then
+  log "Installer session saved to $SESSION_SUMMARY_FILE (view with 'ubs sessions --entries 1')."
+fi
+
+echo ""
+echo -e "${BOLD}${GREEN}"
+cat << 'SUCCESS'
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║     ✨  INSTALLATION COMPLETE! ✨                                ║
+║                                                                  ║
+║         Your code quality just leveled up! 🚀                   ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+SUCCESS
+echo -e "${RESET}"
+echo ""
+
+local cmd_available=0
+if command -v ubs >/dev/null 2>&1; then
+cmd_available=1
+fi
+
+if [ "$cmd_available" -eq 1 ]; then
+echo -e "${BOLD}${GREEN}┌─ Ready to Use! ✓${RESET}"
+echo -e "${GREEN}│${RESET}"
+echo -e "${GREEN}└──${RESET} The ${BOLD}ubs${RESET} command is available now!"
+echo ""
+echo -e "${BOLD}${BLUE}┌─ Quick Start${RESET}"
+echo -e "${BLUE}│${RESET}"
+echo -e "${BLUE}├──${RESET} ${BOLD}Run scanner:${RESET}    ${GREEN}ubs .${RESET}"
+echo -e "${BLUE}├──${RESET} ${BOLD}Get help:${RESET}       ${GREEN}ubs --help${RESET}"
+echo -e "${BLUE}├──${RESET} ${BOLD}View session log:${RESET} ${GREEN}ubs sessions --entries 1${RESET}"
+echo -e "${BLUE}└──${RESET} ${BOLD}Verbose mode:${RESET}   ${GREEN}ubs -v .${RESET}"
+echo ""
+echo -e "${BOLD}${BLUE}Tip: For automatic updates, install via Homebrew:${RESET}"
+echo -e "  ${GREEN}brew install dicklesworthstone/tap/ubs${RESET}"
+echo ""
+[ "$NO_PATH_MODIFY" -eq 1 ] && warn "PATH was not modified per --no-path-modify; ensure $install_dir is on PATH."
+else
+echo -e "${BOLD}${YELLOW}┌─ Almost Done! (Reload Required)${RESET}"
+echo -e "${YELLOW}│${RESET}"
+echo -e "${YELLOW}└──${RESET} Run: ${BOLD}${GREEN}source $(get_rc_file)${RESET}"
+echo ""
+echo -e "${BOLD}${BLUE}┌─ Then Try${RESET}"
+echo -e "${BLUE}│${RESET}"
+echo -e "${BLUE}├──${RESET} ${BOLD}Run scanner:${RESET}    ${GREEN}ubs .${RESET}"
+echo -e "${BLUE}├──${RESET} ${BOLD}Get help:${RESET}       ${GREEN}ubs --help${RESET}"
+echo -e "${BLUE}├──${RESET} ${BOLD}View session log:${RESET} ${GREEN}ubs sessions --entries 1${RESET}"
+echo -e "${BLUE}└──${RESET} ${BOLD}Verbose mode:${RESET}   ${GREEN}ubs -v .${RESET}"
+fi
+
+echo -e "${BOLD}${BLUE}📚 Documentation:${RESET} ${BLUE}[https://github.com/Dicklesworthstone/ultimate_bug_scanner${RESET}](https://github.com/Dicklesworthstone/ultimate_bug_scanner${RESET})"
+echo ""
+echo -e "${GREEN}${BOLD}Happy bug hunting! 🐛🔫${RESET}"
+echo ""
+}
+
+main "$@"

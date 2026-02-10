@@ -1,0 +1,919 @@
+package swarm
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"log/slog"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"sync"
+	"time"
+
+	"github.com/Dicklesworthstone/ntm/internal/tools"
+)
+
+// agentToProvider maps agent type aliases to caam provider names.
+var agentToProvider = map[string]string{
+	"cc":          "claude",
+	"claude":      "claude",
+	"claude-code": "claude",
+	"cod":         "openai",
+	"codex":       "openai",
+	"gmi":         "google",
+	"gemini":      "google",
+}
+
+// AccountInfo describes a caam account.
+type AccountInfo struct {
+	Provider      string    `json:"provider"`
+	AccountName   string    `json:"account_name"`
+	Email         string    `json:"email,omitempty"`
+	IsActive      bool      `json:"is_active"`
+	RateLimited   bool      `json:"rate_limited,omitempty"`
+	CooldownUntil time.Time `json:"cooldown_until,omitempty"`
+	LastUsed      time.Time `json:"last_used,omitempty"`
+}
+
+// RotationRecord tracks an account rotation.
+type RotationRecord struct {
+	Provider       string        `json:"provider"`
+	AgentType      string        `json:"agent_type,omitempty"`
+	Project        string        `json:"project,omitempty"`
+	FromAccount    string        `json:"from_account"`
+	ToAccount      string        `json:"to_account"`
+	RotatedAt      time.Time     `json:"rotated_at"`
+	SessionPane    string        `json:"session_pane"`
+	TriggeredBy    string        `json:"triggered_by"` // "limit_hit", "manual"
+	TriggerPattern string        `json:"trigger_pattern,omitempty"`
+	TimeSinceLast  time.Duration `json:"time_since_last,omitempty"`
+}
+
+// caamStatus represents the JSON output from caam status command.
+type caamStatus struct {
+	Provider      string `json:"provider"`
+	ActiveAccount string `json:"active_account"`
+	AccountCount  int    `json:"account_count,omitempty"`
+}
+
+// caamAccount represents an account in caam list output.
+type caamAccount struct {
+	Name   string `json:"name"`
+	Active bool   `json:"active"`
+}
+
+// RotationState tracks per-pane account rotation state.
+type RotationState struct {
+	CurrentAccount   string    `json:"current_account"`
+	PreviousAccounts []string  `json:"previous_accounts"`
+	RotationCount    int       `json:"rotation_count"`
+	LastRotation     time.Time `json:"last_rotation"`
+}
+
+type AccountRotationStats struct {
+	AgentType        string         `json:"agent_type"`
+	TotalRotations   int            `json:"total_rotations"`
+	AvgTimeBetween   time.Duration  `json:"avg_time_between,omitempty"`
+	AccountUsage     map[string]int `json:"account_usage,omitempty"`
+	UniquePanes      int            `json:"unique_panes,omitempty"`
+	UniquePanesByKey map[string]int `json:"-"`
+}
+
+type persistedRotationHistory struct {
+	History map[string][]RotationRecord `json:"history,omitempty"`
+}
+
+// AccountRotationHistory tracks all account rotations with optional persistence.
+// Persistence file: <dataDir>/.ntm/rotation_history.json
+type AccountRotationHistory struct {
+	mu      sync.RWMutex
+	dataDir string
+	history map[string][]RotationRecord // sessionPane -> records
+	logger  *slog.Logger
+}
+
+func NewAccountRotationHistory(dataDir string, logger *slog.Logger) *AccountRotationHistory {
+	return &AccountRotationHistory{
+		dataDir: dataDir,
+		history: make(map[string][]RotationRecord),
+		logger:  logger,
+	}
+}
+
+func (h *AccountRotationHistory) WithLogger(logger *slog.Logger) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	h.logger = logger
+}
+
+func (h *AccountRotationHistory) SetDataDir(dir string) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	h.dataDir = dir
+}
+
+func (h *AccountRotationHistory) RecordRotation(record RotationRecord) error {
+	if record.SessionPane == "" {
+		return nil
+	}
+	if record.RotatedAt.IsZero() {
+		record.RotatedAt = time.Now()
+	}
+
+	h.mu.Lock()
+	paneHistory := h.history[record.SessionPane]
+	if record.TimeSinceLast == 0 && len(paneHistory) > 0 {
+		last := paneHistory[len(paneHistory)-1]
+		if !last.RotatedAt.IsZero() {
+			record.TimeSinceLast = record.RotatedAt.Sub(last.RotatedAt)
+		}
+	}
+	h.history[record.SessionPane] = append(paneHistory, record)
+	total := len(h.history[record.SessionPane])
+	logger := h.logger
+	dataDir := h.dataDir
+	h.mu.Unlock()
+
+	if logger == nil {
+		logger = slog.Default()
+	}
+	logger.Info("[AccountRotationHistory] rotation_recorded",
+		"session_pane", record.SessionPane,
+		"agent_type", record.AgentType,
+		"provider", record.Provider,
+		"from_account", record.FromAccount,
+		"to_account", record.ToAccount,
+		"triggered_by", record.TriggeredBy,
+		"trigger_pattern", record.TriggerPattern,
+		"time_since_last", record.TimeSinceLast,
+		"total_rotations_pane", total,
+	)
+
+	if dataDir == "" {
+		return nil
+	}
+	return h.SaveToDir(dataDir)
+}
+
+func (h *AccountRotationHistory) RecordsForPane(sessionPane string, limit int) []RotationRecord {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+
+	records := h.history[sessionPane]
+	if len(records) == 0 {
+		return []RotationRecord{}
+	}
+	if limit <= 0 || limit > len(records) {
+		limit = len(records)
+	}
+	start := len(records) - limit
+	if start < 0 {
+		start = 0
+	}
+	out := make([]RotationRecord, limit)
+	copy(out, records[start:])
+	return out
+}
+
+func (h *AccountRotationHistory) GetRotationStats(agentType string) AccountRotationStats {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+
+	stats := AccountRotationStats{
+		AgentType:        agentType,
+		AccountUsage:     make(map[string]int),
+		UniquePanesByKey: make(map[string]int),
+	}
+	var totalBetween time.Duration
+	var betweenCount int
+
+	for pane, records := range h.history {
+		seenThisPane := false
+		for _, r := range records {
+			if r.AgentType != agentType {
+				continue
+			}
+			stats.TotalRotations++
+			if r.ToAccount != "" {
+				stats.AccountUsage[r.ToAccount]++
+			}
+			if r.TimeSinceLast > 0 {
+				totalBetween += r.TimeSinceLast
+				betweenCount++
+			}
+			seenThisPane = true
+		}
+		if seenThisPane {
+			stats.UniquePanesByKey[pane] = 1
+		}
+	}
+	stats.UniquePanes = len(stats.UniquePanesByKey)
+	if betweenCount > 0 {
+		stats.AvgTimeBetween = totalBetween / time.Duration(betweenCount)
+	}
+	return stats
+}
+
+func (h *AccountRotationHistory) LoadFromDir(dir string) error {
+	if dir == "" {
+		h.mu.RLock()
+		dir = h.dataDir
+		h.mu.RUnlock()
+	}
+	if dir == "" {
+		return nil
+	}
+
+	path := filepath.Join(dir, ".ntm", "rotation_history.json")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return fmt.Errorf("read rotation history: %w", err)
+	}
+
+	var pd persistedRotationHistory
+	if err := json.Unmarshal(data, &pd); err != nil {
+		return fmt.Errorf("parse rotation history: %w", err)
+	}
+
+	h.mu.Lock()
+	if pd.History != nil {
+		h.history = pd.History
+	} else {
+		h.history = make(map[string][]RotationRecord)
+	}
+	h.mu.Unlock()
+	return nil
+}
+
+func (h *AccountRotationHistory) SaveToDir(dir string) error {
+	if dir == "" {
+		h.mu.RLock()
+		dir = h.dataDir
+		h.mu.RUnlock()
+	}
+	if dir == "" {
+		return nil
+	}
+
+	h.mu.RLock()
+	pd := persistedRotationHistory{
+		History: make(map[string][]RotationRecord, len(h.history)),
+	}
+	for pane, records := range h.history {
+		pd.History[pane] = append([]RotationRecord(nil), records...)
+	}
+	h.mu.RUnlock()
+
+	ntmDir := filepath.Join(dir, ".ntm")
+	if err := os.MkdirAll(ntmDir, 0o755); err != nil {
+		return fmt.Errorf("create .ntm dir: %w", err)
+	}
+
+	data, err := json.MarshalIndent(pd, "", "  ")
+	if err != nil {
+		return fmt.Errorf("marshal rotation history: %w", err)
+	}
+
+	path := filepath.Join(ntmDir, "rotation_history.json")
+	if err := os.WriteFile(path, data, 0o644); err != nil {
+		return fmt.Errorf("write rotation history: %w", err)
+	}
+	return nil
+}
+
+// AccountRotator manages account rotation via caam CLI.
+type AccountRotator struct {
+	// caamPath is the path to caam binary (default: "caam").
+	caamPath string
+
+	// Logger for structured logging.
+	Logger *slog.Logger
+
+	// CommandTimeout is the timeout for caam commands (default: 5s).
+	CommandTimeout time.Duration
+
+	// CooldownDuration is the minimum time between rotations for a pane (default: 60s).
+	CooldownDuration time.Duration
+
+	// rotationHistory tracks rotations.
+	rotationHistory []RotationRecord
+
+	// rotationStates tracks per-pane rotation state.
+	rotationStates map[string]*RotationState
+
+	// rotationHistoryStore tracks per-pane rotation history with optional persistence.
+	rotationHistoryStore *AccountRotationHistory
+
+	// mu protects history and internal state.
+	mu sync.Mutex
+
+	// availabilityChecked tracks if we've checked caam availability.
+	availabilityChecked bool
+	availabilityResult  bool
+}
+
+// NewAccountRotator creates a new AccountRotator with default settings.
+func NewAccountRotator() *AccountRotator {
+	return &AccountRotator{
+		caamPath:             "caam",
+		Logger:               slog.Default(),
+		CommandTimeout:       5 * time.Second,
+		CooldownDuration:     60 * time.Second,
+		rotationHistory:      make([]RotationRecord, 0),
+		rotationStates:       make(map[string]*RotationState),
+		rotationHistoryStore: NewAccountRotationHistory("", slog.Default()),
+	}
+}
+
+// WithCaamPath sets a custom caam binary path.
+func (r *AccountRotator) WithCaamPath(path string) *AccountRotator {
+	r.caamPath = path
+	return r
+}
+
+// WithLogger sets a custom logger.
+func (r *AccountRotator) WithLogger(logger *slog.Logger) *AccountRotator {
+	r.Logger = logger
+	if r.rotationHistoryStore != nil {
+		r.rotationHistoryStore.WithLogger(logger)
+	}
+	return r
+}
+
+// WithCommandTimeout sets the command timeout.
+func (r *AccountRotator) WithCommandTimeout(timeout time.Duration) *AccountRotator {
+	r.CommandTimeout = timeout
+	return r
+}
+
+// WithCooldown sets the minimum duration between rotations for a given pane.
+func (r *AccountRotator) WithCooldown(d time.Duration) *AccountRotator {
+	r.CooldownDuration = d
+	return r
+}
+
+// EnableRotationHistory enables per-pane rotation history persistence using the given data directory.
+// It loads any existing history from <dataDir>/.ntm/rotation_history.json.
+func (r *AccountRotator) EnableRotationHistory(dataDir string) error {
+	if dataDir == "" {
+		return fmt.Errorf("dataDir cannot be empty")
+	}
+	r.mu.Lock()
+	if r.rotationHistoryStore == nil {
+		r.rotationHistoryStore = NewAccountRotationHistory(dataDir, r.logger())
+	} else {
+		r.rotationHistoryStore.SetDataDir(dataDir)
+		r.rotationHistoryStore.WithLogger(r.logger())
+	}
+	store := r.rotationHistoryStore
+	r.mu.Unlock()
+	return store.LoadFromDir(dataDir)
+}
+
+// logger returns the configured logger or the default logger.
+func (r *AccountRotator) logger() *slog.Logger {
+	if r.Logger != nil {
+		return r.Logger
+	}
+	return slog.Default()
+}
+
+// normalizeProvider converts agent type to caam provider name.
+func normalizeProvider(agentType string) string {
+	if provider, ok := agentToProvider[agentType]; ok {
+		return provider
+	}
+	// Return as-is if not in map (might already be provider name)
+	return agentType
+}
+
+// IsAvailable checks if caam CLI is installed and working.
+func (r *AccountRotator) IsAvailable() bool {
+	r.mu.Lock()
+	if r.availabilityChecked {
+		result := r.availabilityResult
+		r.mu.Unlock()
+		return result
+	}
+	r.mu.Unlock()
+
+	// Check if caam binary exists
+	path, err := exec.LookPath(r.caamPath)
+	if err != nil {
+		r.logger().Warn("[AccountRotator] caam_unavailable",
+			"error", "caam binary not found",
+			"path", r.caamPath)
+		r.mu.Lock()
+		r.availabilityChecked = true
+		r.availabilityResult = false
+		r.mu.Unlock()
+		return false
+	}
+
+	r.logger().Debug("[AccountRotator] caam_found", "path", path)
+
+	r.mu.Lock()
+	r.availabilityChecked = true
+	r.availabilityResult = true
+	r.mu.Unlock()
+	return true
+}
+
+// ResetAvailabilityCheck clears the cached availability check result.
+func (r *AccountRotator) ResetAvailabilityCheck() {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.availabilityChecked = false
+	r.availabilityResult = false
+}
+
+// GetCurrentAccount returns the active account for a provider/agent type.
+func (r *AccountRotator) GetCurrentAccount(agentType string) (*AccountInfo, error) {
+	if !r.IsAvailable() {
+		return nil, fmt.Errorf("caam CLI not available")
+	}
+
+	provider := normalizeProvider(agentType)
+
+	ctx, cancel := context.WithTimeout(context.Background(), r.CommandTimeout)
+	defer cancel()
+
+	stdout, stderr, err := r.runCaamCommand(ctx, "list", "--json")
+	if err != nil {
+		r.logger().Error("[AccountRotator] get_current_failed",
+			"provider", provider,
+			"error", err,
+			"stderr", stderr,
+		)
+		return nil, fmt.Errorf("caam list failed: %w", err)
+	}
+
+	accounts, err := parseCAAMAccounts(stdout)
+	if err != nil {
+		return nil, fmt.Errorf("parse caam list: %w", err)
+	}
+
+	for _, acc := range accounts {
+		if acc.Provider != provider || !acc.Active {
+			continue
+		}
+
+		info := &AccountInfo{
+			Provider:      provider,
+			AccountName:   acc.ID,
+			Email:         acc.Email,
+			IsActive:      true,
+			RateLimited:   acc.RateLimited,
+			CooldownUntil: acc.CooldownUntil,
+		}
+
+		r.logger().Info("[AccountRotator] get_current",
+			"provider", provider,
+			"account", info.AccountName,
+		)
+
+		return info, nil
+	}
+
+	return nil, fmt.Errorf("no active account found for provider %q", provider)
+}
+
+// ListAccounts returns all accounts for a provider/agent type.
+func (r *AccountRotator) ListAccounts(agentType string) ([]AccountInfo, error) {
+	if !r.IsAvailable() {
+		return nil, fmt.Errorf("caam CLI not available")
+	}
+
+	provider := normalizeProvider(agentType)
+
+	ctx, cancel := context.WithTimeout(context.Background(), r.CommandTimeout)
+	defer cancel()
+
+	stdout, stderr, err := r.runCaamCommand(ctx, "list", "--json")
+	if err != nil {
+		r.logger().Error("[AccountRotator] list_accounts_failed",
+			"provider", provider,
+			"error", err,
+			"stderr", stderr,
+		)
+		return nil, fmt.Errorf("caam list failed: %w", err)
+	}
+
+	accounts, err := parseCAAMAccounts(stdout)
+	if err != nil {
+		return nil, fmt.Errorf("parse caam list: %w", err)
+	}
+
+	result := make([]AccountInfo, 0, len(accounts))
+	for _, acc := range accounts {
+		if acc.Provider != provider {
+			continue
+		}
+
+		result = append(result, AccountInfo{
+			Provider:      provider,
+			AccountName:   acc.ID,
+			Email:         acc.Email,
+			IsActive:      acc.Active,
+			RateLimited:   acc.RateLimited,
+			CooldownUntil: acc.CooldownUntil,
+		})
+	}
+
+	r.logger().Info("[AccountRotator] list_accounts",
+		"provider", provider,
+		"count", len(result))
+
+	return result, nil
+}
+
+// ListAvailableAccounts returns non-rate-limited accounts for a provider/agent type.
+func (r *AccountRotator) ListAvailableAccounts(agentType string) ([]AccountInfo, error) {
+	accounts, err := r.ListAccounts(agentType)
+	if err != nil {
+		return nil, err
+	}
+
+	available := make([]AccountInfo, 0, len(accounts))
+	for _, acc := range accounts {
+		if acc.RateLimited {
+			continue
+		}
+		available = append(available, acc)
+	}
+	return available, nil
+}
+
+func parseCAAMAccounts(output string) ([]tools.CAAMAccount, error) {
+	data := []byte(output)
+	if len(data) == 0 {
+		return []tools.CAAMAccount{}, nil
+	}
+	if !json.Valid(data) {
+		return nil, fmt.Errorf("invalid JSON")
+	}
+
+	var accounts []tools.CAAMAccount
+	if err := json.Unmarshal(data, &accounts); err == nil {
+		return accounts, nil
+	}
+
+	var wrapper struct {
+		Accounts []tools.CAAMAccount `json:"accounts"`
+	}
+	if err := json.Unmarshal(data, &wrapper); err != nil {
+		return nil, err
+	}
+	return wrapper.Accounts, nil
+}
+
+// SwitchAccount switches to the next available account.
+// Returns the rotation record on success.
+func (r *AccountRotator) SwitchAccount(agentType string) (*RotationRecord, error) {
+	if !r.IsAvailable() {
+		return nil, fmt.Errorf("caam CLI not available")
+	}
+
+	provider := normalizeProvider(agentType)
+
+	r.logger().Info("[AccountRotator] switch_start",
+		"provider", provider)
+
+	ctx, cancel := context.WithTimeout(context.Background(), r.CommandTimeout)
+	defer cancel()
+
+	start := time.Now()
+	result, stdout, stderr, runErr := r.switchNext(ctx, provider)
+	if runErr != nil {
+		r.logger().Error("[AccountRotator] switch_failed",
+			"provider", provider,
+			"error", runErr,
+			"stderr", stderr,
+			"stdout", stdout,
+		)
+		return nil, fmt.Errorf("caam switch failed: %w", runErr)
+	}
+
+	duration := time.Since(start)
+
+	record := &RotationRecord{
+		Provider:    provider,
+		FromAccount: result.PreviousAccount,
+		ToAccount:   result.NewAccount,
+		RotatedAt:   time.Now(),
+		TriggeredBy: "limit_hit",
+	}
+
+	r.mu.Lock()
+	r.rotationHistory = append(r.rotationHistory, *record)
+	r.mu.Unlock()
+
+	r.logger().Info("[AccountRotator] switch_complete",
+		"provider", provider,
+		"from", record.FromAccount,
+		"to", record.ToAccount,
+		"duration", duration,
+		"accounts_remaining", result.AccountsRemaining,
+	)
+
+	return record, nil
+}
+
+// SwitchToAccount switches to a specific account.
+func (r *AccountRotator) SwitchToAccount(agentType, accountName string) (*RotationRecord, error) {
+	if !r.IsAvailable() {
+		return nil, fmt.Errorf("caam CLI not available")
+	}
+
+	provider := normalizeProvider(agentType)
+
+	// Get current account before switch
+	currentInfo, err := r.GetCurrentAccount(agentType)
+	fromAccount := ""
+	if err == nil && currentInfo != nil {
+		fromAccount = currentInfo.AccountName
+	}
+
+	r.logger().Info("[AccountRotator] switch_to_start",
+		"provider", provider,
+		"from", fromAccount,
+		"to", accountName)
+
+	ctx, cancel := context.WithTimeout(context.Background(), r.CommandTimeout)
+	defer cancel()
+
+	start := time.Now()
+	_, stderr, err := r.runCaamCommand(ctx, "switch", accountName)
+	if err != nil {
+		r.logger().Error("[AccountRotator] switch_to_failed",
+			"provider", provider,
+			"account", accountName,
+			"error", err,
+			"stderr", stderr,
+		)
+		return nil, fmt.Errorf("caam switch failed: %w", err)
+	}
+
+	duration := time.Since(start)
+
+	record := &RotationRecord{
+		Provider:    provider,
+		FromAccount: fromAccount,
+		ToAccount:   accountName,
+		RotatedAt:   time.Now(),
+		TriggeredBy: "manual",
+	}
+
+	r.mu.Lock()
+	r.rotationHistory = append(r.rotationHistory, *record)
+	r.mu.Unlock()
+
+	r.logger().Info("[AccountRotator] switch_to_complete",
+		"provider", provider,
+		"from", fromAccount,
+		"to", accountName,
+		"duration", duration)
+
+	return record, nil
+}
+
+// GetRotationHistory returns recent rotation records.
+func (r *AccountRotator) GetRotationHistory(limit int) []RotationRecord {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	if limit <= 0 || limit > len(r.rotationHistory) {
+		limit = len(r.rotationHistory)
+	}
+
+	// Return most recent records
+	start := len(r.rotationHistory) - limit
+	if start < 0 {
+		start = 0
+	}
+
+	result := make([]RotationRecord, limit)
+	copy(result, r.rotationHistory[start:])
+	return result
+}
+
+// ClearRotationHistory clears all rotation history.
+func (r *AccountRotator) ClearRotationHistory() {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.rotationHistory = make([]RotationRecord, 0)
+}
+
+// RotationCount returns the total number of rotations recorded.
+func (r *AccountRotator) RotationCount() int {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return len(r.rotationHistory)
+}
+
+// OnLimitHit handles a limit detection event by rotating the account for the
+// affected pane. It tracks per-pane rotation state and enforces cooldown to
+// prevent rapid rotation loops. Returns the rotation record on success, or
+// an error if rotation was skipped (cooldown active, caam unavailable, etc.).
+func (r *AccountRotator) OnLimitHit(event LimitHitEvent) (*RotationRecord, error) {
+	r.mu.Lock()
+	state := r.getOrCreateState(event.SessionPane)
+	r.mu.Unlock()
+
+	r.logger().Info("[AccountRotator] limit_hit_received",
+		"session_pane", event.SessionPane,
+		"agent_type", event.AgentType,
+		"pattern", event.Pattern,
+		"current_account", state.CurrentAccount,
+		"rotation_count", state.RotationCount)
+
+	// Check cooldown
+	if r.isCooldownActive(state) {
+		elapsed := time.Since(state.LastRotation)
+		r.logger().Warn("[AccountRotator] cooldown_active",
+			"session_pane", event.SessionPane,
+			"last_rotation", state.LastRotation,
+			"elapsed", elapsed,
+			"cooldown", r.CooldownDuration)
+		return nil, fmt.Errorf("cooldown active for pane %s: %v remaining",
+			event.SessionPane, r.CooldownDuration-elapsed)
+	}
+
+	if !r.IsAvailable() {
+		r.logger().Error("[AccountRotator] caam_unavailable_on_limit_hit",
+			"session_pane", event.SessionPane)
+		return nil, fmt.Errorf("caam CLI not available")
+	}
+
+	provider := normalizeProvider(event.AgentType)
+
+	ctx, cancel := context.WithTimeout(context.Background(), r.CommandTimeout)
+	defer cancel()
+
+	result, stdout, stderr, err := r.switchNext(ctx, provider)
+	if err != nil {
+		r.logger().Error("[AccountRotator] rotation_failed_on_limit_hit",
+			"session_pane", event.SessionPane,
+			"agent_type", event.AgentType,
+			"error", err,
+			"stderr", stderr,
+			"stdout", stdout,
+		)
+		return nil, fmt.Errorf("rotation failed: %w", err)
+	}
+
+	record := &RotationRecord{
+		Provider:       provider,
+		AgentType:      event.AgentType,
+		Project:        event.Project,
+		FromAccount:    result.PreviousAccount,
+		ToAccount:      result.NewAccount,
+		RotatedAt:      time.Now(),
+		SessionPane:    event.SessionPane,
+		TriggeredBy:    "limit_hit",
+		TriggerPattern: event.Pattern,
+	}
+
+	// Update per-pane state
+	r.mu.Lock()
+	timeSinceLast := time.Duration(0)
+	if state.RotationCount > 0 && !state.LastRotation.IsZero() {
+		timeSinceLast = record.RotatedAt.Sub(state.LastRotation)
+	}
+	record.TimeSinceLast = timeSinceLast
+
+	prevAccount := state.CurrentAccount
+	if prevAccount == "" && record.FromAccount != "" {
+		prevAccount = record.FromAccount
+	}
+	if record.FromAccount == "" {
+		record.FromAccount = prevAccount
+	}
+	if prevAccount != "" {
+		state.PreviousAccounts = append(state.PreviousAccounts, prevAccount)
+	}
+	state.CurrentAccount = record.ToAccount
+	state.RotationCount++
+	state.LastRotation = record.RotatedAt
+	r.rotationHistory = append(r.rotationHistory, *record)
+	store := r.rotationHistoryStore
+	r.mu.Unlock()
+
+	if store != nil {
+		if err := store.RecordRotation(*record); err != nil {
+			r.logger().Warn("[AccountRotator] rotation_history_record_failed",
+				"session_pane", record.SessionPane,
+				"agent_type", record.AgentType,
+				"error", err,
+			)
+		}
+	}
+
+	r.logger().Info("[AccountRotator] rotation_complete_on_limit_hit",
+		"session_pane", event.SessionPane,
+		"from_account", record.FromAccount,
+		"to_account", record.ToAccount,
+		"total_rotations", state.RotationCount)
+
+	return record, nil
+}
+
+func (r *AccountRotator) switchNext(ctx context.Context, provider string) (tools.SwitchResult, string, string, error) {
+	stdout, stderr, runErr := r.runCaamCommand(ctx, "switch", provider, "--next", "--json")
+
+	payload := stdout
+	if payload == "" {
+		payload = stderr
+	}
+
+	var result tools.SwitchResult
+	if payload != "" && json.Valid([]byte(payload)) {
+		if err := json.Unmarshal([]byte(payload), &result); err != nil {
+			return tools.SwitchResult{}, stdout, stderr, fmt.Errorf("parse caam switch output: %w", err)
+		}
+	}
+
+	if runErr != nil {
+		return result, stdout, stderr, runErr
+	}
+
+	if !result.Success && result.Error != "" {
+		return result, stdout, stderr, fmt.Errorf("%s", result.Error)
+	}
+
+	return result, stdout, stderr, nil
+}
+
+// GetPaneState returns the rotation state for a specific pane.
+// Returns nil if no state exists for the pane.
+func (r *AccountRotator) GetPaneState(sessionPane string) *RotationState {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return r.rotationStates[sessionPane]
+}
+
+// isCooldownActive checks whether the pane is within the cooldown window.
+func (r *AccountRotator) isCooldownActive(state *RotationState) bool {
+	if state.RotationCount == 0 {
+		return false
+	}
+	return time.Since(state.LastRotation) < r.CooldownDuration
+}
+
+// getOrCreateState returns or initializes the rotation state for a pane.
+// Caller must hold r.mu.
+func (r *AccountRotator) getOrCreateState(sessionPane string) *RotationState {
+	if state, ok := r.rotationStates[sessionPane]; ok {
+		return state
+	}
+	state := &RotationState{
+		PreviousAccounts: make([]string, 0),
+	}
+	r.rotationStates[sessionPane] = state
+	return state
+}
+
+// runCaamCommand executes a caam command and returns its output.
+func (r *AccountRotator) runCaamCommand(ctx context.Context, args ...string) (stdoutStr string, stderrStr string, err error) {
+	cmd := exec.CommandContext(ctx, r.caamPath, args...)
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	if err := cmd.Run(); err != nil {
+		if ctx.Err() == context.DeadlineExceeded {
+			return stdout.String(), stderr.String(), fmt.Errorf("caam %v: timeout", args)
+		}
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			return stdout.String(), stderr.String(), fmt.Errorf("caam %v: exit %d: %s", args, exitErr.ExitCode(), stderr.String())
+		}
+		return stdout.String(), stderr.String(), fmt.Errorf("caam %v: %w", args, err)
+	}
+	return stdout.String(), stderr.String(), nil
+}
+
+// RotateAccount implements the AccountRotator interface used by AutoRespawner.
+// This is an alias for SwitchAccount that returns just the new account name.
+func (r *AccountRotator) RotateAccount(agentType string) (newAccount string, err error) {
+	record, err := r.SwitchAccount(agentType)
+	if err != nil {
+		return "", err
+	}
+	return record.ToAccount, nil
+}
+
+// CurrentAccount implements the AccountRotator interface used by AutoRespawner.
+// Returns the current account name for the agent type.
+func (r *AccountRotator) CurrentAccount(agentType string) string {
+	info, err := r.GetCurrentAccount(agentType)
+	if err != nil {
+		return ""
+	}
+	return info.AccountName
+}

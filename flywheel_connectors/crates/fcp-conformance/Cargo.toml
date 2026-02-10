@@ -1,0 +1,46 @@
+[package]
+name = "fcp-conformance"
+description = "FCP2 conformance tooling: golden vectors, interop helpers, and harness glue"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+hex.workspace = true
+semver.workspace = true
+chrono.workspace = true
+uuid.workspace = true
+jsonschema.workspace = true
+clap = { workspace = true, features = ["derive"] }
+ciborium.workspace = true
+
+# FCP crates (for types and encoding)
+fcp-core = { path = "../fcp-core" }
+fcp-protocol = { path = "../fcp-protocol" }
+fcp-crypto = { path = "../fcp-crypto" }
+fcp-cbor = { path = "../fcp-cbor" }
+fcp-manifest = { path = "../fcp-manifest" }
+fcp-mesh = { path = "../fcp-mesh" }
+fcp-store = { path = "../fcp-store" }
+fcp-tailscale = { path = "../fcp-tailscale" }
+
+[[bin]]
+name = "fcp-vecgen"
+path = "src/bin/vecgen.rs"
+
+[[bin]]
+name = "fcp-reqcheck"
+path = "src/bin/reqcheck.rs"
+
+[dev-dependencies]
+pretty_assertions.workspace = true
+fcp-testkit = { path = "../fcp-testkit" }
+tokio = { workspace = true, features = ["rt", "macros"] }

@@ -1,0 +1,48 @@
+# Binaries
+*.exe
+dist/
+build/
+
+# Test coverage
+coverage.out
+coverage.html
+
+# IDE
+.idea/
+.vscode/
+vscode/node_modules/
+vscode/out/
+vscode/package-lock.json
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Go
+vendor/
+
+# Test binaries
+*.test
+coverage.out
+dashboard_debug.txt
+build/slb
+slb
+
+# SLB runtime logs
+.slb/
+
+# bv (beads viewer) local config and caches
+.bv/
+a.out
+
+# SQLite in-memory database artifacts
+:memory:
+
+# macOS resource forks
+._*
+
+# Beads ephemeral files
+.beads/last-touched

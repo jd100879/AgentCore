@@ -1,0 +1,12 @@
+[package]
+name = "ubs_rust_clean"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "clean_results"
+path = "clean_results.rs"
+
+[[bin]]
+name = "async_struct"
+path = "async_struct.rs"

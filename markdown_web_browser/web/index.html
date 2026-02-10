@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Markdown Web Browser</title>
+    <link rel="stylesheet" href="/static/tailwind.css" />
+    <script src="/static/htmx.min.js" defer></script>
+    <script src="/static/htmx-ext-sse.js" defer></script>
+  </head>
+  <body class="app-body">
+    <div
+      class="app-shell"
+      data-stream-root
+      data-stream-template="/jobs/{job_id}/stream"
+      data-job-id="demo"
+      data-links-template="/jobs/{job_id}/links.json"
+      data-manifest-template="/jobs/{job_id}/manifest.json"
+      data-events-template="/jobs/{job_id}/events"
+      hx-ext="sse"
+      sse-connect="/jobs/demo/stream"
+    >
+      <header class="toolbar">
+        <div class="toolbar__group">
+          <label class="toolbar__label" for="job-url">URL</label>
+          <input id="job-url" name="url" type="url" placeholder="https://example.com/article" class="toolbar__input" />
+        </div>
+        <div class="toolbar__group">
+          <label class="toolbar__label" for="ocr-policy">OCR Policy</label>
+          <select id="ocr-policy" name="ocr_policy" class="toolbar__input">
+            <option value="olmocr-2-7b-1025-fp8" selected>olmOCR-2-7B-1025-FP8</option>
+            <option value="olmocr-2-7b-1025">olmOCR-2-7B-1025 (FP16)</option>
+          </select>
+        </div>
+        <div class="toolbar__group">
+          <label class="toolbar__label" for="profile">Profile</label>
+          <select id="profile" name="profile_id" class="toolbar__input">
+            <option value="default" selected>Default</option>
+            <option value="research">Research</option>
+          </select>
+        </div>
+        <div class="toolbar__group">
+          <label class="toolbar__label" for="job-id">Job ID</label>
+          <input id="job-id" name="job_id" type="text" value="demo" class="toolbar__input" />
+        </div>
+        <button class="toolbar__button" type="button" id="run-job">Run Capture</button>
+      </header>
+      <p class="run-status" data-run-status>Enter a URL and click “Run Capture” to start a new job.</p>
+
+      <section class="status-grid">
+        <article class="status-card">
+          <p class="status-label">State</p>
+          <p class="status-value" id="job-state" data-sse-field="state">Waiting for job…</p>
+        </article>
+        <article class="status-card">
+          <p class="status-label">Progress</p>
+          <p class="status-value" id="job-progress" data-sse-field="progress">0 / 0 tiles</p>
+        </article>
+        <article class="status-card">
+          <p class="status-label">CfT / Playwright</p>
+          <p class="status-value" id="job-runtime" data-sse-field="runtime">–</p>
+        </article>
+        <article class="status-card">
+          <p class="status-label">SSE</p>
+          <p class="status-value" id="job-sse-status">Disconnected</p>
+        </article>
+        <article class="status-card status-card--warnings">
+          <p class="status-label">Warnings</p>
+          <div class="warning-list" data-warning-list>
+            <span class="warning-empty">None detected.</span>
+          </div>
+        </article>
+        <article class="status-card">
+          <p class="status-label">Sweep Health</p>
+          <p class="status-value status-value--multiline" data-sweep-summary>No sweep data yet.</p>
+        </article>
+        <article class="status-card">
+          <p class="status-label">Validation</p>
+          <p class="status-value status-value--multiline" data-validation-summary>No validation issues.</p>
+        </article>
+      </section>
+
+      <section class="tabs" data-tabs>
+        <div class="tab-list" role="tablist">
+          <button type="button" role="tab" class="tab" data-tab-target="rendered">Rendered Markdown</button>
+          <button type="button" role="tab" class="tab" data-tab-target="raw">Raw Markdown</button>
+          <button type="button" role="tab" class="tab" data-tab-target="artifacts">Artifacts</button>
+          <button type="button" role="tab" class="tab" data-tab-target="links">Links</button>
+          <button type="button" role="tab" class="tab" data-tab-target="manifest">Manifest</button>
+          <button type="button" role="tab" class="tab" data-tab-target="embeddings">Embeddings</button>
+          <button type="button" role="tab" class="tab" data-tab-target="events">Events</button>
+        </div>
+
+        <div class="tab-panels">
+          <article class="tab-panel" data-tab-panel="rendered">
+            <h2>Rendered Markdown</h2>
+            <div class="placeholder" data-sse-field="rendered">
+              Streaming preview will render here as soon as OCR tiles arrive.
+            </div>
+          </article>
+          <article class="tab-panel" data-tab-panel="raw" hidden>
+            <h2>Raw Markdown</h2>
+            <pre class="placeholder" data-sse-field="raw">Waiting on OCR output…</pre>
+          </article>
+          <article class="tab-panel" data-tab-panel="artifacts" hidden>
+            <h2>Artifacts</h2>
+            <ul class="artifact-list" data-sse-field="artifacts">
+              <li class="placeholder">Tile gallery + provenance metadata coming soon.</li>
+            </ul>
+          </article>
+          <article class="tab-panel" data-tab-panel="links" hidden>
+            <h2>Links</h2>
+            <button type="button" class="toolbar__button toolbar__button--small" data-links-refresh>
+              Refresh Links JSON
+            </button>
+            <div class="links-table" data-sse-field="links">
+              <p class="placeholder">DOM vs OCR link delta table will populate once capture jobs run.</p>
+            </div>
+          </article>
+          <article class="tab-panel" data-tab-panel="manifest" hidden>
+            <h2>Manifest</h2>
+            <pre class="placeholder manifest" data-sse-field="manifest">CfT label, Playwright version, screenshot style hash, and timing metrics will stream into this panel.</pre>
+            <div class="blocklist-panel">
+              <h3>Blocklist Hits</h3>
+              <div class="blocklist-list" data-blocklist-hits>
+                <p class="placeholder">No selectors matched during this run.</p>
+              </div>
+            </div>
+            <div class="sweep-panel">
+              <h3>Sweep Stats</h3>
+              <div class="sweep-summary" data-sweep-summary>Sweep data pending…</div>
+              <div class="sweep-list" data-sweep-stats>
+                <p class="placeholder">No sweep data yet.</p>
+              </div>
+            </div>
+            <div class="validation-panel">
+              <h3>Validation Alerts</h3>
+              <div class="validation-summary" data-validation-summary>Waiting for capture…</div>
+              <div class="validation-list" data-validation-list>
+                <p class="placeholder">No validation issues detected.</p>
+              </div>
+            </div>
+            <div class="dom-assist-panel">
+              <h3>DOM Assists</h3>
+              <div class="dom-assist-summary" data-dom-assist-summary>No DOM assists recorded yet.</div>
+              <div class="dom-assist-table" data-dom-assist-table>
+                <p class="placeholder">Hybrid recovery details will appear here once assists trigger.</p>
+              </div>
+            </div>
+            <div class="seam-panel">
+              <h3>Seam Markers</h3>
+              <div class="seam-summary placeholder" data-seam-summary>No seam markers recorded yet.</div>
+              <div class="seam-table" data-seam-table>
+                <p class="placeholder">Seam hash metadata will appear once stitching completes.</p>
+              </div>
+            </div>
+            <div class="ocr-panel">
+              <h3>OCR Telemetry</h3>
+              <div class="ocr-quota" data-ocr-quota>
+                <p class="placeholder">Quota data will appear once OCR finishes.</p>
+              </div>
+              <div class="ocr-batches" data-ocr-batches>
+                <p class="placeholder">Batch latency and request IDs will be listed here when available.</p>
+              </div>
+              <div class="ocr-autotune" data-ocr-autotune>
+                <p class="placeholder">Concurrency adjustments will appear as OCR batches run.</p>
+              </div>
+            </div>
+          </article>
+          <article class="tab-panel" data-tab-panel="embeddings" data-embeddings-panel hidden>
+            <h2>Embeddings</h2>
+            <p>
+              Paste a 1,536-dim vector (JSON array) or use the demo vector, then search the current job's
+              sqlite-vec section embeddings to jump to relevant tiles.
+            </p>
+            <div class="embeddings-form" data-embeddings-form>
+              <label class="form-label">
+                Vector JSON
+                <textarea data-embeddings-vector rows="6" placeholder="[1,0,0,...]"></textarea>
+              </label>
+              <div class="form-inline">
+                <label class="form-label">
+                  Top K
+                  <input type="number" min="1" max="50" value="5" data-embeddings-topk />
+                </label>
+                <div class="form-buttons">
+                  <button type="button" class="toolbar__button" data-embeddings-demo>Use Demo Vector</button>
+                  <button type="button" class="toolbar__button toolbar__button--primary" data-embeddings-run>Search</button>
+                </div>
+              </div>
+              <p class="embeddings-status" data-embeddings-status>Awaiting input…</p>
+              <div class="embeddings-results" data-embeddings-results>
+                <p class="placeholder">No results yet.</p>
+              </div>
+            </div>
+          </article>
+          <article class="tab-panel" data-tab-panel="events" hidden>
+            <h2>Event Feed</h2>
+            <div class="event-controls">
+              <p class="events-status" data-events-status>Attach to a job to stream event history.</p>
+              <div class="event-controls__buttons">
+                <button type="button" class="toolbar__button toolbar__button--small" data-events-pause>
+                  Pause Stream
+                </button>
+                <button type="button" class="toolbar__button toolbar__button--small" data-events-resume disabled>
+                  Resume Stream
+                </button>
+              </div>
+            </div>
+            <ul class="event-feed" id="events-log" data-events-log></ul>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <script src="/static/app.js" type="module"></script>
+  </body>
+</html>

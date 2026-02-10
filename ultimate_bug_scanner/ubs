@@ -1,0 +1,2803 @@
+#!/usr/bin/env bash
+# ─────────────────────────────────────────────────────────────────────────────
+# UBS Meta-Runner (v1.0)
+# Unified dispatcher for Ultimate Bug Scanner across JS/TS, Python, C/C++, Rust, Go, Java, Ruby, Swift
+# - Detects languages
+# - Ensures modules (lazy download)
+# - Runs modules concurrently
+# - Merges outputs (text/json/sarif) with jq
+# ─────────────────────────────────────────────────────────────────────────────
+
+set -Eeuo pipefail
+shopt -s lastpipe || true
+trap '' SIGPIPE 2>/dev/null || true
+
+UBS_VERSION="5.0.7"
+REPO_RAW="https://raw.githubusercontent.com/Dicklesworthstone/ultimate_bug_scanner/master"
+MODULE_PATH_TEMPLATE="$REPO_RAW/modules/ubs-%s.sh"
+
+# Known-good module digests (sha256) for supply-chain verification.
+declare -A MODULE_CHECKSUMS=(
+  [cpp]='ac6a213e3cb8fc2eb24d18754c1e83c994c89149e5f690116d848c57548e6f28'
+  [golang]='b157d6e8f2684246c8add2a6cd0b3da698a8f3aace6e7c367ed76336e21ff4c6'
+  [java]='6b120bd6bd199d45e5f80d295888aeab10c1439abe064797047e776258b37256'
+  [js]='f92889318e794d96277f55d6dee9da3947c122786ee929d7eaf380d4332a38c0'
+  [python]='e7697af93a7a2b0e413ecb17bf878656ee92229a7fbe47c1fa77f779dd6c9a43'
+  [ruby]='3490a56a174f4873d01a83d4ceac8bdb7b6d56024c9aff25257af28c9d805405'
+  [rust]='d3bed67cbb0a234765129ae133e6c4a92f6c1fd0dd3afc5c7635fe864382d809'
+  [swift]='b350c2ae42725f96a2c94eaf7c70ff4864ecae53e0fc7d9a3fee5988128c8a2a'
+)
+
+# Helper assets used by some modules (AST correlation and type narrowing).
+declare -A HELPER_CHECKSUMS=(
+  ['helpers/resource_lifecycle_go.go']='10215d2c772dd7905a7e9c60a56899a9d702f1c950e1bfd30d4eb90b190e38bd'
+  ['helpers/resource_lifecycle_java.py']='c005da1519eaa751ccf6fa45f99f884aaa30492f91b7c1b527f7f9b782df39f1'
+  ['helpers/resource_lifecycle_py.py']='1e884ff42c988fa6a19f9b8f8375bde2334ebcde61735bc4f10b7dc3c900483e'
+  ['helpers/type_narrowing_kotlin.py']='6f0f4482e8c349d15ac2830956baf193eedd2461d1ef836267c78da86c78ad79'
+  ['helpers/type_narrowing_rust.py']='355ad60ce6dffb9a7c63169cb83705854612c931e2e8c3a166a81b0cb810647f'
+  ['helpers/type_narrowing_swift.py']='f950bafa92391964e4779c77d37dcc11b0ffeab9bc351be439b4709c0f01b41a'
+  ['helpers/type_narrowing_ts.js']='e129ecf4fb0999dd868780a2a67f422a3cc4ecc17866f21a2a27abfa202bf631'
+)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Capabilities & helpers (must be defined before first use)
+# ─────────────────────────────────────────────────────────────────────────────
+need_cmd(){ command -v "$1" >/dev/null 2>&1; }
+date_iso(){ if [[ "${CI_MODE:-0}" -eq 1 ]]; then date -u '+%Y-%m-%dT%H:%M:%SZ'; else date '+%Y-%m-%d %H:%M:%S'; fi; }
+json_escape(){
+  local s="${1:-}"
+  s=${s//\\/\\\\}
+  s=${s//\"/\\\"}
+  s=${s//$'\n'/\\n}
+  s=${s//$'\r'/\\r}
+  s=${s//$'\t'/\\t}
+  printf '%s' "$s"
+}
+
+load_ignore_patterns(){
+  local file="$1"
+  [[ -f "$file" ]] || return 0
+  if ! need_cmd python3; then
+    say "${YELLOW}${WARN}${RESET} python3 is required to parse ignore file $file (skipping)"
+    return 0
+  fi
+  local csv
+  csv=$(python3 - "$file" <<'PY' 2>/dev/null
+import sys, pathlib
+path = pathlib.Path(sys.argv[1])
+if not path.exists():
+    sys.exit(0)
+patterns = []
+seen = set()
+for raw in path.read_text().splitlines():
+    stripped = raw.strip()
+    if not stripped or stripped.startswith('#'):
+        continue
+    stripped = stripped.rstrip('/')
+    if stripped.startswith('./'):
+        stripped = stripped[2:]
+    if not stripped or stripped in seen:
+        continue
+    seen.add(stripped)
+    patterns.append(stripped)
+print(",".join(patterns))
+PY
+)
+  csv="${csv//$'\n'/}"
+  csv="${csv%,}"
+  if [[ -n "$csv" ]]; then
+    if [[ -n "$GLOBAL_EXCLUDE_PATTERNS" ]]; then
+      GLOBAL_EXCLUDE_PATTERNS="$GLOBAL_EXCLUDE_PATTERNS,$csv"
+    else
+      GLOBAL_EXCLUDE_PATTERNS="$csv"
+    fi
+    local human="${csv//,/ }"
+    say "${DIM}${INFO}${RESET} Ignoring paths from ${file} → ${human}"
+  fi
+}
+
+HELPER_ASSETS=(
+  "helpers/resource_lifecycle_py.py"
+  "helpers/resource_lifecycle_go.go"
+  "helpers/resource_lifecycle_java.py"
+  "helpers/type_narrowing_ts.js"
+  "helpers/type_narrowing_rust.py"
+  "helpers/type_narrowing_kotlin.py"
+  "helpers/type_narrowing_swift.py"
+)
+
+HELPERS_READY=0
+
+# Pinned ast-grep release for tool-cache auto-provisioning (JS/TS accuracy).
+AST_GREP_VERSION="0.40.1"
+AST_GREP_BASE_URL="https://github.com/ast-grep/ast-grep/releases/download/${AST_GREP_VERSION}"
+TOOLS_DIR_DEFAULT="${XDG_DATA_HOME:-$HOME/.local/share}/ubs/tools"
+TOOLS_DIR="${UBS_TOOLS_DIR:-$TOOLS_DIR_DEFAULT}"
+
+# Known-good ast-grep asset digests (sha256) for supply-chain verification.
+declare -A AST_GREP_ASSET_SHA256=(
+  [aarch64-apple-darwin]='d40d260d6a2c6c6963079e79d3c57e7988b2de08edca7cfa6c270b5fef591dd7'
+  [x86_64-apple-darwin]='1ffefbce66ceb4eabd307157ca02991d9734adfb43ac9f4b298788e935b6e04a'
+  [aarch64-unknown-linux-gnu]='24f7d0a99dfa45cf65c6e175e1bceaac24f04d2b84807d832c4205a17d2270ab'
+  [x86_64-unknown-linux-gnu]='774d6080dedbf8859a51e78d2be1cb84715454627b3995c2ff533ed755975012'
+  [x86_64-pc-windows-msvc]='4ac3d772c3d87aff8913708219ad3ca73cff2fff4846fd12f9967e87e55fc94e'
+)
+
+# Colors (respect NO_COLOR or non-tty)
+if [[ -n "${NO_COLOR:-}" || ! -t 1 ]]; then
+  RED= GREEN= YELLOW= BLUE= MAGENTA= CYAN= WHITE= GRAY= BOLD= DIM= RESET=
+else
+  RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; BLUE='\033[0;34m'
+  MAGENTA='\033[0;35m'; CYAN='\033[0;36m'; WHITE='\033[1;37m'; GRAY='\033[0;90m'
+  BOLD='\033[1m'; DIM='\033[2m'; RESET='\033[0m'
+fi
+CHECK="✓"; WARN="⚠"; INFO="ℹ"; X="✗"
+say(){
+  if [[ "${FORMAT:-text}" == "json" || "${FORMAT:-text}" == "jsonl" || "${FORMAT:-text}" == "sarif" || "${FORMAT:-text}" == "toon" ]]; then
+    echo -e "$*" >&2
+  else
+    echo -e "$*"
+  fi
+}
+say_err(){ echo -e "$*" >&2; }
+
+looks_like_toon_rust_encoder(){
+  local bin="${1:-}"
+  [[ -z "$bin" ]] && return 1
+  # Hard ban: never accept (or invoke) the Node.js encoder as the TOON backend.
+  local base="${bin##*/}"
+  if [[ "$base" == "toon" || "$base" == "toon.exe" ]]; then
+    return 1
+  fi
+
+  # `tru --help` begins with "TOON reference implementation in Rust (JSON <-> TOON)".
+  # `tru --version` prints "tru X.Y.Z".
+  local help ver
+  help="$("$bin" --help 2>&1 | head -n 5 || true)"
+  if [[ "$help" == *"TOON reference implementation in Rust"* ]]; then
+    return 0
+  fi
+
+  ver="$("$bin" --version 2>&1 | head -n 1 || true)"
+  if [[ "$ver" =~ ^tru[[:space:]][0-9] ]]; then
+    return 0
+  fi
+
+  return 1
+}
+
+print_with_permalinks(){
+  local file="$1"
+  if [[ -z "$file" || ! -s "$file" ]]; then return; fi
+  if [[ -z "$GIT_BLOB_BASE" ]]; then
+    cat "$file"
+    return
+  fi
+  python3 - "$SOURCE_PROJECT_DIR" "$GIT_BLOB_BASE" "$file" <<'PY' 2>/dev/null || cat "$file"
+import sys, pathlib, re
+root = pathlib.Path(sys.argv[1]).resolve()
+blob = sys.argv[2].rstrip('/')
+input_path = pathlib.Path(sys.argv[3])
+pattern = re.compile(r'^(\s*)((?:[A-Za-z]:)?[^:]+?):(\d+)(?::(\d+))?')
+
+def to_url(path_str, line):
+    candidate = pathlib.Path(path_str)
+    if not candidate.is_absolute():
+        candidate = root / candidate
+    try:
+        resolved = candidate.resolve(strict=True)
+    except Exception:
+        return None
+    if not resolved.is_file():
+        return None
+    try:
+        rel = resolved.relative_to(root)
+    except Exception:
+        return None
+    return f"{blob}/{rel.as_posix()}#L{line}"
+
+with input_path.open('r', encoding='utf-8', errors='ignore') as fh:
+    for raw in fh:
+        m = pattern.match(raw)
+        if not m:
+            sys.stdout.write(raw)
+            continue
+        path_str = (m.group(2) or "").strip()
+        url = to_url(path_str, m.group(3))
+        if not url:
+            sys.stdout.write(raw)
+            continue
+        sys.stdout.write(raw.rstrip('\n') + f" ({url})\n")
+PY
+}
+
+on_err(){ local ec=$? ln=${BASH_LINENO[0]:-?} cmd=${BASH_COMMAND:-?}; say "${RED}${BOLD}Error${RESET}${DIM} (exit $ec)${RESET} ${WHITE}line $ln:${RESET} $cmd"; exit $ec; }
+trap on_err ERR
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CLI
+# ─────────────────────────────────────────────────────────────────────────────
+PROJECT_DIR="."
+# Format precedence: CLI > UBS_OUTPUT_FORMAT > TOON_DEFAULT_FORMAT > "text"
+FORMAT="${UBS_OUTPUT_FORMAT:-${TOON_DEFAULT_FORMAT:-text}}"  # text|json|jsonl|sarif|toon
+# TOON encoder binary (default: tru from toon_rust; never use the Node.js `toon` CLI)
+# Resolution order: TOON_TRU_BIN > TOON_BIN > tru
+TOON_BIN="${TOON_TRU_BIN:-${TOON_BIN:-tru}}"
+CI_MODE=0
+FAIL_ON_WARNING=0
+VERBOSE=0
+QUIET=0
+ONLY_LANGS=""              # csv: js,python,cpp,rust
+EXCLUDE_LANGS=""           # csv
+IGNORE_FILE=""
+DEFAULT_IGNORES="node_modules,venv,.venv,env,.env,site-packages,dist,build,vendor,target,bin,obj,.idea,.vscode,.git,.hg,.svn,__pycache__,.mypy_cache,.pytest_cache,.ruff_cache,coverage,.gradle,DerivedData,bundler,gems,wheels"
+# Safety guards: maximum directory size (MB) and whether to refuse home/root dirs
+MAX_DIR_SIZE_MB="${UBS_MAX_DIR_SIZE_MB:-1000}"  # 1GB default; set 0 to disable
+SKIP_SIZE_CHECK="${UBS_SKIP_SIZE_CHECK:-0}"
+REFUSE_HOME_ROOT="${UBS_REFUSE_HOME_ROOT:-1}"  # 1 = refuse, 0 = allow
+GLOBAL_EXCLUDE_PATTERNS="$DEFAULT_IGNORES"
+FILTERED_PROJECT_DIR=""
+MODULE_DIR_DEFAULT="${XDG_DATA_HOME:-$HOME/.local/share}/ubs/modules"
+MODULE_DIR="$MODULE_DIR_DEFAULT"
+UPDATE_MODULES=0
+JOBS="${JOBS:-0}"
+SKIP_TYPE_NARROWING=0
+MODE="scan"
+SESSION_ENTRIES=1
+SESSION_RAW=0
+SESSION_LOG_DIR_OVERRIDE=""
+VERIFY_MODULE_ERR=""
+VERIFY_HELPER_ERR=""
+ALL_LANGS=(js python cpp rust golang java ruby swift)
+UPDATE_ONLY=0
+FORCE_SELF_UPDATE=0
+CATEGORY_FILTER=""
+COMPARISON_FILE=""
+REPORT_JSON_PATH=""
+HTML_REPORT_PATH=""
+SHAREABLE_MODE=0
+GIT_MODE=""  # staged, diff, or empty
+GIT_REMOTE_URL=""
+GIT_REMOTE_HTTP=""
+GIT_COMMIT_SHA=""
+GIT_BLOB_BASE=""
+SARIF_AUTOMATION_ID=""
+SHOW_VERSION=0
+BEADS_JSONL_PATH=""
+SUGGEST_IGNORE=0
+JSONL_DETAIL=1               # 1=include findings, 0=summary only (for backward compat)
+
+# Tool cache / JS AST engine
+AST_GREP_BIN=""
+AST_GREP_SOURCE=""
+
+if [[ "${1:-}" == "doctor" ]]; then
+  MODE="doctor"
+  shift
+elif [[ "${1:-}" == "sessions" || "${1:-}" == "session-log" ]]; then
+  MODE="sessions"
+  shift
+fi
+
+usage() {
+  cat <<USAGE >&2
+Usage: ubs [options] [PROJECT_DIR]
+       ubs doctor [options]
+       ubs sessions [--entries N] [--raw]
+
+Options:
+  --format=FMT            text|json|jsonl|sarif|toon (default: text)
+  --version               Print version and exit
+  --ci                    CI mode (stable timestamps)
+  --fail-on-warning       Exit non-zero if warnings or critical exist
+  -v, --verbose           Pass -v to child scanners (if supported)
+  -q, --quiet             Reduce console output (also passes -q to scanners)
+  --only=CSV              Restrict to languages: js,python,cpp,rust,golang,java,ruby,swift
+  --exclude=CSV           Exclude languages
+  --module-dir=DIR        Where to store/lookup modules (default: $MODULE_DIR_DEFAULT)
+  --category=CSV          Focus on category packs (e.g., resource-lifecycle for AST lifecycle analyzers)
+  --comparison=FILE       Baseline JSON to diff combined results against
+  --report-json=FILE      Write combined summary JSON to FILE
+  --html-report=FILE      Emit shareable HTML report to FILE
+  --beads-jsonl=FILE      Also write combined findings to JSONL for Beads/strung
+  --jsonl-summary-only    JSONL output: emit only summary counts, no individual findings
+  --suggest-ignore        Print large-directory ignore suggestions (without modifying files)
+  --update                Update the installed ubs binary and exit
+  --non-interactive       No-op (accepted for installer/cron compatibility)
+  --update-modules        Force re-download of modules before run
+  --jobs=N                Parallelism hint (passed to children if supported)
+  --ignore-file=PATH      Read additional ignore globs (default: PROJECT/.ubsignore if present)
+  --skip-size-check       Skip directory size guard (use with care)
+  --skip-type-narrowing   Skip JS/Rust/Kotlin/Swift type narrowing checks (falls back to basic heuristics)
+  --no-auto-update        Disable auto-update (even if UBS_ENABLE_AUTO_UPDATE=1)
+  --staged                Scan only files staged for commit (git index)
+  --diff, --git-diff      Scan only modified files (working tree vs HEAD)
+  -h, --help              Show this help
+
+Environment Variables:
+  UBS_OUTPUT_FORMAT=FMT       Default output format (text|json|jsonl|sarif|toon)
+                              Overridden by --format CLI flag
+  TOON_DEFAULT_FORMAT=FMT     Global fallback format if UBS_OUTPUT_FORMAT not set
+  TOON_TRU_BIN=PATH           Explicit path to tru encoder (overrides TOON_BIN)
+  TOON_BIN=PATH               TOON encoder binary (default: tru)
+                              Set to a specific toon_rust encoder path if needed (do not use Node.js toon)
+  UBS_MAX_DIR_SIZE_MB=N       Max directory size in MB before refusing to scan (default: 1000)
+                              Set to 0 to disable this safety check
+  UBS_SKIP_SIZE_CHECK=1       Skip directory size guard entirely
+  UBS_REFUSE_HOME_ROOT=0|1    Whether to refuse scanning \$HOME or / (default: 1)
+                              Set to 0 to allow scanning these directories
+
+Examples:
+  ubs .                       # auto-detect languages and scan
+  ubs --staged                # scan only staged files (pre-commit style)
+  ubs --diff                  # scan only modified files (quick check)
+  ubs --format=json --ci .    # machine-readable combined JSON
+  ubs --format=toon .         # TOON format (~50% smaller than JSON)
+  ubs --only=js,python .      # restrict language set
+  ubs doctor --fix            # validate cached modules & redownload corrupted copies
+  ubs sessions --entries 1    # view the most recent installer summary
+  UBS_OUTPUT_FORMAT=toon ubs .  # set default format via env var
+  UBS_MAX_DIR_SIZE_MB=0 ubs . # disable size check for large directories
+USAGE
+}
+
+doctor_usage(){
+  cat <<DOC >&2
+Usage: ubs doctor [options]
+
+Options:
+  --module-dir=DIR   Override the module cache directory (default: $MODULE_DIR_DEFAULT)
+  --fix              Automatically download or refresh cached modules
+  -h, --help         Show this help message
+DOC
+}
+
+sessions_usage(){
+  cat <<SESS >&2
+Usage: ubs sessions [options]
+
+Options:
+  --entries=N        Show the last N install sessions (default: 1)
+  --raw              Print the entire session log as-is
+  --config-dir=DIR   Override the config directory (defaults to \$XDG_CONFIG_HOME/ubs)
+  -h, --help         Show this help message
+SESS
+}
+
+show_session_history(){
+  local entries="$1"
+  local raw="$2"
+  local override="$3"
+  local base_dir
+  if [[ -n "$override" ]]; then
+    base_dir="$override"
+  else
+    base_dir="${XDG_CONFIG_HOME:-$HOME/.config}/ubs"
+  fi
+  local log_file="$base_dir/session.md"
+  if [[ ! -f "$log_file" ]]; then
+    say "${RED}$X no session history found${RESET} (expected at ${log_file})"
+    exit 1
+  fi
+  local entries_int=1
+  if [[ "$entries" =~ ^[0-9]+$ ]]; then
+    entries_int="$entries"
+  fi
+  if [[ "$entries_int" -lt 1 ]]; then
+    entries_int=1
+  fi
+  if [[ "$raw" -eq 1 ]]; then
+    say "${BLUE}${INFO}${RESET} Showing session log from ${log_file}"
+    cat "$log_file"
+    exit 0
+  fi
+  if ! need_cmd python3; then
+    say "${RED}$X python3 required${RESET} to format session history"
+    exit 1
+  fi
+  say "${BLUE}${INFO}${RESET} Showing last ${entries_int} session(s) from ${log_file}"
+  python3 - "$log_file" "$entries_int" <<'PY' 2>/dev/null
+import sys, pathlib
+from itertools import islice
+
+path = pathlib.Path(sys.argv[1])
+entries = max(1, int(sys.argv[2]))
+text = path.read_text(encoding='utf-8', errors='ignore').strip()
+if not text:
+    print("No session entries recorded.")
+    sys.exit(1)
+sections = [block.strip() for block in text.split('\n---\n') if block.strip()]
+if not sections:
+    print("No session entries recorded.")
+    sys.exit(1)
+subset = sections[-entries:]
+for idx, block in enumerate(subset):
+    print(block)
+    if idx != len(subset) - 1:
+        print("\n---\n")
+PY
+}
+
+DOCTOR_FIX=0
+if [[ "$MODE" == "doctor" ]]; then
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --module-dir=*) MODULE_DIR="${1#*=}"; shift;;
+      --module-dir)
+        if [[ $# -lt 2 ]]; then doctor_usage; exit 2; fi
+        shift; MODULE_DIR="$1"; shift;;
+      --fix) DOCTOR_FIX=1; shift;;
+      -h|--help) doctor_usage; exit 0;;
+      *)
+        say "${RED}$X unknown doctor option${RESET}: $1"
+        doctor_usage
+        exit 2
+        ;;
+    esac
+  done
+elif [[ "$MODE" == "sessions" ]]; then
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --entries=*) SESSION_ENTRIES="${1#*=}"; shift;;
+      --entries)
+        if [[ $# -lt 2 ]]; then sessions_usage; exit 2; fi
+        shift; SESSION_ENTRIES="$1"; shift;;
+      --raw) SESSION_RAW=1; shift;;
+      --config-dir=*) SESSION_LOG_DIR_OVERRIDE="${1#*=}"; shift;;
+      --config-dir)
+        if [[ $# -lt 2 ]]; then sessions_usage; exit 2; fi
+        shift; SESSION_LOG_DIR_OVERRIDE="$1"; shift;;
+      -h|--help) sessions_usage; exit 0;;
+      *)
+        say "${RED}$X unknown sessions option${RESET}: $1"
+        sessions_usage
+        exit 2
+        ;;
+    esac
+  done
+else
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --format=*) FORMAT="${1#*=}"; shift;;
+      --version|-V) SHOW_VERSION=1; shift;;
+      --ci) CI_MODE=1; shift;;
+      --fail-on-warning) FAIL_ON_WARNING=1; shift;;
+      -v|--verbose) VERBOSE=1; shift;;
+      -q|--quiet) QUIET=1; shift;;
+      --update) UPDATE_ONLY=1; FORCE_SELF_UPDATE=1; shift;;
+      --non-interactive) shift;;
+      --only=*) ONLY_LANGS="${1#*=}"; shift;;
+      --exclude=*) EXCLUDE_LANGS="${1#*=}"; shift;;
+      --category=*) CATEGORY_FILTER="${1#*=}"; shift;;
+      --category)
+        if [[ $# -lt 2 ]]; then usage; exit 2; fi
+        shift; CATEGORY_FILTER="$1"; shift;;
+      --comparison=*|--baseline=*) COMPARISON_FILE="${1#*=}"; SHAREABLE_MODE=1; SARIF_AUTOMATION_ID="ubs-comparison"; shift;;
+      --comparison|--baseline)
+        if [[ $# -lt 2 ]]; then usage; exit 2; fi
+        shift; COMPARISON_FILE="$1"; SHAREABLE_MODE=1; SARIF_AUTOMATION_ID="ubs-comparison"; shift;;
+      --report-json=*) REPORT_JSON_PATH="${1#*=}"; SHAREABLE_MODE=1; shift;;
+      --report-json)
+        if [[ $# -lt 2 ]]; then usage; exit 2; fi
+        shift; REPORT_JSON_PATH="$1"; SHAREABLE_MODE=1; shift;;
+      --html-report=*) HTML_REPORT_PATH="${1#*=}"; SHAREABLE_MODE=1; shift;;
+      --html-report)
+        if [[ $# -lt 2 ]]; then usage; exit 2; fi
+        shift; HTML_REPORT_PATH="$1"; SHAREABLE_MODE=1; shift;;
+      --beads-jsonl=*) BEADS_JSONL_PATH="${1#*=}"; shift;;
+      --beads-jsonl)
+        if [[ $# -lt 2 ]]; then usage; exit 2; fi
+        shift; BEADS_JSONL_PATH="$1"; shift;;
+      --suggest-ignore) SUGGEST_IGNORE=1; shift;;
+      --jsonl-summary-only) JSONL_DETAIL=0; shift;;
+      --ignore-file=*) IGNORE_FILE="${1#*=}"; shift;;
+      --skip-size-check) SKIP_SIZE_CHECK=1; shift;;
+      --module-dir=*) MODULE_DIR="${1#*=}"; shift;;
+      --module-dir)
+        if [[ $# -lt 2 ]]; then usage; exit 2; fi
+        shift; MODULE_DIR="$1"; shift;;
+      --update-modules) UPDATE_MODULES=1; shift;;
+      --jobs=*) JOBS="${1#*=}"; shift;;
+      --skip-type-narrowing) SKIP_TYPE_NARROWING=1; shift;;
+      --no-auto-update) export UBS_NO_AUTO_UPDATE=1; shift;;
+      --staged) GIT_MODE="staged"; shift;;
+      --diff|--git-diff) GIT_MODE="diff"; shift;;
+      --profile=*)
+        export UBS_PROFILE="${1#*=}"
+        if [[ "$UBS_PROFILE" == "strict" ]]; then FAIL_ON_WARNING=1; fi
+        shift;;
+      --skip=*)
+        export UBS_SKIP_CATEGORIES="${1#*=}"
+        shift;;
+      -h|--help) usage; exit 0;;
+      *)
+        if [[ "$PROJECT_DIR" == "." ]]; then PROJECT_DIR="$1"; else usage; exit 2; fi
+        shift;;
+    esac
+  done
+  if [[ "$UPDATE_ONLY" -eq 1 ]]; then
+    PROJECT_DIR="$(pwd -P)"
+  else
+    if [[ -d "$PROJECT_DIR" ]]; then
+      if ! PROJECT_DIR="$(cd "$PROJECT_DIR" 2>/dev/null && pwd -P)"; then
+        say "${RED}$X cannot access project directory${RESET}: $PROJECT_DIR"
+        exit 2
+      fi
+    elif [[ -f "$PROJECT_DIR" ]]; then
+      proj_dir="$(dirname "$PROJECT_DIR")"
+      proj_base="$(basename "$PROJECT_DIR")"
+      if ! proj_dir="$(cd "$proj_dir" 2>/dev/null && pwd -P)"; then
+        say "${RED}$X cannot access project path${RESET}: $PROJECT_DIR"
+        exit 2
+      fi
+      PROJECT_DIR="$proj_dir/$proj_base"
+    else
+      say "${RED}$X path not found${RESET}: $PROJECT_DIR"
+      exit 2
+    fi
+  fi
+fi
+SOURCE_PROJECT_DIR="$PROJECT_DIR"
+
+# Load ignore patterns early so size checks can respect .ubsignore
+if [[ "$MODE" != "doctor" && "$UPDATE_ONLY" -eq 0 ]]; then
+  if [[ -z "$IGNORE_FILE" && -f "$SOURCE_PROJECT_DIR/.ubsignore" ]]; then
+    IGNORE_FILE="$SOURCE_PROJECT_DIR/.ubsignore"
+  fi
+  if [[ -n "$IGNORE_FILE" ]]; then
+    load_ignore_patterns "$IGNORE_FILE"
+  fi
+fi
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Safety guards: prevent disk exhaustion when scanning large or sensitive dirs
+# Fixes GitHub issue #12: UBS copies entire scan directory to /tmp
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Check 1: Refuse to scan home directory or root (unless explicitly allowed)
+if [[ "$REFUSE_HOME_ROOT" -eq 1 && -d "$SOURCE_PROJECT_DIR" ]]; then
+  resolved_dir="$(cd "$SOURCE_PROJECT_DIR" 2>/dev/null && pwd -P)"
+  if [[ "$resolved_dir" == "$HOME" ]]; then
+    say "${RED}${X}${RESET} ${BOLD}Refusing to scan home directory${RESET}"
+    say "${DIM}UBS copies the scan target to /tmp, which can exhaust disk space on large directories.${RESET}"
+    say "${DIM}If you really want to scan \$HOME, set${RESET} UBS_REFUSE_HOME_ROOT=0"
+    exit 2
+  fi
+  if [[ "$resolved_dir" == "/" ]]; then
+    say "${RED}${X}${RESET} ${BOLD}Refusing to scan root directory${RESET}"
+    say "${DIM}UBS copies the scan target to /tmp, which can exhaust disk space.${RESET}"
+    say "${DIM}If you really want to scan /, set${RESET} UBS_REFUSE_HOME_ROOT=0"
+    exit 2
+  fi
+fi
+
+dir_size_mb_filtered(){
+  local dir="$1"
+  local patterns_csv="${2:-}"
+  local result=""
+  local du_can_exclude=0
+  if need_cmd du; then
+    local -a du_args=()
+    if [[ -n "$patterns_csv" ]] && du --help 2>/dev/null | grep -q -- '--exclude'; then
+      du_can_exclude=1
+      local -a pats=()
+      IFS=',' read -r -a pats <<<"$patterns_csv"
+      for pat in "${pats[@]}"; do
+        [[ -n "$pat" ]] && du_args+=( "--exclude=$pat" )
+      done
+    fi
+    # Only use du when no patterns are needed or du supports --exclude;
+    # otherwise fall through to the Python fallback which handles exclusions
+    # correctly on all platforms (fixes macOS/BSD du which lacks --exclude).
+    if [[ -z "$patterns_csv" || "$du_can_exclude" -eq 1 ]]; then
+      result=$(du -sm "${du_args[@]}" "$dir" 2>/dev/null | cut -f1)
+      if [[ "$result" =~ ^[0-9]+$ ]]; then
+        echo "$result"
+        return 0
+      fi
+      result=$(du -sk "${du_args[@]}" "$dir" 2>/dev/null | cut -f1)
+      if [[ "$result" =~ ^[0-9]+$ ]]; then
+        echo $((result / 1024))
+        return 0
+      fi
+    fi
+  fi
+  if need_cmd python3; then
+    python3 - "$dir" "$patterns_csv" <<'PY'
+import fnmatch
+import os
+import pathlib
+import sys
+
+root = pathlib.Path(sys.argv[1]).resolve()
+patterns_csv = sys.argv[2] if len(sys.argv) > 2 else ""
+patterns = [p for p in patterns_csv.split(",") if p]
+
+def excluded(rel_path, name):
+    for pat in patterns:
+        if fnmatch.fnmatch(rel_path, pat) or fnmatch.fnmatch(name, pat):
+            return True
+        for part in pathlib.Path(rel_path).parts:
+            if fnmatch.fnmatch(part, pat):
+                return True
+    return False
+
+total = 0
+for base, dirs, files in os.walk(root, topdown=True):
+    rel_root = os.path.relpath(base, root)
+    pruned = []
+    for d in dirs:
+        rel = os.path.join(rel_root, d) if rel_root != "." else d
+        if excluded(rel, d):
+            continue
+        pruned.append(d)
+    dirs[:] = pruned
+
+    for f in files:
+        rel = os.path.join(rel_root, f) if rel_root != "." else f
+        if excluded(rel, f):
+            continue
+        try:
+            total += (pathlib.Path(base) / f).stat().st_size
+        except OSError:
+            pass
+
+print(int(total / 1024 / 1024))
+PY
+    return 0
+  fi
+  echo "0"
+}
+
+# Check 2: Refuse directories larger than MAX_DIR_SIZE_MB (unless set to 0)
+if [[ "$SKIP_SIZE_CHECK" -eq 0 && "$MAX_DIR_SIZE_MB" -gt 0 && -d "$SOURCE_PROJECT_DIR" ]]; then
+  dir_size_mb="$(dir_size_mb_filtered "$SOURCE_PROJECT_DIR" "$GLOBAL_EXCLUDE_PATTERNS")"
+  if [[ "${QUIET:-0}" -eq 0 ]]; then
+    say "${DIM}${INFO}${RESET} Scan size after ignores: ${dir_size_mb}MB (limit ${MAX_DIR_SIZE_MB}MB)"
+  fi
+  if [[ "$dir_size_mb" -gt "$MAX_DIR_SIZE_MB" ]]; then
+    say "${RED}${X}${RESET} ${BOLD}Directory too large (after ignores)${RESET}: ${dir_size_mb}MB exceeds limit of ${MAX_DIR_SIZE_MB}MB"
+    say "${DIM}UBS copies the scan target to /tmp before analysis, which can exhaust disk space.${RESET}"
+    say "${DIM}This safety check prevents accidental scans of large directories like \$HOME.${RESET}"
+    say ""
+    say "${DIM}Options:${RESET}"
+    say "${DIM}  • Scan a smaller subdirectory instead${RESET}"
+    say "${DIM}  • Increase the limit:${RESET} UBS_MAX_DIR_SIZE_MB=5000 ubs ..."
+    say "${DIM}  • Disable the check:${RESET} UBS_MAX_DIR_SIZE_MB=0 ubs ..."
+    exit 2
+  fi
+fi
+
+if [[ "$SHOW_VERSION" -eq 1 ]]; then
+  short_sha=""
+  if git rev-parse --short HEAD >/dev/null 2>&1; then
+    short_sha="$(git rev-parse --short HEAD 2>/dev/null || true)"
+  fi
+  say "UBS Meta-Runner v${UBS_VERSION}${short_sha:+ (git $short_sha)}"
+  exit 0
+fi
+
+if [[ -n "$CATEGORY_FILTER" ]]; then
+  CATEGORY_FILTER="${CATEGORY_FILTER,,}"
+  if [[ "$CATEGORY_FILTER" == "resource-lifecycle" ]]; then
+    SHAREABLE_MODE=$((SHAREABLE_MODE+0))
+    if [[ -z "$ONLY_LANGS" ]]; then
+      ONLY_LANGS="python,golang,java,swift"
+    fi
+    export UBS_CATEGORY_FILTER="$CATEGORY_FILTER"
+  else
+    say "${YELLOW}${WARN}${RESET} Unknown category filter: $CATEGORY_FILTER"
+    CATEGORY_FILTER=""
+    unset UBS_CATEGORY_FILTER
+  fi
+else
+  unset UBS_CATEGORY_FILTER
+fi
+
+ensure_dir(){ mkdir -p "$1" 2>/dev/null || { say "${RED}$X cannot create $1${RESET}"; exit 1; }; }
+
+script_dir(){ local src="${BASH_SOURCE[0]}"; while [ -h "$src" ]; do src="$(readlink "$src")"; done; cd -P "$(dirname "$src")" && pwd; }
+
+prepare_metrics_dir(){
+  local dir="$1"
+  rm -rf "$dir" 2>/dev/null || true
+  mkdir -p "$dir" 2>/dev/null || true
+}
+
+finalize_module_dir(){
+  local configured="${MODULE_DIR:-}"
+  if [[ -z "$configured" ]]; then
+    MODULE_DIR="$MODULE_DIR_DEFAULT"
+  else
+    MODULE_DIR="$configured"
+    while [[ "$MODULE_DIR" == */ && "$MODULE_DIR" != "/" ]]; do
+      MODULE_DIR="${MODULE_DIR%/}"
+    done
+    [[ -z "$MODULE_DIR" ]] && MODULE_DIR="$MODULE_DIR_DEFAULT"
+  fi
+  ensure_dir "$MODULE_DIR"
+  local resolved
+  if resolved=$(cd "$MODULE_DIR" 2>/dev/null && pwd -P); then
+    MODULE_DIR="$resolved"
+  fi
+}
+
+resolve_git_metadata(){
+  local root
+  if ! root=$(git -C "$SOURCE_PROJECT_DIR" rev-parse --show-toplevel 2>/dev/null); then
+    return
+  fi
+  local remote commit
+  remote=$(git -C "$root" config --get remote.origin.url 2>/dev/null || true)
+  commit=$(git -C "$root" rev-parse HEAD 2>/dev/null || true)
+  [[ -n "$remote" && -n "$commit" ]] || return
+  GIT_REMOTE_URL="$remote"
+  GIT_COMMIT_SHA="$commit"
+  GIT_REMOTE_HTTP=""
+  case "$remote" in
+    git@github.com:*)
+      local path_part=${remote#git@github.com:}
+      path_part=${path_part%.git}
+      GIT_REMOTE_HTTP="https://github.com/${path_part}"
+      GIT_BLOB_BASE="https://github.com/${path_part}/blob/${commit}"
+      ;;
+    https://github.com/*)
+      local path_part=${remote#https://github.com/}
+      path_part=${path_part%.git}
+      GIT_REMOTE_HTTP="https://github.com/${path_part}"
+      GIT_BLOB_BASE="https://github.com/${path_part}/blob/${commit}"
+      ;;
+    git://github.com/*)
+      local path_part=${remote#git://github.com/}
+      path_part=${path_part%.git}
+      GIT_REMOTE_HTTP="https://github.com/${path_part}"
+      GIT_BLOB_BASE="https://github.com/${path_part}/blob/${commit}"
+      ;;
+    *)
+      GIT_BLOB_BASE=""
+      ;;
+  esac
+}
+
+prepare_git_workspace(){
+  local mode="$1"
+  if ! need_cmd git; then
+    say "${RED}$X git not found; cannot run --$mode${RESET}"
+    exit 1
+  fi
+
+  local scan_root="$SOURCE_PROJECT_DIR"
+  if [[ -f "$scan_root" ]]; then
+    scan_root="$(dirname "$scan_root")"
+  fi
+
+  local repo_root
+  if ! repo_root="$(git -C "$scan_root" rev-parse --show-toplevel 2>/dev/null)"; then
+    say "${RED}$X not a git repository; cannot run --$mode${RESET}"
+    exit 1
+  fi
+
+  local scan_rel=""
+  if [[ "$scan_root" == "$repo_root" ]]; then
+    scan_rel=""
+  elif [[ "$scan_root" == "$repo_root/"* ]]; then
+    scan_rel="${scan_root#"$repo_root"/}"
+  else
+    say "${RED}$X scan path is outside git root; cannot run --$mode${RESET}"
+    exit 1
+  fi
+
+  local raw_files=()
+  if [[ "$mode" == "staged" ]]; then
+    while IFS= read -r file; do [[ -n "$file" ]] && raw_files+=("$file"); done < <(
+      git -C "$repo_root" diff --name-only --cached --diff-filter=ACMR
+    )
+  else
+    while IFS= read -r file; do [[ -n "$file" ]] && raw_files+=("$file"); done < <(
+      git -C "$repo_root" diff --name-only --diff-filter=ACMR HEAD
+    )
+  fi
+
+  local files=()
+  if [[ -n "$scan_rel" ]]; then
+    for file in "${raw_files[@]}"; do
+      if [[ "$file" == "$scan_rel/"* ]]; then
+        files+=("${file#"$scan_rel"/}")
+      fi
+    done
+  else
+    files=("${raw_files[@]}")
+  fi
+  
+  if [[ ${#files[@]} -eq 0 ]]; then
+    say "${GREEN}${CHECK} No changed files to scan.${RESET}"
+    exit 0
+  fi
+  
+  if ! need_cmd rsync; then
+    say "${RED}$X rsync not found; required for --$mode${RESET}"
+    exit 1
+  fi
+  
+  local dest="$TMPDIR_RUN/git_scan"
+  rm -rf "$dest" 2>/dev/null || true
+  ensure_dir "$dest"
+  
+  say "${BLUE}${INFO} Preparing shadow workspace for $mode files (${#files[@]} detected)${RESET}"
+  
+  # Use rsync with --files-from to copy only the target files while preserving hierarchy
+  local file_list="$TMPDIR_RUN/files_to_scan.txt"
+  printf "%s\n" "${files[@]}" > "$file_list"
+  
+  if rsync -a --files-from="$file_list" "$scan_root/" "$dest/" >/dev/null 2>&1; then
+    FILTERED_PROJECT_DIR="$dest"
+    PROJECT_DIR="$FILTERED_PROJECT_DIR"
+    say "${DIM}${INFO}${RESET} Scanning shadow workspace at ${FILTERED_PROJECT_DIR}"
+  else
+    say "${RED}$X Failed to prepare shadow workspace${RESET}"
+    exit 1
+  fi
+}
+
+checksum_tool_name(){
+  if need_cmd sha256sum; then echo "sha256sum"; return 0; fi
+  if need_cmd shasum; then echo "shasum -a 256"; return 0; fi
+  if need_cmd openssl; then echo "openssl dgst -sha256"; return 0; fi
+  return 1
+}
+
+compute_sha256(){
+  local path="$1"
+  if need_cmd sha256sum; then sha256sum "$path" | awk '{print $1}'; return 0; fi
+  if need_cmd shasum; then shasum -a 256 "$path" | awk '{print $1}'; return 0; fi
+  if need_cmd openssl; then openssl dgst -sha256 "$path" | awk '{print $NF}'; return 0; fi
+  return 1
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Tool cache: ast-grep (JS/TS accuracy)
+# ─────────────────────────────────────────────────────────────────────────────
+detect_os_target(){
+  local raw
+  raw="$(uname -s 2>/dev/null | tr '[:upper:]' '[:lower:]')"
+  case "$raw" in
+    darwin) echo "apple-darwin"; return 0 ;;
+    linux) echo "unknown-linux-gnu"; return 0 ;;
+    msys*|mingw*|cygwin*) echo "pc-windows-msvc"; return 0 ;;
+  esac
+  return 1
+}
+
+detect_arch_target(){
+  local raw
+  raw="$(uname -m 2>/dev/null)"
+  case "$raw" in
+    x86_64|amd64) echo "x86_64"; return 0 ;;
+    arm64|aarch64) echo "aarch64"; return 0 ;;
+  esac
+  return 1
+}
+
+ast_grep_target_triple(){
+  local arch os
+  arch="$(detect_arch_target)" || return 1
+  os="$(detect_os_target)" || return 1
+  echo "${arch}-${os}"
+}
+
+find_ast_grep_in_path(){
+  local -a dirs
+  IFS=':' read -r -a dirs <<<"${PATH:-}"
+  local name dir candidate
+  for name in ast-grep sg; do
+    for dir in "${dirs[@]}"; do
+      [[ -n "$dir" ]] || continue
+      candidate="$dir/$name"
+      [[ -x "$candidate" ]] || continue
+      if verify_ast_grep_bin "$candidate"; then
+        echo "$candidate"
+        return 0
+      fi
+    done
+  done
+  return 1
+}
+
+download_url_to_file(){
+  local url="$1" dest="$2"
+  if need_cmd curl; then
+    curl -fsSL "$url" -o "$dest"
+    return 0
+  fi
+  if need_cmd wget; then
+    wget -q "$url" -O "$dest"
+    return 0
+  fi
+  return 1
+}
+
+extract_zip_member(){
+  local zip_path="$1" member="$2" out_path="$3"
+  if need_cmd python3; then
+    python3 - "$zip_path" "$member" "$out_path" <<'PY' 2>/dev/null || return 1
+import sys, zipfile
+from pathlib import Path
+
+zip_path, member, out_path = sys.argv[1:4]
+z = zipfile.ZipFile(zip_path)
+if member not in z.namelist():
+    raise SystemExit(2)
+dest = Path(out_path)
+dest.parent.mkdir(parents=True, exist_ok=True)
+with z.open(member) as src, dest.open('wb') as out:
+    out.write(src.read())
+PY
+    return 0
+  fi
+  if need_cmd unzip; then
+    unzip -p "$zip_path" "$member" >"$out_path"
+    return 0
+  fi
+  return 1
+}
+
+ensure_ast_grep_tool_cache(){
+  local target expected asset url tool_root zip_path bin_name bin_path
+  target="$(ast_grep_target_triple)" || return 1
+  expected="${AST_GREP_ASSET_SHA256[$target]:-}"
+  [[ -n "$expected" ]] || return 1
+
+  asset="app-${target}.zip"
+  url="${AST_GREP_BASE_URL}/${asset}"
+  tool_root="$TOOLS_DIR/ast-grep/${AST_GREP_VERSION}/${target}"
+  zip_path="$tool_root/$asset"
+
+  bin_name="ast-grep"
+  if [[ "$target" == *pc-windows-msvc ]]; then
+    bin_name="ast-grep.exe"
+  fi
+  bin_path="$tool_root/$bin_name"
+
+  ensure_dir "$tool_root"
+
+  local need_download=0
+  if [[ ! -f "$zip_path" ]]; then
+    need_download=1
+  else
+    local current_sha
+    if ! current_sha="$(compute_sha256 "$zip_path")"; then
+      return 2
+    fi
+    [[ "$current_sha" == "$expected" ]] || need_download=1
+  fi
+
+  if [[ "$need_download" -eq 1 ]]; then
+    [[ "${QUIET:-0}" -eq 0 ]] && say_err "${DIM}${INFO}${RESET} Downloading ast-grep ${AST_GREP_VERSION} (${target})..."
+    local tmp_zip
+    tmp_zip="$(mktemp -t ubs-ast-grep.XXXXXX 2>/dev/null || mktemp "${TMPDIR:-/tmp}/ubs-ast-grep.XXXXXX" 2>/dev/null)" || {
+      say_err "${RED}$X failed to create temp file for module download${RESET}"
+      return 1
+    }
+    if ! download_url_to_file "$url" "$tmp_zip"; then
+      say_err "${RED}${X}${RESET} failed to download ast-grep: $url"
+      say_err "${DIM}Install ast-grep manually (https://ast-grep.github.io/) or re-run install.sh.${RESET}"
+      return 1
+    fi
+    local sha
+    if ! sha="$(compute_sha256 "$tmp_zip")"; then
+      say_err "${RED}${X}${RESET} cannot verify ast-grep download (no sha256 tool available)"
+      return 2
+    fi
+    if [[ "$sha" != "$expected" ]]; then
+      say_err "${RED}${X}${RESET} ast-grep checksum mismatch for ${asset}"
+      say_err "${DIM}Expected: ${expected}${RESET}"
+      say_err "${DIM}Got:      ${sha}${RESET}"
+      return 1
+    fi
+    mv "$tmp_zip" "$zip_path"
+  fi
+
+  if ! extract_zip_member "$zip_path" "$bin_name" "$bin_path"; then
+    say_err "${RED}${X}${RESET} failed to extract ${bin_name} from ${zip_path}"
+    return 1
+  fi
+  chmod +x "$bin_path" 2>/dev/null || true
+  if ! verify_ast_grep_bin "$bin_path"; then
+    say_err "${RED}${X}${RESET} extracted ast-grep did not execute correctly: $bin_path"
+    return 1
+  fi
+  echo "$bin_path"
+}
+
+ensure_ast_grep(){
+  local found
+  if found="$(find_ast_grep_in_path)"; then
+    AST_GREP_BIN="$found"
+    AST_GREP_SOURCE="path"
+    return 0
+  fi
+
+  local target
+  target="$(ast_grep_target_triple)" || {
+    say_err "${RED}${X}${RESET} Environment error: unsupported platform for ast-grep tool cache"
+    return 1
+  }
+
+  if [[ -z "${AST_GREP_ASSET_SHA256[$target]:-}" ]]; then
+    say_err "${RED}${X}${RESET} Environment error: no ast-grep asset configured for $target"
+    return 1
+  fi
+  if ! ( need_cmd curl || need_cmd wget ); then
+    say_err "${RED}${X}${RESET} Environment error: need curl or wget to auto-provision ast-grep"
+    return 1
+  fi
+  if ! checksum_tool_name >/dev/null 2>&1; then
+    say_err "${RED}${X}${RESET} Environment error: need sha256sum, shasum, or openssl to verify ast-grep downloads"
+    return 1
+  fi
+  if ! ( need_cmd python3 || need_cmd unzip ); then
+    say_err "${RED}${X}${RESET} Environment error: need python3 or unzip to extract ast-grep tool cache"
+    return 1
+  fi
+
+  found="$(ensure_ast_grep_tool_cache)" || return $?
+  AST_GREP_BIN="$found"
+  AST_GREP_SOURCE="cache"
+  return 0
+}
+
+ast_grep_cached_bin_path(){
+  local target bin_name
+  target="$(ast_grep_target_triple)" || return 1
+  bin_name="ast-grep"
+  if [[ "$target" == *pc-windows-msvc ]]; then
+    bin_name="ast-grep.exe"
+  fi
+  echo "$TOOLS_DIR/ast-grep/${AST_GREP_VERSION}/${target}/${bin_name}"
+}
+
+verify_ast_grep_bin(){
+  local bin="$1"
+  [[ -n "$bin" && -x "$bin" ]] || return 1
+  "$bin" --version 2>&1 | grep -qi "ast-grep" || return 1
+  "$bin" scan -h >/dev/null 2>&1 || return 1
+
+  # UBS depends on JSON-stream output for AST-powered rules. Confirm the binary
+  # supports `--json=stream` (via either `run -p` or the legacy `--pattern` form).
+  local tmpdir tmpfile
+  tmpdir="$(mktemp -d 2>/dev/null || mktemp -d -t ubs-ag-verify.XXXXXX)" || return 1
+  tmpfile="$tmpdir/verify.js"
+  printf 'const x = 1; x = 2;\n' >"$tmpfile" 2>/dev/null || true
+
+  if "$bin" run -p '$X = $Y' "$tmpfile" --json=stream >/dev/null 2>&1; then
+    [[ -n "$tmpdir" && "$tmpdir" != "/" ]] && rm -rf "$tmpdir" 2>/dev/null || true
+    return 0
+  fi
+  if "$bin" --pattern '$X = $Y' "$tmpfile" --json=stream >/dev/null 2>&1; then
+    [[ -n "$tmpdir" && "$tmpdir" != "/" ]] && rm -rf "$tmpdir" 2>/dev/null || true
+    return 0
+  fi
+
+  [[ -n "$tmpdir" && "$tmpdir" != "/" ]] && rm -rf "$tmpdir" 2>/dev/null || true
+  return 1
+}
+
+apply_inline_suppressions(){
+  if ! need_cmd python3; then cat; return 0; fi
+  local py_script
+  py_script="$(mktemp -t ubs_suppress.XXXXXX 2>/dev/null || mktemp -t ubs_suppress)"
+  cat >"$py_script" <<'PY'
+import sys, re, io
+from pathlib import Path
+
+# Robust I/O handling for varied environments
+try:
+    input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='replace')
+    output_stream = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+except Exception:
+    input_stream = sys.stdin
+    output_stream = sys.stdout
+
+ANSI_ESCAPE = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+FINDING_PATTERN = re.compile(r'^\s*((?:[A-Za-z]:)?[^:]+?):(\d+)(?::(\d+))?')
+SUPPRESSION_MARKERS = ["ubs:ignore", "ubs: disable", "nolint", "noqa"]
+
+def strip_ansi(text):
+    return ANSI_ESCAPE.sub('', text)
+
+def has_suppression(line_content):
+    if not line_content: return False
+    lower = line_content.lower()
+    return any(m in lower for m in SUPPRESSION_MARKERS)
+
+def main():
+    lines = []
+    try:
+        # Read all lines first to ensure we consume the stream (prevents SIGPIPE upstream)
+        lines = input_stream.readlines()
+        
+        file_cache = {}
+        
+        for line in lines:
+            clean_line = strip_ansi(line)
+            match = FINDING_PATTERN.match(clean_line)
+            
+            if not match:
+                output_stream.write(line)
+                continue
+            
+            file_path_str = (match.group(1) or "").strip()
+            try:
+                line_no = int(match.group(2))
+            except ValueError:
+                output_stream.write(line)
+                continue
+            
+            if file_path_str not in file_cache:
+                try:
+                    p = Path(file_path_str)
+                    # Check existence relative to CWD
+                    if p.is_file():
+                        file_cache[file_path_str] = p.read_text(encoding='utf-8', errors='replace').splitlines()
+                    else:
+                        file_cache[file_path_str] = None
+                except:
+                    file_cache[file_path_str] = None
+            
+            content = file_cache[file_path_str]
+            suppressed = False
+            if content:
+                idx = line_no - 1
+                # Check line itself (idx) and previous line (idx-1) for comments
+                if 0 <= idx < len(content) and has_suppression(content[idx]):
+                    suppressed = True
+                elif 0 <= idx-1 < len(content) and has_suppression(content[idx-1]):
+                    suppressed = True
+            
+            if not suppressed:
+                output_stream.write(line)
+                
+    except Exception as e:
+        # If python fails, we MUST consume stdin and dump to stdout to avoid breaking the pipe
+        sys.stderr.write(f"[ubs] warning: inline suppression failed ({e}); passthrough enabled\n")
+        try:
+            # Try to dump what we read plus the rest
+            for l in lines: output_stream.write(l)
+            output_stream.write(input_stream.read())
+        except:
+            pass
+
+if __name__ == "__main__":
+    main()
+PY
+  python3 "$py_script"
+  rm -f "$py_script"
+}
+
+should_verify_module_path(){
+  local path="$1"
+  [[ -n "$path" && -n "$MODULE_DIR" ]] || return 1
+  if [[ "$MODULE_DIR" == "/" ]]; then
+    [[ "$path" == /* ]]
+  else
+    case "$path" in
+      "$MODULE_DIR"/*) return 0;;
+      *) return 1;;
+    esac
+  fi
+}
+
+verify_module_checksum(){
+  local lang="$1" path="$2"
+  local expected="${MODULE_CHECKSUMS[$lang]:-}"
+  VERIFY_MODULE_ERR=""
+  should_verify_module_path "$path" || return 0
+  [[ -n "$expected" ]] || return 0
+  if [[ ! -f "$path" ]]; then
+    VERIFY_MODULE_ERR="module file not found at $path"
+    return 1
+  fi
+  local actual
+  if ! actual="$(compute_sha256 "$path")"; then
+    VERIFY_MODULE_ERR="unable to compute checksum (install sha256sum, shasum, or openssl)"
+    return 2
+  fi
+  if [[ "$actual" != "$expected" ]]; then
+    VERIFY_MODULE_ERR="checksum mismatch for $lang (expected $expected, got $actual)"
+    return 1
+  fi
+  return 0
+}
+
+verify_helper_checksum(){
+  local rel="$1" path="$2"
+  local expected="${HELPER_CHECKSUMS[$rel]:-}"
+  VERIFY_HELPER_ERR=""
+  should_verify_module_path "$path" || return 0
+  [[ -n "$expected" ]] || return 0
+  if [[ ! -f "$path" ]]; then
+    VERIFY_HELPER_ERR="helper file not found at $path"
+    return 1
+  fi
+  local actual
+  if ! actual="$(compute_sha256 "$path")"; then
+    VERIFY_HELPER_ERR="unable to compute checksum (install sha256sum, shasum, or openssl)"
+    return 2
+  fi
+  if [[ "$actual" != "$expected" ]]; then
+    VERIFY_HELPER_ERR="checksum mismatch for $rel (expected $expected, got $actual)"
+    return 1
+  fi
+  return 0
+}
+
+DOCTOR_FAILS=0
+DOCTOR_WARNINGS=0
+doctor_report(){
+  local level="$1" message="$2"
+  case "$level" in
+    ok)
+      say "  ${GREEN}${CHECK}${RESET} $message"
+      ;;
+    warn)
+      DOCTOR_WARNINGS=$((DOCTOR_WARNINGS+1))
+      say "  ${YELLOW}${WARN}${RESET} $message"
+      ;;
+    info)
+      say "  ${CYAN}${INFO}${RESET} $message"
+      ;;
+    err)
+      DOCTOR_FAILS=$((DOCTOR_FAILS+1))
+      say "  ${RED}${X}${RESET} $message"
+      ;;
+  esac
+}
+
+doctor_check_cached_helpers(){
+  local fix="$1"
+  local rel helper_path verify_status
+  for rel in "${HELPER_ASSETS[@]:-}"; do
+    helper_path="$MODULE_DIR/$rel"
+    if [[ -f "$helper_path" ]]; then
+      if verify_helper_checksum "$rel" "$helper_path"; then
+        doctor_report ok "helper checksum verified ($helper_path)"
+      else
+        verify_status=$?
+        if [[ $verify_status -eq 2 ]]; then
+          doctor_report err "helper $rel: $VERIFY_HELPER_ERR"
+        else
+          if [[ "$fix" -eq 1 ]]; then
+            say "    ${DIM}Refreshing helper $rel...${RESET}"
+            if download_helper_asset "$rel" "$helper_path"; then
+              doctor_report ok "helper refreshed and verified ($rel)"
+            else
+              doctor_report err "Failed to refresh helper $rel: ${VERIFY_HELPER_ERR:-see logs}"
+            fi
+          else
+            doctor_report err "helper $rel: $VERIFY_HELPER_ERR (re-run with --fix)"
+          fi
+        fi
+      fi
+    else
+      if [[ "$fix" -eq 1 ]]; then
+        say "    ${DIM}Caching helper $rel...${RESET}"
+        if download_helper_asset "$rel" "$helper_path"; then
+          doctor_report ok "helper downloaded and verified ($rel)"
+        else
+          doctor_report err "Failed to download helper $rel: ${VERIFY_HELPER_ERR:-see logs}"
+        fi
+      else
+        doctor_report warn "helper $rel not cached yet (use --fix to pre-download)"
+      fi
+    fi
+  done
+}
+
+run_doctor(){
+  local fix="$1"
+  DOCTOR_FAILS=0
+  DOCTOR_WARNINGS=0
+  say "${BOLD}UBS Doctor${RESET}"
+  doctor_report info "Module cache: ${DIM}$MODULE_DIR${RESET}"
+  doctor_report info "Tool cache:   ${DIM}$TOOLS_DIR${RESET}"
+
+  local checksum_tool
+  if checksum_tool=$(checksum_tool_name); then
+    doctor_report ok "Checksum tool available: $checksum_tool"
+  else
+    doctor_report err "No checksum tool found (install sha256sum, shasum, or openssl)"
+  fi
+
+  if need_cmd curl; then
+    doctor_report ok "curl available for module downloads"
+  elif need_cmd wget; then
+    doctor_report ok "wget available for module downloads"
+  else
+    doctor_report warn "Neither curl nor wget present; network module updates will fail"
+  fi
+
+  if [[ -w "$MODULE_DIR" ]]; then
+    doctor_report ok "Module cache is writable"
+  else
+    doctor_report err "Module cache is not writable: $MODULE_DIR"
+  fi
+
+  # External dependency readiness (JS/TS AST engine)
+  local ast_bin="" ast_source="" ast_version=""
+  if [[ -n "${UBS_AST_GREP_BIN:-}" ]]; then
+    if [[ -x "${UBS_AST_GREP_BIN}" ]]; then
+      ast_bin="${UBS_AST_GREP_BIN}"
+      ast_source="env"
+    else
+      local resolved
+      resolved="$(command -v "${UBS_AST_GREP_BIN}" 2>/dev/null || true)"
+      if [[ -n "$resolved" && -x "$resolved" ]]; then
+        ast_bin="$resolved"
+        ast_source="env"
+      fi
+    fi
+  fi
+  if [[ -z "$ast_bin" ]]; then
+    if ast_bin="$(find_ast_grep_in_path 2>/dev/null)"; then
+      ast_source="path"
+    else
+      ast_bin=""
+    fi
+  fi
+  if [[ -z "$ast_bin" ]]; then
+    local cached
+    cached="$(ast_grep_cached_bin_path 2>/dev/null || true)"
+    if [[ -n "$cached" && -x "$cached" ]]; then
+      ast_bin="$cached"
+      ast_source="cache"
+    fi
+  fi
+
+  if [[ -n "$ast_bin" ]] && verify_ast_grep_bin "$ast_bin"; then
+    ast_version="$("$ast_bin" --version 2>/dev/null | head -n 1 || true)"
+    doctor_report ok "ast-grep: ready (${ast_source}) ${DIM}${ast_version}${RESET}"
+    doctor_report info "ast-grep bin: ${DIM}$ast_bin${RESET}"
+  else
+    if [[ "$fix" -eq 1 ]]; then
+      if ensure_ast_grep; then
+        ast_version="$("$AST_GREP_BIN" --version 2>/dev/null | head -n 1 || true)"
+        doctor_report ok "ast-grep: installed (${AST_GREP_SOURCE}) ${DIM}${ast_version}${RESET}"
+        doctor_report info "ast-grep bin: ${DIM}${AST_GREP_BIN}${RESET}"
+      else
+        doctor_report err "ast-grep: missing/unusable (JS/TS scans will fail)."
+      fi
+    else
+      doctor_report warn "ast-grep: missing/unusable (JS/TS scans will fail). Run: ubs doctor --fix"
+    fi
+  fi
+
+  local lang module_path verify_status cached_modules=0
+  for lang in "${ALL_LANGS[@]}"; do
+    module_path="$(resolve_module_path "$lang")"
+    if should_verify_module_path "$module_path"; then
+      cached_modules=1
+      if [[ -f "$module_path" ]]; then
+        if verify_module_checksum "$lang" "$module_path"; then
+          doctor_report ok "$lang module checksum verified ($module_path)"
+        else
+          verify_status=$?
+          if [[ $verify_status -eq 2 ]]; then
+            doctor_report err "$lang module: $VERIFY_MODULE_ERR"
+          else
+            if [[ "$fix" -eq 1 ]]; then
+              say "    ${DIM}Refreshing $lang module...${RESET}"
+              if download_module "$lang" "$module_path"; then
+                doctor_report ok "$lang module refreshed and verified"
+              else
+                doctor_report err "Failed to refresh $lang module: ${VERIFY_MODULE_ERR:-see logs}"
+              fi
+            else
+              doctor_report err "$lang module: $VERIFY_MODULE_ERR (re-run with --fix)"
+            fi
+          fi
+        fi
+      else
+        if [[ "$fix" -eq 1 ]]; then
+          say "    ${DIM}Caching $lang module...${RESET}"
+          if download_module "$lang" "$module_path"; then
+            doctor_report ok "$lang module downloaded and verified"
+          else
+            doctor_report err "Failed to download $lang module: ${VERIFY_MODULE_ERR:-see logs}"
+          fi
+        else
+          doctor_report warn "$lang module not cached yet (use --fix to pre-download)"
+        fi
+      fi
+    else
+      if [[ -x "$module_path" ]]; then
+        doctor_report info "$lang module supplied by $(dirname "$module_path") (custom/bundled, checksum skipped)"
+      else
+        doctor_report warn "$lang module expected at $module_path but is not executable"
+      fi
+    fi
+  done
+
+  if [[ "$cached_modules" -eq 1 ]]; then
+    doctor_check_cached_helpers "$fix"
+  fi
+
+  if [[ $DOCTOR_FAILS -gt 0 ]]; then
+    say "${RED}${X}${RESET} Doctor detected $DOCTOR_FAILS blocking issue(s)."
+    return 1
+  fi
+  if [[ $DOCTOR_WARNINGS -gt 0 ]]; then
+    say "${YELLOW}${WARN}${RESET} Doctor completed with $DOCTOR_WARNINGS warning(s)."
+  else
+    say "${GREEN}${CHECK}${RESET} Environment looks good."
+  fi
+  return 0
+}
+
+apply_ignore_filters(){
+  [[ -n "$GLOBAL_EXCLUDE_PATTERNS" ]] || return 0
+  [[ -d "$SOURCE_PROJECT_DIR" ]] || return 0
+
+  local dest="$TMPDIR_RUN/scan"
+  rm -rf "$dest" 2>/dev/null || true
+  ensure_dir "$dest"
+  local -a patterns
+  IFS=',' read -r -a patterns <<<"$GLOBAL_EXCLUDE_PATTERNS"
+
+  # Helper: check if destination has at least one file (copy succeeded meaningfully)
+  dest_has_files() {
+    [[ -n "$(find "$dest" -type f 2>/dev/null | head -n 1)" ]]
+  }
+
+  # Try rsync first (fastest and most reliable)
+  if need_cmd rsync; then
+    local -a args=(-a --delete)
+    for pat in "${patterns[@]}"; do
+      [[ -z "$pat" ]] && continue
+      args+=( "--exclude=$pat" )
+    done
+    if rsync "${args[@]}" "$SOURCE_PROJECT_DIR"/ "$dest"/ >/dev/null 2>&1 && dest_has_files; then
+      FILTERED_PROJECT_DIR="$dest"
+      PROJECT_DIR="$FILTERED_PROJECT_DIR"
+      say "${DIM}${INFO}${RESET} Created filtered scan workspace at ${FILTERED_PROJECT_DIR}"
+      return 0
+    fi
+    # Rsync failed or produced empty result; clean up and try next method
+    rm -rf "$dest" 2>/dev/null || true
+    ensure_dir "$dest"
+  fi
+
+  # Fallback: use tar with --exclude (commonly available on Windows via Git Bash/MSYS)
+  if need_cmd tar; then
+    local -a tar_excludes=()
+    for pat in "${patterns[@]}"; do
+      [[ -z "$pat" ]] && continue
+      tar_excludes+=( "--exclude=$pat" )
+    done
+    if (cd "$SOURCE_PROJECT_DIR" && tar cf - "${tar_excludes[@]}" . 2>/dev/null) | (cd "$dest" && tar xf - 2>/dev/null) && dest_has_files; then
+      FILTERED_PROJECT_DIR="$dest"
+      PROJECT_DIR="$FILTERED_PROJECT_DIR"
+      say "${DIM}${INFO}${RESET} Created filtered scan workspace at ${FILTERED_PROJECT_DIR} (tar fallback)"
+      return 0
+    fi
+    # Tar failed or produced empty result; clean up and try next method
+    rm -rf "$dest" 2>/dev/null || true
+    ensure_dir "$dest"
+  fi
+
+  # Python fallback (most reliable cross-platform)
+  if need_cmd python3; then
+    local patterns_json
+    patterns_json=$(printf '%s\n' "${patterns[@]}" | python3 -c "import sys, json; print(json.dumps([l.strip() for l in sys.stdin if l.strip()]))" 2>/dev/null)
+    if [[ -n "$patterns_json" ]] && python3 - "$SOURCE_PROJECT_DIR" "$dest" "$patterns_json" <<'PY' 2>/dev/null
+import sys, os, shutil, json, fnmatch, pathlib
+
+src = pathlib.Path(sys.argv[1]).resolve()
+dst = pathlib.Path(sys.argv[2]).resolve()
+patterns = json.loads(sys.argv[3])
+
+def should_exclude(rel_path, name):
+    for pat in patterns:
+        if fnmatch.fnmatch(rel_path, pat) or fnmatch.fnmatch(name, pat):
+            return True
+        # Check path components
+        for part in pathlib.Path(rel_path).parts:
+            if fnmatch.fnmatch(part, pat):
+                return True
+    return False
+
+for root, dirs, files in os.walk(src, topdown=True):
+    root_path = pathlib.Path(root)
+    rel_root = root_path.relative_to(src)
+    dst_root = dst / rel_root
+
+    # Filter directories (modifying dirs in-place prunes traversal)
+    dirs[:] = [d for d in dirs if not should_exclude(str(rel_root / d), d)]
+
+    # Create destination directory
+    dst_root.mkdir(parents=True, exist_ok=True)
+
+    # Copy files that aren't excluded
+    for f in files:
+        rel_file = str(rel_root / f) if str(rel_root) != '.' else f
+        if not should_exclude(rel_file, f):
+            try:
+                shutil.copy2(root_path / f, dst_root / f)
+            except (OSError, shutil.Error):
+                pass  # Skip files that can't be copied
+PY
+    then
+      if dest_has_files; then
+        FILTERED_PROJECT_DIR="$dest"
+        PROJECT_DIR="$FILTERED_PROJECT_DIR"
+        say "${DIM}${INFO}${RESET} Created filtered scan workspace at ${FILTERED_PROJECT_DIR} (python fallback)"
+        return 0
+      fi
+    fi
+  fi
+
+  say "${YELLOW}${WARN}${RESET} Failed to apply ignore filters; scanning original tree"
+  rm -rf "$dest" 2>/dev/null || true
+}
+
+restore_original_paths(){
+  local file="$1"
+  [[ -n "$FILTERED_PROJECT_DIR" && -f "$file" ]] || return 0
+  if ! need_cmd python3; then return 0; fi
+  python3 - "$FILTERED_PROJECT_DIR" "$SOURCE_PROJECT_DIR" "$file" <<'PY' 2>/dev/null || true
+import sys, pathlib
+src = sys.argv[1]
+dst = sys.argv[2]
+path = pathlib.Path(sys.argv[3])
+try:
+    data = path.read_text()
+except OSError:
+    sys.exit(0)
+path.write_text(data.replace(src, dst))
+PY
+}
+
+if [[ "$MODE" == "sessions" ]]; then
+  show_session_history "$SESSION_ENTRIES" "$SESSION_RAW" "$SESSION_LOG_DIR_OVERRIDE"
+  exit 0
+fi
+
+# Detectors (fast ripgrep if available, else find)
+detect_lang(){
+  local lang="$1" found=1
+  case "$lang" in
+    js)
+      if need_cmd rg; then
+        rg -q --hidden -g '!node_modules/**' -g '!dist/**' -g '!build/**' -g '!coverage/**' -g '!*.min.*' -g '!venv/**' -g '!.venv/**' \
+           -g '*.{js,jsx,ts,tsx,mjs,cjs}' -g 'package.json' . "$PROJECT_DIR" 2>/dev/null && found=0
+      else
+        find "$PROJECT_DIR" \( -name node_modules -o -name dist -o -name build -o -name coverage -o -name venv -o -name .venv -o -name .git \) -prune -o \
+          -type f \( -name '*.js' -o -name '*.jsx' -o -name '*.ts' -o -name '*.tsx' -o -name '*.mjs' -o -name '*.cjs' -o -name 'package.json' \) -print -quit 2>/dev/null | grep -q . && found=0
+      fi
+      ;;
+    python)
+      if need_cmd rg; then
+        rg -q --hidden -g '!venv/**' -g '!.venv/**' -g '!**/__pycache__/**' -g '!build/**' -g '!dist/**' \
+           -g '*.py' -g 'pyproject.toml' -g 'requirements.txt' -g 'setup.py' . "$PROJECT_DIR" 2>/dev/null && found=0
+      else
+        find "$PROJECT_DIR" \( -name venv -o -name .venv -o -name __pycache__ -o -name build -o -name dist -o -name .git \) -prune -o \
+          -type f \( -name '*.py' -o -name 'pyproject.toml' -o -name 'requirements.txt' -o -name 'setup.py' \) -print -quit 2>/dev/null | grep -q . && found=0
+      fi
+      ;;
+    cpp)
+      if need_cmd rg; then
+        rg -q --hidden -g '!build/**' -g '!out/**' -g '!**/.cache/**' \
+           -g '*.{c,cc,cpp,cxx,h,hh,hpp,hxx}' -g 'CMakeLists.txt' -g 'compile_commands.json' . "$PROJECT_DIR" 2>/dev/null && found=0
+      else
+        find "$PROJECT_DIR" \( -name build -o -name out -o -name .cache -o -name .git \) -prune -o \
+          -type f \( -name '*.c' -o -name '*.cc' -o -name '*.cpp' -o -name '*.cxx' -o -name '*.h' -o -name '*.hh' -o -name '*.hpp' -o -name '*.hxx' -o -name 'CMakeLists.txt' -o -name 'compile_commands.json' \) -print -quit 2>/dev/null | grep -q . && found=0
+      fi
+      ;;
+    rust)
+      if need_cmd rg; then
+        rg -q --hidden -g '!target/**' -g '!**/.cargo/**' -g '*.rs' -g 'Cargo.toml' . "$PROJECT_DIR" 2>/dev/null && found=0
+      else
+        find "$PROJECT_DIR" \( -name target -o -name .cargo -o -name .git \) -prune -o \
+          -type f \( -name '*.rs' -o -name 'Cargo.toml' \) -print -quit 2>/dev/null | grep -q . && found=0
+      fi
+      ;;
+    golang)
+      if need_cmd rg; then
+        rg -q --hidden -g '!vendor/**' -g '!bin/**' -g '!dist/**' -g '!build/**' \
+           -g '*.go' -g 'go.mod' -g 'go.sum' -g 'go.work' . "$PROJECT_DIR" 2>/dev/null && found=0
+      else
+        find "$PROJECT_DIR" \( -name vendor -o -name bin -o -name dist -o -name build -o -name .git \) -prune -o \
+          -type f \( -name '*.go' -o -name 'go.mod' -o -name 'go.sum' -o -name 'go.work' \) -print -quit 2>/dev/null | grep -q . && found=0
+      fi
+      ;;
+    java)
+      if need_cmd rg; then
+        rg -q --hidden -g '!target/**' -g '!build/**' -g '!out/**' -g '!dist/**' \
+           -g '*.java' -g '*.kt' -g '*.kts' -g 'pom.xml' -g 'build.gradle' -g 'build.gradle.kts' -g 'settings.gradle' -g 'settings.gradle.kts' -g 'gradlew' -g 'mvnw' . "$PROJECT_DIR" 2>/dev/null && found=0
+      else
+        find "$PROJECT_DIR" \( -name target -o -name build -o -name out -o -name dist -o -name .git \) -prune -o \
+          -type f \( -name '*.java' -o -name '*.kt' -o -name '*.kts' -o -name 'pom.xml' -o -name 'build.gradle' -o -name 'build.gradle.kts' -o -name 'settings.gradle' -o -name 'settings.gradle.kts' -o -name 'gradlew' -o -name 'mvnw' \) -print -quit 2>/dev/null | grep -q . && found=0
+      fi
+      ;;
+    ruby)
+      if need_cmd rg; then
+        rg -q --hidden -g '!vendor/bundle/**' -g '!tmp/**' -g '!dist/**' \
+           -g '*.rb' -g 'Gemfile' -g 'Gemfile.lock' -g '*.gemspec' -g 'Rakefile' . "$PROJECT_DIR" 2>/dev/null && found=0
+      else
+        find "$PROJECT_DIR" \( -name vendor -o -name bundle -o -name tmp -o -name dist -o -name .git \) -prune -o \
+          -type f \( -name '*.rb' -o -name 'Gemfile' -o -name 'Gemfile.lock' -o -name '*.gemspec' -o -name 'Rakefile' \) -print -quit 2>/dev/null | grep -q . && found=0
+      fi
+      ;;
+    swift)
+      if need_cmd rg; then
+        rg -q --hidden -g '!DerivedData/**' -g '!build/**' -g '!buck-out/**' -g '!dist/**' \
+           -g '*.swift' -g '*.metal' -g 'Package.swift' -g '*.xcodeproj/project.pbxproj' -g '*.xcworkspace/contents.xcworkspacedata' . "$PROJECT_DIR" 2>/dev/null && found=0
+      else
+        find "$PROJECT_DIR" \( -name DerivedData -o -name build -o -name buck-out -o -name dist -o -name .git \) -prune -o \
+          -type f \( -name '*.swift' -o -name '*.metal' -o -name 'Package.swift' -o -name '*.xcodeproj' -o -name '*.xcworkspace' \) -print -quit 2>/dev/null | grep -q . && found=0
+      fi
+      ;;
+  esac
+  return $found
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Module resolution & download
+# ─────────────────────────────────────────────────────────────────────────────
+resolve_module_path(){
+  local lang="$1"
+  local base="ubs-$lang"
+  local sd md
+  sd="$(script_dir)"
+  md="$MODULE_DIR"
+  # Priority: PATH → local modules/ → XDG module dir
+  if command -v "$base" >/dev/null 2>&1; then command -v "$base"; return 0; fi
+  if [ -x "$sd/modules/$base.sh" ]; then echo "$sd/modules/$base.sh"; return 0; fi
+  if [ -x "$md/$base.sh" ]; then echo "$md/$base.sh"; return 0; fi
+  echo "$md/$base.sh"
+}
+
+download_module(){
+  local lang="$1" path="$2"
+  ensure_dir "$(dirname "$path")"
+  local url; url=$(printf '%s' "$MODULE_PATH_TEMPLATE" | sed "s/%s/$lang/")
+  say "${BLUE}${INFO}${RESET} fetching module ${BOLD}$lang${RESET} → ${DIM}$path${RESET}"
+  local tmp
+  tmp="$(mktemp -t "ubs-${lang}.XXXXXX" 2>/dev/null || mktemp "${TMPDIR:-/tmp}/ubs-${lang}.XXXXXX" 2>/dev/null)" || {
+    say "${RED}$X failed to create temp file for module download${RESET}"
+    return 1
+  }
+  if need_cmd curl; then
+    if ! curl -fsSL "$url" -o "$tmp"; then
+      say "${RED}$X failed to download module ${BOLD}$lang${RESET}"
+      rm -f "$tmp" 2>/dev/null || true
+      return 1
+    fi
+  elif need_cmd wget; then
+    if ! wget -q "$url" -O "$tmp"; then
+      say "${RED}$X failed to download module ${BOLD}$lang${RESET}"
+      rm -f "$tmp" 2>/dev/null || true
+      return 1
+    fi
+  else
+    say "${RED}$X neither curl nor wget available${RESET}"
+    rm -f "$tmp" 2>/dev/null || true
+    return 1
+  fi
+  # sanity checks
+  if [ ! -s "$tmp" ]; then
+    say "${RED}$X empty module file for $lang${RESET}"
+    rm -f "$tmp" 2>/dev/null || true
+    return 1
+  fi
+  local head; head="$(head -n 1 "$tmp" | tr -d '\r')"
+  if [[ ! "$head" =~ ^#! ]]; then
+    say "${RED}$X module missing shebang (lang=$lang)${RESET}"
+    rm -f "$tmp" 2>/dev/null || true
+    return 1
+  fi
+  if should_verify_module_path "$path"; then
+    VERIFY_MODULE_ERR=""
+    local expected="${MODULE_CHECKSUMS[$lang]:-}"
+    if [[ -n "$expected" ]]; then
+      local sha
+      if ! sha="$(compute_sha256 "$tmp")"; then
+        VERIFY_MODULE_ERR="unable to compute checksum (install sha256sum, shasum, or openssl)"
+      elif [[ "$sha" != "$expected" ]]; then
+        VERIFY_MODULE_ERR="checksum mismatch for $lang (expected $expected, got $sha)"
+      fi
+    fi
+    if [[ -n "${VERIFY_MODULE_ERR:-}" ]]; then
+      local err_msg="${VERIFY_MODULE_ERR}"
+      say "${RED}$X failed to verify module ${BOLD}$lang${RESET}: $err_msg"
+      rm -f "$tmp" 2>/dev/null || true
+      return 1
+    fi
+  fi
+  if ! mv "$tmp" "$path"; then
+    say "${RED}$X failed to finalize module ${BOLD}$lang${RESET} to ${DIM}$path${RESET}"
+    rm -f "$tmp" 2>/dev/null || true
+    return 1
+  fi
+  chmod +x "$path" 2>/dev/null || true
+  return 0
+}
+
+download_helper_asset(){
+  local rel="$1" path="$2"
+  ensure_dir "$(dirname "$path")"
+  local url="${REPO_RAW}/modules/${rel}"
+  say "${BLUE}${INFO}${RESET} fetching helper ${BOLD}$rel${RESET} → ${DIM}$path${RESET}"
+  local tmp
+  tmp="$(mktemp -t "ubs-helper.XXXXXX" 2>/dev/null || mktemp "${TMPDIR:-/tmp}/ubs-helper.XXXXXX" 2>/dev/null)" || {
+    say "${RED}$X failed to create temp file for helper download${RESET}"
+    return 1
+  }
+  if need_cmd curl; then
+    if ! curl -fsSL "$url" -o "$tmp"; then
+      say "${RED}$X failed to download helper ${BOLD}$rel${RESET}"
+      rm -f "$tmp" 2>/dev/null || true
+      return 1
+    fi
+  elif need_cmd wget; then
+    if ! wget -q "$url" -O "$tmp"; then
+      say "${RED}$X failed to download helper ${BOLD}$rel${RESET}"
+      rm -f "$tmp" 2>/dev/null || true
+      return 1
+    fi
+  else
+    say "${RED}$X neither curl nor wget available${RESET}"
+    rm -f "$tmp" 2>/dev/null || true
+    return 1
+  fi
+  if [ ! -s "$tmp" ]; then
+    say "${RED}$X empty helper file for $rel${RESET}"
+    rm -f "$tmp" 2>/dev/null || true
+    return 1
+  fi
+  if should_verify_module_path "$path"; then
+    VERIFY_HELPER_ERR=""
+    local expected="${HELPER_CHECKSUMS[$rel]:-}"
+    if [[ -n "$expected" ]]; then
+      local sha
+      if ! sha="$(compute_sha256 "$tmp")"; then
+        VERIFY_HELPER_ERR="unable to compute checksum (install sha256sum, shasum, or openssl)"
+      elif [[ "$sha" != "$expected" ]]; then
+        VERIFY_HELPER_ERR="checksum mismatch for $rel (expected $expected, got $sha)"
+      fi
+    fi
+    if [[ -n "${VERIFY_HELPER_ERR:-}" ]]; then
+      local err_msg="${VERIFY_HELPER_ERR}"
+      say "${RED}$X failed to verify helper ${BOLD}$rel${RESET}: $err_msg"
+      rm -f "$tmp" 2>/dev/null || true
+      return 1
+    fi
+  fi
+  if ! mv "$tmp" "$path"; then
+    say "${RED}$X failed to finalize helper ${BOLD}$rel${RESET} to ${DIM}$path${RESET}"
+    rm -f "$tmp" 2>/dev/null || true
+    return 1
+  fi
+  return 0
+}
+
+ensure_helper_asset(){
+  local rel="$1"
+  local path="$MODULE_DIR/$rel"
+  if [ "$UPDATE_MODULES" -eq 1 ] || [ ! -f "$path" ]; then
+    download_helper_asset "$rel" "$path" || return 1
+  fi
+  if should_verify_module_path "$path" && [ -f "$path" ]; then
+    if ! verify_helper_checksum "$rel" "$path"; then
+      local verify_code=$?
+      if [[ $verify_code -eq 2 ]]; then
+        say "${RED}$X ${VERIFY_HELPER_ERR}${RESET}"
+        rm -f "$path" 2>/dev/null || true
+        return 1
+      fi
+      say "${YELLOW}${WARN}${RESET} cached helper $rel failed verification (${VERIFY_HELPER_ERR:-corrupt}); refreshing..."
+      download_helper_asset "$rel" "$path" || { rm -f "$path" 2>/dev/null || true; return 1; }
+    fi
+  fi
+  return 0
+}
+
+ensure_cached_helpers(){
+  local mode="${1:-scan}" # scan|doctor
+  if [[ "$mode" == "scan" && "${UPDATE_MODULES:-0}" -eq 0 && "${HELPERS_READY:-0}" -eq 1 ]]; then
+    return 0
+  fi
+
+  local failures=0
+  local rel
+  for rel in "${HELPER_ASSETS[@]:-}"; do
+    if ! ensure_helper_asset "$rel"; then
+      failures=$((failures+1))
+      if [[ "$mode" == "scan" ]]; then
+        say "${YELLOW}${WARN}${RESET} helper unavailable: ${DIM}$rel${RESET} (${VERIFY_HELPER_ERR:-download/verification failed}); continuing with reduced accuracy"
+      fi
+    fi
+  done
+
+  if [[ "$failures" -eq 0 ]]; then
+    HELPERS_READY=1
+  fi
+
+  if [[ "$mode" == "doctor" ]]; then
+    return "$failures"
+  fi
+  return 0
+}
+
+ensure_module(){
+  local lang="$1" path="$2"
+  if [ "$UPDATE_MODULES" -eq 1 ] || [ ! -x "$path" ]; then
+    download_module "$lang" "$path" || return 1
+  fi
+  if should_verify_module_path "$path" && [ -x "$path" ]; then
+    if ! verify_module_checksum "$lang" "$path"; then
+      local verify_code=$?
+      if [[ $verify_code -eq 2 ]]; then
+        say "${RED}$X ${VERIFY_MODULE_ERR}${RESET}"
+        return 1
+      fi
+      say "${YELLOW}${WARN}${RESET} cached $lang module failed verification (${VERIFY_MODULE_ERR:-corrupt}); refreshing..."
+      download_module "$lang" "$path" || return 1
+    fi
+    ensure_cached_helpers "scan" || true
+  fi
+  return 0
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Self-update logic
+# ─────────────────────────────────────────────────────────────────────────────
+check_and_update_self(){
+  # Auto-update is opt-in (security-first). Enable by setting:
+  #   UBS_ENABLE_AUTO_UPDATE=1
+  # Always skip in CI, or when explicitly disabled via UBS_NO_AUTO_UPDATE / --no-auto-update.
+  if [[ "${FORCE_SELF_UPDATE:-0}" -eq 0 ]]; then
+    [[ "${UBS_ENABLE_AUTO_UPDATE:-0}" -eq 1 ]] || return 0
+    if [[ "${UBS_NO_AUTO_UPDATE:-0}" -eq 1 || "${CI_MODE:-0}" -eq 1 ]]; then return 0; fi
+  fi
+  
+  # Only update if we're running the installed binary (not a local repo script)
+  # Heuristic: if the script dir contains .git, we're likely in a dev environment
+  if [[ -d "$(script_dir)/.git" ]]; then return 0; fi
+
+  # Or if we are not writable
+  if [[ ! -w "$0" ]]; then return 0; fi
+
+  local self_path="$0"
+  local remote_url="$REPO_RAW/ubs"
+  local last_check_file="${XDG_CACHE_HOME:-$HOME/.cache}/ubs/last_update_check"
+  ensure_dir "$(dirname "$last_check_file")"
+
+  # Check at most once every 24 hours
+  if [[ "${FORCE_SELF_UPDATE:-0}" -eq 0 && -f "$last_check_file" ]]; then
+    local last_check
+    last_check=$(cat "$last_check_file" 2>/dev/null || echo 0)
+    local now
+    now=$(date +%s)
+    if (( now - last_check < 86400 )); then
+      return 0
+    fi
+  fi
+
+  if [[ "${QUIET:-0}" -eq 0 ]]; then
+    say_err "${DIM}Checking for updates...${RESET}"
+  fi
+
+  # Fetch remote version string or hash from the script itself
+  # We look for UBS_VERSION="X.Y.Z"
+  local remote_content
+  if need_cmd curl; then
+    remote_content=$(curl -fsSL "$remote_url") || return 0
+  elif need_cmd wget; then
+    remote_content=$(wget -qO- "$remote_url") || return 0
+  else
+    return 0
+  fi
+
+  local remote_version
+  remote_version=$(printf '%s' "$remote_content" | grep -oE 'UBS_VERSION="[0-9.]+"' | head -n1 | cut -d'"' -f2)
+  
+  if [[ -z "$remote_version" ]]; then return 0; fi
+
+  if [[ "$remote_version" != "$UBS_VERSION" ]]; then
+    if [[ "${QUIET:-0}" -eq 0 ]]; then
+      say_err "${BLUE}${INFO}${RESET} Updating ubs from ${UBS_VERSION} to ${remote_version}..."
+    fi
+    
+    # Write new content to temp file
+    local tmp_self
+    tmp_self="$(mktemp -t ubs-self.XXXXXX 2>/dev/null || mktemp "${TMPDIR:-/tmp}/ubs-self.XXXXXX" 2>/dev/null)"
+    printf '%s' "$remote_content" > "$tmp_self"
+    chmod +x "$tmp_self"
+    
+    # Move over current script
+    if mv "$tmp_self" "$self_path"; then
+      if [[ "${QUIET:-0}" -eq 0 ]]; then
+        say_err "${GREEN}${CHECK}${RESET} Updated successfully."
+      fi
+      # Update check timestamp
+      date +%s > "$last_check_file"
+      # Re-exec self to run the new version
+      exec "$self_path" "$@"
+    else
+      rm -f "$tmp_self"
+      say_err "${YELLOW}${WARN}${RESET} Failed to update ubs binary."
+    fi
+  else
+    # Update check timestamp even if no update found
+    date +%s > "$last_check_file"
+  fi
+}
+
+finalize_module_dir
+resolve_git_metadata || true  # Git metadata is optional; don't fail on repos without remotes
+
+if [[ "$MODE" == "doctor" ]]; then
+  run_doctor "$DOCTOR_FIX"
+  exit $?
+fi
+
+# Run auto-update before main logic
+check_and_update_self "$@"
+
+if [[ "$UPDATE_ONLY" -eq 1 ]]; then
+  [[ "${QUIET:-0}" -eq 0 ]] && say_err "${GREEN}${CHECK}${RESET} Update check complete."
+  exit 0
+fi
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Execution / aggregation
+# ─────────────────────────────────────────────────────────────────────────────
+TMPDIR_RUN="$(mktemp -d 2>/dev/null || mktemp -d -t ubsrun.XXXXXX)"
+cleanup(){
+  local dir="${TMPDIR_RUN:-}"
+  [[ -n "$dir" && "$dir" != "/" ]] || return 0
+  rm -rf "$dir" 2>/dev/null || true
+}
+trap cleanup EXIT
+COMBINED_JSON_FILE="$TMPDIR_RUN/combined.json"
+
+apply_ignore_filters
+if [[ "$SUGGEST_IGNORE" -eq 1 ]]; then
+  suggest_ignore_candidates
+fi
+
+if [[ -n "$GIT_MODE" ]]; then
+  prepare_git_workspace "$GIT_MODE"
+fi
+
+# Build selected language set
+select_langs(){
+  local detected=()
+  for L in "${ALL_LANGS[@]}"; do
+    detect_lang "$L" && detected+=("$L")
+  done
+  # apply --only / --exclude
+  local filtered=() i
+  if [[ -n "$ONLY_LANGS" ]]; then
+    IFS=',' read -r -a want <<<"$ONLY_LANGS"
+    for i in "${detected[@]}"; do
+      for w in "${want[@]}"; do [[ "$i" == "$w" ]] && filtered+=("$i"); done
+    done
+  else
+    filtered=("${detected[@]}")
+  fi
+  if [[ -n "$EXCLUDE_LANGS" ]]; then
+    IFS=',' read -r -a drop <<<"$EXCLUDE_LANGS"
+    local keep=()
+    for i in "${filtered[@]}"; do
+      local skip=0; for d in "${drop[@]}"; do [[ "$i" == "$d" ]] && skip=1; done
+      [[ $skip -eq 0 ]] && keep+=("$i")
+    done
+    filtered=("${keep[@]}")
+  fi
+  echo "${filtered[@]}"
+}
+
+# Run a module job
+run_lang(){
+  local lang="$1" module="$2" fmt="$3"
+  local out_txt="$TMPDIR_RUN/$lang.txt"
+  local out_json="$TMPDIR_RUN/$lang.json"
+  local out_sarif="$TMPDIR_RUN/$lang.sarif"
+  local out_findings="$TMPDIR_RUN/$lang.findings.json"
+  local err="$TMPDIR_RUN/$lang.err"
+  local status_file="$TMPDIR_RUN/$lang.status"
+  local metrics_dir="$TMPDIR_RUN/$lang.metrics"
+  local module_status=0
+  local start_ts=$SECONDS
+
+  if [[ "${QUIET:-0}" -eq 0 ]]; then
+    say_err "${DIM}Scanning $lang...${RESET}"
+  fi
+
+  local args=()
+  [[ "$CI_MODE" -eq 1 ]] && args+=("--ci")
+  [[ "$FAIL_ON_WARNING" -eq 1 ]] && args+=("--fail-on-warning")
+  [[ "$VERBOSE" -eq 1 ]] && args+=('-v')
+  [[ "${QUIET:-0}" -eq 1 ]] && args+=('-q')
+  [[ "$JOBS" -gt 0 ]] && args+=("--jobs=$JOBS")
+  [[ -n "$GLOBAL_EXCLUDE_PATTERNS" ]] && args+=("--exclude=$GLOBAL_EXCLUDE_PATTERNS")
+  [[ -n "${UBS_SKIP_CATEGORIES:-}" ]] && args+=("--skip=$UBS_SKIP_CATEGORIES")
+  args+=("$PROJECT_DIR")
+
+  case "$fmt" in
+    json|jsonl|toon)
+      prepare_metrics_dir "$metrics_dir"
+      local -a report_args=()
+      if [[ "$lang" == "js" ]]; then
+        report_args=(--report-json="$out_findings")
+      fi
+
+      if UBS_METRICS_DIR="$metrics_dir" UBS_LANG="$lang" UBS_SKIP_TYPE_NARROWING="$SKIP_TYPE_NARROWING" \
+        "$module" "${args[@]}" "${report_args[@]}" --format=json >"$out_json" 2>"$err"; then
+        module_status=0
+      else
+        module_status=$?
+      fi
+      restore_original_paths "$out_json"
+      # Modules that implement --format=json must emit a UBS summary *object*.
+      # If they emit other JSON types (e.g., an array of findings), fall back to
+      # text mode so we can still produce a stable combined summary.
+      if need_cmd jq && jq -e 'type=="object"' "$out_json" >/dev/null 2>&1; then
+        jq --arg language "$lang" '. + {language: $language}' "$out_json" > "$out_json.tmp" && mv "$out_json.tmp" "$out_json"
+        attach_metrics_to_json "$out_json" "$metrics_dir"
+      else
+        prepare_metrics_dir "$metrics_dir"
+        if UBS_METRICS_DIR="$metrics_dir" UBS_LANG="$lang" UBS_SKIP_TYPE_NARROWING="$SKIP_TYPE_NARROWING" \
+          "$module" "${args[@]}" "${report_args[@]}" 2>>"$err" | apply_inline_suppressions >"$out_txt" 2>>"$err"; then
+          module_status=0
+        else
+          module_status="${PIPESTATUS[0]}"
+        fi
+        restore_original_paths "$out_txt"
+        parse_text_to_json "$lang" "$out_txt" "$out_json"
+        attach_metrics_to_json "$out_json" "$metrics_dir"
+      fi
+      ;;
+    sarif)
+      prepare_metrics_dir "$metrics_dir"
+      if UBS_METRICS_DIR="$metrics_dir" UBS_LANG="$lang" UBS_SKIP_TYPE_NARROWING="$SKIP_TYPE_NARROWING" \
+        "$module" "${args[@]}" --format=sarif >"$out_sarif" 2>"$err"; then
+        module_status=0
+      else
+        module_status=$?
+      fi
+      restore_original_paths "$out_sarif"
+      if need_cmd jq && jq -e . "$out_sarif" >/dev/null 2>&1; then
+        parse_sarif_to_json "$lang" "$out_sarif" "$out_json" || true
+        attach_metrics_to_json "$out_json" "$metrics_dir" 2>/dev/null || true
+      else
+        prepare_metrics_dir "$metrics_dir"
+        if UBS_METRICS_DIR="$metrics_dir" UBS_LANG="$lang" UBS_SKIP_TYPE_NARROWING="$SKIP_TYPE_NARROWING" \
+          "$module" "${args[@]}" 2>>"$err" | apply_inline_suppressions >"$out_txt" 2>>"$err"; then
+          module_status=0
+        else
+          module_status="${PIPESTATUS[0]}"
+        fi
+        restore_original_paths "$out_txt"
+        minimal_sarif_from_text "$lang" "$out_txt" >"$out_sarif"
+        parse_text_to_json "$lang" "$out_txt" "$out_json"
+        attach_metrics_to_json "$out_json" "$metrics_dir"
+      fi
+      ;;
+    text|*)
+      prepare_metrics_dir "$metrics_dir"
+      if UBS_METRICS_DIR="$metrics_dir" UBS_LANG="$lang" UBS_SKIP_TYPE_NARROWING="$SKIP_TYPE_NARROWING" \
+        "$module" "${args[@]}" 2>"$err" | apply_inline_suppressions >"$out_txt" 2>>"$err"; then
+        module_status=0
+      else
+        module_status="${PIPESTATUS[0]}"
+      fi
+      restore_original_paths "$out_txt"
+      parse_text_to_json "$lang" "$out_txt" "$out_json"
+      attach_metrics_to_json "$out_json" "$metrics_dir"
+      ;;
+  esac
+
+  local duration=$((SECONDS - start_ts))
+  if [[ "${QUIET:-0}" -eq 0 ]]; then
+    say_err "${DIM}Finished $lang (${duration}s)${RESET}"
+  fi
+
+  echo "$module_status" >"$status_file"
+  return "$module_status"
+}
+
+# Parse legacy text logs → JSON summary (robust to colors)
+parse_text_to_json(){
+  local lang="$1" txt="$2" json="$3"
+  local critical=0 warning=0 info=0 files=0
+  # Strip ANSI, normalize
+  local cleaned; cleaned="$(sed -E 's/\x1B\[[0-9;]*[mK]//g' "$txt" | tr -d '\r\0')"
+  critical=$(printf '%s\n' "$cleaned" | grep -E 'Critical issues:|CRITICAL' | grep -Eo '[0-9]+' | tail -n1 || true)
+  warning=$(printf '%s\n' "$cleaned" | grep -E 'Warning issues:|Warning' | grep -Eo '[0-9]+' | tail -n1 || true)
+  info=$(printf '%s\n' "$cleaned" | grep -E 'Info items:|Info' | grep -Eo '[0-9]+' | tail -n1 || true)
+  files=$(printf '%s\n' "$cleaned" | grep -E 'Files scanned:' | grep -Eo '[0-9]+' | tail -n1 || true)
+  if [[ -z "$files" ]]; then
+    files=$(printf '%s\n' "$cleaned" \
+      | grep -E 'Files:[[:space:]]*[0-9]+' \
+      | head -n1 \
+      | grep -Eo '[0-9]+' \
+      | head -n1 || true)
+  fi
+  critical=${critical:-0}; warning=${warning:-0}; info=${info:-0}; files=${files:-0}
+  local proj_display
+  proj_display="$(json_escape "${SOURCE_PROJECT_DIR:-$PROJECT_DIR}")"
+  cat >"$json" <<JSON
+{"language":"$lang","project":"$proj_display","files":$files,"critical":$critical,"warning":$warning,"info":$info,"timestamp":"$(date_iso)"}
+JSON
+}
+
+attach_metrics_to_json(){
+  local json_path="$1" metrics_dir="$2"
+  [[ -f "$json_path" ]] || return 0
+  [[ -d "$metrics_dir" ]] || return 0
+  local files=()
+  while IFS= read -r -d '' f; do files+=("$f"); done < <(find "$metrics_dir" -maxdepth 1 -type f -name '*.json' -print0 2>/dev/null)
+  [[ ${#files[@]} -gt 0 ]] || return 0
+  if command -v python3 >/dev/null 2>&1; then
+    python3 - "$json_path" "${files[@]}" <<'PY'
+import json, sys
+from pathlib import Path
+
+json_path = Path(sys.argv[1])
+with json_path.open() as fh:
+    data = json.load(fh)
+if not isinstance(data, dict):
+    sys.exit(0)
+extras = data.get("extras", {})
+for extra_path in map(Path, sys.argv[2:]):
+    try:
+        payload = json.loads(extra_path.read_text())
+    except Exception:
+        continue
+    if isinstance(payload, dict):
+        extras.update(payload)
+if extras:
+    data["extras"] = extras
+    json_path.write_text(json.dumps(data))
+PY
+  fi
+}
+
+minimal_sarif_from_text(){
+  local lang="$1" txt="$2"
+  local critical=0 warning=0 info=0
+  local cleaned; cleaned="$(sed -E 's/\x1B\[[0-9;]*[mK]//g' "$txt" | tr -d '\r')"
+  critical=$(printf '%s\n' "$cleaned" | grep -E 'Critical issues:|CRITICAL' | grep -Eo '[0-9]+' | tail -n1 || true)
+  warning=$(printf '%s\n' "$cleaned" | grep -E 'Warning issues:|Warning' | grep -Eo '[0-9]+' | tail -n1 || true)
+  info=$(printf '%s\n' "$cleaned" | grep -E 'Info items:|Info' | grep -Eo '[0-9]+' | tail -n1 || true)
+  cat <<SARIF
+{"version":"2.1.0","runs":[{"tool":{"driver":{"name":"UBS ($lang)","informationUri":"https://github.com/Dicklesworthstone/ultimate_bug_scanner"}},"results":[
+  {"ruleId":"summary.critical","level":"error","message":{"text":"$critical critical findings"}},
+  {"ruleId":"summary.warning","level":"warning","message":{"text":"$warning warnings"}},
+  {"ruleId":"summary.info","level":"note","message":{"text":"$info info items"}}
+]}]}
+SARIF
+}
+
+parse_sarif_to_json(){
+  local lang="$1" sarif="$2" json="$3"
+  [[ -f "$sarif" ]] || return 1
+  if ! need_cmd jq; then
+    say "${YELLOW}${WARN}${RESET} jq not available; cannot parse SARIF"
+    return 1
+  fi
+  local critical warning info files
+  critical=$(jq '[.runs[]?.results[]? | select((.level // "warning") == "error")] | length' "$sarif" 2>/dev/null || echo 0)
+  warning=$(jq '[.runs[]?.results[]? | select((.level // "warning") == "warning")] | length' "$sarif" 2>/dev/null || echo 0)
+  info=$(jq '[.runs[]?.results[]? | select((.level // "warning") == "note")] | length' "$sarif" 2>/dev/null || echo 0)
+  files=$(jq '[.runs[]?.results[]?.locations[]?.physicalLocation?.artifactLocation?.uri?] | unique | length' "$sarif" 2>/dev/null || echo 0)
+  critical=${critical:-0}; warning=${warning:-0}; info=${info:-0}; files=${files:-0}
+  local proj_display
+  proj_display="$(json_escape "${SOURCE_PROJECT_DIR:-$PROJECT_DIR}")"
+  cat >"$json" <<JSON
+{"language":"$lang","project":"$proj_display","files":$files,"critical":$critical,"warning":$warning,"info":$info,"timestamp":"$(date_iso)"}
+JSON
+}
+
+merge_json_scanners(){
+  # Exclude *.findings.json from summary merge (those are detailed findings)
+  local jsons=()
+  for f in "$TMPDIR_RUN"/*.json; do
+    [[ "$f" == *.findings.json ]] && continue
+    [[ -f "$f" ]] && jsons+=("$f")
+  done
+  if [[ ${#jsons[@]} -eq 0 ]]; then
+    say "${YELLOW}${WARN}${RESET} No scanner JSON files found"; return 1
+  fi
+  if ! need_cmd jq; then
+    say "${YELLOW}${WARN}${RESET} jq not found; cannot emit combined JSON"; return 1
+  fi
+  # First merge the summary JSONs
+  local base_json
+  base_json=$(jq -s --arg project "$SOURCE_PROJECT_DIR" --arg ts "$(date_iso)" '
+    def nz(x): if (x|type)=="number" then x else 0 end;
+    {project:$project, timestamp:$ts, scanners: .,
+     totals:{
+       critical: (map(nz(.critical)) | add),
+       warning:  (map(nz(.warning))  | add),
+       info:     (map(nz(.info))     | add),
+       files:    (map(nz(.files))    | add)
+     }}' "${jsons[@]}")
+
+  # Now merge in findings from *.findings.json files (if any exist)
+  local findings_jsons=( "$TMPDIR_RUN"/*.findings.json )
+  if [[ -f "${findings_jsons[0]}" ]]; then
+    # Build a map of language -> findings array
+    local findings_map="{}"
+    local fm_parts=""
+    for f in "${findings_jsons[@]}"; do
+      [[ -f "$f" ]] || continue
+      local lang_name
+      lang_name=$(basename "$f" .findings.json)
+      local part
+      part=$(jq -c --arg lang "$lang_name" '{($lang): .findings}' "$f" 2>/dev/null) || continue
+      [[ -n "$part" ]] && fm_parts+="$part"$'\n'
+    done
+    if [[ -n "$fm_parts" ]]; then
+      findings_map=$(printf '%s' "$fm_parts" | jq -s 'add // {}')
+    fi
+
+    # Merge findings into each scanner entry (only if we have valid findings_map)
+    if [[ -n "$findings_map" && "$findings_map" != "{}" && "$findings_map" != "null" ]]; then
+      echo "$base_json" | jq --argjson fm "$findings_map" '
+        .scanners |= map(
+          if .language and $fm[.language] then
+            . + {findings: $fm[.language]}
+          else . end
+        )'
+    else
+      echo "$base_json"
+    fi
+  else
+    echo "$base_json"
+  fi
+}
+
+generate_combined_json(){
+  [[ -n "$COMBINED_JSON_FILE" ]] || return 1
+  if [[ -s "$COMBINED_JSON_FILE" ]]; then return 0; fi
+  if ! need_cmd jq; then return 1; fi
+  merge_json_scanners >"$COMBINED_JSON_FILE" 2>/dev/null || return 1
+  return 0
+}
+
+merge_sarif_runs(){
+  local sarifs=( "$TMPDIR_RUN"/*.sarif )
+  # Check if any sarif files exist (glob might expand to literal if no matches)
+  if [[ ${#sarifs[@]} -eq 0 ]] || [[ ! -f "${sarifs[0]}" ]]; then
+    say "${YELLOW}${WARN}${RESET} No SARIF files found to merge"
+    echo '{"version":"2.1.0","runs":[]}'
+    return 0
+  fi
+  if ! need_cmd jq; then
+    say "${YELLOW}${WARN}${RESET} jq not found; cannot merge SARIF; printing first artifact"; cat "${sarifs[0]}"; return 0
+  fi
+  # Filter to only valid JSON files
+  local valid_sarifs=()
+  for f in "${sarifs[@]}"; do
+    if [[ -f "$f" ]] && jq -e . "$f" >/dev/null 2>&1; then
+      valid_sarifs+=("$f")
+    else
+      say_err "${DIM}Skipping invalid SARIF: $f${RESET}"
+    fi
+  done
+  if [[ ${#valid_sarifs[@]} -eq 0 ]]; then
+    say "${YELLOW}${WARN}${RESET} No valid SARIF files to merge"
+    echo '{"version":"2.1.0","runs":[]}'
+    return 0
+  fi
+  # Accept either raw SARIF root or wrapped under "sarifLog"
+  # Note: (... | add) // [] handles the case where add returns null (empty/null arrays)
+  local jq_err="$TMPDIR_RUN/sarif-merge.err"
+  if jq -s --arg repo "$GIT_REMOTE_HTTP" --arg rev "$GIT_COMMIT_SHA" --arg auto "$SARIF_AUTOMATION_ID" '
+      def toRuns(x):
+        if x.sarifLog? then (x.sarifLog.runs // [])
+        elif x.version? and x.runs? then (x.runs // [])
+        else [] end;
+      def attachMeta(run):
+        (if ($repo|length) > 0 then run + {versionControlProvenance:[{repositoryUri:$repo, revisionId:$rev}]}
+         else run end)
+        | (if ($auto|length) > 0 then . + {automationDetails:{id:$auto}} else . end);
+      {"version":"2.1.0","runs": ((map(toRuns(.)) | add) // [] | map(attachMeta(.)))}' "${valid_sarifs[@]}" 2>"$jq_err"; then
+    return 0
+  fi
+
+  # Common when the user truncates output: `ubs --format=sarif ... | head -n 20`.
+  # Do not treat SIGPIPE/EPIPE as a fatal error.
+  if grep -q "Broken pipe" "$jq_err" 2>/dev/null; then
+    return 0
+  fi
+
+  say_err "${YELLOW}${WARN}${RESET} Failed to merge SARIF runs"
+  cat "$jq_err" >&2 || true
+  return 1
+}
+
+write_jsonl_summary(){
+  local dest="$1"
+  if ! generate_combined_json; then return 1; fi
+  local tmp="$TMPDIR_RUN/combined.jsonl"
+  local ts="$(date_iso)"
+  if ! need_cmd jq; then return 1; fi
+
+  if [[ "${JSONL_DETAIL:-1}" -eq 1 ]]; then
+    # Detailed mode: emit each finding as its own JSONL line
+    jq -c --arg project "$SOURCE_PROJECT_DIR" --arg ts "$ts" '
+      .scanners[] as $s |
+      ($s.findings // [])[] |
+      {type:"finding", project:$project, language:$s.language} + .
+    ' "$COMBINED_JSON_FILE" >"$tmp" 2>/dev/null || true
+
+    # Also emit scanner summaries
+    jq -c --arg project "$SOURCE_PROJECT_DIR" --arg ts "$ts" '
+      .scanners[] | {type:"scanner", project:$project, language, files, critical, warning, info, timestamp:(.timestamp // $ts)}
+    ' "$COMBINED_JSON_FILE" >>"$tmp"
+  else
+    # Summary-only mode (legacy behavior)
+    jq -c --arg project "$SOURCE_PROJECT_DIR" --arg ts "$ts" '
+      .scanners[] | {type:"scanner", project:$project, language, files, critical, warning, info, timestamp:(.timestamp // $ts)}
+    ' "$COMBINED_JSON_FILE" >"$tmp"
+  fi
+
+  # Always emit totals
+  jq -c --arg project "$SOURCE_PROJECT_DIR" --arg ts "$ts" '
+    {type:"totals", project:$project, files:(.totals.files//0), critical:(.totals.critical//0),
+     warning:(.totals.warning//0), info:(.totals.info//0), timestamp:(.timestamp // $ts)}
+  ' "$COMBINED_JSON_FILE" >>"$tmp"
+
+  if [[ -n "$dest" ]]; then
+    mkdir -p "$(dirname "$dest")"
+    cp "$tmp" "$dest"
+  else
+    cat "$tmp"
+  fi
+}
+
+suggest_ignore_candidates(){
+  local threshold=200
+  IFS=',' read -r -a defaults <<<"$DEFAULT_IGNORES"
+  say "${BLUE}${INFO}${RESET} Ignore suggestions (directories with >${threshold} files not already default-ignored):"
+  find "$PROJECT_DIR" -maxdepth 1 -mindepth 1 -type d 2>/dev/null | while read -r d; do
+    local base=$(basename "$d")
+    local skip=0
+    for df in "${defaults[@]}"; do [[ "$base" == "$df" ]] && skip=1; done
+    [[ "$skip" -eq 1 ]] && continue
+    local count=$(find "$d" -type f 2>/dev/null | wc -l | awk '{print $1+0}')
+    if [[ "$count" -gt $threshold ]]; then
+      say "  ${GRAY}$base${RESET} (${count} files) → consider adding to .ubsignore"
+    fi
+  done
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Banner & preflight
+# ─────────────────────────────────────────────────────────────────────────────
+if [[ "${FORMAT:-text}" == "text" ]]; then
+  say "${BOLD}${CYAN}"
+  cat <<'BANNER'
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  ██╗   ██╗██╗  ████████╗██╗███╗   ███╗ █████╗ ████████╗███████╗              ║
+║  ██║   ██║██║  ╚══██╔══╝██║████╗ ████║██╔══██╗╚══██╔══╝██╔════╝              ║
+║  ██║   ██║██║     ██║   ██║██╔████╔██║███████║   ██║   █████╗                ║
+║  ██║   ██║██║     ██║   ██║██║╚██╔╝██║██╔══██║   ██║   ██╔══╝                ║
+║  ╚██████╔╝███████╗██║   ██║██║ ╚═╝ ██║██║  ██║   ██║   ███████╗              ║
+║   ╚═════╝ ╚══════╝╚═╝   ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝              ║
+║                                                                              ║
+║  ██████╗ ██╗   ██╗ ██████╗         __       __                               ║
+║  ██╔══██╗██║   ██║██╔════╝         \ `-'"-'` /                               ║
+║  ██████╔╝██║   ██║██║  ███╗        / \_   _/ \                               ║
+║  ██╔══██╗██║   ██║██║   ██║        |  d\_/b  |                               ║
+║  ██████╔╝╚██████╔╝╚██████╔╝       .'\   V   /'.                              ║
+║  ╚═════╝  ╚═════╝  ╚═════╝        /   '-...-'   \                            ║
+║                                  | /         \ |                             ║
+║                                  \/\         /\/                             ║
+║                                  ==(||)---(||)==                             ║
+║                                                                              ║
+║  ███████╗  ██████╗   █████╗ ███╗   ██╗███╗   ██╗███████╗██████╗              ║
+║  ██╔════╝  ██╔═══╝  ██╔══██╗████╗  ██║████╗  ██║██╔════╝██╔══██╗             ║
+║  ███████╗  ██║      ███████║██╔██╗ ██║██╔██╗ ██║█████╗  ██████╔╝             ║
+║  ╚════██║  ██║      ██╔══██║██║╚██╗██║██║╚██╗██║██╔══╝  ██╔══██╗             ║
+║  ███████║  ██████╗  ██║  ██║██║ ╚████║██║ ╚████║███████╗██║  ██║             ║
+║  ╚══════╝  ╚═════╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝                  ║
+║                                                                              ║
+║     JS / TS • PYTHON • C / C++ • RUST • GO • JAVA • RUBY • SWIFT             ║
+║                    UBS: ULTIMATE BUG SCANNER • SARIF FUSION ☄️               ║
+║                                                                              ║
+║                                                                              ║
+║                     Night Owl QA                                             ║
+║                     “We see bugs before you do.”                             ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+BANNER
+  say "${RESET}"
+fi
+
+say "${CYAN}${BOLD}UBS Meta-Runner v${UBS_VERSION}${RESET}  ${DIM}$(date_iso)${RESET}"
+say "${WHITE}Project:${RESET} ${CYAN}$SOURCE_PROJECT_DIR${RESET}"
+say "${WHITE}Format:${RESET}  ${CYAN}$FORMAT${RESET}"
+
+langs=( $(select_langs) )
+if [[ ${#langs[@]} -eq 0 ]]; then say "${YELLOW}${WARN}${RESET} no recognizable languages in ${PROJECT_DIR}"; exit 0; fi
+say "${WHITE}Detected:${RESET} ${CYAN}${langs[*]}${RESET}"
+
+# Ensure ast-grep is available for JS/TS runs (tool-cache auto-provisioning).
+if [[ " ${langs[*]} " == *" js "* ]]; then
+  if ensure_ast_grep; then
+    export UBS_AST_GREP_BIN="$AST_GREP_BIN"
+    if [[ "${QUIET:-0}" -eq 0 ]]; then
+      say_err "${DIM}${INFO}${RESET} ast-grep (${AST_GREP_SOURCE}): ${AST_GREP_BIN}"
+    fi
+  else
+    say_err "${RED}${X}${RESET} Environment error: ast-grep is required for accurate JS/TS scanning."
+    say_err "${DIM}Fix: install ast-grep (https://ast-grep.github.io/) or run the UBS installer.${RESET}"
+    if [[ "$FORMAT" == "json" || "$FORMAT" == "jsonl" || "$FORMAT" == "toon" ]]; then
+      printf '{"error":"environment","exit_code":2,"failed_modules":["js"]}\n'
+    fi
+    exit 2
+  fi
+fi
+
+# Resolve & ensure modules
+declare -A MODULE_PATHS
+for L in "${langs[@]}"; do
+  p="$(resolve_module_path "$L")"
+  ensure_module "$L" "$p" || { say "${RED}$X failed to ensure module for $L${RESET}"; exit 1; }
+  MODULE_PATHS["$L"]="$p"
+done
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Execute modules concurrently
+# ─────────────────────────────────────────────────────────────────────────────
+declare -A PID_LANG=()
+pids=()
+for L in "${langs[@]}"; do
+  run_lang "$L" "${MODULE_PATHS[$L]}" "$FORMAT" &
+  pid=$!
+  pids+=("$pid")
+  PID_LANG["$pid"]="$L"
+done
+
+# Wait & collect statuses
+status=0
+HAS_ENV_ERROR=0
+ENV_ERROR_LANGS=()
+for pid in "${pids[@]}"; do
+  rc=0
+  if wait "$pid"; then
+    rc=0
+  else
+    rc=$?
+  fi
+  if [[ "$rc" -eq 2 ]]; then
+    HAS_ENV_ERROR=1
+    ENV_ERROR_LANGS+=("${PID_LANG[$pid]:-unknown}")
+  fi
+  if [[ "$rc" -gt "$status" ]]; then
+    status="$rc"
+  fi
+done
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Environment error handling (exit code 2)
+# ─────────────────────────────────────────────────────────────────────────────
+env_error_excerpt(){
+  local lang="$1"
+  local err_file="$TMPDIR_RUN/$lang.err"
+  local txt_file="$TMPDIR_RUN/$lang.txt"
+  if [[ -s "$err_file" ]]; then
+    sed -E 's/\x1B\[[0-9;]*[mK]//g' "$err_file" | tail -n 50
+    return 0
+  fi
+  if [[ -s "$txt_file" ]]; then
+    sed -E 's/\x1B\[[0-9;]*[mK]//g' "$txt_file" \
+      | awk 'f{print} /Environment error:/{f=1}' \
+      | tail -n 50
+  fi
+}
+
+emit_env_error_report(){
+  say_err "${RED}${X}${RESET} Environment error: one or more scanners could not run correctly."
+  say_err "${DIM}This is a tooling/dependency problem, not a code-quality failure.${RESET}"
+  for lang in "${ENV_ERROR_LANGS[@]}"; do
+    say_err ""
+    say_err "${RED}${X}${RESET} ${BOLD}${lang}${RESET} (exit 2)"
+    env_error_excerpt "$lang" | sed 's/^/  /' >&2 || true
+  done
+}
+
+emit_env_error_json(){
+  local proj; proj="$(json_escape "${SOURCE_PROJECT_DIR:-$PROJECT_DIR}")"
+  local modules_json=""
+  local first=1
+  for lang in "${ENV_ERROR_LANGS[@]}"; do
+    local lang_json; lang_json="$(json_escape "$lang")"
+    if [[ $first -eq 1 ]]; then
+      modules_json="\"$lang_json\""
+      first=0
+    else
+      modules_json+=",\"$lang_json\""
+    fi
+  done
+  printf '{"error":"environment","exit_code":2,"project":"%s","failed_modules":[%s]}\n' "$proj" "$modules_json"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Emit unified result
+# ─────────────────────────────────────────────────────────────────────────────
+case "$FORMAT" in
+  json)
+    if [[ "$HAS_ENV_ERROR" -eq 1 ]]; then
+      emit_env_error_report
+      emit_env_error_json
+      status=2
+    else
+      if generate_combined_json; then
+        cat "$COMBINED_JSON_FILE"
+      else
+        if ! merge_json_scanners; then
+          say "${RED}$X could not produce combined JSON${RESET}"
+          [[ "$status" -lt 1 ]] && status=1
+        fi
+      fi
+    fi
+    ;;
+  jsonl)
+    if [[ "$HAS_ENV_ERROR" -eq 1 ]]; then
+      emit_env_error_report
+      emit_env_error_json
+      status=2
+    else
+      if write_jsonl_summary ""; then
+        :
+      else
+        say "${RED}$X could not produce JSONL output${RESET}"
+        [[ "$status" -lt 1 ]] && status=1
+      fi
+    fi
+    ;;
+  sarif)
+    if [[ "$HAS_ENV_ERROR" -eq 1 ]]; then
+      emit_env_error_report
+      status=2
+    else
+      merge_sarif_runs
+    fi
+    ;;
+  toon)
+    if [[ "$HAS_ENV_ERROR" -eq 1 ]]; then
+      emit_env_error_report
+      emit_env_error_json
+      status=2
+    else
+      # Check if TOON encoder is available (UBS_TEST_FORCE_NO_TOON=1 forces fallback for testing)
+      # TOON_BIN can be set to toon_rust's tru binary for better performance
+      toon_skip_reason=""
+      if [[ "${UBS_TEST_FORCE_NO_TOON:-0}" == "1" ]]; then
+        toon_skip_reason="disabled by UBS_TEST_FORCE_NO_TOON=1"
+      elif ! command -v "$TOON_BIN" >/dev/null 2>&1; then
+        toon_skip_reason="not found in PATH"
+      elif ! looks_like_toon_rust_encoder "$TOON_BIN"; then
+        toon_skip_reason="does not appear to be toon_rust (expected tru)"
+      fi
+
+      if [[ -z "$toon_skip_reason" ]]; then
+        if generate_combined_json; then
+          "$TOON_BIN" --encode < "$COMBINED_JSON_FILE"
+        else
+          if ! merge_json_scanners | "$TOON_BIN" --encode; then
+            say "${RED}$X could not produce TOON output${RESET}"
+            [[ "$status" -lt 1 ]] && status=1
+          fi
+        fi
+      else
+        say_err "${YELLOW}Warning: $TOON_BIN (TOON encoder) $toon_skip_reason; falling back to --format=json${RESET}"
+        if generate_combined_json; then
+          cat "$COMBINED_JSON_FILE"
+        else
+          if ! merge_json_scanners; then
+            say "${RED}$X could not produce combined JSON${RESET}"
+            [[ "$status" -lt 1 ]] && status=1
+          fi
+        fi
+      fi
+    fi
+    ;;
+  text|*)
+    for L in "${langs[@]}"; do
+      say "\n${MAGENTA}${BOLD}──────── $L ────────${RESET}"
+      if [ -s "$TMPDIR_RUN/$L.txt" ]; then
+        print_with_permalinks "$TMPDIR_RUN/$L.txt"
+      elif [ -s "$TMPDIR_RUN/$L.json" ]; then
+        say "${DIM}[json summary]${RESET}"
+        cat "$TMPDIR_RUN/$L.json"
+      elif [ -s "$TMPDIR_RUN/$L.sarif" ]; then
+        say "${DIM}[sarif summary]${RESET}"
+        cat "$TMPDIR_RUN/$L.sarif"
+      fi
+    done
+    if [[ "$HAS_ENV_ERROR" -eq 1 ]]; then
+      say "\n${RED}${BOLD}──────── Environment Error ────────${RESET}"
+      say "${RED}${X}${RESET} One or more scanners could not run correctly (exit 2)."
+      say "${DIM}This is a tooling/dependency problem, not a code-quality failure.${RESET}"
+      say "${DIM}See the affected scanner output above for remediation guidance.${RESET}"
+      status=2
+    else
+      # Combined human summary (if JSON pieces exist)
+      if need_cmd jq && ls "$TMPDIR_RUN"/*.json >/dev/null 2>&1; then
+        say "\n${WHITE}${BOLD}──────── Combined Summary ────────${RESET}"
+        if generate_combined_json; then
+          jq -r '"Files: \(.totals.files)\nCritical: \(.totals.critical)\nWarning: \(.totals.warning)\nInfo: \(.totals.info)"' "$COMBINED_JSON_FILE"
+          totals=$(jq -r '.totals' "$COMBINED_JSON_FILE")
+        else
+          merge_json_scanners | jq -r '"Files: \(.totals.files)\nCritical: \(.totals.critical)\nWarning: \(.totals.warning)\nInfo: \(.totals.info)"'
+          totals=$(merge_json_scanners | jq -r '.totals')
+        fi
+        crit=$(printf '%s' "$totals" | jq -r '.critical')
+        warn=$(printf '%s' "$totals" | jq -r '.warning')
+        desired=0
+        if [[ "$FAIL_ON_WARNING" -eq 1 && $((crit+warn)) -gt 0 ]]; then desired=1; fi
+        if [[ "$FAIL_ON_WARNING" -eq 0 && "$crit" -gt 0 ]]; then desired=1; fi
+        if [[ "$desired" -gt "$status" ]]; then status="$desired"; fi
+      fi
+    fi
+    ;;
+	esac
+
+	# Ensure exit status reflects merged totals in machine formats too.
+	# Some modules emit machine output but always exit 0; the meta-runner should still fail
+	# when critical findings exist (or warnings in --fail-on-warning mode).
+	if [[ "$HAS_ENV_ERROR" -eq 0 && ( "$FORMAT" == "json" || "$FORMAT" == "jsonl" || "$FORMAT" == "sarif" || "$FORMAT" == "toon" ) ]]; then
+	  if need_cmd jq && generate_combined_json; then
+	    crit=$(jq -r '.totals.critical // 0' "$COMBINED_JSON_FILE" 2>/dev/null || echo 0)
+	    warn=$(jq -r '.totals.warning // 0' "$COMBINED_JSON_FILE" 2>/dev/null || echo 0)
+	    crit=${crit:-0}; warn=${warn:-0}
+	    desired=0
+	    if [[ "$FAIL_ON_WARNING" -eq 1 && $((crit + warn)) -gt 0 ]]; then desired=1; fi
+	    if [[ "$FAIL_ON_WARNING" -eq 0 && "$crit" -gt 0 ]]; then desired=1; fi
+	    if [[ "$desired" -gt "$status" ]]; then status="$desired"; fi
+	  fi
+	fi
+
+	if [[ "$HAS_ENV_ERROR" -eq 1 ]]; then
+	  [[ -n "$BEADS_JSONL_PATH" ]] && say_err "${YELLOW}${WARN}${RESET} Skipping Beads JSONL export due to environment error."
+	  [[ -n "$REPORT_JSON_PATH" || -n "$HTML_REPORT_PATH" || -n "$COMPARISON_FILE" ]] \
+    && say_err "${YELLOW}${WARN}${RESET} Skipping shareable artifacts due to environment error."
+	  exit "$status"
+	fi
+
+if [[ -n "$BEADS_JSONL_PATH" ]]; then
+  if ! write_jsonl_summary "$BEADS_JSONL_PATH"; then
+    say "${YELLOW}${WARN}${RESET} Could not write Beads JSONL to $BEADS_JSONL_PATH"
+  else
+    say "${DIM}${INFO}${RESET} Beads JSONL written to $BEADS_JSONL_PATH"
+  fi
+fi
+
+SHAREABLE_REQUEST=0
+if [[ "$HAS_ENV_ERROR" -eq 0 ]]; then
+  [[ -n "$REPORT_JSON_PATH" || -n "$HTML_REPORT_PATH" || -n "$COMPARISON_FILE" ]] && SHAREABLE_REQUEST=1
+fi
+
+if [[ "$HAS_ENV_ERROR" -eq 0 && $SHAREABLE_REQUEST -eq 1 ]]; then
+  if generate_combined_json; then
+    SHAREABLE_JSON_FILE="$COMBINED_JSON_FILE"
+    SHAREABLE_TIMESTAMP="$(date_iso)"
+    if ! need_cmd python3; then
+      say "${YELLOW}${WARN}${RESET} python3 not available; cannot build shareable artifacts"
+    else
+      python3 - "$SHAREABLE_JSON_FILE" "${COMPARISON_FILE:-}" \
+        "${REPORT_JSON_PATH:-}" "${HTML_REPORT_PATH:-}" \
+        "${GIT_REMOTE_HTTP:-}" "${GIT_COMMIT_SHA:-}" "${GIT_BLOB_BASE:-}" \
+        "$SHAREABLE_TIMESTAMP" <<'PY' 1>&2
+import json, sys, pathlib, datetime, html
+combined_path, baseline_path, out_json, out_html, repo_url, commit, blob_base, ts = sys.argv[1:9]
+root = pathlib.Path(combined_path)
+if not root.exists():
+    sys.exit(0)
+combined = json.loads(root.read_text())
+
+def load_optional(path):
+    if not path:
+        return None
+    p = pathlib.Path(path)
+    if not p.exists():
+        return None
+    try:
+        return json.loads(p.read_text())
+    except Exception:
+        return None
+
+baseline = load_optional(baseline_path)
+
+shareable = combined.copy()
+shareable["generated_at"] = ts
+if repo_url:
+    git = {"repository": repo_url}
+    if commit:
+        git["commit"] = commit
+    if blob_base:
+        git["blob_base"] = blob_base
+    shareable["git"] = git
+
+def get_totals(doc):
+    if not doc:
+        return {"files":0,"critical":0,"warning":0,"info":0}
+    t = doc.get("totals", {})
+    return {
+        "files": int(t.get("files", 0) or 0),
+        "critical": int(t.get("critical", 0) or 0),
+        "warning": int(t.get("warning", 0) or 0),
+        "info": int(t.get("info", 0) or 0),
+    }
+
+cur_totals = get_totals(combined)
+base_totals = get_totals(baseline)
+
+if baseline is not None:
+    shareable["comparison"] = {
+        "baseline_path": baseline_path,
+        "delta": {
+            "critical": cur_totals["critical"] - base_totals["critical"],
+            "warning": cur_totals["warning"] - base_totals["warning"],
+            "info": cur_totals["info"] - base_totals["info"],
+        },
+        "baseline_totals": base_totals,
+    }
+
+if out_json:
+    out_path = pathlib.Path(out_json)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(shareable, indent=2), encoding="utf-8")
+
+if out_html:
+    totals_html = f"""
+    <table>
+      <tr><th>Metric</th><th>Current</th><th>Baseline</th><th>Δ</th></tr>
+      <tr><td>Critical</td><td>{cur_totals['critical']}</td><td>{base_totals['critical']}</td><td>{cur_totals['critical']-base_totals['critical']}</td></tr>
+      <tr><td>Warning</td><td>{cur_totals['warning']}</td><td>{base_totals['warning']}</td><td>{cur_totals['warning']-base_totals['warning']}</td></tr>
+      <tr><td>Info</td><td>{cur_totals['info']}</td><td>{base_totals['info']}</td><td>{cur_totals['info']-base_totals['info']}</td></tr>
+    </table>
+    """
+    scanners = shareable.get("scanners", [])
+    scanner_rows = []
+    for entry in scanners:
+        lang = entry.get("language", "-")
+        ct = entry.get("critical", entry.get("totals", {}).get("critical"))
+        wt = entry.get("warning", entry.get("totals", {}).get("warning"))
+        it = entry.get("info", entry.get("totals", {}).get("info"))
+        scanner_rows.append(f"<tr><td>{html.escape(str(lang))}</td><td>{ct or 0}</td><td>{wt or 0}</td><td>{it or 0}</td></tr>")
+    scanners_html = "\n".join(scanner_rows)
+    doc = f"""
+    <html><head><meta charset='utf-8'><title>UBS Report</title>
+    <style>body{{font-family:Arial,sans-serif;padding:1.5rem;background:#111;color:#eee;}}
+    table{{border-collapse:collapse;margin-top:1rem;}}
+    th,td{{border:1px solid #444;padding:0.4rem 0.8rem;text-align:left;}}
+    h1{{margin-bottom:0;}}
+    .meta{{color:#aaa;font-size:0.9rem;}}
+    </style></head><body>
+    <h1>Ultimate Bug Scanner Report</h1>
+    <div class='meta'>Generated {html.escape(ts)}</div>
+    {totals_html}
+    <h2>Per-language totals</h2>
+    <table><tr><th>Language</th><th>Critical</th><th>Warning</th><th>Info</th></tr>{scanners_html}</table>
+    </body></html>
+    """
+    out_path = pathlib.Path(out_html)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(doc, encoding="utf-8")
+
+print(f"Shareable summary written (critical={cur_totals['critical']}, warning={cur_totals['warning']}, info={cur_totals['info']})")
+PY
+    fi
+  else
+    say "${YELLOW}${WARN}${RESET} jq not available; cannot build shareable artifacts"
+  fi
+fi
+
+exit "$status"

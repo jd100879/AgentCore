@@ -1,0 +1,1805 @@
+{
+  "version": 1,
+  "defaults": {
+    "ubs_bin": "../ubs",
+    "args": [
+      "--ci"
+    ],
+    "env": {
+      "NO_COLOR": "1"
+    },
+    "artifacts_dir": "artifacts"
+  },
+  "cases": [
+    {
+      "id": "js-core-buggy",
+      "description": "Top-level JS regression bucket with 20 legacy bug patterns.",
+      "path": "test-suite/buggy",
+      "language": "js",
+      "tags": [
+        "js",
+        "core",
+        "buggy"
+      ],
+      "args": [
+        "--only=js",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          },
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "NULL SAFETY & DEFENSIVE PROGRAMMING"
+        ]
+      }
+    },
+    {
+      "id": "js-core-clean",
+      "description": "Top-level JS clean fixtures (should stay quiet).",
+      "path": "test-suite/clean",
+      "language": "js",
+      "tags": [
+        "js",
+        "core",
+        "clean"
+      ],
+      "args": [
+        "--only=js"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "js-module-buggy",
+      "description": "module-specific buggy security fixture under test-suite/js/buggy.",
+      "path": "test-suite/js/buggy",
+      "language": "js",
+      "tags": [
+        "js",
+        "module",
+        "buggy"
+      ],
+      "args": [
+        "--only=js"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          },
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "SECURITY VULNERABILITIES"
+        ]
+      }
+    },
+    {
+      "id": "js-module-buggy-ast-grep-path-shim",
+      "description": "Regression: ignore bogus ast-grep earlier in PATH and still run verified JS AST analysis.",
+      "path": "test-suite/js/buggy",
+      "language": "js",
+      "tags": [
+        "js",
+        "ast-grep",
+        "tooling",
+        "regression"
+      ],
+      "args": [
+        "--only=js"
+      ],
+      "bin_shims": {
+        "ast-grep": "#!/usr/bin/env bash\nif [[ \"${1:-}\" == \"--version\" ]]; then\n  echo \"ast-grep 0.0.0\"\n  exit 0\nfi\nexit 64\n"
+      },
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          },
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "SECURITY VULNERABILITIES"
+        ],
+        "require_substrings_stderr": [
+          "ast-grep ("
+        ],
+        "forbid_substrings_stderr": [
+          "bin_shims/ast-grep"
+        ]
+      }
+    },
+    {
+      "id": "js-module-env-error-missing-ast-grep-jsx",
+      "description": "Regression: JS module must fail fast (exit 2) when JSX/TS/TSX is present but ast-grep is unavailable.",
+      "path": "test-suite/frameworks/react",
+      "language": "js",
+      "tags": [
+        "js",
+        "ast-grep",
+        "env-error",
+        "regression"
+      ],
+      "ubs_bin": "../modules/ubs-js.sh",
+      "env": {
+        "UBS_TEST_FORCE_NO_AST_GREP": "1"
+      },
+      "args": [],
+      "expect": {
+        "exit_code": 2,
+        "allow_unparseable_output": true,
+        "require_substrings": [
+          "Environment error: ast-grep is required for TS/TSX/JSX scans"
+        ],
+        "forbid_substrings": [
+          "regex fallback mode"
+        ]
+      }
+    },
+    {
+      "id": "js-typeof-invalid-string-literals-detected",
+      "description": "Regression: detect invalid typeof string literals (non-parenthesized typeof form) via AST-confirmed matches.",
+      "path": "test-suite/buggy/05-type-coercion.js",
+      "language": "js",
+      "tags": [
+        "js",
+        "typeof",
+        "ast-grep",
+        "regression"
+      ],
+      "args": [
+        "--only=js",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "require_substrings": [
+          "Invalid typeof comparison"
+        ]
+      }
+    },
+    {
+      "id": "js-module-clean",
+      "description": "module-specific clean fixture (allows single warning until tuned).",
+      "path": "test-suite/js/clean",
+      "language": "js",
+      "tags": [
+        "js",
+        "module",
+        "clean"
+      ],
+      "args": [
+        "--only=js"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 2
+          }
+        }
+      }
+    },
+    {
+      "id": "js-node-buggy",
+      "description": "Express/Node buggy API sample with many security issues.",
+      "path": "test-suite/frameworks/node/buggy-api.js",
+      "language": "js",
+      "tags": [
+        "js",
+        "framework",
+        "node",
+        "buggy"
+      ],
+      "args": [
+        "--only=js",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          },
+          "warning": {
+            "min": 10
+          }
+        },
+        "require_substrings": [
+          "MATH & ARITHMETIC PITFALLS"
+        ]
+      }
+    },
+    {
+      "id": "js-node-clean",
+      "description": "Express/Node clean API sample (should stay quiet).",
+      "path": "test-suite/frameworks/node/clean-api.js",
+      "language": "js",
+      "tags": [
+        "js",
+        "framework",
+        "node",
+        "clean"
+      ],
+      "args": [
+        "--only=js"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "js-edge-cases",
+      "description": "Aggregate JS edge-case directory (unicode, timezone, floating-point).",
+      "path": "test-suite/edge-cases",
+      "language": "js",
+      "tags": [
+        "js",
+        "edge"
+      ],
+      "args": [
+        "--only=js",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "min": 5
+          }
+        },
+        "require_substrings": [
+          "edge-cases"
+        ]
+      }
+    },
+    {
+      "id": "js-async-errors-buggy",
+      "description": "JS async error path coverage regression (await without try/catch, Promise chains missing .catch).",
+      "path": "test-suite/js/async_errors/buggy",
+      "language": "js",
+      "tags": [
+        "js",
+        "async",
+        "buggy"
+      ],
+      "args": [
+        "--only=js",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "js-async-errors-clean",
+      "description": "JS async error coverage clean baseline (all awaits guarded).",
+      "path": "test-suite/js/async_errors/clean",
+      "language": "js",
+      "tags": [
+        "js",
+        "async",
+        "clean"
+      ],
+      "args": [
+        "--only=js"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 8
+          }
+        }
+      }
+    },
+    {
+      "id": "js-react-hooks-buggy",
+      "description": "React hooks dependency regression (missing deps, unstable dependencies).",
+      "path": "test-suite/js/buggy/react_hooks.js",
+      "language": "js",
+      "tags": [
+        "js",
+        "react",
+        "buggy"
+      ],
+      "args": [
+        "--only=js",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "React hooks dependency analysis"
+        ]
+      }
+    },
+    {
+      "id": "js-react-hooks-clean",
+      "description": "React hooks clean baseline with correct dependency arrays.",
+      "path": "test-suite/js/clean/react_hooks.js",
+      "language": "js",
+      "tags": [
+        "js",
+        "react",
+        "clean"
+      ],
+      "args": [
+        "--only=js"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "js-taint-buggy",
+      "description": "Lightweight taint analysis regression (sources reach sinks without sanitization).",
+      "path": "test-suite/js/buggy/taint_analysis.js",
+      "language": "js",
+      "tags": [
+        "js",
+        "security",
+        "taint",
+        "buggy"
+      ],
+      "args": [
+        "--only=js",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "Lightweight taint analysis"
+        ]
+      }
+    },
+    {
+      "id": "js-taint-clean",
+      "description": "Lightweight taint analysis clean baseline (sources sanitized before sinks).",
+      "path": "test-suite/js/clean/taint_analysis.js",
+      "language": "js",
+      "tags": [
+        "js",
+        "security",
+        "taint",
+        "clean"
+      ],
+      "args": [
+        "--only=js"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 2
+          }
+        }
+      }
+    },
+    {
+      "id": "python-buggy",
+      "description": "Python buggy fixtures (enable once python module assertions stabilize).",
+      "path": "test-suite/python/buggy",
+      "language": "python",
+      "tags": [
+        "python",
+        "buggy"
+      ],
+      "args": [
+        "--only=python",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          },
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "ASYNC/AWAIT PITFALLS"
+        ]
+      }
+    },
+    {
+      "id": "python-clean",
+      "description": "Python clean fixtures (baseline for zero findings).",
+      "path": "test-suite/python/clean",
+      "language": "python",
+      "tags": [
+        "python",
+        "clean"
+      ],
+      "args": [
+        "--only=python"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 6
+          }
+        }
+      }
+    },
+    {
+      "id": "python-taint-buggy",
+      "description": "Python taint analysis regression (Flask request data flows into HTML/SQL/subprocess).",
+      "path": "test-suite/python/buggy/taint_analysis.py",
+      "language": "python",
+      "tags": [
+        "python",
+        "security",
+        "taint",
+        "buggy"
+      ],
+      "args": [
+        "--only=python",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "Lightweight taint analysis"
+        ]
+      }
+    },
+    {
+      "id": "python-taint-clean",
+      "description": "Python taint analysis clean baseline (escaped HTML + parameterized SQL).",
+      "path": "test-suite/python/clean/taint_analysis.py",
+      "language": "python",
+      "tags": [
+        "python",
+        "security",
+        "taint",
+        "clean"
+      ],
+      "args": [
+        "--only=python"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 2
+          }
+        }
+      }
+    },
+    {
+      "id": "python-async-errors-buggy",
+      "description": "Python async error path regression (await outside try and fire-and-forget tasks).",
+      "path": "test-suite/python/async_errors/buggy",
+      "language": "python",
+      "tags": [
+        "python",
+        "async",
+        "buggy"
+      ],
+      "args": [
+        "--only=python",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "python-async-errors-clean",
+      "description": "Python async error coverage clean baseline (await guarded + tasks awaited/cancelled).",
+      "path": "test-suite/python/async_errors/clean",
+      "language": "python",
+      "tags": [
+        "python",
+        "async",
+        "clean"
+      ],
+      "args": [
+        "--only=python"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 4
+          }
+        }
+      }
+    },
+    {
+      "id": "golang-buggy",
+      "description": "Go buggy fixtures exercising goroutine/context/network pitfalls.",
+      "path": "test-suite/golang/buggy",
+      "language": "golang",
+      "tags": [
+        "golang",
+        "buggy"
+      ],
+      "args": [
+        "--only=golang",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          },
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "CONCURRENCY & GOROUTINE SAFETY"
+        ]
+      }
+    },
+    {
+      "id": "golang-clean",
+      "description": "Go clean fixtures validating the heuristics stay quiet.",
+      "path": "test-suite/golang/clean",
+      "language": "golang",
+      "tags": [
+        "golang",
+        "clean"
+      ],
+      "args": [
+        "--only=golang"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 6
+          }
+        }
+      }
+    },
+    {
+      "id": "golang-taint-buggy",
+      "description": "Go taint analysis regression (FormValue -> fmt.Fprintf/db.Exec/exec.Command).",
+      "path": "test-suite/golang/buggy/taint_analysis.go",
+      "language": "golang",
+      "tags": [
+        "golang",
+        "security",
+        "taint",
+        "buggy"
+      ],
+      "args": [
+        "--only=golang",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "Lightweight taint analysis"
+        ]
+      }
+    },
+    {
+      "id": "golang-taint-clean",
+      "description": "Go taint analysis clean baseline (escaped HTML, parameterized SQL, safe exec.Command args).",
+      "path": "test-suite/golang/clean/taint_analysis.go",
+      "language": "golang",
+      "tags": [
+        "golang",
+        "security",
+        "taint",
+        "clean"
+      ],
+      "args": [
+        "--only=golang"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 2
+          }
+        }
+      }
+    },
+    {
+      "id": "js-type-narrowing-buggy",
+      "description": "TypeScript guard clauses that continue execution and later dereference unsafe values.",
+      "path": "test-suite/js/type_narrowing/buggy",
+      "language": "js",
+      "tags": [
+        "js",
+        "typescript",
+        "type-narrowing",
+        "buggy"
+      ],
+      "args": [
+        "--only=js",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "Type narrowing validation",
+          "Potentially unsafe type narrowing"
+        ]
+      }
+    },
+    {
+      "id": "js-type-narrowing-clean",
+      "description": "TypeScript fixtures with early returns so type narrowing stays silent on safe code.",
+      "path": "test-suite/js/type_narrowing/clean",
+      "language": "js",
+      "tags": [
+        "js",
+        "typescript",
+        "type-narrowing",
+        "clean"
+      ],
+      "args": [
+        "--only=js"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "js-jsx-multiline-props-no-global-pollution",
+      "description": "JSX multiline props should not trigger global variable pollution false positives.",
+      "path": "test-suite/frameworks/react/clean-component.jsx",
+      "language": "js",
+      "tags": [
+        "js",
+        "jsx",
+        "react",
+        "global-pollution",
+        "regression"
+      ],
+      "args": [
+        "--only=js"
+      ],
+      "expect": {
+        "forbid_substrings": [
+          "Global variable assignments",
+          "Possible global variable pollution"
+        ]
+      }
+    },
+    {
+      "id": "js-type-narrowing-skip",
+      "description": "Regression that verifies --skip-type-narrowing suppresses warnings on buggy TypeScript fixtures.",
+      "path": "test-suite/js/type_narrowing/buggy",
+      "language": "js",
+      "tags": [
+        "js",
+        "typescript",
+        "type-narrowing",
+        "skip"
+      ],
+      "args": [
+        "--only=js",
+        "--skip-type-narrowing"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "golang-async-errors-buggy",
+      "description": "Go goroutines ignoring error paths (fire-and-forget http.Get).",
+      "path": "test-suite/golang/async_errors/buggy",
+      "language": "golang",
+      "tags": [
+        "golang",
+        "async",
+        "buggy"
+      ],
+      "args": [
+        "--only=golang",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "golang-async-errors-clean",
+      "description": "Go goroutines reporting errors via checks/channels baseline.",
+      "path": "test-suite/golang/async_errors/clean",
+      "language": "golang",
+      "tags": [
+        "golang",
+        "async",
+        "clean"
+      ],
+      "args": [
+        "--only=golang"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "js-resource-lifecycle",
+      "description": "JS resource cleanup regression (listeners/timers).",
+      "path": "test-suite/js/buggy/resource-lifecycle.js",
+      "language": "js",
+      "tags": [
+        "js",
+        "resource",
+        "buggy"
+      ],
+      "args": [
+        "--only=js",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "resource-lifecycle.js"
+        ]
+      }
+    },
+    {
+      "id": "python-resource-lifecycle",
+      "description": "Python file/subprocess/task cleanup regression.",
+      "path": "test-suite/python/buggy/resource_lifecycle.py",
+      "language": "python",
+      "tags": [
+        "python",
+        "resource",
+        "buggy"
+      ],
+      "args": [
+        "--only=python",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "resource_lifecycle.py",
+          "open() calls missing 'with'"
+        ]
+      }
+    },
+    {
+      "id": "go-resource-lifecycle",
+      "description": "Go context/ticker/timer cleanup regression.",
+      "path": "test-suite/golang/buggy/resource_lifecycle.go",
+      "language": "golang",
+      "tags": [
+        "go",
+        "resource",
+        "buggy"
+      ],
+      "args": [
+        "--only=golang",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "resource_lifecycle.go",
+          "os.Open/OpenFile without defer Close()",
+          "context.With* without deferred cancel",
+          "time.NewTicker not stopped",
+          "time.NewTimer not stopped"
+        ]
+      }
+    },
+    {
+      "id": "cpp-buggy",
+      "description": "C++ buggy fixtures covering RAII, overflow, and resource leaks.",
+      "path": "test-suite/cpp/buggy",
+      "language": "cpp",
+      "tags": [
+        "cpp",
+        "buggy"
+      ],
+      "args": [
+        "--only=cpp",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          },
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "Manual delete",
+          "EXCEPTIONS & ERROR HANDLING"
+        ]
+      }
+    },
+    {
+      "id": "cpp-clean",
+      "description": "C++ clean fixtures (RAII, smart pointers, bounded math).",
+      "path": "test-suite/cpp/clean",
+      "language": "cpp",
+      "tags": [
+        "cpp",
+        "clean"
+      ],
+      "args": [
+        "--only=cpp"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 6
+          }
+        }
+      }
+    },
+    {
+      "id": "cpp-async-errors-buggy",
+      "description": "C++ std::async futures without try/catch or get().",
+      "path": "test-suite/cpp/async_errors/buggy",
+      "language": "cpp",
+      "tags": [
+        "cpp",
+        "async",
+        "buggy"
+      ],
+      "args": [
+        "--only=cpp",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "Async error path coverage"
+        ]
+      }
+    },
+    {
+      "id": "cpp-async-errors-clean",
+      "description": "C++ async clean baseline (std::async guarded by try/catch + get).",
+      "path": "test-suite/cpp/async_errors/clean",
+      "language": "cpp",
+      "tags": [
+        "cpp",
+        "async",
+        "clean"
+      ],
+      "args": [
+        "--only=cpp"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "cpp-resource-lifecycle",
+      "description": "C++ std::thread/malloc cleanup regression.",
+      "path": "test-suite/cpp/buggy/resource_lifecycle.cpp",
+      "language": "cpp",
+      "tags": [
+        "cpp",
+        "resource",
+        "buggy"
+      ],
+      "args": [
+        "--only=cpp",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "resource_lifecycle.cpp"
+        ]
+      }
+    },
+    {
+      "id": "cpp-macro-traps",
+      "description": "C++ macro pitfalls (min/max macros, debug toggles).",
+      "path": "test-suite/cpp/macro_traps",
+      "language": "cpp",
+      "tags": [
+        "cpp",
+        "macros",
+        "buggy"
+      ],
+      "args": [
+        "--only=cpp",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "min/max macros detected"
+        ]
+      }
+    },
+    {
+      "id": "cpp-modern-io-clean",
+      "description": "C++ fmt/iostream clean baseline with no legacy I/O APIs.",
+      "path": "test-suite/cpp/modern_io",
+      "language": "cpp",
+      "tags": [
+        "cpp",
+        "clean",
+        "modern"
+      ],
+      "args": [
+        "--only=cpp"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "rust-buggy",
+      "description": "Rust buggy fixtures (unwrap panics, resource leaks, injection, float precision).",
+      "path": "test-suite/rust/buggy",
+      "language": "rust",
+      "tags": [
+        "rust",
+        "buggy"
+      ],
+      "args": [
+        "--only=rust",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          },
+          "warning": {
+            "min": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "rust-clean",
+      "description": "Rust clean fixtures (Result handling, integer cents, join handles).",
+      "path": "test-suite/rust/clean",
+      "language": "rust",
+      "tags": [
+        "rust",
+        "clean"
+      ],
+      "args": [
+        "--only=rust"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 6
+          }
+        }
+      }
+    },
+    {
+      "id": "rust-async-errors-buggy",
+      "description": "Rust awaits lacking ?/match handling + tokio::spawn handles dropped.",
+      "path": "test-suite/rust/async_errors/buggy",
+      "language": "rust",
+      "tags": [
+        "rust",
+        "async",
+        "buggy"
+      ],
+      "args": [
+        "--only=rust",
+        "--fail-on-warning"
+      ],
+      "env": {
+        "UBS_SKIP_RUST_BUILD": "1"
+      },
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "rust-async-errors-clean",
+      "description": "Rust async clean baseline (await guarded and JoinHandle awaited).",
+      "path": "test-suite/rust/async_errors/clean",
+      "language": "rust",
+      "tags": [
+        "rust",
+        "async",
+        "clean"
+      ],
+      "args": [
+        "--only=rust"
+      ],
+      "env": {
+        "UBS_SKIP_RUST_BUILD": "1"
+      },
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "rust-resource-lifecycle",
+      "description": "Rust thread/task cleanup regression.",
+      "path": "test-suite/rust/buggy/resource_lifecycle.rs",
+      "language": "rust",
+      "tags": [
+        "rust",
+        "resource",
+        "buggy"
+      ],
+      "args": [
+        "--only=rust",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "rust-type-narrowing-buggy",
+      "description": "Rust fixtures that guard Options/Results but later unwrap/expect the same value despite the guard not exiting.",
+      "path": "test-suite/rust/buggy/type_narrowing.rs",
+      "language": "rust",
+      "tags": [
+        "rust",
+        "type-narrowing",
+        "buggy"
+      ],
+      "args": [
+        "--only=rust",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "Guarded Option/Result later unwrap",
+          "Guard clauses that still unwrap later"
+        ]
+      }
+    },
+    {
+      "id": "rust-type-narrowing-clean",
+      "description": "Rust fixtures that exit early or propagate via ? after guards, ensuring no false positives from the narrowing heuristics.",
+      "path": "test-suite/rust/clean/type_narrowing.rs",
+      "language": "rust",
+      "tags": [
+        "rust",
+        "type-narrowing",
+        "clean"
+      ],
+      "args": [
+        "--only=rust"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "kotlin-type-narrowing-buggy",
+      "description": "Kotlin null guards that do not exit before using the guarded value with '!!'.",
+      "path": "test-suite/kotlin/type_narrowing/buggy",
+      "language": "java",
+      "tags": [
+        "kotlin",
+        "type-narrowing",
+        "buggy"
+      ],
+      "args": [
+        "--only=java",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "Kotlin guard clauses without exit",
+          "Kotlin guard without exit before '!!'",
+          "?. guard without exit"
+        ]
+      }
+    },
+    {
+      "id": "kotlin-type-narrowing-clean",
+      "description": "Kotlin fixtures that return/throw or Elvis out early so no '!!' panic is required.",
+      "path": "test-suite/kotlin/type_narrowing/clean",
+      "language": "java",
+      "tags": [
+        "kotlin",
+        "type-narrowing",
+        "clean"
+      ],
+      "args": [
+        "--only=java"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "swift-type-narrowing-buggy",
+      "description": "Swift guard let clauses that log but continue execution, leading to unsafe optional usage.",
+      "path": "test-suite/swift/type_narrowing/buggy",
+      "language": "swift",
+      "tags": [
+        "swift",
+        "type-narrowing",
+        "buggy"
+      ],
+      "args": [
+        "--only=swift",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "Swift guard let validation",
+          "Swift guard let else-block may continue",
+          "?. guard without exit"
+        ]
+      }
+    },
+    {
+      "id": "swift-type-narrowing-clean",
+      "description": "Swift guard lets with explicit returns/throws so the analyzer stays quiet on safe code.",
+      "path": "test-suite/swift/type_narrowing/clean",
+      "language": "swift",
+      "tags": [
+        "swift",
+        "type-narrowing",
+        "clean"
+      ],
+      "args": [
+        "--only=swift"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "java-buggy",
+      "description": "Java buggy fixtures (blocking service, executors, resource leaks, security).",
+      "path": "test-suite/java/buggy",
+      "language": "java",
+      "tags": [
+        "java",
+        "buggy"
+      ],
+      "args": [
+        "--only=java",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          },
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "RESOURCE LIFECYCLE",
+          "SECURITY"
+        ]
+      }
+    },
+    {
+      "id": "java-clean",
+      "description": "Java clean fixtures (try-with-resources, prepared statements, executor shutdown).",
+      "path": "test-suite/java/clean",
+      "language": "java",
+      "tags": [
+        "java",
+        "clean"
+      ],
+      "args": [
+        "--only=java"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 3
+          }
+        }
+      }
+    },
+    {
+      "id": "java-async-errors-buggy",
+      "description": "Java CompletableFuture chains lacking exceptionally()/try-catch.",
+      "path": "test-suite/java/async_errors/buggy",
+      "language": "java",
+      "tags": [
+        "java",
+        "async",
+        "buggy"
+      ],
+      "args": [
+        "--only=java",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "Async error path coverage"
+        ]
+      }
+    },
+    {
+      "id": "java-async-errors-clean",
+      "description": "Java async clean baseline (future.get wrapped + exceptionally handler).",
+      "path": "test-suite/java/async_errors/clean",
+      "language": "java",
+      "tags": [
+        "java",
+        "async",
+        "clean"
+      ],
+      "args": [
+        "--only=java"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "java-resource-lifecycle",
+      "description": "Java ExecutorService shutdown regression.",
+      "path": "test-suite/java/buggy",
+      "language": "java",
+      "tags": [
+        "java",
+        "resource",
+        "buggy"
+      ],
+      "args": [
+        "--only=java",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "ExecutorService created without shutdown",
+          "ResultSet not closed after use",
+          "Statement/Prepared/CallableStatement not closed after use"
+        ]
+      }
+    },
+    {
+      "id": "ruby-buggy",
+      "description": "Ruby buggy fixtures (eval, YAML load, shelling, thread leaks).",
+      "path": "test-suite/ruby/buggy",
+      "language": "ruby",
+      "tags": [
+        "ruby",
+        "buggy"
+      ],
+      "args": [
+        "--only=ruby",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          },
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "RESOURCE LIFECYCLE",
+          "SECURITY"
+        ]
+      }
+    },
+    {
+      "id": "ruby-clean",
+      "description": "Ruby clean fixtures (Open3 argv, joined threads, safe YAML).",
+      "path": "test-suite/ruby/clean",
+      "language": "ruby",
+      "tags": [
+        "ruby",
+        "clean"
+      ],
+      "args": [
+        "--only=ruby"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "ruby-async-errors-buggy",
+      "description": "Ruby Thread.new blocks lacking rescue/exception handling.",
+      "path": "test-suite/ruby/async_errors/buggy",
+      "language": "ruby",
+      "tags": [
+        "ruby",
+        "async",
+        "buggy"
+      ],
+      "args": [
+        "--only=ruby",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "Async error path coverage"
+        ]
+      }
+    },
+    {
+      "id": "ruby-async-errors-clean",
+      "description": "Ruby thread bodies with begin/rescue baseline.",
+      "path": "test-suite/ruby/async_errors/clean",
+      "language": "ruby",
+      "tags": [
+        "ruby",
+        "async",
+        "clean"
+      ],
+      "args": [
+        "--only=ruby"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "ruby-resource-lifecycle",
+      "description": "Ruby Thread/File cleanup regression.",
+      "path": "test-suite/ruby/buggy/resource_lifecycle.rb",
+      "language": "ruby",
+      "tags": [
+        "ruby",
+        "resource",
+        "buggy"
+      ],
+      "args": [
+        "--only=ruby",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "warning": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "resource_lifecycle.rb"
+        ]
+      }
+    },
+    {
+      "id": "ruby-taint-buggy",
+      "description": "Ruby taint regression (single-string system/backticks).",
+      "path": "test-suite/ruby/security_buggy",
+      "language": "ruby",
+      "tags": [
+        "ruby",
+        "security",
+        "buggy"
+      ],
+      "args": [
+        "--only=ruby",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "Shell invocation risk",
+          "Backtick command execution"
+        ]
+      }
+    },
+    {
+      "id": "ruby-taint-clean",
+      "description": "Ruby secure shell calls using argv arrays/Open3.",
+      "path": "test-suite/ruby/security_clean",
+      "language": "ruby",
+      "tags": [
+        "ruby",
+        "security",
+        "clean"
+      ],
+      "args": [
+        "--only=ruby"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "ruby-serialization-buggy",
+      "description": "Ruby unsafe YAML/Marshal loading regression.",
+      "path": "test-suite/ruby/serialization_buggy",
+      "language": "ruby",
+      "tags": [
+        "ruby",
+        "serialization",
+        "buggy"
+      ],
+      "args": [
+        "--only=ruby",
+        "--fail-on-warning"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "Unsafe deserialization"
+        ]
+      }
+    },
+    {
+      "id": "ruby-serialization-clean",
+      "description": "Ruby safe YAML loading baseline.",
+      "path": "test-suite/ruby/serialization_clean",
+      "language": "ruby",
+      "tags": [
+        "ruby",
+        "serialization",
+        "clean"
+      ],
+      "args": [
+        "--only=ruby"
+      ],
+      "expect": {
+        "exit_code": "zero",
+        "totals": {
+          "critical": {
+            "max": 0
+          },
+          "warning": {
+            "max": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "toon-format-js-buggy",
+      "description": "TOON format output for JS buggy fixtures (validates TOON encoding works).",
+      "path": "test-suite/buggy",
+      "language": "js",
+      "tags": [
+        "toon",
+        "format",
+        "js"
+      ],
+      "args": [
+        "--only=js",
+        "--format=toon"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "totals": {
+          "critical": {
+            "min": 1
+          }
+        },
+        "require_substrings": [
+          "project:",
+          "scanners[",
+          "findings["
+        ]
+      }
+    },
+    {
+      "id": "toon-format-env-var",
+      "description": "TOON format via UBS_OUTPUT_FORMAT env var.",
+      "path": "test-suite/buggy",
+      "language": "js",
+      "tags": [
+        "toon",
+        "format",
+        "env"
+      ],
+      "env": {
+        "UBS_OUTPUT_FORMAT": "toon"
+      },
+      "args": [
+        "--only=js"
+      ],
+      "expect": {
+        "exit_code": "nonzero",
+        "require_substrings": [
+          "project:",
+          "scanners["
+        ]
+      }
+    },
+    {
+      "id": "toon-format-fallback",
+      "description": "TOON format falls back to JSON when tru binary is not available.",
+      "path": "test-suite/buggy",
+      "language": "js",
+      "tags": [
+        "toon",
+        "format",
+        "fallback"
+      ],
+      "args": [
+        "--only=js",
+        "--format=toon"
+      ],
+      "env": {
+        "UBS_TEST_FORCE_NO_TOON": "1"
+      },
+      "expect": {
+        "exit_code": "nonzero",
+        "require_substrings": [
+          "\"project\":",
+          "\"scanners\":"
+        ],
+        "require_substrings_stderr": [
+          "Warning: tru (TOON encoder) disabled by UBS_TEST_FORCE_NO_TOON=1"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,427 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Environment info
+        run: |
+          echo "## Environment" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          rustc --version --verbose >> $GITHUB_STEP_SUMMARY
+          cargo --version >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Clippy (all features)
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+      - name: Compile benches (wa-core)
+        run: cargo bench -p wa-core --benches --no-run
+
+  generated-artifacts:
+    name: Generated Artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Regenerate docs/types and check drift
+        run: scripts/check_generated_artifacts.sh
+
+  test:
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-14, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.os }}
+
+      - name: Run tests
+        run: cargo test --workspace --all-features --verbose
+
+      - name: Run doc tests
+        run: cargo test --workspace --doc
+
+      - name: Upload test logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs-${{ matrix.os }}
+          path: |
+            target/**/*.stderr
+            target/**/*.stdout
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # Feature matrix: ensure each optional feature compiles and passes tests independently.
+  # Catches silent rot from features that only work when combined with --all-features.
+  feature-matrix:
+    name: Feature (${{ matrix.feature }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        feature:
+          - default       # no features (cargo check / cargo test)
+          - tui           # ratatui + crossterm (legacy TUI)
+          - ftui          # FrankenTUI (migration target)
+          - mcp           # MCP server integration
+          - browser       # browser automation
+          - web           # web server
+          - metrics       # metrics collection
+          - distributed   # distributed mode
+        # vendored is tested separately since it may need extra setup
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: feature-${{ matrix.feature }}
+
+      - name: Log feature under test
+        run: |
+          echo "## Feature: \`${{ matrix.feature }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "Commands:" >> $GITHUB_STEP_SUMMARY
+
+      - name: Check compilation (no features)
+        if: matrix.feature == 'default'
+        run: |
+          set -x
+          cargo check --workspace
+          cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Check compilation (feature-gated)
+        if: matrix.feature != 'default'
+        run: |
+          set -x
+          cargo check --workspace --features ${{ matrix.feature }}
+          cargo clippy --workspace --all-targets --features ${{ matrix.feature }} -- -D warnings
+
+      - name: Run tests (no features)
+        if: matrix.feature == 'default'
+        run: cargo test --workspace --verbose
+
+      - name: Run tests (feature-gated)
+        if: matrix.feature != 'default'
+        run: cargo test --workspace --features ${{ matrix.feature }} --verbose
+
+      - name: Upload test logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: feature-test-logs-${{ matrix.feature }}
+          path: |
+            target/**/*.stderr
+            target/**/*.stdout
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # Vendored feature: separate job since it may need extra build dependencies
+  feature-vendored:
+    name: Feature (vendored)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: feature-vendored
+
+      - name: Check vendored compilation
+        run: |
+          set -x
+          cargo check --workspace --features vendored
+          cargo clippy --workspace --all-targets --features vendored -- -D warnings
+
+      - name: Run vendored tests
+        run: cargo test --workspace --features vendored --verbose
+
+      - name: Upload test logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: feature-test-logs-vendored
+          path: |
+            target/**/*.stderr
+            target/**/*.stdout
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # FTUI migration guardrails: verify feature exclusion, import isolation,
+  # and clippy compliance for both TUI backends.
+  # Implements: wa-eutd (FTUI-02.4)
+  ftui-guardrails:
+    name: FTUI Guardrails
+    needs: [lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ftui-guardrails
+
+      - name: Run FTUI guardrail checks
+        run: scripts/check_ftui_guardrails.sh
+
+  # FTUI migration test suite: grouped snapshot, E2E, and unit test execution
+  # with minimum count enforcement and diagnostic artifact collection.
+  # Implements: wa-36xw (FTUI-07.4)
+  ftui-tests:
+    name: FTUI Tests
+    needs: [lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ftui-tests
+
+      - name: Run FTUI test suite
+        run: scripts/check_ftui_tests.sh
+
+      - name: Upload FTUI test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ftui-test-artifacts
+          path: |
+            target/ftui-test-artifacts/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # FTUI docs-smoke and contract-drift: validate migration docs stay in sync
+  # with code (View enum, adapter API, feature matrix, parity contract).
+  # Implements: wa-107q (FTUI-07.5)
+  ftui-docs:
+    name: FTUI Docs Smoke
+    needs: [lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ftui-docs
+
+      - name: Run docs-smoke and contract-drift checks
+        run: scripts/check_ftui_docs.sh
+
+  # Performance budget enforcement: run Criterion benchmarks and check against
+  # coarse thresholds (10x design budgets) to catch gross regressions.
+  benchmarks:
+    name: Benchmarks
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: benchmarks
+
+      - name: Run benchmarks and check budgets
+        run: scripts/check_bench_budgets.sh
+
+      - name: Upload benchmark artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: |
+            target/criterion/wa-budget-report.json
+            target/criterion/wa-bench-meta.jsonl
+            target/criterion/wa-bench-manifest-*.json
+            target/criterion/bench-output.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # Security audit for dependency vulnerabilities
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+      - name: Run audit
+        run: cargo audit
+
+  # Coverage with llvm-cov
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: llvm-tools-preview
+      - uses: taiki-e/install-action@cargo-llvm-cov
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Generate coverage
+        run: |
+          cargo llvm-cov --workspace \
+            --ignore-filename-regex "(tests/|benches/)" \
+            --codecov \
+            --output-path codecov.json
+
+      - uses: codecov/codecov-action@v4
+        with:
+          files: codecov.json
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Check coverage threshold
+        run: |
+          cargo llvm-cov --workspace --json --output-path cov.json
+          COVERAGE=$(jq -r '.data[0].totals.lines.percent // 0' cov.json)
+          echo "## Coverage: ${COVERAGE}%" >> $GITHUB_STEP_SUMMARY
+          # Threshold set to 50% for early development, increase as coverage improves
+          if (( $(echo "$COVERAGE < 50" | bc -l) )); then
+            echo "::warning::Coverage $COVERAGE% is below 50%"
+          fi
+
+  # Extended E2E: approval allow-once scenario + artifact collection.
+  # Runs the approval flow E2E (unit-based, no live WezTerm required) and the
+  # prepare_commit_approvals harness scenario when prerequisites are available.
+  # Implements: wa-nu4.3.9.7
+  e2e-extended:
+    name: E2E (approval allow-once)
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: e2e-extended
+
+      - name: Install jq
+        run: sudo apt-get update -qq && sudo apt-get install -qq -y jq
+
+      - name: Build wa (release)
+        run: cargo build --release -p wa
+
+      - name: E2E harness self-check
+        run: scripts/e2e_test.sh --self-check --skip-self-check 2>&1 || true
+
+      - name: Run approval flow E2E
+        id: approval_e2e
+        run: |
+          scripts/e2e_approval_flow.sh 2>&1 | tee e2e-approval-output.log
+        env:
+          WA_LOG_LEVEL: debug
+          WA_LOG_FORMAT: json
+          WA_E2E_VERBOSE: "1"
+          WA_E2E_KEEP_ARTIFACTS: "1"
+
+      - name: Summarize approval E2E results
+        if: always()
+        run: |
+          echo "## E2E: Approval Allow-Once" >> $GITHUB_STEP_SUMMARY
+          if [[ -f e2e-approval-output.log ]]; then
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            tail -10 e2e-approval-output.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload E2E artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-approval-artifacts
+          path: |
+            e2e-artifacts/
+            e2e-approval-output.log
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # Build verification across platforms
+  build:
+    name: Build (${{ matrix.target }})
+    needs: [lint, test, feature-matrix, ftui-tests]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-gnu
+          - os: macos-14
+            target: aarch64-apple-darwin
+          - os: macos-15-intel
+            target: x86_64-apple-darwin
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: build-${{ matrix.target }}
+      - name: Build release binary
+        run: cargo build --release --target ${{ matrix.target }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wa-${{ matrix.target }}
+          path: |
+            target/${{ matrix.target }}/release/wa
+            target/${{ matrix.target }}/release/wa.exe
+          if-no-files-found: ignore

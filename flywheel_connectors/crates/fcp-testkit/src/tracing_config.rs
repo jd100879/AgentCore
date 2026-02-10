@@ -1,0 +1,503 @@
+//! Tracing configuration for test output.
+//!
+//! Provides utilities for configuring tracing in tests with appropriate
+//! output formatting and filtering.
+
+use std::io::{self, Write};
+use std::sync::{Arc, Mutex, Once};
+
+use fcp_conformance::schemas::{SchemaValidationError, validate_e2e_log_jsonl};
+use tracing_subscriber::{EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
+
+static INIT: Once = Once::new();
+
+/// Initialize tracing for tests.
+///
+/// This should be called at the start of each test or in a test setup function.
+/// It's safe to call multiple times; only the first call will initialize tracing.
+///
+/// Uses the `RUST_LOG` environment variable if set, otherwise defaults to `info`.
+///
+/// # Example
+///
+/// ```rust
+/// use fcp_testkit::init_test_tracing;
+///
+/// #[tokio::test]
+/// async fn my_test() {
+///     init_test_tracing();
+///     // ... test code
+/// }
+/// ```
+pub fn init_test_tracing() {
+    INIT.call_once(|| {
+        let filter = EnvFilter::try_from_default_env()
+            .unwrap_or_else(|_| EnvFilter::new("info,fcp_testkit=debug"));
+
+        tracing_subscriber::registry()
+            .with(filter)
+            .with(
+                tracing_subscriber::fmt::layer()
+                    .with_test_writer()
+                    .with_ansi(true)
+                    .compact(),
+            )
+            .init();
+    });
+}
+
+/// Initialize tracing with a specific filter.
+///
+/// # Example
+///
+/// ```rust
+/// use fcp_testkit::init_test_tracing_with_filter;
+///
+/// #[tokio::test]
+/// async fn my_verbose_test() {
+///     init_test_tracing_with_filter("debug");
+///     // ... test code
+/// }
+/// ```
+pub fn init_test_tracing_with_filter(filter: &str) {
+    INIT.call_once(|| {
+        let filter = EnvFilter::new(filter);
+
+        tracing_subscriber::registry()
+            .with(filter)
+            .with(
+                tracing_subscriber::fmt::layer()
+                    .with_test_writer()
+                    .with_ansi(true)
+                    .compact(),
+            )
+            .init();
+    });
+}
+
+/// Initialize tracing with JSON output (useful for structured log analysis).
+///
+/// # Example
+///
+/// ```rust
+/// use fcp_testkit::init_test_tracing_json;
+///
+/// #[tokio::test]
+/// async fn my_test() {
+///     init_test_tracing_json();
+///     // ... test code
+/// }
+/// ```
+pub fn init_test_tracing_json() {
+    INIT.call_once(|| {
+        let filter = EnvFilter::try_from_default_env()
+            .unwrap_or_else(|_| EnvFilter::new("info,fcp_testkit=debug"));
+
+        tracing_subscriber::registry()
+            .with(filter)
+            .with(tracing_subscriber::fmt::layer().with_test_writer().json())
+            .init();
+    });
+}
+
+/// Initialize silent tracing (suppresses all output).
+///
+/// Useful for tests that intentionally trigger errors and don't want log noise.
+pub fn init_test_tracing_silent() {
+    INIT.call_once(|| {
+        let filter = EnvFilter::new("off");
+
+        tracing_subscriber::registry()
+            .with(filter)
+            .with(tracing_subscriber::fmt::layer().with_test_writer())
+            .init();
+    });
+}
+
+/// Guard that captures tracing events for assertion.
+///
+/// Note: This is a simplified implementation. For production use,
+/// consider using `tracing-test` crate.
+#[derive(Debug, Default)]
+pub struct TracingCapture {
+    events: std::sync::Arc<std::sync::Mutex<Vec<CapturedEvent>>>,
+}
+
+/// A captured tracing event.
+#[derive(Debug, Clone)]
+pub struct CapturedEvent {
+    /// Event level (trace, debug, info, warn, error)
+    pub level: String,
+    /// Event message
+    pub message: String,
+    /// Event target (module path)
+    pub target: String,
+}
+
+impl TracingCapture {
+    /// Create a new tracing capture.
+    #[must_use]
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Get all captured events.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the capture mutex is poisoned.
+    #[must_use]
+    pub fn events(&self) -> Vec<CapturedEvent> {
+        self.events.lock().unwrap().clone()
+    }
+
+    /// Check if any event contains the given message.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the capture mutex is poisoned.
+    #[must_use]
+    pub fn contains(&self, message: &str) -> bool {
+        self.events
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|e| e.message.contains(message))
+    }
+
+    /// Check if any error event was logged.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the capture mutex is poisoned.
+    #[must_use]
+    pub fn has_errors(&self) -> bool {
+        self.events
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|e| e.level == "ERROR")
+    }
+
+    /// Check if any warning event was logged.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the capture mutex is poisoned.
+    #[must_use]
+    pub fn has_warnings(&self) -> bool {
+        self.events
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|e| e.level == "WARN")
+    }
+
+    /// Assert no errors were logged.
+    ///
+    /// # Panics
+    ///
+    /// Panics if any error events were captured.
+    pub fn assert_no_errors(&self) {
+        let errors: Vec<_> = self
+            .events
+            .lock()
+            .unwrap()
+            .iter()
+            .filter(|e| e.level == "ERROR")
+            .cloned()
+            .collect();
+
+        assert!(
+            errors.is_empty(),
+            "Expected no errors but found: {errors:?}"
+        );
+    }
+
+    /// Assert no warnings were logged.
+    ///
+    /// # Panics
+    ///
+    /// Panics if any warning events were captured.
+    pub fn assert_no_warnings(&self) {
+        let warnings: Vec<_> = self
+            .events
+            .lock()
+            .unwrap()
+            .iter()
+            .filter(|e| e.level == "WARN")
+            .cloned()
+            .collect();
+
+        assert!(
+            warnings.is_empty(),
+            "Expected no warnings but found: {warnings:?}"
+        );
+    }
+
+    /// Clear all captured events.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the capture mutex is poisoned.
+    pub fn clear(&self) {
+        self.events.lock().unwrap().clear();
+    }
+}
+
+#[derive(Debug, Clone, Default)]
+struct LogCaptureBuffer {
+    bytes: Arc<Mutex<Vec<u8>>>,
+}
+
+impl LogCaptureBuffer {
+    fn snapshot(&self) -> Vec<u8> {
+        self.bytes
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clone()
+    }
+
+    fn clear(&self) {
+        self.bytes
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clear();
+    }
+}
+
+struct LogCaptureWriter {
+    bytes: Arc<Mutex<Vec<u8>>>,
+}
+
+impl Write for LogCaptureWriter {
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+        self.bytes
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .extend_from_slice(buf);
+        Ok(buf.len())
+    }
+
+    fn flush(&mut self) -> io::Result<()> {
+        Ok(())
+    }
+}
+
+impl<'a> tracing_subscriber::fmt::MakeWriter<'a> for LogCaptureBuffer {
+    type Writer = LogCaptureWriter;
+
+    fn make_writer(&'a self) -> Self::Writer {
+        Self::Writer {
+            bytes: Arc::clone(&self.bytes),
+        }
+    }
+}
+
+/// Capture structured JSON logs and validate against the E2E schema.
+#[derive(Debug, Clone, Default)]
+pub struct LogCapture {
+    buffer: LogCaptureBuffer,
+}
+
+impl LogCapture {
+    /// Create a new log capture.
+    #[must_use]
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Install a JSON tracing subscriber that writes into this capture.
+    ///
+    /// Keep the returned guard alive for the duration of the capture.
+    #[must_use]
+    pub fn install_json(&self) -> tracing::subscriber::DefaultGuard {
+        let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
+        self.install_json_with_filter(filter)
+    }
+
+    /// Install a JSON tracing subscriber with a specific filter.
+    ///
+    /// Keep the returned guard alive for the duration of the capture.
+    #[must_use]
+    pub fn install_json_with_filter(
+        &self,
+        filter: impl Into<EnvFilter>,
+    ) -> tracing::subscriber::DefaultGuard {
+        let layer = tracing_subscriber::fmt::layer()
+            .with_writer(self.buffer.clone())
+            .json()
+            .with_ansi(false)
+            .with_level(false)
+            .with_target(false)
+            .with_file(false)
+            .with_line_number(false)
+            .with_current_span(false)
+            .flatten_event(true);
+
+        let subscriber = tracing_subscriber::registry()
+            .with(filter.into())
+            .with(layer);
+        tracing::subscriber::set_default(subscriber)
+    }
+
+    /// Return captured logs as JSONL.
+    #[must_use]
+    pub fn jsonl(&self) -> String {
+        let bytes = self.buffer.snapshot();
+        String::from_utf8_lossy(&bytes).to_string()
+    }
+
+    /// Append a JSONL line directly into the capture.
+    pub fn push_line(&self, line: &str) {
+        let mut guard = self
+            .buffer
+            .bytes
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        guard.extend_from_slice(line.as_bytes());
+        guard.push(b'\n');
+    }
+
+    /// Append a JSON value as a JSONL line.
+    ///
+    /// # Errors
+    ///
+    /// Returns a JSON serialization error if the value cannot be encoded.
+    pub fn push_value(&self, value: &serde_json::Value) -> Result<(), serde_json::Error> {
+        let line = serde_json::to_string(value)?;
+        self.push_line(&line);
+        Ok(())
+    }
+
+    /// Clear captured logs.
+    pub fn clear(&self) {
+        self.buffer.clear();
+    }
+
+    /// Validate the captured JSONL logs against the E2E schema.
+    ///
+    /// # Errors
+    /// Returns a schema validation error if any entry is invalid.
+    pub fn validate_jsonl(&self) -> Result<(), SchemaValidationError> {
+        validate_e2e_log_jsonl(&self.jsonl())
+    }
+
+    /// Assert that captured JSONL logs validate against the schema.
+    ///
+    /// # Panics
+    /// Panics if validation fails.
+    pub fn assert_valid(&self) {
+        self.validate_jsonl()
+            .expect("expected JSONL logs to match the E2E schema");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::LogCapture;
+    use chrono::Utc;
+    use serde_json::json;
+
+    #[test]
+    fn log_capture_validates_tracing_jsonl() {
+        let capture = LogCapture::new();
+        let _guard = capture.install_json_with_filter("info");
+
+        tracing::info!(
+            script = "e2e_test",
+            step = "init",
+            correlation_id = "00000000-0000-4000-8000-000000000000",
+            duration_ms = 5_u64,
+            result = "pass"
+        );
+
+        assert!(!capture.jsonl().trim().is_empty());
+        capture.assert_valid();
+    }
+
+    #[test]
+    fn log_capture_accepts_valid_entry() {
+        let capture = LogCapture::new();
+        let entry = json!({
+            "timestamp": Utc::now().to_rfc3339(),
+            "test_name": "log_capture_valid",
+            "module": "fcp-testkit",
+            "phase": "execute",
+            "correlation_id": "00000000-0000-4000-8000-000000000000",
+            "result": "pass",
+            "duration_ms": 12,
+            "assertions": { "passed": 1, "failed": 0 }
+        });
+        capture.push_value(&entry).expect("serialize log entry");
+        capture.assert_valid();
+    }
+
+    #[test]
+    fn log_capture_rejects_invalid_json() {
+        let capture = LogCapture::new();
+        capture.push_line("{invalid-json");
+        let err = capture
+            .validate_jsonl()
+            .expect_err("invalid JSON should fail validation");
+        let message = err.to_string();
+        assert!(
+            message.contains("line 1: invalid JSON"),
+            "unexpected error message: {message}"
+        );
+    }
+
+    #[test]
+    fn log_capture_rejects_missing_fields() {
+        let capture = LogCapture::new();
+        let entry = json!({
+            "timestamp": Utc::now().to_rfc3339(),
+            "result": "pass"
+        });
+        capture.push_value(&entry).expect("serialize log entry");
+        let err = capture
+            .validate_jsonl()
+            .expect_err("missing fields should fail validation");
+        let message = err.to_string();
+        assert!(
+            message.starts_with("line 1:"),
+            "unexpected error message: {message}"
+        );
+    }
+
+    #[test]
+    fn log_capture_reports_line_numbers_for_multiple_entries() {
+        let capture = LogCapture::new();
+        let valid = json!({
+            "timestamp": Utc::now().to_rfc3339(),
+            "test_name": "log_capture_multi",
+            "module": "fcp-testkit",
+            "phase": "execute",
+            "correlation_id": "00000000-0000-4000-8000-000000000000",
+            "result": "pass",
+            "duration_ms": 12,
+            "assertions": { "passed": 1, "failed": 0 }
+        });
+        capture.push_value(&valid).expect("serialize log entry");
+        capture.push_line("{invalid-json");
+
+        let err = capture
+            .validate_jsonl()
+            .expect_err("invalid second line should fail validation");
+        let message = err.to_string();
+        assert!(
+            message.contains("line 2: invalid JSON"),
+            "unexpected error message: {message}"
+        );
+    }
+
+    #[test]
+    fn log_capture_clear_resets_buffer() {
+        let capture = LogCapture::new();
+        capture.push_line("{invalid-json");
+        capture.clear();
+        capture
+            .validate_jsonl()
+            .expect("cleared buffer should validate");
+    }
+}

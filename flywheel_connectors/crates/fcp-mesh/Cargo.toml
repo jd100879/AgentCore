@@ -1,0 +1,51 @@
+[package]
+name = "fcp-mesh"
+description = "FCP2 mesh node orchestration (routing, admission, gossip, leases)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+blake3.workspace = true
+bytes.workspace = true
+chrono.workspace = true
+constant_time_eq = "0.3"
+fcp-core = { path = "../fcp-core" }
+fcp-crypto = { path = "../fcp-crypto" }
+fcp-protocol = { path = "../fcp-protocol" }
+fcp-raptorq = { path = "../fcp-raptorq" }
+fcp-store = { path = "../fcp-store" }
+fcp-telemetry = { path = "../fcp-telemetry" }
+raptorq.workspace = true
+fcp-tailscale = { path = "../fcp-tailscale" }
+hex.workspace = true
+hkdf = "0.12"
+hmac = "0.12"
+rand.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2 = "0.10"
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+zeroize.workspace = true
+
+[dev-dependencies]
+ciborium.workspace = true
+criterion.workspace = true
+fcp-cbor = { path = "../fcp-cbor" }
+fcp-testkit = { path = "../fcp-testkit" }
+
+semver.workspace = true
+serde_json.workspace = true
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
+
+[[bench]]
+name = "mesh_benchmarks"
+harness = false
