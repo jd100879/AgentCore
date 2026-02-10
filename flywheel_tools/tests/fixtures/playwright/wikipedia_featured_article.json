@@ -1,0 +1,31 @@
+{
+  "captured_at": "2026-02-08",
+  "browser": "playwright-mcp",
+  "main_page": {
+    "title": "Wikipedia, the free encyclopedia",
+    "url": "https://en.wikipedia.org/wiki/Main_Page"
+  },
+  "featured_article": {
+    "title": "Master Juba",
+    "summary": "Master Juba (c. 1825 – c. 1854) was an African-American dancer. He was one of the first black performers in the United States to play onstage for white audiences and the only one of the era to tour with a white minstrel group. He began his career in Manhattan's Five Points neighborhood and moved to minstrel shows in the mid-1840s. His act featured a sequence in which he imitated famous dancers, then closed by performing in his style. In 1848, he became a sensation in Britain for his dance style, but writers treated him as an exhibit on display. Juba's popularity faded and he died around 1854, probably of fever. He was largely forgotten by historians until a 1947 article by Marian Hannah Winter popularized his story. Juba's dancing style was percussive, varied in tempo and expressive. It likely incorporated European folk steps and African-derived steps used by plantation slaves. Juba was highly influential in the development of tap, jazz, and step-dancing styles.",
+    "url": "https://en.wikipedia.org/wiki/Master_Juba"
+  },
+  "featured_article_page": {
+    "title": "Master Juba - Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Master_Juba"
+  },
+  "error_case": {
+    "title": "This Page Definitely Does Not Exist 12345xyz - Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/This_Page_Definitely_Does_Not_Exist_12345xyz",
+    "has_not_found_message": true
+  },
+  "search_test": {
+    "title": "Search results - Wikipedia",
+    "has_results": true
+  },
+  "recently_featured": [
+    "Aesthetics",
+    "Tara Lipinski",
+    "Saxaul sparrow"
+  ]
+}
