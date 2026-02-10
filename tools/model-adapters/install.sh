@@ -1,10 +1,9 @@
 #!/bin/bash
-# Install AI model adapters to system PATH
-# Enables using Grok and DeepSeek as drop-in Claude replacements
-
+# Fixed install script for model adapters
 set -euo pipefail
 
 INSTALL_DIR="${HOME}/.local/bin"
+LIB_DIR="${HOME}/.local/lib/agent_workflow"
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "Installing AI model adapters to $INSTALL_DIR..."
@@ -16,6 +15,10 @@ mkdir -p "$INSTALL_DIR"
 if [ -f "$SOURCE_DIR/grok/grok-claude-wrapper" ]; then
     cp "$SOURCE_DIR/grok/grok-claude-wrapper" "$INSTALL_DIR/grok-claude-wrapper"
     chmod +x "$INSTALL_DIR/grok-claude-wrapper"
+    
+    # Fix lib path to use centralized location
+    sed -i.bak "s|\$SCRIPT_DIR/lib/|$LIB_DIR/|g" "$INSTALL_DIR/grok-claude-wrapper"
+    rm -f "$INSTALL_DIR/grok-claude-wrapper.bak"
     echo "✓ Installed grok-claude-wrapper"
 else
     echo "⚠ Skipping grok-claude-wrapper (not found)"
@@ -25,6 +28,10 @@ fi
 if [ -f "$SOURCE_DIR/deepseek/deepseek-claude-wrapper" ]; then
     cp "$SOURCE_DIR/deepseek/deepseek-claude-wrapper" "$INSTALL_DIR/deepseek-claude-wrapper"
     chmod +x "$INSTALL_DIR/deepseek-claude-wrapper"
+    
+    # Fix lib path to use centralized location
+    sed -i.bak "s|\$SCRIPT_DIR/lib/|$LIB_DIR/|g" "$INSTALL_DIR/deepseek-claude-wrapper"
+    rm -f "$INSTALL_DIR/deepseek-claude-wrapper.bak"
     echo "✓ Installed deepseek-claude-wrapper"
 else
     echo "⚠ Skipping deepseek-claude-wrapper (not found)"
@@ -48,6 +55,9 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "✅ Model adapters installed successfully"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
+echo "Note: Model adapters share library files with agent_workflow"
+echo "      Location: $LIB_DIR"
+echo ""
 echo "Setup Instructions:"
 echo ""
 echo "Grok (xAI):"
@@ -59,6 +69,4 @@ echo "DeepSeek:"
 echo "  1. Get API key from https://platform.deepseek.com/"
 echo "  2. Run setup: cd ~/Projects/AgentCore/tools/model-adapters/deepseek && ./setup-deepseek.sh"
 echo "  3. Use: deepseek-claude-wrapper"
-echo ""
-echo "Note: Setup scripts configure API keys and test connections"
 echo ""
