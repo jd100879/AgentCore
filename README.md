@@ -34,6 +34,29 @@ A clean implementation of Jeffrey Emanuel's (Dicklesworthstone) multi-agent coor
 ### ❌ Not Available
 - **Named Tmux Manager (NTM)** - Repository not found (may be private or renamed)
 
+## Extended Tools
+
+**NEW:** AgentCore now includes extended tools for multi-agent workflows!
+
+### [tools/](tools/) - Extended Tools & Utilities
+
+6. **Model Adapters** (`tools/model-adapters/`)
+   - Grok (xAI) and DeepSeek drop-in replacements for Claude
+   - Enable multi-model agent swarms
+   - [README](tools/model-adapters/README.md)
+
+7. **Agent Workflow** (`tools/agent_workflow/`)
+   - Autonomous agent execution and coordination
+   - Multi-agent communication tools
+   - Task management integration
+   - [README](tools/agent_workflow/README.md)
+
+Install extended tools:
+```bash
+cd tools/model-adapters && ./install.sh
+cd tools/agent_workflow && ./install.sh
+```
+
 ## Architecture
 
 AgentCore implements the Agent Flywheel pattern:
@@ -59,6 +82,10 @@ cd coding_agent_session_search && ./install.sh && cd ..
 
 # 5. Install UBS
 cd ultimate_bug_scanner && ./install.sh && cd ..
+
+# 6. Install extended tools (optional)
+cd tools/agent_workflow && ./install.sh && cd ../..
+cd tools/model-adapters && ./install.sh && cd ../..
 ```
 
 See [GETTING_STARTED.md](GETTING_STARTED.md) for detailed installation and setup instructions.
@@ -69,13 +96,19 @@ Originally "Agent Flywheel Integration", renamed to **AgentCore** to better refl
 
 ## Status
 
-✅ **Repositories Cloned** - Ready for installation and integration work.
+✅ **Core Components** - 5 components installed and ready
+✅ **Extended Tools** - Model adapters and workflow automation added
 
 ## Documentation
 
-- Individual component READMEs in each subdirectory
+### Core Components
 - [MCP Agent Mail](mcp_agent_mail/README.md)
 - [beads_rust](beads_rust/README.md)
 - [Beads Viewer](beads_viewer/README.md)
 - [CASS](coding_agent_session_search/README.md)
 - [Ultimate Bug Scanner](ultimate_bug_scanner/README.md)
+
+### Extended Tools
+- [Tools Overview](tools/README.md)
+- [Model Adapters](tools/model-adapters/README.md)
+- [Agent Workflow](tools/agent_workflow/README.md)
