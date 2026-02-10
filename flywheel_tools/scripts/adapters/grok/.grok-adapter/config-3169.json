@@ -1,0 +1,10 @@
+{
+  "baseUrl": "https://api.x.ai/v1",
+  "apiKey": "xai-eezN9CpAEHgjAEJQaw1OaYsbsPH55ggL7u4cjP57FoLc7mja9QlqmW5CYKsXCQGtfHsSmrTnuwY3QYhF",
+  "models": {
+    "opus": "grok-4-latest",
+    "sonnet": "grok-4-latest",
+    "haiku": "grok-4-latest"
+  },
+  "toolFormat": "native"
+}
