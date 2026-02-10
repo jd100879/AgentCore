@@ -1,0 +1,1 @@
+../flywheel_tools/scripts/adapters/start-deepseek-proxy.sh

@@ -1,0 +1,1 @@
+../flywheel_tools/scripts/adapters/deepseek-claude-wrapper.sh
