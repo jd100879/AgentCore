@@ -1,0 +1,240 @@
+# NTM (Near-Term Memory) Configuration
+# bd-25o - Phase 1 NTM Integration & Polish
+#
+# This file centralizes configuration for all NTM components:
+# - Auto-scaler (dynamic agent spawning/teardown)
+# - Queue monitor (daemon monitoring queue depth)
+# - Agent registry (agent types and capabilities)
+# - Match engine (task-agent matching scores)
+# - Performance tracker (historical performance data)
+
+# Auto-Scaler Configuration
+auto_scaler:
+  # Minimum and maximum agent counts
+  min_agents: 0
+  max_agents: 8
+
+  # Scaling thresholds (tasks per agent ratio)
+  scale_up_threshold: 3.0    # Scale up if ratio > 3.0
+  scale_down_threshold: 1.0  # Scale down if ratio < 1.0
+
+  # Idle timeout (seconds) before agent teardown
+  idle_timeout: 1800  # 30 minutes
+
+  # Auto-scaling loop check interval (seconds)
+  check_interval: 300  # 5 minutes
+
+  # Activity tracking
+  activity_log: ".beads/autoscaler/agent-activity.jsonl"
+
+# Queue Monitor Configuration
+queue_monitor:
+  # Queue depth thresholds (number of ready tasks)
+  thresholds:
+    low: 5
+    medium: 10
+    high: 20
+    critical: 30
+
+  # Daemon check interval (seconds)
+  check_interval: 30
+
+  # Notification settings
+  notify_coordinators: true
+  coordinator_recipient: "Coordinators"
+
+  # Event logging
+  events_log: ".beads/queue-events.jsonl"
+
+  # Health monitoring (bd-13b)
+  health_monitoring:
+    enabled: true
+    stuck_task_threshold: 7200   # 2 hours in seconds
+    hung_agent_threshold: 1800   # 30 minutes in seconds
+    check_interval: 60           # Check every 60 seconds
+    heartbeat_log: ".beads/agent-heartbeats.jsonl"
+
+# Agent Registry Configuration
+agent_registry:
+  # Agent type definitions file
+  types_file: ".agent-profiles/types.yaml"
+
+  # Active agent instances directory
+  instances_dir: ".agent-profiles/instances"
+
+  # Default agent type for new spawns
+  default_type: "general"
+
+  # Agent capacity limits (tasks per agent)
+  capacity:
+    general: 3
+    backend: 4
+    frontend: 4
+    devops: 3
+    docs: 3
+    qa: 4
+
+# Match Engine Configuration
+match_engine:
+  # Scoring weights for task-agent matching
+  weights:
+    skill_match: 0.5        # Weight for capability matching
+    workload: 0.3           # Weight for current workload
+    historical: 0.2         # Weight for historical performance
+
+  # Skill level multipliers (bd-1w0f)
+  skill_levels:
+    expert: 1.0
+    intermediate: 0.7
+    novice: 0.4
+
+  # Minimum acceptable match score (0.0 - 1.0)
+  min_match_score: 0.3
+
+# Performance Tracker Configuration (bd-3si)
+performance_tracker:
+  # Performance data storage
+  data_file: ".beads/agent-performance.jsonl"
+
+  # Metrics to track
+  metrics:
+    - cycle_time        # Time from claim to completion
+    - success_rate      # Percentage of successful completions
+    - quality_score     # Task quality assessment (future)
+
+  # Learning parameters
+  learning:
+    # Minimum tasks before using historical data
+    min_tasks_for_learning: 5
+
+    # Historical data decay factor (0.0 - 1.0)
+    # Higher = recent tasks matter more
+    recency_weight: 0.7
+
+    # Update frequency for match engine
+    update_interval: 3600  # 1 hour in seconds
+
+# Broadcast Service Configuration (bd-1no)
+broadcast:
+  # Group definitions
+  groups:
+    - all               # All agents
+    - active            # Agents with active tmux panes
+    - coordinators      # Coordinator role agents
+
+  # Message types and importance mapping
+  message_types:
+    URGENT:
+      importance: urgent
+      ttl: 3600         # 1 hour
+    BLOCKER:
+      importance: urgent
+      ttl: 7200         # 2 hours
+    FYI:
+      importance: normal
+      ttl: 86400        # 24 hours
+    HANDOFF:
+      importance: normal
+      ttl: 14400        # 4 hours
+    UPDATE:
+      importance: normal
+      ttl: 43200        # 12 hours
+    QUESTION:
+      importance: normal
+      ttl: 28800        # 8 hours
+    COMPLETED:
+      importance: normal
+      ttl: 3600         # 1 hour
+
+  # Delivery settings
+  delivery:
+    retry_count: 3
+    retry_delay: 5      # seconds
+    timeout: 10         # seconds
+
+# Dashboard Configuration
+dashboard:
+  # Default refresh interval for watch mode (seconds)
+  watch_interval: 5
+
+  # Sections to display in full mode
+  sections:
+    - queue
+    - agents
+    - monitor
+    - swarms
+    - performance
+
+  # Compact mode format
+  compact_format: "NTM: {status} | Tasks: {ready_tasks} | Agents: {active_agents} | Ratio: {ratio}"
+
+  # Warning thresholds for visual indicators
+  warnings:
+    high_ratio: 5.0              # Tasks/agent ratio
+    low_ratio: 0.5
+    expiring_soon: 1800          # File reservation expiry warning (30min)
+    many_blocked_tasks: 5        # Number of blocked tasks
+
+# Logging Configuration
+logging:
+  # Global log level (DEBUG, INFO, WARN, ERROR)
+  level: INFO
+
+  # Log file locations
+  logs:
+    auto_scaler: "logs/auto-scaler.log"
+    queue_monitor: "logs/queue-monitor.log"
+    performance_tracker: "logs/performance-tracker.log"
+    broadcast: "logs/broadcast.log"
+
+  # Log rotation
+  rotation:
+    max_size_mb: 10
+    max_files: 5
+
+# Integration Settings
+integration:
+  # Beads (br) integration
+  beads:
+    enabled: true
+    ready_command: "br ready --json"
+    show_command: "br show {id} --json"
+
+  # Tmux integration
+  tmux:
+    enabled: true
+    default_session_prefix: "swarm-"
+    layout: "tiled"
+
+  # Agent mail integration
+  mail:
+    enabled: true
+    helper_script: "scripts/agent-mail-helper.sh"
+
+# Phase 1 Success Criteria
+# These are target values for Phase 1 validation:
+phase1_targets:
+  auto_scaling_works: true               # Queue triggers spawn/teardown
+  broadcast_latency_ms: 1000             # < 1s to reach all agents
+  skill_matching_improvement: 0.5        # 50% better than round-robin
+  coordination_overhead_reduction: 0.5   # 50% reduction in coordination time
+  min_successful_e2e_tests: 5            # Number of successful E2E test runs
+
+# Maintenance
+maintenance:
+  # Auto-cleanup old swarm state files
+  cleanup:
+    enabled: true
+    max_age_days: 7
+    state_files_pattern: "pids/swarm-*.state"
+
+  # Health check schedule
+  health_checks:
+    enabled: true
+    interval: 3600      # 1 hour
+
+# Version
+version: "1.0.0"
+phase: "Phase 1 - Full NTM Implementation"
+created: "2026-02-01"
+updated: "2026-02-01"

@@ -1,33 +1,57 @@
 #!/bin/bash
-# AgentCore Quick Launcher
-# Launches the visual session manager for multi-agent workflows
+# Quick launcher for agent-flywheel multi-agent sessions
 
-# Check if visual-session-manager is installed
-if ! command -v visual-session-manager &> /dev/null; then
-    echo "❌ Error: visual-session-manager not found in PATH"
-    echo ""
-    echo "Please install AgentCore tools first:"
-    echo "  cd ~/Projects/AgentCore/tools/agent_workflow"
-    echo "  ./install.sh"
-    exit 1
+# Detect which terminal app we're running in
+TERM_PROGRAM="${TERM_PROGRAM:-Terminal}"
+
+# Check if iTerm2 is installed
+ITERM_INSTALLED=false
+if [ -d "/Applications/iTerm.app" ]; then
+    ITERM_INSTALLED=true
 fi
 
-# Check if MCP Agent Mail is needed
-if [ ! -d "$(dirname "$0")/mcp_agent_mail/venv" ]; then
-    echo "⚠️  Warning: MCP Agent Mail not installed"
+# If we're not in iTerm and iTerm is installed, offer to switch
+if [ "$TERM_PROGRAM" != "iTerm.app" ] && [ "$ITERM_INSTALLED" = true ]; then
+    echo "════════════════════════════════════════════════"
+    echo "  Agent Flywheel - Terminal Selection"
+    echo "════════════════════════════════════════════════"
     echo ""
-    echo "For full multi-agent features, install MCP Agent Mail:"
-    echo "  cd ~/Projects/AgentCore/mcp_agent_mail"
-    echo "  ./install.sh"
+    echo "Which terminal app would you like to use?"
     echo ""
-    read -p "Continue without MCP? [y/N] " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        exit 1
+    echo "  1) iTerm2 (recommended for this workflow)"
+    echo "  2) Terminal.app (current)"
+    echo ""
+    read -p "Your choice [1-2]: " TERM_CHOICE
+
+    if [ "$TERM_CHOICE" = "1" ]; then
+        # Get the full path to this script's directory
+        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+        # Launch in iTerm2
+        echo ""
+        echo "✓ Opening in iTerm2 and starting session..."
+        osascript <<EOF
+tell application "iTerm"
+    activate
+    if (count of windows) = 0 then
+        set newWindow to (create window with default profile)
+        tell current session of newWindow
+            write text "cd '$SCRIPT_DIR' && ./start"
+        end tell
+    else
+        tell current window
+            set newTab to (create tab with default profile)
+            tell current session of newTab
+                write text "cd '$SCRIPT_DIR' && ./start"
+            end tell
+        end tell
+    end if
+end tell
+EOF
+        exit 0
     fi
 fi
 
-# Launch visual session manager
-echo "🚀 Launching AgentCore Session Manager..."
-echo ""
-visual-session-manager "$@"
+# Continue in current terminal
+# Always try visual interface first - it will handle fzf installation
+./scripts/visual-session-manager.sh "$@"

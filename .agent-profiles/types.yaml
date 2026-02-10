@@ -1,0 +1,227 @@
+# Agent Type Registry
+# Defines agent types with their capabilities, capacity limits, and work brief templates
+#
+# Schema:
+#   name: Unique identifier for the agent type
+#   capabilities: List of skills/specializations this agent type possesses
+#   capacity_limit: Maximum number of concurrent tasks (0 = unlimited)
+#   description: Human-readable description of the agent type
+#   constraints_template: Structured work brief injected into bead descriptions
+#
+# Usage:
+#   - Used by NTM system for skill-based task assignment
+#   - Referenced by spawn-swarm.sh --type parameter
+#   - constraints_template used by br-create.sh to enrich bead descriptions
+#   - Default type: "general" (backward compatible)
+
+agent_types:
+  # General-purpose agent (default)
+  - name: general
+    description: General-purpose agent capable of handling diverse tasks
+    capabilities:
+      - bash
+      - git
+      - documentation
+      - testing
+      - debugging
+      - refactoring
+    capacity_limit: 0  # Unlimited
+    constraints_template: |
+      TYPE: general
+
+      CONSTRAINTS:
+      - Do NOT modify files unrelated to this task
+      - MUST commit with bead ID prefix
+      - MUST verify changes work before closing the bead
+      - Keep changes minimal and focused
+
+      APPROACH:
+      - Read existing code patterns before writing new code
+      - Follow the repository's established conventions
+      - If unsure about scope, keep it small
+
+      ACCEPTANCE CRITERIA:
+      - Changes are correct and tested
+      - No lint or syntax errors introduced
+      - Commits are clean with bead ID prefix
+
+  # Backend specialists
+  - name: backend
+    description: Backend development specialist (APIs, databases, services)
+    capabilities:
+      - python
+      - bash
+      - api
+      - database
+      - testing
+      - performance
+      - debugging
+    capacity_limit: 3
+    constraints_template: |
+      TYPE: backend
+
+      CONSTRAINTS:
+      - Do NOT modify frontend code (React, Vue, CSS, HTML templates)
+      - Do NOT create database tables without migrations
+      - Do NOT change API response shapes without updating docs
+      - MUST write unit tests for new functions
+      - MUST handle errors with proper status codes
+      - MUST validate all user input at API boundaries
+
+      APPROACH:
+      - Read existing backend patterns and route structure first
+      - Follow repository code style and ORM conventions
+      - Write tests alongside implementation
+      - Consider backward compatibility for API changes
+      - Check for N+1 queries and performance implications
+
+      ACCEPTANCE CRITERIA:
+      - All tests pass
+      - No breaking API changes (or documented if intentional)
+      - Migrations are reversible
+      - Error responses follow existing format
+      - No unvalidated user input reaches database
+
+  # Frontend specialists
+  - name: frontend
+    description: Frontend development specialist (UI, UX, client-side)
+    capabilities:
+      - javascript
+      - typescript
+      - react
+      - css
+      - html
+      - ui
+      - testing
+    capacity_limit: 3
+    constraints_template: |
+      TYPE: frontend
+
+      CONSTRAINTS:
+      - Do NOT modify backend code (API routes, database, server logic)
+      - Do NOT add new npm dependencies without justification
+      - Do NOT use inline styles when CSS classes exist
+      - MUST ensure responsive design (test at mobile, tablet, desktop)
+      - MUST maintain accessibility (aria labels, keyboard nav, contrast)
+      - MUST handle loading and error states in UI components
+
+      APPROACH:
+      - Read existing component patterns and styling conventions first
+      - Follow the project's component structure and naming
+      - Reuse existing UI components before creating new ones
+      - Test visual changes at multiple viewport sizes
+
+      ACCEPTANCE CRITERIA:
+      - No layout breaks at any standard viewport
+      - Accessible (screen reader compatible)
+      - Loading and error states handled
+      - Follows existing component patterns
+      - No console errors or warnings
+
+  # DevOps/Infrastructure specialists
+  - name: devops
+    description: DevOps and infrastructure specialist
+    capabilities:
+      - bash
+      - docker
+      - kubernetes
+      - ci-cd
+      - monitoring
+      - automation
+      - security
+    capacity_limit: 2
+    constraints_template: |
+      TYPE: devops
+
+      CONSTRAINTS:
+      - Do NOT modify application business logic
+      - Do NOT hardcode secrets, tokens, or credentials
+      - Do NOT change production configs without a rollback plan
+      - MUST use environment variables for all configuration
+      - MUST test scripts in dry-run or staging before production
+      - MUST document any manual steps required
+
+      APPROACH:
+      - Read existing infrastructure and CI/CD configuration first
+      - Follow the project's deployment patterns
+      - Make changes incremental and reversible
+      - Prefer declarative configuration over imperative scripts
+
+      ACCEPTANCE CRITERIA:
+      - Scripts are idempotent (safe to run multiple times)
+      - No secrets in source code
+      - Rollback procedure documented
+      - CI/CD pipeline passes
+      - Infrastructure changes are reproducible
+
+  # Documentation specialists
+  - name: docs
+    description: Documentation and technical writing specialist
+    capabilities:
+      - documentation
+      - markdown
+      - technical-writing
+      - examples
+      - tutorials
+    capacity_limit: 2
+    constraints_template: |
+      TYPE: docs
+
+      CONSTRAINTS:
+      - Do NOT modify application code (only documentation files)
+      - Do NOT document internal implementation details that change frequently
+      - MUST verify code examples actually work
+      - MUST keep docs consistent with current codebase behavior
+      - MUST use existing doc formatting and structure conventions
+
+      APPROACH:
+      - Read the existing documentation structure first
+      - Read the actual code to understand behavior before documenting
+      - Write for the target audience (developer, user, operator)
+      - Include working examples wherever possible
+
+      ACCEPTANCE CRITERIA:
+      - All code examples are tested and work
+      - Documentation matches actual behavior
+      - Follows existing formatting conventions
+      - No broken links or references
+      - Clear and concise (no filler text)
+
+  # Testing/QA specialists
+  - name: qa
+    description: Quality assurance and testing specialist
+    capabilities:
+      - testing
+      - integration-testing
+      - performance-testing
+      - debugging
+      - validation
+    capacity_limit: 2
+    constraints_template: |
+      TYPE: qa
+
+      CONSTRAINTS:
+      - Do NOT modify application business logic (only test files)
+      - Do NOT skip flaky tests — fix them or document why they flake
+      - MUST test edge cases and error paths, not just happy paths
+      - MUST use existing test framework and patterns
+      - MUST clean up test data and state after tests run
+
+      APPROACH:
+      - Read existing test patterns and test utilities first
+      - Understand what the code is supposed to do before writing tests
+      - Cover: happy path, edge cases, error cases, boundary values
+      - Use descriptive test names that explain expected behavior
+      - Mock external dependencies, test real internal logic
+
+      ACCEPTANCE CRITERIA:
+      - All new tests pass
+      - No existing tests broken
+      - Coverage for happy path AND error paths
+      - Tests are deterministic (no flaky tests)
+      - Test names clearly describe what they verify
+
+# Reserved for future use:
+# - ml: Machine learning specialist
+# - security: Security specialist
+# - data: Data engineering specialist
