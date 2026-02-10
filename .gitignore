@@ -42,3 +42,14 @@ Cargo.lock
 # Environment
 .env
 .env.local
+
+# Beads
+.beads/beads.db
+.beads/*.backup
+.beads/mail-read.jsonl
+.beads/mail-read-temp.jsonl
+.beads/agent-activity.jsonl
+.beads/reserve-pending/
+
+# Temporary/Review
+review-for-delete/
