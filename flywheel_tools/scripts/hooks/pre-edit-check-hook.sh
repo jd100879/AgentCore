@@ -36,7 +36,7 @@ esac
 # ============================================
 # Never allow direct editing of .beads/issues.jsonl
 # Only the 'br' command should modify this file
-if [[ "$FILE_PATH" == *".beads/issues.jsonl"* ]]; then
+if [[ "$FILE_PATH" == *"/.beads/issues.jsonl" ]]; then
     echo "❌ ERROR: Direct editing of .beads/issues.jsonl is forbidden" >&2
     echo "" >&2
     echo "   The beads database must only be modified through the 'br' command." >&2
