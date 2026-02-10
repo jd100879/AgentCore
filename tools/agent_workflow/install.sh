@@ -43,10 +43,12 @@ for script in "${SCRIPTS[@]}"; do
         chmod +x "$INSTALL_DIR/$script"
         
         # Update lib paths in scripts to use installed location
-        if grep -q "scripts/lib/" "$INSTALL_DIR/$script" 2>/dev/null; then
-            sed -i.bak "s|scripts/lib/|$LIB_DIR/|g" "$INSTALL_DIR/$script"
-            rm -f "$INSTALL_DIR/$script.bak"
-        fi
+        # Handle both patterns: "scripts/lib/" and "$SCRIPT_DIR/lib/"
+        sed -i.bak \
+            -e "s|scripts/lib/|$LIB_DIR/|g" \
+            -e "s|\$SCRIPT_DIR/lib/|$LIB_DIR/|g" \
+            "$INSTALL_DIR/$script"
+        rm -f "$INSTALL_DIR/$script.bak"
         
         installed=$((installed + 1))
         echo "✓ Installed $script"
