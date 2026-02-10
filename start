@@ -1,0 +1,33 @@
+#!/bin/bash
+# AgentCore Quick Launcher
+# Launches the visual session manager for multi-agent workflows
+
+# Check if visual-session-manager is installed
+if ! command -v visual-session-manager &> /dev/null; then
+    echo "❌ Error: visual-session-manager not found in PATH"
+    echo ""
+    echo "Please install AgentCore tools first:"
+    echo "  cd ~/Projects/AgentCore/tools/agent_workflow"
+    echo "  ./install.sh"
+    exit 1
+fi
+
+# Check if MCP Agent Mail is needed
+if [ ! -d "$(dirname "$0")/mcp_agent_mail/venv" ]; then
+    echo "⚠️  Warning: MCP Agent Mail not installed"
+    echo ""
+    echo "For full multi-agent features, install MCP Agent Mail:"
+    echo "  cd ~/Projects/AgentCore/mcp_agent_mail"
+    echo "  ./install.sh"
+    echo ""
+    read -p "Continue without MCP? [y/N] " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
+fi
+
+# Launch visual session manager
+echo "🚀 Launching AgentCore Session Manager..."
+echo ""
+visual-session-manager "$@"
