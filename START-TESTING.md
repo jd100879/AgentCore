@@ -4,13 +4,27 @@
 - ✅ Tools installed to ~/.local/bin
 - ✅ Basic installation tests passed
 - ✅ 2 critical bugs found and fixed
+- ✅ ./start launcher added
 - ⏸ Manual testing NOT started yet
 
 ## DO NOT MERGE until manual testing complete
 
 ## Quick Start Testing
 
-### Step 1: Verify MCP Agent Mail is installed
+### Option 1: Use the ./start launcher (easiest)
+```bash
+cd ~/Projects/AgentCore
+./start
+```
+
+This will:
+- Check if tools are installed
+- Check if MCP Agent Mail is ready
+- Launch visual-session-manager (fzf interface)
+
+### Option 2: Manual step-by-step
+
+#### Step 1: Verify MCP Agent Mail is installed
 ```bash
 cd ~/Projects/AgentCore/mcp_agent_mail
 test -f venv/bin/activate && echo "✓ MCP installed" || echo "❌ Need to install MCP first"
@@ -22,7 +36,7 @@ cd ~/Projects/AgentCore/mcp_agent_mail
 ./install.sh
 ```
 
-### Step 2: Start MCP server
+#### Step 2: Start MCP server
 ```bash
 cd ~/Projects/AgentCore/mcp_agent_mail
 source venv/bin/activate
@@ -31,7 +45,7 @@ python -m mcp_agent_mail serve-http
 
 Leave this running in a separate terminal.
 
-### Step 3: Test agent-mail-helper
+#### Step 3: Test agent-mail-helper
 ```bash
 # In a new terminal
 agent-mail-helper register "Test Agent"
@@ -39,7 +53,7 @@ agent-mail-helper whoami
 agent-mail-helper list
 ```
 
-### Step 4: Follow full test plan
+#### Step 4: Follow full test plan
 See: `test-results/manual-test-plan.md`
 
 ## Test Documentation
@@ -50,9 +64,9 @@ See: `test-results/manual-test-plan.md`
 ## Feature Branch Info
 
 **Branch:** feature/workflow-integration  
-**Commits:** 7 total  
-**Files changed:** 28  
-**Lines added:** 7,440
+**Commits:** 9 total  
+**Files changed:** 30  
+**Lines added:** 7,521
 
 ## What's Been Tested So Far
 
@@ -61,6 +75,7 @@ See: `test-results/manual-test-plan.md`
 ✅ Lib dependencies resolved  
 ✅ No syntax errors  
 ✅ Basic help/usage works
+✅ ./start launcher created
 
 ## What Needs Testing
 
