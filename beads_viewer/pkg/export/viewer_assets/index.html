@@ -1031,7 +1031,7 @@
                       x-text="issue.status"></span>
                 <div class="flex-1 min-w-0">
                   <p class="font-medium truncate text-sm" x-text="issue.title" :title="issue.title"></p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400" x-text="formatDate(issue.updated_at)"></p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400" x-text="issue.assignee || formatDate(issue.updated_at)"></p>
                 </div>
               </div>
             </template>
@@ -1223,7 +1223,7 @@
                     <span class="px-2 py-1 text-xs font-medium rounded-full"
                           :class="'status-' + issue.status"
                           x-text="issue.status"></span>
-                    <span class="text-xs text-gray-500 dark:text-gray-400" x-text="formatDate(issue.updated_at)"></span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400" x-text="issue.assignee || formatDate(issue.updated_at)"></span>
                   </div>
                 </div>
                 <!-- Metadata row - wrap and compact spacing on mobile -->
@@ -1232,7 +1232,7 @@
                   <span x-show="issue.blocks_count"><span class="font-medium">Blocks:</span> <span x-text="issue.blocks_count"></span></span>
                   <span x-show="issue.blocked_by_count"><span class="font-medium">Blocked by:</span> <span x-text="issue.blocked_by_count"></span></span>
                   <!-- Date shown here on mobile only -->
-                  <span class="sm:hidden text-gray-400" x-text="formatDate(issue.updated_at)"></span>
+                  <span class="sm:hidden text-gray-400" x-text="issue.assignee || formatDate(issue.updated_at)"></span>
                 </div>
                 <div x-show="searchMode === 'hybrid' && issue.hybrid_score !== undefined"
                      class="mt-1 text-[10px] text-gray-500 dark:text-gray-400">

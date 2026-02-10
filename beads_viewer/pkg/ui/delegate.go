@@ -58,7 +58,10 @@ func (d IssueDelegate) Render(w io.Writer, m list.Model, index int, listItem lis
 	icon, iconColor := t.GetTypeIcon(string(i.Issue.IssueType))
 	idStr := i.Issue.ID
 	title := i.Issue.Title
-	ageStr := FormatTimeRel(i.Issue.CreatedAt)
+	ageStr := i.Issue.Assignee
+	if ageStr == "" {
+		ageStr = FormatTimeRel(i.Issue.CreatedAt)
+	}
 	commentCount := len(i.Issue.Comments)
 
 	// Measure actual icon display width (emojis vary: 1-2 cells)
