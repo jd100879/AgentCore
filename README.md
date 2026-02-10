@@ -31,6 +31,12 @@ A clean implementation of Jeffrey Emanuel's (Dicklesworthstone) multi-agent coor
    - Automated code quality scanning
    - [README](ultimate_bug_scanner/README.md)
 
+6. **Flywheel Tools** (`flywheel_tools/`)
+   - Shell script infrastructure for autonomous agent workflows
+   - Agent lifecycle management and coordination
+   - Workflow hooks and automation
+   - [README](flywheel_tools/README.md)
+
 ### ❌ Not Available
 - **Named Tmux Manager (NTM)** - Repository not found (may be private or renamed)
 
@@ -40,12 +46,12 @@ A clean implementation of Jeffrey Emanuel's (Dicklesworthstone) multi-agent coor
 
 ### [tools/](tools/) - Extended Tools & Utilities
 
-6. **Model Adapters** (`tools/model-adapters/`)
+7. **Model Adapters** (`tools/model-adapters/`)
    - Grok (xAI) and DeepSeek drop-in replacements for Claude
    - Enable multi-model agent swarms
    - [README](tools/model-adapters/README.md)
 
-7. **Agent Workflow** (`tools/agent_workflow/`)
+8. **Agent Workflow** (`tools/agent_workflow/`)
    - Autonomous agent execution and coordination
    - Multi-agent communication tools
    - Task management integration
@@ -83,7 +89,10 @@ cd coding_agent_session_search && ./install.sh && cd ..
 # 5. Install UBS
 cd ultimate_bug_scanner && ./install.sh && cd ..
 
-# 6. Install extended tools (optional)
+# 6. Install Flywheel Tools
+cd flywheel_tools && ./install.sh /path/to/your/project && cd ..
+
+# 7. Install extended tools (optional)
 cd tools/agent_workflow && ./install.sh && cd ../..
 cd tools/model-adapters && ./install.sh && cd ../..
 ```
@@ -96,7 +105,7 @@ Originally "Agent Flywheel Integration", renamed to **AgentCore** to better refl
 
 ## Status
 
-✅ **Core Components** - 5 components installed and ready
+✅ **Core Components** - 6 components installed and ready
 ✅ **Extended Tools** - Model adapters and workflow automation added
 
 ## Documentation
@@ -107,8 +116,12 @@ Originally "Agent Flywheel Integration", renamed to **AgentCore** to better refl
 - [Beads Viewer](beads_viewer/README.md)
 - [CASS](coding_agent_session_search/README.md)
 - [Ultimate Bug Scanner](ultimate_bug_scanner/README.md)
+- [Flywheel Tools](flywheel_tools/README.md)
 
 ### Extended Tools
 - [Tools Overview](tools/README.md)
 - [Model Adapters](tools/model-adapters/README.md)
 - [Agent Workflow](tools/agent_workflow/README.md)
+
+### Architecture
+- [ARCHITECTURE.md](ARCHITECTURE.md) - System architecture and component integration
