@@ -31,6 +31,26 @@ case "$BASENAME" in
 esac
 
 # ============================================
+# ============================================
+# BLOCK DIRECT BEADS DATABASE EDITS
+# ============================================
+# Never allow direct editing of .beads/issues.jsonl
+# Only the 'br' command should modify this file
+if [[ "$FILE_PATH" == *".beads/issues.jsonl"* ]]; then
+    echo "❌ ERROR: Direct editing of .beads/issues.jsonl is forbidden" >&2
+    echo "" >&2
+    echo "   The beads database must only be modified through the 'br' command." >&2
+    echo "" >&2
+    echo "   Common operations:" >&2
+    echo "   → br update <bead-id> --assignee \$(./scripts/agent-mail-helper.sh whoami)" >&2
+    echo "   → br close <bead-id>" >&2
+    echo "   → br create \"Title\"" >&2
+    echo "" >&2
+    echo "   This prevents corruption and ensures proper workflow tracking." >&2
+    exit 2
+fi
+
+# ============================================
 # BEADS WORKFLOW ENFORCEMENT
 # ============================================
 # Check if agent has an active bead before allowing edits

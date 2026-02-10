@@ -81,5 +81,25 @@ else
     # exit 2
 fi
 
+
+# ============================================
+# AUTO-FIX WRONG BEAD ASSIGNEES
+# ============================================
+# Validate that current bead assignee matches agent identity
+# Auto-fix if mismatch detected (defense-in-depth)
+
+AGENT_NAME=$(./scripts/agent-mail-helper.sh whoami 2>/dev/null || echo "")
+CURRENT_BEAD=$(cat /tmp/agent-bead-${AGENT_NAME}.txt 2>/dev/null || echo "")
+
+if [[ -n "$CURRENT_BEAD" ]] && [[ -n "$AGENT_NAME" ]]; then
+    ASSIGNEE=$(br show "$CURRENT_BEAD" 2>/dev/null | grep "Assignee:" | awk '{print $2}' || echo "unknown")
+    
+    if [[ "$ASSIGNEE" != "$AGENT_NAME" ]] && [[ "$ASSIGNEE" != "none" ]] && [[ "$ASSIGNEE" != "unknown" ]]; then
+        echo "[session-start-hook] ⚠️  Auto-fixing bead assignment: $CURRENT_BEAD" >&2
+        echo "[session-start-hook]    Wrong assignee: $ASSIGNEE → Correct: $AGENT_NAME" >&2
+        br update "$CURRENT_BEAD" --assignee "$AGENT_NAME" 2>/dev/null || echo "[session-start-hook] ⚠️  Failed to auto-fix assignee" >&2
+    fi
+fi
+
 # Exit 0 to allow session to continue
 exit 0
