@@ -182,6 +182,7 @@ BEADS_IGNORES=(
     ".beads/reserve-pending/"
     ".agent-mail-project-id"
     "pids/"
+    ".no-clear"
 )
 
 for ignore in "${BEADS_IGNORES[@]}"; do

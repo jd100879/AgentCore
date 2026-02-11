@@ -53,3 +53,4 @@ Cargo.lock
 
 # Temporary/Review
 review-for-delete/
+.no-clear
