@@ -140,15 +140,97 @@ resurrect_session() {
     fi
 }
 
-# Permanently delete a killed session state
+# Permanently delete a killed session state and clean up all artifacts
 delete_session_state() {
     local session_name="$1"
     local state_file="$STATE_DIR/${session_name}.state"
+    local cleanup_count=0
 
-    if [ -f "$state_file" ]; then
-        rm -f "$state_file"
-        echo -e "${GREEN}✓ Permanently deleted: $session_name${NC}"
+    if [ ! -f "$state_file" ]; then
+        echo -e "${YELLOW}⚠️  No state file found for: $session_name${NC}"
+        return
     fi
+
+    echo -e "${BLUE}Cleaning up session: $session_name${NC}"
+
+    # 1. Extract agent names from state file and kill their mail monitors
+    local agent_names=$(grep "^AGENT_" "$state_file" | cut -d'=' -f2 | sort -u)
+    if [ -n "$agent_names" ]; then
+        echo -n "  Stopping mail monitors... "
+        local monitor_count=0
+        while read -r agent_name; do
+            [ -z "$agent_name" ] && continue
+            # Find and kill mail monitor processes for this agent
+            local pids=$(ps aux | grep "[m]onitor-agent-mail.*$agent_name" | awk '{print $2}')
+            if [ -n "$pids" ]; then
+                echo "$pids" | xargs kill 2>/dev/null || true
+                monitor_count=$((monitor_count + $(echo "$pids" | wc -w)))
+            fi
+        done <<< "$agent_names"
+        if [ "$monitor_count" -gt 0 ]; then
+            echo "${monitor_count} stopped"
+            cleanup_count=$((cleanup_count + monitor_count))
+        else
+            echo "none found"
+        fi
+    fi
+
+    # 2. Clean up identity files for this session
+    # Identity files follow pattern: {session_name}-{window}-{pane}.identity
+    echo -n "  Removing identity files... "
+    local identity_count=0
+    if [ -d "$PROJECT_ROOT/panes" ]; then
+        local identity_files=$(find "$PROJECT_ROOT/panes" -name "${session_name}-*.identity" -type f 2>/dev/null)
+        if [ -n "$identity_files" ]; then
+            identity_count=$(echo "$identity_files" | wc -l | tr -d ' ')
+            # Move to review-for-delete if it exists, otherwise delete
+            if [ -d "$PROJECT_ROOT/review-for-delete" ]; then
+                echo "$identity_files" | xargs -I {} mv {} "$PROJECT_ROOT/review-for-delete/" 2>/dev/null || true
+            else
+                echo "$identity_files" | xargs rm -f 2>/dev/null || true
+            fi
+            echo "${identity_count} removed"
+            cleanup_count=$((cleanup_count + identity_count))
+        else
+            echo "none found"
+        fi
+    else
+        echo "none found"
+    fi
+
+    # 3. Clean up PID files for this session
+    echo -n "  Removing PID files... "
+    local pid_count=0
+    if [ -d "$PROJECT_ROOT/pids" ]; then
+        local pid_files=$(find "$PROJECT_ROOT/pids" -name "*${session_name}*" -type f 2>/dev/null)
+        if [ -n "$pid_files" ]; then
+            pid_count=$(echo "$pid_files" | wc -l | tr -d ' ')
+            # Move to review-for-delete if it exists, otherwise delete
+            if [ -d "$PROJECT_ROOT/review-for-delete" ]; then
+                echo "$pid_files" | xargs -I {} mv {} "$PROJECT_ROOT/review-for-delete/" 2>/dev/null || true
+            else
+                echo "$pid_files" | xargs rm -f 2>/dev/null || true
+            fi
+            echo "${pid_count} removed"
+            cleanup_count=$((cleanup_count + pid_count))
+        else
+            echo "none found"
+        fi
+    else
+        echo "none found"
+    fi
+
+    # 4. Delete the state file itself
+    echo -n "  Removing state file... "
+    if [ -d "$PROJECT_ROOT/review-for-delete" ]; then
+        mv "$state_file" "$PROJECT_ROOT/review-for-delete/" 2>/dev/null && echo "done" || echo "failed"
+    else
+        rm -f "$state_file" 2>/dev/null && echo "done" || echo "failed"
+    fi
+    cleanup_count=$((cleanup_count + 1))
+
+    echo ""
+    echo -e "${GREEN}✓ Session deleted: $session_name (${cleanup_count} items cleaned)${NC}"
 }
 
 # Build session list for fzf with clear sections
