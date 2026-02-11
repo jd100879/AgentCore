@@ -405,6 +405,25 @@ ubs scan .
 
 ---
 
+---
+
+## Disabling /clear Between Beads
+
+By default, `next-bead.sh` sends `/clear` to reset context between bead cycles. To keep context (e.g. for debugging or reviewing agent work), disable it with either:
+
+```bash
+# Option 1: File flag (easy to toggle from another pane)
+touch .no-clear       # disable /clear
+rm .no-clear          # re-enable /clear
+
+# Option 2: Environment variable (set before launching agent-runner)
+AGENT_NO_CLEAR=1 ./scripts/agent-runner.sh
+```
+
+When `/clear` is skipped, `next-bead.sh` still claims the next bead and prints the prompt — it just doesn't interrupt the running session.
+
+---
+
 ## Success Criteria
 
 After installation, you should be able to:
