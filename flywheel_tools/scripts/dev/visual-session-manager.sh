@@ -943,7 +943,7 @@ smart_start() {
             sleep 3
             ;;
         [Cc])
-            create_new_session
+            create_new_session "$project_path"
             ;;
         *)
             return
@@ -953,6 +953,7 @@ smart_start() {
 
 # Create a new session - fully integrated visual workflow
 create_new_session() {
+    local project_path="$1"  # Optional: pre-selected project path
     clear
     echo ""
     echo -e "${BLUE}╔════════════════════════════════════════════════════════════════╗${NC}"
@@ -960,10 +961,16 @@ create_new_session() {
     echo -e "${BLUE}╚════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
 
-    # Step 1: Select project folder
-    echo -e "${BLUE}Step 1/4: Select project folder${NC}"
-    echo ""
-    local project_path=$("$SCRIPT_DIR/file-picker.sh" folder)
+    # Step 1: Select project folder (skip if already provided)
+    if [ -z "$project_path" ]; then
+        echo -e "${BLUE}Step 1/4: Select project folder${NC}"
+        echo ""
+        project_path=$("$SCRIPT_DIR/file-picker.sh" folder)
+    else
+        echo -e "${BLUE}Step 1/4: Project folder${NC}"
+        echo -e "${GREEN}✓ Using: $project_path${NC}"
+        echo ""
+    fi
 
     if [ -z "$project_path" ]; then
         echo -e "${YELLOW}No folder selected, cancelled${NC}"
