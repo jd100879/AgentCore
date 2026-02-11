@@ -106,6 +106,15 @@ start_monitor() {
         return 1
     fi
 
+    # Acquire lock to prevent race conditions (atomic operation)
+    local LOCK_FILE="$PIDS_DIR/${SAFE_PANE}.mail-monitor.lock"
+    if ! mkdir "$LOCK_FILE" 2>/dev/null; then
+        echo "❌ Another monitor is starting, please wait..."
+        return 1
+    fi
+    # Ensure lock is released on exit (success or failure)
+    trap "rmdir '$LOCK_FILE' 2>/dev/null || true" RETURN
+
     if [ -f "$PID_FILE" ]; then
         local pid=$(cat "$PID_FILE")
         if is_monitor_process "$pid"; then
