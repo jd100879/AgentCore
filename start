@@ -48,6 +48,8 @@ tell application "iTerm"
     end if
 end tell
 EOF
+        # Close the Terminal window we came from
+        osascript -e 'tell application "Terminal" to close first window' &>/dev/null || true
         exit 0
     fi
 fi
