@@ -134,7 +134,7 @@ wait_for_prompt() {
 # Ensures pending mail notifications are delivered before /clear
 # Prevents race condition where notifications arrive after /clear
 wait_for_mail_queue_empty() {
-    local pids_dir="$SCRIPT_DIR/../.pids"
+    local pids_dir="$SCRIPT_DIR/../pids"
     local agent_name_lower
     agent_name_lower=$(echo "$AGENT_NAME" | tr 'A-Z' 'a-z')
     local queue_file="$pids_dir/${agent_name_lower}.mail-queue"
