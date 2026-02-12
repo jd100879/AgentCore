@@ -250,6 +250,12 @@ else
     cat > "$CLAUDE_MD" << 'CLAUDEMD'
 # Project Instructions
 
+## Rules
+
+- Do NOT use the Task tool to spawn subagents. Do all work directly.
+- Do NOT ask the user what to do. Work autonomously.
+- Keep commits small and focused.
+
 ## Agent Mail
 
 **First time:** Register in the mail system:
@@ -262,6 +268,8 @@ else
 ./scripts/agent-mail-helper.sh whoami
 ./scripts/agent-mail-helper.sh inbox
 ```
+
+Inbox messages are work assignments. **Act on them autonomously.**
 
 ## Beads Workflow (MANDATORY)
 
@@ -285,6 +293,18 @@ git commit -m "[bd-xxx] Your commit message"
 ```bash
 br close bd-xxx
 ```
+
+## Autonomous Work Loop
+
+If running inside `scripts/agent-runner.sh`:
+
+1. Check inbox: `./scripts/agent-mail-helper.sh inbox`
+2. Work on your assigned bead (shown at startup)
+3. Commit with `[bd-xxx]` prefix
+4. Side issues: Create child beads, fix them, close them
+5. When done: `br close bd-xxx`
+6. A bead is only done when ALL child beads are also closed
+7. After `br close`, context clears automatically - do NOT run `next-bead.sh` manually
 CLAUDEMD
     echo "  Created CLAUDE.md template"
 fi
