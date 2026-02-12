@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/jd100879/AgentCore#readme",
   "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "playwright": "^1.58.2"
   }
 }
