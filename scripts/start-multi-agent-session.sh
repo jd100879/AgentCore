@@ -1232,6 +1232,17 @@ log "Applied tiled layout"
 # Select first pane
 tmux select-pane -t "$SESSION_SAFE:1.${PANE_IDS[0]}"
 
+# Create bead viewer window
+echo -e "${GREEN}Creating bead viewer window...${NC}"
+log "Creating bead viewer window"
+tmux new-window -t "$SESSION_SAFE:2" -n "bead-viewer" -c "$PROJECT_PATH"
+tmux send-keys -t "$SESSION_SAFE:2" "bv" C-m
+log "Bead viewer started in window 2"
+
+# Switch back to agents window
+tmux select-window -t "$SESSION_SAFE:1"
+log "Switched back to agents window"
+
 echo ""
 echo -e "${GREEN}✅ Tmux session created successfully!${NC}"
 echo ""
@@ -1239,6 +1250,7 @@ echo -e "${BLUE}📋 Session Info:${NC}"
 echo "   Session: $SESSION_NAME"
 echo "   Total agents: $TOTAL_AGENTS ($CLAUDE_COUNT Claude + $CODEX_COUNT Codex)"
 echo "   Working directory: $PROJECT_PATH"
+echo -e "   ${CYAN}Bead Viewer: Window 2 (Ctrl+b, then 2)${NC}"
 if [ -n "$TASK_LIST_ID" ]; then
     echo -e "   ${GREEN}Shared task list: $TASK_LIST_ID${NC}"
 fi
@@ -1249,6 +1261,8 @@ echo ""
 echo -e "  ${GREEN}Essential:${NC}"
 echo "   Ctrl+b, then arrow keys  - Switch between panes"
 echo "   Ctrl+b, then d           - Detach (exit without closing)"
+echo "   Ctrl+b, then 2           - Switch to bead viewer window"
+echo "   Ctrl+b, then 1           - Switch back to agents window"
 echo ""
 echo -e "  ${GREEN}Helpful:${NC}"
 echo "   Ctrl+b, then q           - Show pane numbers"
