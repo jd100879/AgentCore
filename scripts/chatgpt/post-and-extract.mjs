@@ -126,40 +126,73 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
 
     console.error("Waiting for response to complete...");
 
-    // Simplified completion detection: Wait for stop button to disappear
+    // Hybrid completion detection:
+    // 1. Wait for stop button to disappear
+    // 2. Wait 5 seconds for initial DOM settle
+    // 3. Verify text stability (no changes for 3 seconds)
     const stopButton = page.locator('button').filter({ hasText: /stop generating/i });
 
     const startTime = Date.now();
-    let responseComplete = false;
+    let stopButtonGone = false;
 
-    while (!responseComplete && (Date.now() - startTime < timeout)) {
+    // Step 1: Wait for stop button to disappear
+    while (!stopButtonGone && (Date.now() - startTime < timeout)) {
       await page.waitForTimeout(3000);
 
       const isGenerating = await stopButton.isVisible().catch(() => false);
 
       if (!isGenerating) {
-        // Stop button gone - wait 2 seconds for DOM to settle, then extract
-        console.error("Generation complete, waiting for DOM to settle...");
-        await page.waitForTimeout(2000);
-        responseComplete = true;
+        console.error("Stop button gone, initial DOM settle...");
+        stopButtonGone = true;
       } else {
         console.error("Still generating...");
       }
     }
 
-    if (!responseComplete) {
-      throw new Error(`Timeout waiting for response after ${timeout}ms`);
+    if (!stopButtonGone) {
+      throw new Error(`Timeout waiting for generation to complete after ${timeout}ms`);
     }
+
+    // Step 2: Wait 5 seconds for initial DOM settle
+    await page.waitForTimeout(5000);
+
+    // Step 3: Verify text stability (check every 3 seconds, max 3 checks)
+    const lastMessage = page.locator('[data-message-author-role="assistant"]').last();
+    let lastText = await lastMessage.innerText().catch(() => "");
+    let stableChecks = 0;
+    const maxStabilityChecks = 3;
+
+    console.error(`Initial text length: ${lastText.length} chars`);
+
+    while (stableChecks < maxStabilityChecks) {
+      await page.waitForTimeout(3000);
+
+      const currentText = await lastMessage.innerText().catch(() => "");
+
+      if (currentText === lastText && currentText.length > 0) {
+        stableChecks++;
+        console.error(`Text stable (check ${stableChecks}/${maxStabilityChecks})`);
+        if (stableChecks >= 2) {
+          // Stable for 2 checks (6 seconds) is enough
+          break;
+        }
+      } else {
+        console.error(`Text changed: ${lastText.length} -> ${currentText.length} chars`);
+        lastText = currentText;
+        stableChecks = 0;
+      }
+    }
+
+    console.error(`Final text length: ${lastText.length} chars, extracting...`);
 
     console.error("Extracting response...");
 
-    // Extract ALL text from last assistant message
-    const lastMessage = page.locator('[data-message-author-role="assistant"]').last();
-    let rawText = await lastMessage.innerText().catch(() => "");
+    // Use the text we already verified is stable
+    let rawText = lastText;
 
-    // Fallback to textContent if innerText fails
+    // Double-check with textContent as fallback
     if (!rawText || rawText.length === 0) {
-      console.error("innerText empty, trying textContent...");
+      console.error("Stable text empty, trying textContent...");
       rawText = await lastMessage.textContent().catch(() => "");
     }
 
@@ -167,7 +200,7 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
       throw new Error("Could not extract any text from last assistant message");
     }
 
-    console.error(`Extracted ${rawText.length} chars of raw text`);
+    console.error(`Extracted ${rawText.length} chars of raw text (verified stable)`);
 
     // Best-effort JSON extraction
     let extractedJson = null;
