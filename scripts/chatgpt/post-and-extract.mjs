@@ -136,7 +136,7 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     let stableCount = 0;
 
     while (!responseComplete && (Date.now() - startTime < timeout)) {
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(3000);  // Longer poll interval
 
       // Signal 1: Stop generating button gone (best-effort)
       const isGenerating = await stopButton.isVisible().catch(() => false);
@@ -148,15 +148,18 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
 
         if (currentText === lastMessageText && currentText.length > 0) {
           stableCount++;
-          if (stableCount >= 2) {
-            // Text stable for 2 checks (4 seconds total)
+          if (stableCount >= 3) {
+            // Text stable for 3 checks (9 seconds total)
             responseComplete = true;
+            console.error(`Response stable for ${stableCount * 3}s, extracting...`);
           }
         } else {
+          console.error(`Text changed: ${lastMessageText.length} -> ${currentText.length} chars`);
           lastMessageText = currentText;
           stableCount = 0;
         }
       } else {
+        console.error("Still generating...");
         stableCount = 0;
       }
     }
