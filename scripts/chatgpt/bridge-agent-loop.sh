@@ -25,19 +25,19 @@ echo "=== ChatGPT Bridge Agent ==="
 echo "Identity: $AGENT_IDENTITY"
 echo "Check interval: ${CHECK_INTERVAL}s"
 
-# Register the bridge agent with the mail system
-echo "Registering $AGENT_IDENTITY with mail system..."
+# Register the bridge agent with the mail system using macro_start_session
+# This ensures we get the assigned name
+echo "Registering bridge with mail system..."
 cat > /tmp/bridge-register.json << EOF
 {
   "jsonrpc": "2.0",
   "method": "tools/call",
   "params": {
-    "name": "register_agent",
+    "name": "macro_start_session",
     "arguments": {
-      "project_key": "$MAIL_PROJECT_KEY",
+      "human_key": "$MAIL_PROJECT_KEY",
       "program": "bash-bridge",
       "model": "chatgpt",
-      "name": "$AGENT_IDENTITY",
       "task_description": "ChatGPT bridge for batch planning"
     }
   },
@@ -45,13 +45,20 @@ cat > /tmp/bridge-register.json << EOF
 }
 EOF
 
-curl -s -X POST "$MAIL_SERVER/mcp" \
+RESPONSE=$(curl -s -X POST "$MAIL_SERVER/mcp" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -d @/tmp/bridge-register.json >/dev/null 2>&1
+  -d @/tmp/bridge-register.json)
 rm -f /tmp/bridge-register.json
 
-echo "✓ Registered"
+# Extract the assigned agent name
+ASSIGNED_NAME=$(echo "$RESPONSE" | jq -r '.result.structuredContent.agent.name // empty')
+if [ -n "$ASSIGNED_NAME" ] && [ "$ASSIGNED_NAME" != "null" ]; then
+  AGENT_IDENTITY="$ASSIGNED_NAME"
+  echo "✓ Registered as: $AGENT_IDENTITY"
+else
+  echo "⚠ Registration response unclear, using: $AGENT_IDENTITY"
+fi
 echo "Listening for BATCH_PLAN requests..."
 echo ""
 
