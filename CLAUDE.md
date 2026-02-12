@@ -20,3 +20,7 @@ This project uses the NTM auto-scaling and coordination system.
 ### Documentation
 
 See `.beads/ntm-config.yaml` for configuration options.
+
+📧 **Multi-Agent Communication**: See [AGENT_MAIL.md](./AGENT_MAIL.md) for commands.
+
+🎯 **Beads Workflow**: See [AGENTS.md](./AGENTS.md) for task tracking with BV.
