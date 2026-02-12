@@ -50,6 +50,12 @@ Cargo.lock
 .beads/mail-read-temp.jsonl
 .beads/agent-activity.jsonl
 .beads/reserve-pending/
+.beads/.br_history/
+.beads/*.lock
+.beads/bash-enforcement-log.jsonl
+.beads/issues.jsonl
+.beads/last-touched
+.beads/runner-cycles.jsonl
 
 # Temporary/Review
 review-for-delete/
@@ -66,3 +72,20 @@ node_modules/
 
 # Adapter configs with API keys
 **/.grok-adapter/config-*.json
+
+# Backup files
+*.bak
+*.bak[0-9]
+*.bak[0-9][0-9]
+*.backup
+*.new
+
+# Playwright MCP
+.playwright-mcp/
+
+# Panes runtime files
+panes/*.lock
+panes/*.identity
+
+# Process IDs
+pids/
