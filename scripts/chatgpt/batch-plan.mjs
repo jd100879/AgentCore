@@ -169,19 +169,36 @@ Return ONLY the JSON array, no commentary.`;
     process.exit(1);
   }
 
-  const response = JSON.parse(fs.readFileSync(responseFile, "utf8"));
-  const output = JSON.stringify(response, null, 2);
+  const extractionResult = JSON.parse(fs.readFileSync(responseFile, "utf8"));
 
-  // Guard #7: Verify no context burn - log response size
   console.error("");
-  console.error(`✓ Response extracted: ${output.length} chars`);
-  console.error(`✓ Context burn check: Response is structured JSON (not HTML/snapshots)`);
+
+  let output;
+
+  if (extractionResult.parse_ok) {
+    // Happy path: JSON parsed successfully
+    output = JSON.stringify(extractionResult.extracted_json, null, 2);
+    console.error(`✓ JSON parsed successfully (${output.length} chars)`);
+    console.error(`✓ Raw text size: ${extractionResult.raw_text.length} chars`);
+    console.error(`✓ Context burn check: Returning structured JSON`);
+  } else {
+    // Error path: Return raw text + error for agent to handle
+    const errorResponse = {
+      error: extractionResult.error || "PARSE_FAILED",
+      raw_text: extractionResult.raw_text,
+      message: "ChatGPT response could not be parsed as JSON. Agent should review raw_text and decide how to proceed."
+    };
+    output = JSON.stringify(errorResponse, null, 2);
+    console.error(`✗ JSON parsing failed: ${extractionResult.error}`);
+    console.error(`✗ Raw text size: ${extractionResult.raw_text.length} chars`);
+    console.error(`✗ Returning error response with raw text for agent review`);
+  }
 
   if (outPath) {
     const abs = path.isAbsolute(outPath) ? outPath : path.join(process.cwd(), outPath);
     fs.mkdirSync(path.dirname(abs), { recursive: true });
     fs.writeFileSync(abs, output + "\n", "utf8");
-    console.error(`✓ Plans written to: ${abs}`);
+    console.error(`✓ Response written to: ${abs}`);
   } else {
     process.stdout.write(output + "\n");
   }

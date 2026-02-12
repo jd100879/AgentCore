@@ -126,41 +126,24 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
 
     console.error("Waiting for response to complete...");
 
-    // Two-signal gate: Wait for "Stop generating" button to disappear AND text to stabilize
-    // Guard #2: Make stop button check best-effort (selector brittleness)
+    // Simplified completion detection: Wait for stop button to disappear
     const stopButton = page.locator('button').filter({ hasText: /stop generating/i });
 
     const startTime = Date.now();
     let responseComplete = false;
-    let lastMessageText = "";
-    let stableCount = 0;
 
     while (!responseComplete && (Date.now() - startTime < timeout)) {
-      await page.waitForTimeout(3000);  // Longer poll interval
+      await page.waitForTimeout(3000);
 
-      // Signal 1: Stop generating button gone (best-effort)
       const isGenerating = await stopButton.isVisible().catch(() => false);
 
       if (!isGenerating) {
-        // Signal 2: Message text stable (primary gate)
-        const lastMessage = page.locator('[data-message-author-role="assistant"]').last();
-        const currentText = await lastMessage.innerText().catch(() => "");
-
-        if (currentText === lastMessageText && currentText.length > 0) {
-          stableCount++;
-          if (stableCount >= 3) {
-            // Text stable for 3 checks (9 seconds total)
-            responseComplete = true;
-            console.error(`Response stable for ${stableCount * 3}s, extracting...`);
-          }
-        } else {
-          console.error(`Text changed: ${lastMessageText.length} -> ${currentText.length} chars`);
-          lastMessageText = currentText;
-          stableCount = 0;
-        }
+        // Stop button gone - wait 2 seconds for DOM to settle, then extract
+        console.error("Generation complete, waiting for DOM to settle...");
+        await page.waitForTimeout(2000);
+        responseComplete = true;
       } else {
         console.error("Still generating...");
-        stableCount = 0;
       }
     }
 
@@ -168,44 +151,62 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
       throw new Error(`Timeout waiting for response after ${timeout}ms`);
     }
 
-    console.error("Extracting JSON response...");
+    console.error("Extracting response...");
 
-    // Extract from last assistant message container
+    // Extract ALL text from last assistant message
     const lastMessage = page.locator('[data-message-author-role="assistant"]').last();
-    let fullText = await lastMessage.innerText().catch(() => "");
+    let rawText = await lastMessage.innerText().catch(() => "");
 
-    // Guard #3: Fallback to textContent if innerText fails or is empty
-    if (!fullText || fullText.length === 0) {
+    // Fallback to textContent if innerText fails
+    if (!rawText || rawText.length === 0) {
       console.error("innerText empty, trying textContent...");
-      fullText = await lastMessage.textContent().catch(() => "");
+      rawText = await lastMessage.textContent().catch(() => "");
     }
 
-    if (!fullText || fullText.length === 0) {
+    if (!rawText || rawText.length === 0) {
       throw new Error("Could not extract any text from last assistant message");
     }
 
-    // Guard #4: Use global regex and take LAST match (not first)
-    const allMatches = [...fullText.matchAll(/```json\s*([\s\S]*?)\s*```/gi)];  // Case-insensitive
+    console.error(`Extracted ${rawText.length} chars of raw text`);
 
-    let jsonText;
-    if (allMatches.length === 0) {
-      // Fallback: try without 'json' label
-      const genericMatches = [...fullText.matchAll(/```\s*([\s\S]*?)\s*```/g)];
-      if (genericMatches.length === 0) {
-        // No code fences at all - try parsing entire response as JSON
-        console.error('No code fences found, attempting to parse entire response as JSON');
-        // Remove "JSON" label if present at start
-        let cleaned = fullText.replace(/^JSON\s*/i, '').trim();
+    // Best-effort JSON extraction
+    let extractedJson = null;
+    let parseOk = false;
+    let error = null;
 
-        // Try to extract just the JSON array/object
-        // Find first [ or { and match its closing bracket
-        const firstBracket = cleaned.match(/^(\[|\{)/);
-        if (firstBracket) {
-          // Find matching closing bracket
+    try {
+      // Try to find JSON in code fences first
+      const jsonFenceMatches = [...rawText.matchAll(/```json\s*([\s\S]*?)\s*```/gi)];
+      const genericFenceMatches = [...rawText.matchAll(/```\s*([\s\S]*?)\s*```/g)];
+
+      let jsonText = null;
+
+      if (jsonFenceMatches.length > 0) {
+        // Use last json fence
+        jsonText = jsonFenceMatches[jsonFenceMatches.length - 1][1];
+        console.error("Found JSON in code fence");
+      } else if (genericFenceMatches.length > 0) {
+        // Try last generic fence
+        jsonText = genericFenceMatches[genericFenceMatches.length - 1][1];
+        console.error("Found generic code fence, attempting parse");
+      } else {
+        // No fences - try to extract JSON from raw text
+        console.error("No code fences, searching for JSON structure");
+
+        // Remove "JSON" prefix if present
+        let cleaned = rawText.replace(/^JSON/i, '').trim();
+
+        // Find all potential JSON structures (arrays or objects)
+        const jsonCandidates = [];
+
+        // Look for array start
+        let arrayStart = cleaned.indexOf('[');
+        if (arrayStart !== -1) {
           let depth = 0;
           let inString = false;
           let escape = false;
-          for (let i = 0; i < cleaned.length; i++) {
+
+          for (let i = arrayStart; i < cleaned.length; i++) {
             const char = cleaned[i];
             if (escape) {
               escape = false;
@@ -221,38 +222,45 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
             }
             if (inString) continue;
 
-            if (char === '[' || char === '{') depth++;
-            if (char === ']' || char === '}') {
+            if (char === '[') depth++;
+            if (char === ']') {
               depth--;
               if (depth === 0) {
-                jsonText = cleaned.substring(0, i + 1);
+                jsonCandidates.push(cleaned.substring(arrayStart, i + 1));
                 break;
               }
             }
           }
-          if (!jsonText) jsonText = cleaned;  // Fallback
-        } else {
-          jsonText = cleaned;
         }
-      } else {
-        console.error(`No 'json' fence found, using last generic fence (${genericMatches.length} total)`);
-        jsonText = genericMatches[genericMatches.length - 1][1];
+
+        // Take the largest candidate (most likely to be complete)
+        if (jsonCandidates.length > 0) {
+          jsonText = jsonCandidates.reduce((a, b) => a.length > b.length ? a : b);
+          console.error(`Found ${jsonCandidates.length} JSON candidate(s), using largest (${jsonText.length} chars)`);
+        }
       }
-    } else {
-      jsonText = allMatches[allMatches.length - 1][1];
-    }
 
-    console.error(`Attempting to parse JSON (${jsonText.length} chars)`);
-
-    // Parse the extracted JSON
-    let json;
-    try {
-      json = JSON.parse(jsonText);
+      if (jsonText) {
+        extractedJson = JSON.parse(jsonText);
+        parseOk = true;
+        console.error("✓ JSON parsed successfully");
+      } else {
+        error = "NO_JSON_STRUCTURE_FOUND";
+        console.error("✗ No JSON structure found in response");
+      }
     } catch (e) {
-      throw new Error(`Extracted text is not valid JSON: ${e.message}\nExtracted:\n${jsonText.substring(0, 200)}...`);
+      error = `JSON_PARSE_ERROR: ${e.message}`;
+      console.error(`✗ JSON parse failed: ${e.message}`);
     }
 
-    return json;
+    // Return structured response with both raw text and parsed JSON
+    return {
+      ok: true,
+      raw_text: rawText,
+      parse_ok: parseOk,
+      extracted_json: extractedJson,
+      error: error
+    };
 
   } finally {
     // Don't close browser - keep it open for reuse
