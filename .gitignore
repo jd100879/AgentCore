@@ -63,3 +63,6 @@ review-for-delete/
 
 # Node
 node_modules/
+
+# Adapter configs with API keys
+**/.grok-adapter/config-*.json
