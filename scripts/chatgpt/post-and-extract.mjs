@@ -160,6 +160,7 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     const lastMessage = page.locator('[data-message-author-role="assistant"]').last();
     let lastText = await lastMessage.innerText().catch(() => "");
     let stableChecks = 0;
+    let emptyChecks = 0; // Guard #9: Count consecutive empty checks
     const maxStabilityChecks = 3;
 
     console.error(`Initial text length: ${lastText.length} chars`);
@@ -171,15 +172,26 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
 
       if (currentText === lastText && currentText.length > 0) {
         stableChecks++;
+        emptyChecks = 0; // Reset empty counter when we have content
         console.error(`Text stable (check ${stableChecks}/${maxStabilityChecks})`);
         if (stableChecks >= 2) {
           // Stable for 2 checks (6 seconds) is enough
+          break;
+        }
+      } else if (currentText.length === 0 && lastText.length === 0) {
+        // Guard #9: Empty message detection
+        emptyChecks++;
+        console.error(`Text empty (check ${emptyChecks}/2)`);
+        if (emptyChecks >= 2) {
+          // Empty for 2 checks (6 seconds) - likely a failed/duplicate request
+          console.error("Message remains empty after stability wait - treating as empty response");
           break;
         }
       } else {
         console.error(`Text changed: ${lastText.length} -> ${currentText.length} chars`);
         lastText = currentText;
         stableChecks = 0;
+        emptyChecks = 0;
       }
     }
 
@@ -196,8 +208,21 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
       rawText = await lastMessage.textContent().catch(() => "");
     }
 
+    // Guard #9: If last message is empty, try second-to-last (handles duplicates/failed generations)
     if (!rawText || rawText.length === 0) {
-      throw new Error("Could not extract any text from last assistant message");
+      console.error("Last message empty - trying second-to-last message (possible duplicate request)");
+      const allMessages = await page.locator('[data-message-author-role="assistant"]').all();
+      if (allMessages.length >= 2) {
+        const secondToLast = allMessages[allMessages.length - 2];
+        rawText = await secondToLast.innerText().catch(() => "");
+        if (rawText && rawText.length > 0) {
+          console.error(`✓ Found text in second-to-last message (${rawText.length} chars)`);
+        }
+      }
+    }
+
+    if (!rawText || rawText.length === 0) {
+      throw new Error("Could not extract any text from last or second-to-last assistant message");
     }
 
     console.error(`Extracted ${rawText.length} chars of raw text (verified stable)`);
