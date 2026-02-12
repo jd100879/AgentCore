@@ -60,6 +60,7 @@ SCRIPTS=(
     # Utilities
     "hook-bypass.sh"
     "reserve-files.sh"
+    "fix-tracking-files.sh"
     # Pane utilities
     "arrange-panes.sh"
     # LLM wrappers
