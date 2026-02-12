@@ -1,0 +1,24 @@
+{
+  "name": "agentcore",
+  "version": "1.0.0",
+  "description": "A clean implementation of Jeffrey Emanuel's (Dicklesworthstone) multi-agent coordination system.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jd100879/AgentCore.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jd100879/AgentCore/issues"
+  },
+  "homepage": "https://github.com/jd100879/AgentCore#readme",
+  "devDependencies": {
+    "playwright": "^1.58.2"
+  }
+}

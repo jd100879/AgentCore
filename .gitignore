@@ -54,3 +54,12 @@ Cargo.lock
 # Temporary/Review
 review-for-delete/
 .no-clear
+
+# bv (beads viewer) local config and caches
+.bv/
+
+# Browser profiles (ChatGPT storage state with auth cookies)
+.browser-profiles/
+
+# Node
+node_modules/
