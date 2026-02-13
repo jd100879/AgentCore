@@ -56,21 +56,25 @@ function parseArgs(argv) {
 }
 
 async function postAndExtract(conversationUrl, message, storageStatePath, timeout = 60000) {
-  // Use launchPersistentContext for persistent profile (not incognito)
-  const userDataDir = path.join(process.cwd(), '.browser-profiles/chatgpt-profile');
-  const context = await chromium.launchPersistentContext(userDataDir, {
+  // Launch browser with existing authentication (storage state)
+  const browser = await chromium.launch({
     headless: false,
-    viewport: { width: 1280, height: 800 },
-    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     args: [
       '--disable-blink-features=AutomationControlled',
       '--no-sandbox',
       '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage'
+      '--disable-dev-shm-usage',
+      '--disable-web-security'
     ]
   });
 
-  const page = context.pages()[0] || await context.newPage();
+  const context = await browser.newContext({
+    storageState: storageStatePath,
+    viewport: { width: 1280, height: 800 },
+    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+  });
+
+  const page = await context.newPage();
 
   try {
     console.error(`Navigating to: ${conversationUrl}`);
