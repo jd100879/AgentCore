@@ -71,6 +71,30 @@ AgentCore implements the Agent Flywheel pattern:
 - **Task Beads** - Git-backed task persistence
 - **Multi-Agent Orchestration** - tmux-based agent coordination
 
+## Coordination Tools
+
+AgentCore provides a **canonical coordination interface** at `agentcore/tools/` for all agent coordination operations.
+
+**Always use `agentcore/tools/` for coordination scripts:**
+
+```bash
+# Agent mail operations
+$PROJECT_ROOT/agentcore/tools/agent-mail-helper.sh inbox
+$PROJECT_ROOT/agentcore/tools/agent-mail-helper.sh send RecipientAgent "message content"
+
+# Agent registry
+$PROJECT_ROOT/agentcore/tools/agent-registry.sh register MyAgent
+$PROJECT_ROOT/agentcore/tools/agent-registry.sh list
+```
+
+**Why agentcore/tools/ is canonical:**
+- Single source of truth for coordination operations
+- Clean separation from general project scripts
+- Part of the coordination plane architecture
+- Future-proof for Phase 2+ migrations
+
+See [agentcore/README.md](agentcore/README.md) for the complete coordination infrastructure documentation.
+
 ## Quick Start
 
 ```bash

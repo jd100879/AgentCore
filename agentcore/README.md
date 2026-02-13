@@ -54,10 +54,33 @@ The agent mail system is **workspace-global infrastructure** by design:
 The mail directory is NOT moved into agentcore; it remains an external shared resource.
 
 ### 4. Coordination Tools Only
-Scripts in `agentcore/tools/` are **coordination-specific**:
+Scripts in `agentcore/tools/` are **coordination-specific** and represent the **canonical interface** for all coordination operations:
 - Agent registry and mail helpers
 - State monitoring and verification
 - Shared path utilities (lib/paths.sh)
+
+**ALWAYS use `agentcore/tools/` for coordination scripts.** The top-level `scripts/` directory contains legacy script locations and general project utilities. Coordination tool invocations MUST go through `agentcore/tools/`.
+
+**Correct usage examples**:
+```bash
+# Check agent mail
+$PROJECT_ROOT/agentcore/tools/agent-mail-helper.sh inbox
+
+# Register agent
+$PROJECT_ROOT/agentcore/tools/agent-registry.sh register MyAgent
+
+# Monitor coordination state
+$PROJECT_ROOT/agentcore/tools/monitor-coordination.sh
+```
+
+**DO NOT use legacy paths** (scripts/ references are symlink targets only):
+```bash
+# ❌ WRONG - legacy path, do not use
+$PROJECT_ROOT/scripts/agent-mail-helper.sh inbox
+
+# ✅ CORRECT - canonical interface
+$PROJECT_ROOT/agentcore/tools/agent-mail-helper.sh inbox
+```
 
 General project scripts remain in the top-level `scripts/` directory.
 
@@ -147,10 +170,11 @@ agentcore/
 ├── mail/                               # Mail system pointer
 │   ├── repo-location.txt              # Path to shared mail repo
 │   └── repo/ → $HOME/.mcp_agent_mail_local_repo/  # Optional symlink
-├── tools/                              # Coordination scripts
-│   ├── agent-mail-helper.sh → ../../scripts/agent-mail-helper.sh
-│   ├── agent-registry.sh → ../../scripts/agent-registry.sh
+├── tools/                              # Coordination scripts (CANONICAL INTERFACE)
+│   ├── agent-mail-helper.sh → ../../scripts/agent-mail-helper.sh  # Phase 1: outward symlink
+│   ├── agent-registry.sh → ../../scripts/agent-registry.sh        # Phase 1: outward symlink
 │   └── lib/                            # Shared utilities (future)
+│   # NOTE: Always invoke via agentcore/tools/, NOT scripts/ (legacy location)
 ├── schemas/                            # Data contracts
 │   └── (TBD)                           # Protocol schemas
 └── verify/                             # Verification scripts
