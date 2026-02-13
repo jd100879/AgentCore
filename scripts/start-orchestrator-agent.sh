@@ -24,6 +24,30 @@ echo "  ╚═══════════════════════
 echo -e "${NC}"
 echo ""
 
+# Check if bridge is running
+echo -e "${YELLOW}Checking for ChatGPT bridge...${NC}"
+BRIDGE_RUNNING=$(./scripts/agent-mail-helper.sh list --active 2>/dev/null | grep -i "azuresnow\|bridge" || echo "")
+
+if [ -z "$BRIDGE_RUNNING" ]; then
+  echo -e "${YELLOW}⚠ Bridge not running. Starting bridge...${NC}"
+
+  # Start bridge in background with logging
+  if [ -f "./scripts/start-bridge-with-logging.sh" ]; then
+    ./scripts/start-bridge-with-logging.sh &
+    BRIDGE_PID=$!
+    echo -e "${GREEN}✓ Bridge started (PID: $BRIDGE_PID)${NC}"
+    echo -e "${YELLOW}  Waiting 3 seconds for bridge to register...${NC}"
+    sleep 3
+  else
+    echo -e "${YELLOW}⚠ Bridge startup script not found.${NC}"
+    echo -e "${YELLOW}  Please start bridge manually: ./scripts/start-bridge-with-logging.sh${NC}"
+    read -p "Press Enter when bridge is running..."
+  fi
+else
+  echo -e "${GREEN}✓ Bridge is running${NC}"
+fi
+echo ""
+
 # Register with agent-mail system
 echo -e "${GREEN}Registering with agent-mail system...${NC}"
 ./scripts/agent-mail-helper.sh register "Coordination agent - works with ChatGPT to create implementation plans for worker agents"
@@ -56,15 +80,31 @@ You are the **Orchestrator Agent** - the coordination layer between ChatGPT and 
 
 ### 1. Get Plans from ChatGPT (via Bridge)
 
-Send BATCH_PLAN requests to the bridge agent via agent-mail:
+Send BATCH_PLAN requests to the bridge agent via agent-mail with conversation URL:
 
 ```bash
+# Create request body with beads and conversation URL
+cat > tmp/batch-request-msg.json << 'EOMSG'
+{
+  "beads": ["bd-123", "bd-456"],
+  "conversation_url": "https://chatgpt.com/c/YOUR-CONVERSATION-ID"
+}
+EOMSG
+
+# Send to bridge
 $PROJECT_ROOT/scripts/agent-mail-helper.sh send "AzureSnow" \
-  "BATCH_PLAN: bd-123,bd-456" \
-  "Need implementation plans for these beads"
+  "BATCH_PLAN" \
+  "$(cat tmp/batch-request-msg.json)"
 ```
 
-The bridge will post to ChatGPT and return structured JSON.
+**Important:** The conversation URL should be stored in `.flywheel/chatgpt.json` for this project:
+```json
+{
+  "crt_url": "https://chatgpt.com/c/YOUR-CONVERSATION-ID"
+}
+```
+
+The bridge will post to ChatGPT at that conversation and return structured JSON.
 
 ### 2. Review & Enhance Plans
 

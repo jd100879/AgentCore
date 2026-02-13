@@ -12,6 +12,7 @@ Send multiple bead contexts to ChatGPT at once and get back multiple plans.
 Usage:
   node scripts/chatgpt/batch-plan.mjs \\
     --beads bd-auth,bd-api,bd-ui \\
+    --conversation-url https://chatgpt.com/c/... \\
     [--out plans/batch-001.json]
 
 The tool will:
@@ -124,10 +125,16 @@ Return ONLY the JSON array, no commentary.`;
   if (args.help || args.h) usage(0);
 
   const beadsArg = args.beads;
+  const conversationUrl = args["conversation-url"];
   const outPath = args.out;
 
   if (!beadsArg) {
     console.error("Missing required --beads argument");
+    usage(1);
+  }
+
+  if (!conversationUrl) {
+    console.error("Missing required --conversation-url argument");
     usage(1);
   }
 
@@ -163,7 +170,7 @@ Return ONLY the JSON array, no commentary.`;
   const responseFile = outPath || "tmp/batch-response.json";
   try {
     execSync(
-      `node scripts/chatgpt/post-and-extract.mjs --message-file "${requestFile}" --out "${responseFile}" --timeout 120000`,
+      `node scripts/chatgpt/post-and-extract.mjs --message-file "${requestFile}" --conversation-url "${conversationUrl}" --out "${responseFile}" --timeout 120000`,
       { encoding: "utf8", stdio: "inherit" }
     );
   } catch (e) {

@@ -25,11 +25,11 @@ Post a message to ChatGPT and extract the JSON response.
 Usage:
   node scripts/chatgpt/post-and-extract.mjs \\
     --message-file tmp/batch-request.txt \\
+    --conversation-url https://chatgpt.com/c/... \\
     --out tmp/batch-response.json \\
     [--timeout 60000]
 
 Requires:
-- .flywheel/chatgpt.json (conversation URL)
 - .browser-profiles/chatgpt-state.json (auth state)
 
 This uses Playwright directly (not MCP) to avoid context burn.
@@ -333,6 +333,7 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
   if (args.help || args.h) usage(0);
 
   const messageFile = args["message-file"];
+  const conversationUrl = args["conversation-url"];
   const outPath = args.out;
   const timeout = parseInt(args.timeout || "60000", 10);
 
@@ -341,18 +342,13 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     usage(1);
   }
 
-  // Read message
-  const message = fs.readFileSync(messageFile, "utf8");
-
-  // Read config
-  const configPath = ".flywheel/chatgpt.json";
-  if (!fs.existsSync(configPath)) {
-    console.error(`Config not found: ${configPath}`);
-    process.exit(1);
+  if (!conversationUrl) {
+    console.error("Missing required --conversation-url");
+    usage(1);
   }
 
-  const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
-  const conversationUrl = config.crt_url;
+  // Read message
+  const message = fs.readFileSync(messageFile, "utf8");
 
   // Check for storage state
   const storageStatePath = ".browser-profiles/chatgpt-state.json";

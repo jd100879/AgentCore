@@ -97,12 +97,13 @@ EOF
   if [ -n "$REQUEST" ] && [ "$REQUEST" != "null" ]; then
     MAIL_ID=$(echo "$REQUEST" | jq -r '.id // empty')
     SENDER=$(echo "$REQUEST" | jq -r '.from // empty')
-    # Parse beads from body (could be JSON string or object)
+    # Parse beads and conversation_url from body (could be JSON string or object)
     BODY=$(echo "$REQUEST" | jq -r '.body_md // empty')
     BEADS=$(echo "$BODY" | jq -r '.beads // empty' 2>/dev/null || echo "")
+    CONVERSATION_URL=$(echo "$BODY" | jq -r '.conversation_url // empty' 2>/dev/null || echo "")
 
-    if [ -z "$MAIL_ID" ] || [ -z "$SENDER" ] || [ -z "$BEADS" ]; then
-      echo "[$(date +%T)] Malformed request, skipping"
+    if [ -z "$MAIL_ID" ] || [ -z "$SENDER" ] || [ -z "$BEADS" ] || [ -z "$CONVERSATION_URL" ]; then
+      echo "[$(date +%T)] Malformed request (missing mail_id, sender, beads, or conversation_url), skipping"
       sleep "$CHECK_INTERVAL"
       continue
     fi
@@ -117,6 +118,7 @@ EOF
 
     echo "[$(date +%T)] 📨 Batch plan request from: $SENDER"
     echo "  Beads: $BEADS"
+    echo "  Conversation: $CONVERSATION_URL"
     echo "  Mail ID: $MAIL_ID"
 
     # Convert JSON array to comma-separated list if needed
@@ -126,6 +128,7 @@ EOF
     echo "  Running batch-plan.mjs..."
     node scripts/chatgpt/batch-plan.mjs \
       --beads "$BEAD_LIST" \
+      --conversation-url "$CONVERSATION_URL" \
       --out "tmp/batch-response-${MAIL_ID}.json"
 
     PLAN_FILE="tmp/batch-response-${MAIL_ID}.json"
