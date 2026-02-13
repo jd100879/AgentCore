@@ -1,0 +1,145 @@
+================================================================================
+Phase 1 Smoke Test Results
+================================================================================
+
+Test Date: 2026-02-13T22:25:00Z
+Tester: OrangeLantern (autonomous agent)
+Environment: AgentCore repository, feature/agent-flywheel-protocol branch
+
+================================================================================
+Test 1: Phase 1 Verification Script
+================================================================================
+
+Command: bash agentcore/verify/verify-phase1.sh
+
+Result: ✓ PASS
+
+Output Summary:
+- Total checks: 3
+- Passed: 3
+- Failed: 0
+
+Details:
+✓ No hidden directories found inside agentcore/
+✓ All expected symlinks exist and resolve correctly
+  - config/flywheel
+  - state/beads
+  - runtime/pids, panes, tmp, logs, sessions
+  - coordination/profiles, workflows, active
+  - tools/agent-mail-helper.sh, agent-registry.sh, auto-register-agent.sh,
+    mail-monitor-ctl.sh, monitor-agent-mail-to-terminal.sh
+  - mail/repo (optional, present)
+✓ External mail repo accessible at /Users/james/.mcp_agent_mail_local_repo
+  (Note: mail_store/ subdirectory not found - expected for shared infrastructure)
+
+Conclusion: Phase 1 infrastructure is correctly set up.
+
+================================================================================
+Test 2: Mail Helper - whoami
+================================================================================
+
+Command: bash scripts/agent-mail-helper.sh whoami
+
+Result: ✓ PASS
+
+Output:
+OrangeLantern
+
+Conclusion: Agent identity detection works correctly. No path-related errors.
+
+================================================================================
+Test 3: Mail Helper - list
+================================================================================
+
+Command: bash scripts/agent-mail-helper.sh list
+
+Result: ✓ PASS
+
+Output (8 agents found):
+ChartreuseRobin  system       Override sender name for notifications
+OrangeLantern    claude-code  Cross-project messenger
+FrostyRaven      system       Override sender name for notifications
+RoseBeacon       system       Override sender name for notifications
+WindyHarbor      system       Override sender name for notifications
+QuietCreek       claude-code  Cross-project messenger
+FuchsiaDog       claude-code  Cross-project messenger
+TopazDeer        claude-code  AgentCore developer
+
+Conclusion: Agent listing works correctly. No path-related errors.
+
+================================================================================
+Test 4: Beads Tooling - br list
+================================================================================
+
+Command: br list
+
+Result: ✓ PASS
+
+Output:
+◐ bd-216 [● P1] [task] - Run Phase 1 smoke tests and record results
+
+Conclusion: Beads Rust CLI (br) works correctly. No path-related errors.
+
+================================================================================
+Test 5: Beads Tooling - bv list
+================================================================================
+
+Command: bv list
+
+Result: ⚠ EXPECTED FAILURE (TTY required)
+
+Output:
+Error running beads viewer: could not open a new TTY: device not configured
+
+Conclusion: bv is an interactive TUI viewer and requires a TTY, which is not
+available in this agent context. This is expected behavior, not a Phase 1
+infrastructure failure. The underlying beads system works (verified by br).
+
+================================================================================
+Test 6: Mail Helper - inbox
+================================================================================
+
+Command: bash scripts/agent-mail-helper.sh inbox
+
+Result: ✓ PASS
+
+Output:
+2 messages in inbox (test messages from FuchsiaDog confirming mail system
+operational)
+
+Conclusion: Inbox retrieval works correctly. No path-related errors.
+
+================================================================================
+Overall Test Summary
+================================================================================
+
+Total Tests: 6
+Passed: 5
+Expected Failures: 1 (bv - TTY required)
+Actual Failures: 0
+
+Phase 1 Status: ✓ VALIDATED
+
+Phase 1 is non-disruptive:
+- Existing tooling works without path-related errors
+- New agentcore/ view does not introduce regressions
+- All symlinks resolve correctly
+- Mail system operational
+- Beads system operational
+
+Safe to proceed with Phase 2 planning after Phase 1 proves stable over
+multiple work sessions.
+
+================================================================================
+Environment Details
+================================================================================
+
+- Repository: AgentCore
+- Branch: feature/agent-flywheel-protocol
+- Working Directory: /Users/james/Projects/AgentCore
+- Agent: OrangeLantern
+- Shell: zsh (Darwin 25.2.0)
+- Mail Repo: /Users/james/.mcp_agent_mail_local_repo
+- Beads Tool: beads_rust (br CLI)
+
+================================================================================
