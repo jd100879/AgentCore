@@ -5,6 +5,8 @@ services:
       HTTP_HOST: "0.0.0.0"
       STORAGE_ROOT: "/data/mailbox"
       LOG_RICH_ENABLED: "true"
+      HTTP_RBAC_DEFAULT_ROLE: "writer"
+      HTTP_PATH: "/mcp"
     ports:
       - "8765:8765"
     volumes:
