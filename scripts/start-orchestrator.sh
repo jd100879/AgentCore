@@ -62,6 +62,48 @@ fi
 echo -e "${GREEN}✓ Using instructions: $INSTRUCTIONS_FILE${NC}"
 echo ""
 
+# Start browser server
+echo -e "${GREEN}Starting browser server...${NC}"
+node scripts/chatgpt/start-browser-server.mjs \
+  --pid-file .flywheel/browser-server.pid \
+  --endpoint-file .flywheel/browser-endpoint.txt \
+  > .flywheel/browser-server.log 2>&1 &
+
+BROWSER_SERVER_PID=$!
+echo -e "${GREEN}✓ Browser server started (PID: $BROWSER_SERVER_PID)${NC}"
+echo ""
+
+# Cleanup function
+cleanup() {
+  echo ""
+  echo -e "${YELLOW}Shutting down...${NC}"
+
+  # Kill browser server
+  if [ -f .flywheel/browser-server.pid ]; then
+    STORED_PID=$(cat .flywheel/browser-server.pid)
+    if kill -0 "$STORED_PID" 2>/dev/null; then
+      echo -e "${GREEN}Stopping browser server (PID: $STORED_PID)...${NC}"
+      kill -TERM "$STORED_PID" 2>/dev/null || true
+      # Wait for cleanup
+      for i in {1..5}; do
+        if ! kill -0 "$STORED_PID" 2>/dev/null; then
+          break
+        fi
+        sleep 1
+      done
+      # Force kill if still alive
+      if kill -0 "$STORED_PID" 2>/dev/null; then
+        kill -9 "$STORED_PID" 2>/dev/null || true
+      fi
+      echo -e "${GREEN}✓ Browser server stopped${NC}"
+    fi
+  fi
+
+  exit 0
+}
+
+trap cleanup SIGINT SIGTERM EXIT
+
 # Auto-restart loop
 while true; do
     RESTART_COUNT=$((RESTART_COUNT + 1))

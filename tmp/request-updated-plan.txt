@@ -1,0 +1,56 @@
+Great! We're aligned on all 5 points. Please output the updated structured plan as JSON matching this format:
+
+```json
+{
+  "agentcore_structure": {
+    "directory_tree": "visual tree representation",
+    "directories": [
+      {
+        "path": "agentcore/config",
+        "purpose": "...",
+        "contents": [...],
+        "migration": {
+          "from": [...],
+          "strategy": "move|symlink|create",
+          "symlink_direction": "OUT (agentcore points to existing) or IN (existing points to agentcore)",
+          "backwards_compat": "..."
+        }
+      }
+    ]
+  },
+  "migration_phases": {
+    "phase_1": {
+      "description": "...",
+      "actions": [...],
+      "symlink_direction": "OUT (safer)",
+      "validations": [...],
+      "maintenance_window": "required|not_required"
+    },
+    "phase_2": {
+      "description": "...",
+      "actions": [...],
+      "symlink_direction": "IN (optional, after testing)",
+      "validations": [...],
+      "maintenance_window": "required|not_required",
+      "rollback_script": "scripts/rollback-agentcore-phase2.sh"
+    }
+  },
+  "consensus_principles": [
+    "agentcore = coordination infrastructure only",
+    "peer components stay at top level",
+    "..."
+  ]
+}
+```
+
+Include:
+- No integrations/
+- Top-level docs stay top-level
+- Scoped tools boundary
+- Symlinks point OUT in Phase 1
+- Explicit validations per phase
+- Rollback script for Phase 2
+- agentcore/verify/ for verification scripts
+- "No hidden dirs inside agentcore" invariant
+
+Return ONLY the JSON.

@@ -1,0 +1,163 @@
+{
+  "ok": true,
+  "raw_text": "JSON\n{\n  \"assignment_summary\": \"Organize the agentcore folder structure and make the agent mail system work flawlessly (deterministic routing, reliable dispatch/processing, strong idempotency/locking, and clear observability/recovery).\",\n  \"beads\": [\n    {\n      \"title\": \"Define AgentCore canonical structure\",\n      \"description\": \"Establish and document a clean, deterministic /agentcore directory layout (inbox/outbox, agent identities, work queues, state, logs, schemas, tools). Include naming conventions and rules to prevent drift.\",\n      \"priority\": \"P0\",\n      \"depends_on\": [],\n      \"files_involved\": [\n        \"agentcore/ (root)\",\n        \"agentcore/README.md (or docs/agentcore-structure.md)\"\n      ]\n    },\n    {\n      \"title\": \"Specify mail contract + schema validation\",\n      \"description\": \"Define the canonical mail message envelope (required fields, routing keys, correlation IDs, idempotency keys, timestamps, retries, error fields). Add JSON Schemas and validation hooks so malformed mail is rejected with actionable errors.\",\n      \"priority\": \"P0\",\n      \"depends_on\": [\n        \"Define AgentCore canonical structure\"\n      ],\n      \"files_involved\": [\n        \"agentcore/schemas/mail.schema.json (new/updated)\",\n        \"agentcore/schemas/*.schema.json\",\n        \"agentcore/lib/validate_mail.* (if exists)\"\n      ]\n    },\n    {\n      \"title\": \"Inbox/outbox routing and folder semantics\",\n      \"description\": \"Standardize how messages move through folders (inbox -> processing -> done/failed; outbox -> sent). Define atomic move operations and folder semantics so no duplicate processing occurs and no message is lost.\",\n      \"priority\": \"P0\",\n      \"depends_on\": [\n        \"Define AgentCore canonical structure\",\n        \"Specify mail contract + schema validation\"\n      ],\n      \"files_involved\": [\n        \"agentcore/mail/\",\n        \"agentcore/mail/inbox/\",\n        \"agentcore/mail/outbox/\",\n        \"agentcore/mail/processing/\",\n        \"agentcore/mail/done/\",\n        \"agentcore/mail/failed/\"\n      ]\n    },\n    {\n      \"title\": \"Dispatcher loop hardening\",\n      \"description\": \"Harden the dispatcher so it reliably discovers new mail, validates it, routes it, and records state transitions. Add backoff, jitter, retries, and safe shutdown. Ensure it does not spin or double-send under restarts.\",\n      \"priority\": \"P0\",\n      \"depends_on\": [\n        \"Specify mail contract + schema validation\",\n        \"Inbox/outbox routing and folder semantics\"\n      ],\n      \"files_involved\": [\n        \"agentcore/scripts/task-dispatcher.*\",\n        \"agentcore/orchestrator/*\",\n        \"agentcore/dispatcher/*\"\n      ]\n    },\n    {\n      \"title\": \"Idempotency + locking for message processing\",\n      \"description\": \"Implement idempotency keys and lock strategy (file locks or lockfiles) so each message is processed exactly-once per intended semantics, even across crashes/restarts. Define how duplicates are detected and handled.\",\n      \"priority\": \"P0\",\n      \"depends_on\": [\n        \"Specify mail contract + schema validation\",\n        \"Inbox/outbox routing and folder semantics\"\n      ],\n      \"files_involved\": [\n        \"agentcore/state/\",\n        \"agentcore/locks/\",\n        \"agentcore/lib/lock.*\",\n        \"agentcore/lib/idempotency.*\"\n      ]\n    },\n    {\n      \"title\": \"Status tracking + audit trail\",\n      \"description\": \"Create a durable state model for each message (queued, processing, done, failed, retried) with timestamps and agent attribution. Store per-message receipts and summaries to support debugging and accountability.\",\n      \"priority\": \"P1\",\n      \"depends_on\": [\n        \"Idempotency + locking for message processing\",\n        \"Dispatcher loop hardening\"\n      ],\n      \"files_involved\": [\n        \"agentcore/state/messages.jsonl (or sqlite/db if used)\",\n        \"agentcore/logs/\",\n        \"agentcore/receipts/\"\n      ]\n    },\n    {\n      \"title\": \"Failure handling + dead-letter workflow\",\n      \"description\": \"Define and implement dead-letter handling for messages that fail validation or exceed retry limits. Provide clear error artifacts and a mechanism to requeue after fix.\",\n      \"priority\": \"P1\",\n      \"depends_on\": [\n        \"Status tracking + audit trail\",\n        \"Inbox/outbox routing and folder semantics\"\n      ],\n      \"files_involved\": [\n        \"agentcore/mail/failed/\",\n        \"agentcore/mail/dlq/\",\n        \"agentcore/tools/requeue.*\"\n      ]\n    },\n    {\n      \"title\": \"Agent identity + routing table\",\n      \"description\": \"Standardize agent identity definitions (name, capabilities, inbox path, routing keys). Implement/refresh a routing table so orchestrator can reliably address any agent and support capability-based dispatch.\",\n      \"priority\": \"P1\",\n      \"depends_on\": [\n        \"Define AgentCore canonical structure\",\n        \"Specify mail contract + schema validation\"\n      ],\n      \"files_involved\": [\n        \"agentcore/agents/registry.json (or yaml)\",\n        \"agentcore/agents/*\",\n        \"agentcore/routes/*\"\n      ]\n    },\n    {\n      \"title\": \"Observability: logs, metrics, and health checks\",\n      \"description\": \"Add structured logging (per message correlation ID), basic metrics (queue depth, processed/sec, failures), and a health check command. Ensure logs are searchable and tied to message receipts.\",\n      \"priority\": \"P2\",\n      \"depends_on\": [\n        \"Dispatcher loop hardening\",\n        \"Status tracking + audit trail\"\n      ],\n      \"files_involved\": [\n        \"agentcore/logs/\",\n        \"agentcore/tools/health.*\",\n        \"agentcore/lib/logger.*\"\n      ]\n    },\n    {\n      \"title\": \"End-to-end test harness for mail flow\",\n      \"description\": \"Build a minimal, targeted test suite that injects sample mail, validates routing, verifies exactly-once processing, and asserts correct state transitions including crash/restart scenarios.\",\n      \"priority\": \"P1\",\n      \"depends_on\": [\n        \"Specify mail contract + schema validation\",\n        \"Idempotency + locking for message processing\",\n        \"Dispatcher loop hardening\"\n      ],\n      \"files_involved\": [\n        \"agentcore/tests/*\",\n        \"agentcore/fixtures/mail/*\",\n        \"agentcore/scripts/test-mail-flow.*\"\n      ]\n    },\n    {\n      \"title\": \"Operator docs + runbooks\",\n      \"description\": \"Write concise docs for folder structure, message schema, dispatcher operation, troubleshooting, and recovery (requeue, DLQ, lock cleanup). Include “verify-first” checklists.\",\n      \"priority\": \"P2\",\n      \"depends_on\": [\n        \"Define AgentCore canonical structure\",\n        \"Failure handling + dead-letter workflow\",\n        \"Observability: logs, metrics, and health checks\"\n      ],\n      \"files_involved\": [\n        \"agentcore/README.md\",\n        \"agentcore/docs/runbook.md\",\n        \"agentcore/docs/mail-contract.md\"\n      ]\n    }\n  ]\n}",
+  "parse_ok": true,
+  "extracted_json": [
+    {
+      "title": "Define AgentCore canonical structure",
+      "description": "Establish and document a clean, deterministic /agentcore directory layout (inbox/outbox, agent identities, work queues, state, logs, schemas, tools). Include naming conventions and rules to prevent drift.",
+      "priority": "P0",
+      "depends_on": [],
+      "files_involved": [
+        "agentcore/ (root)",
+        "agentcore/README.md (or docs/agentcore-structure.md)"
+      ]
+    },
+    {
+      "title": "Specify mail contract + schema validation",
+      "description": "Define the canonical mail message envelope (required fields, routing keys, correlation IDs, idempotency keys, timestamps, retries, error fields). Add JSON Schemas and validation hooks so malformed mail is rejected with actionable errors.",
+      "priority": "P0",
+      "depends_on": [
+        "Define AgentCore canonical structure"
+      ],
+      "files_involved": [
+        "agentcore/schemas/mail.schema.json (new/updated)",
+        "agentcore/schemas/*.schema.json",
+        "agentcore/lib/validate_mail.* (if exists)"
+      ]
+    },
+    {
+      "title": "Inbox/outbox routing and folder semantics",
+      "description": "Standardize how messages move through folders (inbox -> processing -> done/failed; outbox -> sent). Define atomic move operations and folder semantics so no duplicate processing occurs and no message is lost.",
+      "priority": "P0",
+      "depends_on": [
+        "Define AgentCore canonical structure",
+        "Specify mail contract + schema validation"
+      ],
+      "files_involved": [
+        "agentcore/mail/",
+        "agentcore/mail/inbox/",
+        "agentcore/mail/outbox/",
+        "agentcore/mail/processing/",
+        "agentcore/mail/done/",
+        "agentcore/mail/failed/"
+      ]
+    },
+    {
+      "title": "Dispatcher loop hardening",
+      "description": "Harden the dispatcher so it reliably discovers new mail, validates it, routes it, and records state transitions. Add backoff, jitter, retries, and safe shutdown. Ensure it does not spin or double-send under restarts.",
+      "priority": "P0",
+      "depends_on": [
+        "Specify mail contract + schema validation",
+        "Inbox/outbox routing and folder semantics"
+      ],
+      "files_involved": [
+        "agentcore/scripts/task-dispatcher.*",
+        "agentcore/orchestrator/*",
+        "agentcore/dispatcher/*"
+      ]
+    },
+    {
+      "title": "Idempotency + locking for message processing",
+      "description": "Implement idempotency keys and lock strategy (file locks or lockfiles) so each message is processed exactly-once per intended semantics, even across crashes/restarts. Define how duplicates are detected and handled.",
+      "priority": "P0",
+      "depends_on": [
+        "Specify mail contract + schema validation",
+        "Inbox/outbox routing and folder semantics"
+      ],
+      "files_involved": [
+        "agentcore/state/",
+        "agentcore/locks/",
+        "agentcore/lib/lock.*",
+        "agentcore/lib/idempotency.*"
+      ]
+    },
+    {
+      "title": "Status tracking + audit trail",
+      "description": "Create a durable state model for each message (queued, processing, done, failed, retried) with timestamps and agent attribution. Store per-message receipts and summaries to support debugging and accountability.",
+      "priority": "P1",
+      "depends_on": [
+        "Idempotency + locking for message processing",
+        "Dispatcher loop hardening"
+      ],
+      "files_involved": [
+        "agentcore/state/messages.jsonl (or sqlite/db if used)",
+        "agentcore/logs/",
+        "agentcore/receipts/"
+      ]
+    },
+    {
+      "title": "Failure handling + dead-letter workflow",
+      "description": "Define and implement dead-letter handling for messages that fail validation or exceed retry limits. Provide clear error artifacts and a mechanism to requeue after fix.",
+      "priority": "P1",
+      "depends_on": [
+        "Status tracking + audit trail",
+        "Inbox/outbox routing and folder semantics"
+      ],
+      "files_involved": [
+        "agentcore/mail/failed/",
+        "agentcore/mail/dlq/",
+        "agentcore/tools/requeue.*"
+      ]
+    },
+    {
+      "title": "Agent identity + routing table",
+      "description": "Standardize agent identity definitions (name, capabilities, inbox path, routing keys). Implement/refresh a routing table so orchestrator can reliably address any agent and support capability-based dispatch.",
+      "priority": "P1",
+      "depends_on": [
+        "Define AgentCore canonical structure",
+        "Specify mail contract + schema validation"
+      ],
+      "files_involved": [
+        "agentcore/agents/registry.json (or yaml)",
+        "agentcore/agents/*",
+        "agentcore/routes/*"
+      ]
+    },
+    {
+      "title": "Observability: logs, metrics, and health checks",
+      "description": "Add structured logging (per message correlation ID), basic metrics (queue depth, processed/sec, failures), and a health check command. Ensure logs are searchable and tied to message receipts.",
+      "priority": "P2",
+      "depends_on": [
+        "Dispatcher loop hardening",
+        "Status tracking + audit trail"
+      ],
+      "files_involved": [
+        "agentcore/logs/",
+        "agentcore/tools/health.*",
+        "agentcore/lib/logger.*"
+      ]
+    },
+    {
+      "title": "End-to-end test harness for mail flow",
+      "description": "Build a minimal, targeted test suite that injects sample mail, validates routing, verifies exactly-once processing, and asserts correct state transitions including crash/restart scenarios.",
+      "priority": "P1",
+      "depends_on": [
+        "Specify mail contract + schema validation",
+        "Idempotency + locking for message processing",
+        "Dispatcher loop hardening"
+      ],
+      "files_involved": [
+        "agentcore/tests/*",
+        "agentcore/fixtures/mail/*",
+        "agentcore/scripts/test-mail-flow.*"
+      ]
+    },
+    {
+      "title": "Operator docs + runbooks",
+      "description": "Write concise docs for folder structure, message schema, dispatcher operation, troubleshooting, and recovery (requeue, DLQ, lock cleanup). Include “verify-first” checklists.",
+      "priority": "P2",
+      "depends_on": [
+        "Define AgentCore canonical structure",
+        "Failure handling + dead-letter workflow",
+        "Observability: logs, metrics, and health checks"
+      ],
+      "files_involved": [
+        "agentcore/README.md",
+        "agentcore/docs/runbook.md",
+        "agentcore/docs/mail-contract.md"
+      ]
+    }
+  ],
+  "error": null
+}

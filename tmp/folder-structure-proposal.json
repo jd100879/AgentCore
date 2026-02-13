@@ -1,0 +1,358 @@
+{
+  "ok": true,
+  "raw_text": "JSON\n{\n  \"agentcore_structure\": {\n    \"directory_tree\": \"agentcore/\\n  README.md\\n  docs/\\n    structure.md\\n    migration.md\\n  config/\\n    flywheel/\\n    agents/\\n    ntm/\\n    env.example\\n  schemas/\\n    mail/\\n    flywheel/\\n  runtime/\\n    pids/\\n    panes/\\n    sessions/\\n    logs/\\n    tmp/\\n  coordination/\\n    registry/\\n    profiles/\\n    workflows/\\n    active/\\n  mail/\\n    repo/\\n      inbox/\\n      outbox/\\n      processing/\\n      done/\\n      failed/\\n      dlq/\\n      _meta/\\n    tools/\\n  tools/\\n    scripts/\\n    lib/\\n  state/\\n    beads/\\n    notifications/\\n    disk/\\n    audit/\\n  integrations/\\n    mcp_agent_mail/\\n    flywheel_tools/\\n    beads_rust/\\n    beads_viewer/\\n    ntm/\\n  archive/\\n  review/\\n\",\n    \"directories\": [\n      {\n        \"path\": \"agentcore\",\n        \"purpose\": \"Single canonical root (lowercase) for agent coordination infrastructure: config, state, runtime, schemas, and mail repo. Everything required to run/operate the multi-agent system lives under this tree to reduce drift.\",\n        \"contents\": [\n          \"README.md\",\n          \"docs/\",\n          \"config/\",\n          \"schemas/\",\n          \"runtime/\",\n          \"coordination/\",\n          \"mail/\",\n          \"tools/\",\n          \"state/\",\n          \"integrations/\",\n          \"archive/\",\n          \"review/\"\n        ],\n        \"naming_conventions\": [\n          \"lowercase directory names only\",\n          \"stable nouns for top-level (config, schemas, runtime, state, mail, tools, integrations)\",\n          \"no hidden dot-directories inside agentcore (explicit directories only)\",\n          \"all new paths referenced via a single exported AGENTCORE_ROOT\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \".agent-* (multiple)\",\n            \".beads/\",\n            \".flywheel/\",\n            \".disk-notifications/\",\n            \".session-state/\",\n            \".ntm/\",\n            \"state/\",\n            \"tmp/\",\n            \"pids/\",\n            \"panes/\",\n            \"workflows/\",\n            \"schemas/\",\n            \"scripts/\"\n          ],\n          \"strategy\": \"create_new\",\n          \"backwards_compat\": \"Keep existing top-level folders/dotdirs initially; introduce agentcore/ alongside them, then add symlinks and environment variables to redirect without breaking running agents.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/docs\",\n        \"purpose\": \"Operational documentation for structure and migration. Canonical reference to prevent drift.\",\n        \"contents\": [\n          \"structure.md\",\n          \"migration.md\"\n        ],\n        \"naming_conventions\": [\n          \"kebab-case markdown filenames\",\n          \"docs describe invariants and 'verify-first' checks\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \"ARCHITECTURE.md\",\n            \"AGENTS.md\",\n            \"AGENT_MAIL.md\",\n            \"GETTING_STARTED.md\",\n            \"PRACTICAL_USAGE.md\",\n            \"STATUS.md\"\n          ],\n          \"strategy\": \"move\",\n          \"backwards_compat\": \"Leave stub top-level files that point to agentcore/docs/* (or keep originals until next cleanup pass).\"\n        }\n      },\n      {\n        \"path\": \"agentcore/config\",\n        \"purpose\": \"All configuration that defines how agents run and coordinate. No runtime state here.\",\n        \"contents\": [\n          \"flywheel/\",\n          \"agents/\",\n          \"ntm/\",\n          \"env.example\"\n        ],\n        \"naming_conventions\": [\n          \"config is declarative only\",\n          \"no secrets committed; env.example provides keys\",\n          \"prefer .json/.yaml with schemas in agentcore/schemas\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \".flywheel/\",\n            \".agent-profiles/\",\n            \".ntm/\"\n          ],\n          \"strategy\": \"move\",\n          \"backwards_compat\": \"Phase 1 symlink old dotdirs -> agentcore/config/*; Phase 2 deprecate dotdirs after scripts updated.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/config/flywheel\",\n        \"purpose\": \"Flywheel configuration and orchestrator instructions kept in one place.\",\n        \"contents\": [\n          \"chatgpt.json\",\n          \"orchestrator-instructions.md\",\n          \"bridge/\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \".flywheel/chatgpt.json\",\n            \".flywheel/orchestrator-instructions.md\",\n            \".flywheel/bridge/\"\n          ],\n          \"strategy\": \"move\",\n          \"backwards_compat\": \"Symlink .flywheel -> agentcore/config/flywheel (directory symlink) until all references updated.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/config/agents\",\n        \"purpose\": \"Canonical agent registry and identity config (names, roles, capabilities, inbox addressing).\",\n        \"contents\": [\n          \"registry.json (or registry.yaml)\",\n          \"defaults.yaml\",\n          \"overrides.local.yaml (gitignored)\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \"scripts/agent-registry.sh (logic references)\",\n            \".agent-coordination/ (placeholder)\",\n            \".active-agents/ (empty)\"\n          ],\n          \"strategy\": \"create_new\",\n          \"backwards_compat\": \"Keep existing scripts reading old sources initially; add adapter layer that prefers AGENTCORE_ROOT/config/agents when present.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/config/ntm\",\n        \"purpose\": \"NTM configuration scoped under config. (NTM runtime state goes under agentcore/state/ntm).\",\n        \"contents\": [\n          \"ntm-config.yaml\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \".beads/ntm-config.yaml\",\n            \".ntm/\"\n          ],\n          \"strategy\": \"move\",\n          \"backwards_compat\": \"Symlink old paths to new file; ensure tools that read ntm-config.yaml are updated to consult AGENTCORE_ROOT first.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/schemas\",\n        \"purpose\": \"All JSON Schemas (and related validation artifacts) used across coordination, mail, and flywheel configs.\",\n        \"contents\": [\n          \"mail/\",\n          \"flywheel/\"\n        ],\n        \"naming_conventions\": [\n          \"schema files end with .schema.json\",\n          \"schema versioning via $id and semver in filenames if needed\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \"schemas/flywheel/\"\n          ],\n          \"strategy\": \"move\",\n          \"backwards_compat\": \"Symlink old schemas/ -> agentcore/schemas/ during transition.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/runtime\",\n        \"purpose\": \"Ephemeral runtime artifacts produced by running sessions. Safe to wipe. Never required for correctness.\",\n        \"contents\": [\n          \"pids/\",\n          \"panes/\",\n          \"sessions/\",\n          \"logs/\",\n          \"tmp/\"\n        ],\n        \"naming_conventions\": [\n          \"runtime paths must be writable\",\n          \"no important data stored only here\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \"pids/\",\n            \"panes/\",\n            \"state/logs/\",\n            \"tmp/\",\n            \".session-state/\"\n          ],\n          \"strategy\": \"move\",\n          \"backwards_compat\": \"Keep old dirs for one release; add symlinks old->new so scripts keep working.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/coordination\",\n        \"purpose\": \"Coordination metadata that is NOT mail: agent registry views, profiles, workflow definitions, active agent tracking. This is the 'control-plane' for agents.\",\n        \"contents\": [\n          \"registry/\",\n          \"profiles/\",\n          \"workflows/\",\n          \"active/\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \".agent-coordination/\",\n            \".agent-profiles/\",\n            \".agent-workflows/\",\n            \".active-agents/\"\n          ],\n          \"strategy\": \"move\",\n          \"backwards_compat\": \"Symlink old dotdirs to agentcore/coordination/* initially; deprecate dotdirs once all scripts read AGENTCORE_ROOT.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/mail\",\n        \"purpose\": \"Local canonical location for mail repo mount/clone and mail tooling. This is only structure now; implementation details come next iteration.\",\n        \"contents\": [\n          \"repo/\",\n          \"tools/\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \"$HOME/.mcp_agent_mail_local_repo/ (external)\"\n          ],\n          \"strategy\": \"create_new\",\n          \"backwards_compat\": \"In Phase 1 do NOT move the external repo; instead create agentcore/mail/repo as a symlink to $HOME/.mcp_agent_mail_local_repo or a configured path pointer file. Later (Phase 3+) migrate storage if desired.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/mail/repo\",\n        \"purpose\": \"Deterministic folder semantics for mail storage (future work). Provides stable paths for inbox/outbox/processing/done/failed flows and metadata.\",\n        \"contents\": [\n          \"inbox/\",\n          \"outbox/\",\n          \"processing/\",\n          \"done/\",\n          \"failed/\",\n          \"dlq/\",\n          \"_meta/\"\n        ],\n        \"naming_conventions\": [\n          \"agent mailboxes are subfolders by agent canonical name (case-normalized, e.g., TopazDeer/ or topazdeer/ — pick one and enforce later)\",\n          \"messages are immutable once written; transitions are directory moves (future work)\",\n          \"_meta contains indexes, locks, receipts (future work)\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \"$HOME/.mcp_agent_mail_local_repo/inbox/\",\n            \"$HOME/.mcp_agent_mail_local_repo/sent/\"\n          ],\n          \"strategy\": \"symlink\",\n          \"backwards_compat\": \"Map existing inbox/ to agentcore/mail/repo/inbox and sent/ to agentcore/mail/repo/outbox (or keep sent as alias until mail system iteration defines exact semantics).\"\n        }\n      },\n      {\n        \"path\": \"agentcore/tools\",\n        \"purpose\": \"One canonical place for runnable scripts and shared shell/Python libs used by orchestration. Eliminates scattered scripts/ + symlink confusion.\",\n        \"contents\": [\n          \"scripts/\",\n          \"lib/\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \"scripts/\",\n            \"scripts/lib/\",\n            \"flywheel_tools/scripts/* (selected entrypoints)\"\n          ],\n          \"strategy\": \"move\",\n          \"backwards_compat\": \"Keep top-level scripts/ as a thin shim that forwards to agentcore/tools/scripts to avoid breaking existing invocations.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/state\",\n        \"purpose\": \"Durable state required for coordination correctness (not ephemeral runtime). This includes beads backend data, audit trails, notification history, and other persisted coordination state.\",\n        \"contents\": [\n          \"beads/\",\n          \"notifications/\",\n          \"disk/\",\n          \"audit/\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \".beads/\",\n            \".disk-notifications/\",\n            \"state/ (partial)\"\n          ],\n          \"strategy\": \"move\",\n          \"backwards_compat\": \"Symlink .beads -> agentcore/state/beads and .disk-notifications -> agentcore/state/notifications (or disk/) until updated.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/state/beads\",\n        \"purpose\": \"Canonical beads data (jsonl/sqlite) used by br/bv tools. This is NOT the beads_rust code; it is the data storage.\",\n        \"contents\": [\n          \"issues.jsonl\",\n          \"beads.db\",\n          \"agent-activity.jsonl\",\n          \"mail-read.jsonl\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \".beads/issues.jsonl\",\n            \".beads/beads.db\",\n            \".beads/agent-activity.jsonl\",\n            \".beads/mail-read.jsonl\"\n          ],\n          \"strategy\": \"move\",\n          \"backwards_compat\": \"Symlink old .beads directory to agentcore/state/beads to preserve all current tooling expectations.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/integrations\",\n        \"purpose\": \"Stable pointers to major component subsystems (codebases) without pretending they are part of the core coordination plane. This is where 'component directories' are grouped conceptually without forcing immediate repo moves.\",\n        \"contents\": [\n          \"mcp_agent_mail/\",\n          \"flywheel_tools/\",\n          \"beads_rust/\",\n          \"beads_viewer/\",\n          \"ntm/\"\n        ],\n        \"migration\": {\n          \"from\": [\n            \"mcp_agent_mail/\",\n            \"flywheel_tools/\",\n            \"beads_rust/\",\n            \"beads_viewer/\",\n            \"ntm/\"\n          ],\n          \"strategy\": \"symlink\",\n          \"backwards_compat\": \"Do not physically move component directories initially; create symlinks under agentcore/integrations/* pointing to existing top-level directories. Later you can decide to relocate physically.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/archive\",\n        \"purpose\": \"Explicit parking lot for deprecated assets that must remain in repo history but should not be used.\",\n        \"contents\": [],\n        \"migration\": {\n          \"from\": [\n            \"archive/\"\n          ],\n          \"strategy\": \"move\",\n          \"backwards_compat\": \"Leave top-level archive/ as symlink to agentcore/archive.\"\n        }\n      },\n      {\n        \"path\": \"agentcore/review\",\n        \"purpose\": \"Explicit review/triage zones (e.g., review-for-delete). Keeps cleanup separated from core runtime and state.\",\n        \"contents\": [],\n        \"migration\": {\n          \"from\": [\n            \"review-for-delete/\"\n          ],\n          \"strategy\": \"move\",\n          \"backwards_compat\": \"Leave top-level review-for-delete/ as symlink to agentcore/review.\"\n        }\n      }\n    ]\n  },\n  \"migration_plan\": {\n    \"phase_1\": \"Non-disruptive bootstrap (verify-first): create new lowercase agentcore/ tree with docs/config/schemas/runtime/coordination/mail/tools/state/integrations. Do NOT delete or move existing directories yet. Add AGENTCORE_ROOT support in scripts via environment variable (defaulting to repo-root/agentcore if present). Create symlinks under agentcore/integrations/* to existing component directories. Create agentcore/mail/repo as a symlink or pointer to the existing $HOME/.mcp_agent_mail_local_repo so running agents continue to operate unchanged.\",\n    \"phase_2\": \"Controlled migration with compatibility shims: move dot-directories into agentcore equivalents (config, coordination, state) but keep the original dotdir names as symlinks to new locations (.flywheel -> agentcore/config/flywheel, .beads -> agentcore/state/beads, .agent-profiles -> agentcore/coordination/profiles, etc.). Move runtime folders (pids/panes/tmp/state/logs) into agentcore/runtime and leave symlinks in place. Convert top-level scripts/ into thin forwarders to agentcore/tools/scripts.\",\n    \"phase_3\": \"Deprecation + enforcement: update all scripts and tools to resolve paths through AGENTCORE_ROOT only (no direct .beads/.flywheel references). Add a drift guard: a CI/script check that fails if new dotdirs or new top-level coordination directories appear. Optionally migrate mail storage from $HOME external repo into agentcore/mail/repo (only after mail system iteration defines semantics). Remove legacy empty/duplicate directories after a stable period.\",\n    \"rollback_strategy\": \"Rollback is directory-symlink based: if anything breaks, remove AGENTCORE_ROOT export and revert symlinks to point back to original locations. Since Phase 1 avoids destructive moves, you can revert by deleting agentcore/ and leaving the original layout untouched. For Phase 2 moves, rollback by restoring from git (config/state) and removing symlinks; runtime artifacts are non-critical.\"\n  },\n  \"questions_for_orchestrator\": [\n    \"Verify-first: Which scripts/tools currently hardcode paths to .beads/, .flywheel/, .agent-* or $HOME/.mcp_agent_mail_local_repo? Provide ripgrep results for: '.beads', '.flywheel', '.agent-', 'mcp_agent_mail_local_repo', 'AgentCore/'\",\n    \"Do any running agents assume dot-directories must be hidden (e.g., globbing behavior, UI expectations), or can we replace them with symlinks safely on macOS?\",\n    \"Is the repository root actually /Users/james/Projects/AgentCore/ and will we be creating agentcore/ alongside existing top-level component dirs (preferred), or do you want agentcore/ to become the new repo root (not recommended for minimal disruption)?\",\n    \"Is $HOME/.mcp_agent_mail_local_repo required to stay outside the repo for performance/security reasons (e.g., multi-repo use), or is migrating it into repo acceptable later?\",\n    \"Confirm whether the capital 'AgentCore/' directory is referenced anywhere (build scripts, tooling, docs). If not referenced, can we deprecate it and move its .gitattributes up (or delete after verification)?\",\n    \"Are any components (beads_rust, ntm, flywheel_tools) expecting relative paths from repo root that would break if we only add symlinks under agentcore/integrations?\",\n    \"Do you want agent names canonicalized as lowercase folder names (recommended for determinism) or preserved case (current examples show AgentA/AgentB)?\"\n  ]\n}",
+  "parse_ok": true,
+  "extracted_json": [
+    {
+      "path": "agentcore",
+      "purpose": "Single canonical root (lowercase) for agent coordination infrastructure: config, state, runtime, schemas, and mail repo. Everything required to run/operate the multi-agent system lives under this tree to reduce drift.",
+      "contents": [
+        "README.md",
+        "docs/",
+        "config/",
+        "schemas/",
+        "runtime/",
+        "coordination/",
+        "mail/",
+        "tools/",
+        "state/",
+        "integrations/",
+        "archive/",
+        "review/"
+      ],
+      "naming_conventions": [
+        "lowercase directory names only",
+        "stable nouns for top-level (config, schemas, runtime, state, mail, tools, integrations)",
+        "no hidden dot-directories inside agentcore (explicit directories only)",
+        "all new paths referenced via a single exported AGENTCORE_ROOT"
+      ],
+      "migration": {
+        "from": [
+          ".agent-* (multiple)",
+          ".beads/",
+          ".flywheel/",
+          ".disk-notifications/",
+          ".session-state/",
+          ".ntm/",
+          "state/",
+          "tmp/",
+          "pids/",
+          "panes/",
+          "workflows/",
+          "schemas/",
+          "scripts/"
+        ],
+        "strategy": "create_new",
+        "backwards_compat": "Keep existing top-level folders/dotdirs initially; introduce agentcore/ alongside them, then add symlinks and environment variables to redirect without breaking running agents."
+      }
+    },
+    {
+      "path": "agentcore/docs",
+      "purpose": "Operational documentation for structure and migration. Canonical reference to prevent drift.",
+      "contents": [
+        "structure.md",
+        "migration.md"
+      ],
+      "naming_conventions": [
+        "kebab-case markdown filenames",
+        "docs describe invariants and 'verify-first' checks"
+      ],
+      "migration": {
+        "from": [
+          "ARCHITECTURE.md",
+          "AGENTS.md",
+          "AGENT_MAIL.md",
+          "GETTING_STARTED.md",
+          "PRACTICAL_USAGE.md",
+          "STATUS.md"
+        ],
+        "strategy": "move",
+        "backwards_compat": "Leave stub top-level files that point to agentcore/docs/* (or keep originals until next cleanup pass)."
+      }
+    },
+    {
+      "path": "agentcore/config",
+      "purpose": "All configuration that defines how agents run and coordinate. No runtime state here.",
+      "contents": [
+        "flywheel/",
+        "agents/",
+        "ntm/",
+        "env.example"
+      ],
+      "naming_conventions": [
+        "config is declarative only",
+        "no secrets committed; env.example provides keys",
+        "prefer .json/.yaml with schemas in agentcore/schemas"
+      ],
+      "migration": {
+        "from": [
+          ".flywheel/",
+          ".agent-profiles/",
+          ".ntm/"
+        ],
+        "strategy": "move",
+        "backwards_compat": "Phase 1 symlink old dotdirs -> agentcore/config/*; Phase 2 deprecate dotdirs after scripts updated."
+      }
+    },
+    {
+      "path": "agentcore/config/flywheel",
+      "purpose": "Flywheel configuration and orchestrator instructions kept in one place.",
+      "contents": [
+        "chatgpt.json",
+        "orchestrator-instructions.md",
+        "bridge/"
+      ],
+      "migration": {
+        "from": [
+          ".flywheel/chatgpt.json",
+          ".flywheel/orchestrator-instructions.md",
+          ".flywheel/bridge/"
+        ],
+        "strategy": "move",
+        "backwards_compat": "Symlink .flywheel -> agentcore/config/flywheel (directory symlink) until all references updated."
+      }
+    },
+    {
+      "path": "agentcore/config/agents",
+      "purpose": "Canonical agent registry and identity config (names, roles, capabilities, inbox addressing).",
+      "contents": [
+        "registry.json (or registry.yaml)",
+        "defaults.yaml",
+        "overrides.local.yaml (gitignored)"
+      ],
+      "migration": {
+        "from": [
+          "scripts/agent-registry.sh (logic references)",
+          ".agent-coordination/ (placeholder)",
+          ".active-agents/ (empty)"
+        ],
+        "strategy": "create_new",
+        "backwards_compat": "Keep existing scripts reading old sources initially; add adapter layer that prefers AGENTCORE_ROOT/config/agents when present."
+      }
+    },
+    {
+      "path": "agentcore/config/ntm",
+      "purpose": "NTM configuration scoped under config. (NTM runtime state goes under agentcore/state/ntm).",
+      "contents": [
+        "ntm-config.yaml"
+      ],
+      "migration": {
+        "from": [
+          ".beads/ntm-config.yaml",
+          ".ntm/"
+        ],
+        "strategy": "move",
+        "backwards_compat": "Symlink old paths to new file; ensure tools that read ntm-config.yaml are updated to consult AGENTCORE_ROOT first."
+      }
+    },
+    {
+      "path": "agentcore/schemas",
+      "purpose": "All JSON Schemas (and related validation artifacts) used across coordination, mail, and flywheel configs.",
+      "contents": [
+        "mail/",
+        "flywheel/"
+      ],
+      "naming_conventions": [
+        "schema files end with .schema.json",
+        "schema versioning via $id and semver in filenames if needed"
+      ],
+      "migration": {
+        "from": [
+          "schemas/flywheel/"
+        ],
+        "strategy": "move",
+        "backwards_compat": "Symlink old schemas/ -> agentcore/schemas/ during transition."
+      }
+    },
+    {
+      "path": "agentcore/runtime",
+      "purpose": "Ephemeral runtime artifacts produced by running sessions. Safe to wipe. Never required for correctness.",
+      "contents": [
+        "pids/",
+        "panes/",
+        "sessions/",
+        "logs/",
+        "tmp/"
+      ],
+      "naming_conventions": [
+        "runtime paths must be writable",
+        "no important data stored only here"
+      ],
+      "migration": {
+        "from": [
+          "pids/",
+          "panes/",
+          "state/logs/",
+          "tmp/",
+          ".session-state/"
+        ],
+        "strategy": "move",
+        "backwards_compat": "Keep old dirs for one release; add symlinks old->new so scripts keep working."
+      }
+    },
+    {
+      "path": "agentcore/coordination",
+      "purpose": "Coordination metadata that is NOT mail: agent registry views, profiles, workflow definitions, active agent tracking. This is the 'control-plane' for agents.",
+      "contents": [
+        "registry/",
+        "profiles/",
+        "workflows/",
+        "active/"
+      ],
+      "migration": {
+        "from": [
+          ".agent-coordination/",
+          ".agent-profiles/",
+          ".agent-workflows/",
+          ".active-agents/"
+        ],
+        "strategy": "move",
+        "backwards_compat": "Symlink old dotdirs to agentcore/coordination/* initially; deprecate dotdirs once all scripts read AGENTCORE_ROOT."
+      }
+    },
+    {
+      "path": "agentcore/mail",
+      "purpose": "Local canonical location for mail repo mount/clone and mail tooling. This is only structure now; implementation details come next iteration.",
+      "contents": [
+        "repo/",
+        "tools/"
+      ],
+      "migration": {
+        "from": [
+          "$HOME/.mcp_agent_mail_local_repo/ (external)"
+        ],
+        "strategy": "create_new",
+        "backwards_compat": "In Phase 1 do NOT move the external repo; instead create agentcore/mail/repo as a symlink to $HOME/.mcp_agent_mail_local_repo or a configured path pointer file. Later (Phase 3+) migrate storage if desired."
+      }
+    },
+    {
+      "path": "agentcore/mail/repo",
+      "purpose": "Deterministic folder semantics for mail storage (future work). Provides stable paths for inbox/outbox/processing/done/failed flows and metadata.",
+      "contents": [
+        "inbox/",
+        "outbox/",
+        "processing/",
+        "done/",
+        "failed/",
+        "dlq/",
+        "_meta/"
+      ],
+      "naming_conventions": [
+        "agent mailboxes are subfolders by agent canonical name (case-normalized, e.g., TopazDeer/ or topazdeer/ — pick one and enforce later)",
+        "messages are immutable once written; transitions are directory moves (future work)",
+        "_meta contains indexes, locks, receipts (future work)"
+      ],
+      "migration": {
+        "from": [
+          "$HOME/.mcp_agent_mail_local_repo/inbox/",
+          "$HOME/.mcp_agent_mail_local_repo/sent/"
+        ],
+        "strategy": "symlink",
+        "backwards_compat": "Map existing inbox/ to agentcore/mail/repo/inbox and sent/ to agentcore/mail/repo/outbox (or keep sent as alias until mail system iteration defines exact semantics)."
+      }
+    },
+    {
+      "path": "agentcore/tools",
+      "purpose": "One canonical place for runnable scripts and shared shell/Python libs used by orchestration. Eliminates scattered scripts/ + symlink confusion.",
+      "contents": [
+        "scripts/",
+        "lib/"
+      ],
+      "migration": {
+        "from": [
+          "scripts/",
+          "scripts/lib/",
+          "flywheel_tools/scripts/* (selected entrypoints)"
+        ],
+        "strategy": "move",
+        "backwards_compat": "Keep top-level scripts/ as a thin shim that forwards to agentcore/tools/scripts to avoid breaking existing invocations."
+      }
+    },
+    {
+      "path": "agentcore/state",
+      "purpose": "Durable state required for coordination correctness (not ephemeral runtime). This includes beads backend data, audit trails, notification history, and other persisted coordination state.",
+      "contents": [
+        "beads/",
+        "notifications/",
+        "disk/",
+        "audit/"
+      ],
+      "migration": {
+        "from": [
+          ".beads/",
+          ".disk-notifications/",
+          "state/ (partial)"
+        ],
+        "strategy": "move",
+        "backwards_compat": "Symlink .beads -> agentcore/state/beads and .disk-notifications -> agentcore/state/notifications (or disk/) until updated."
+      }
+    },
+    {
+      "path": "agentcore/state/beads",
+      "purpose": "Canonical beads data (jsonl/sqlite) used by br/bv tools. This is NOT the beads_rust code; it is the data storage.",
+      "contents": [
+        "issues.jsonl",
+        "beads.db",
+        "agent-activity.jsonl",
+        "mail-read.jsonl"
+      ],
+      "migration": {
+        "from": [
+          ".beads/issues.jsonl",
+          ".beads/beads.db",
+          ".beads/agent-activity.jsonl",
+          ".beads/mail-read.jsonl"
+        ],
+        "strategy": "move",
+        "backwards_compat": "Symlink old .beads directory to agentcore/state/beads to preserve all current tooling expectations."
+      }
+    },
+    {
+      "path": "agentcore/integrations",
+      "purpose": "Stable pointers to major component subsystems (codebases) without pretending they are part of the core coordination plane. This is where 'component directories' are grouped conceptually without forcing immediate repo moves.",
+      "contents": [
+        "mcp_agent_mail/",
+        "flywheel_tools/",
+        "beads_rust/",
+        "beads_viewer/",
+        "ntm/"
+      ],
+      "migration": {
+        "from": [
+          "mcp_agent_mail/",
+          "flywheel_tools/",
+          "beads_rust/",
+          "beads_viewer/",
+          "ntm/"
+        ],
+        "strategy": "symlink",
+        "backwards_compat": "Do not physically move component directories initially; create symlinks under agentcore/integrations/* pointing to existing top-level directories. Later you can decide to relocate physically."
+      }
+    },
+    {
+      "path": "agentcore/archive",
+      "purpose": "Explicit parking lot for deprecated assets that must remain in repo history but should not be used.",
+      "contents": [],
+      "migration": {
+        "from": [
+          "archive/"
+        ],
+        "strategy": "move",
+        "backwards_compat": "Leave top-level archive/ as symlink to agentcore/archive."
+      }
+    },
+    {
+      "path": "agentcore/review",
+      "purpose": "Explicit review/triage zones (e.g., review-for-delete). Keeps cleanup separated from core runtime and state.",
+      "contents": [],
+      "migration": {
+        "from": [
+          "review-for-delete/"
+        ],
+        "strategy": "move",
+        "backwards_compat": "Leave top-level review-for-delete/ as symlink to agentcore/review."
+      }
+    }
+  ],
+  "error": null
+}

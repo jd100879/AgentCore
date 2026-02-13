@@ -56,16 +56,39 @@ function parseArgs(argv) {
 }
 
 async function postAndExtract(conversationUrl, message, storageStatePath, timeout = 60000) {
-  const browser = await chromium.launch({
-    headless: false,  // Use headed mode to avoid detection
-    args: [
-      '--disable-blink-features=AutomationControlled',
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-web-security'
-    ]
-  });
+  // Try to connect to existing browser server first
+  const endpointFile = ".flywheel/browser-endpoint.txt";
+  let browser = null;
+  let usingServerBrowser = false;
+
+  if (fs.existsSync(endpointFile)) {
+    try {
+      const wsEndpoint = fs.readFileSync(endpointFile, "utf8").trim();
+      console.error(`Attempting to connect to browser server: ${wsEndpoint}`);
+      browser = await chromium.connect(wsEndpoint);
+      usingServerBrowser = true;
+      console.error("✓ Connected to existing browser server");
+    } catch (e) {
+      console.error(`Failed to connect to browser server: ${e.message}`);
+      console.error("Falling back to launching new browser...");
+    }
+  } else {
+    console.error("No browser server endpoint found, launching new browser...");
+  }
+
+  // Fallback: launch new browser if connection failed
+  if (!browser) {
+    browser = await chromium.launch({
+      headless: false,  // Use headed mode to avoid detection
+      args: [
+        '--disable-blink-features=AutomationControlled',
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-web-security'
+      ]
+    });
+  }
 
   const context = await browser.newContext({
     storageState: storageStatePath,
@@ -312,7 +335,7 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     }
 
     // Return structured response with both raw text and parsed JSON
-    return {
+    const result = {
       ok: true,
       raw_text: rawText,
       parse_ok: parseOk,
@@ -320,10 +343,22 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
       error: error
     };
 
+    return { response: result, usingServerBrowser };
+
   } finally {
-    // Don't close browser - keep it open for reuse
-    // await browser.close();
-    console.error("Browser kept open for reuse");
+    // Close context and page, but keep server browser alive
+    await page.close();
+    await context.close();
+
+    if (usingServerBrowser) {
+      // Close connection to server, not the server itself
+      await browser.close();
+      console.error("✓ Closed connection to browser server (server still running)");
+    } else {
+      // Don't close browser - keep it open for reuse
+      // await browser.close();
+      console.error("✓ Browser kept open for reuse (fallback mode)");
+    }
   }
 }
 
@@ -364,7 +399,7 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
   console.error(`Timeout: ${timeout}ms`);
   console.error("");
 
-  const response = await postAndExtract(conversationUrl, message, storageStatePath, timeout);
+  const { response, usingServerBrowser } = await postAndExtract(conversationUrl, message, storageStatePath, timeout);
 
   const output = JSON.stringify(response, null, 2);
 
@@ -377,12 +412,19 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     process.stdout.write(output + "\n");
   }
 
-  // Keep browser open for session reuse
-  console.error("");
-  console.error("✓ Browser window left open for session reuse");
-  console.error("  (Process will stay alive - orchestrator should use run_in_background: true)");
-  // Keep process alive
-  setInterval(() => {}, 1000);
+  if (usingServerBrowser) {
+    // Clean exit when using server browser
+    console.error("");
+    console.error("✓ Using persistent browser server (clean exit)");
+    process.exit(0);
+  } else {
+    // Keep browser open for session reuse in fallback mode
+    console.error("");
+    console.error("✓ Browser window left open for session reuse (fallback mode)");
+    console.error("  (Process will stay alive - orchestrator should use run_in_background: true)");
+    // Keep process alive
+    setInterval(() => {}, 1000);
+  }
 })().catch((err) => {
   console.error(`ERROR: ${err.message}`);
   process.exit(1);

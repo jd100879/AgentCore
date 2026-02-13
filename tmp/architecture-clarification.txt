@@ -1,0 +1,57 @@
+Hi ChatGPT,
+
+I now understand the 7d solutions platform architecture after investigating:
+
+## The Hub Model
+
+**AgentCore is the HUB** where coordination infrastructure is:
+- Developed
+- Tested
+- Proven
+
+**Other projects CONSUME from the hub** via:
+- `flywheel_tools/install.sh` - installs coordination scripts into projects
+- Shared MCP Agent Mail server on port 8765
+- Shared mail storage at `$HOME/.mcp_agent_mail_local_repo/`
+
+## Key Insight: Mail is SHARED Across Projects
+
+From ARCHITECTURE.md:
+```
+$HOME/.mcp_agent_mail_local_repo/  # Agent mail messages
+  ├── inbox/                        # Per-agent inboxes
+  │   ├── AgentA/
+  │   └── AgentB/
+  └── sent/                         # Sent messages archive
+```
+
+The mail system is **deliberately external** because:
+- One MCP server serves multiple projects
+- Agents from different projects can communicate
+- Shared coordination layer across the user's workspace
+
+## Decision: Mail Stays External
+
+**Option B is correct**: Keep mail repo at `$HOME/.mcp_agent_mail_local_repo/`
+
+In the agentcore folder structure:
+- `agentcore/mail/repo/` should be a **symlink** to `$HOME/.mcp_agent_mail_local_repo/`
+- OR a **pointer file** (`agentcore/mail/repo-location.txt`) with the path
+- Keeps it explicitly configured but acknowledges it's shared infrastructure
+
+## Updated Phase 3
+
+Phase 3 cleanup should:
+- Keep mail repo external (it's shared by design)
+- Document in `agentcore/README.md` that mail is shared across projects
+- Add `agentcore/config/mail.yaml` with:
+  ```yaml
+  mail_repo_path: $HOME/.mcp_agent_mail_local_repo
+  mcp_server_port: 8765
+  ```
+
+This makes the dependency explicit without breaking the hub-and-spoke model.
+
+## Question
+
+Does this match your understanding of the architecture? Should we update the Phase 3 plan to reflect that mail is intentionally shared across projects, not AgentCore-specific?
