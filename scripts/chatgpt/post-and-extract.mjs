@@ -57,7 +57,8 @@ function parseArgs(argv) {
 
 async function postAndExtract(conversationUrl, message, storageStatePath, timeout = 60000) {
   // Launch browser with existing authentication (storage state)
-  // Use visible browser - headless doesn't work well with ChatGPT
+  // Keep headless: false (ChatGPT blocks headless browsers)
+  // But position window offscreen to avoid focus stealing
   const browser = await chromium.launch({
     headless: false,
     args: [
@@ -65,7 +66,9 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
-      '--disable-web-security'
+      '--disable-web-security',
+      '--window-position=-2000,-2000',  // Position offscreen
+      '--window-size=800,600'            // Reasonable size (still offscreen)
     ]
   });
 
@@ -323,10 +326,10 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     };
 
   } finally {
-    // Close browser cleanly (headless mode)
-    await page.close();
-    await context.close();
-    await browser.close();
+    // Close browser cleanly (positioned offscreen so no visual disruption)
+    await page.close().catch(() => {});
+    await context.close().catch(() => {});
+    await browser.close().catch(() => {});
     console.error("✓ Browser closed");
   }
 }
@@ -381,9 +384,9 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     process.stdout.write(output + "\n");
   }
 
-  // Headless mode - clean exit
+  // Clean exit (browser was positioned offscreen)
   console.error("");
-  console.error("✓ Complete (headless mode - no visible browser)");
+  console.error("✓ Complete (browser was offscreen, no visual disruption)");
   process.exit(0);
 })().catch((err) => {
   console.error(`ERROR: ${err.message}`);
