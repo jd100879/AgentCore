@@ -1,0 +1,13 @@
+# Agent Mail Configuration
+# Shared mail infrastructure for hub-and-spoke architecture
+#
+# The mail repository is workspace-global by design - agents from different
+# projects can communicate via the shared mail server on port 8765.
+
+# Shared mail repository location (used by MCP Agent Mail server)
+# This directory is external to AgentCore and shared across all projects
+mail_repo_path: ${HOME}/.mcp_agent_mail_local_repo
+
+# MCP Agent Mail server port
+# All agents and spoke projects communicate via this port
+mcp_server_port: 8765
