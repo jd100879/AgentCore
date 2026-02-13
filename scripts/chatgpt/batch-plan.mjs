@@ -116,7 +116,14 @@ Return as valid JSON array where each element corresponds to a bead in order:
 
 ${beadContexts}
 
-Return ONLY the JSON array, no commentary.`;
+Return your response in this EXACT format with no additional text:
+
+\`\`\`json
+[
+  { "id": "bd-...", ... }
+]
+\`\`\`
+`;
 }
 
 (async function main() {
