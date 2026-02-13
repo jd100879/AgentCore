@@ -51,15 +51,8 @@ function parseArgs(argv) {
   return args;
 }
 
-async function startBrowserServer(storageStatePath, pidFile, endpointFile) {
-  console.error("=== Starting Browser Server ===");
-  console.error(`Storage state: ${storageStatePath}`);
-  console.error(`PID file: ${pidFile}`);
-  console.error(`Endpoint file: ${endpointFile}`);
-  console.error("");
-
-  // Launch browser in server mode
-  const browserServer = await chromium.launchServer({
+async function launchBrowser() {
+  return await chromium.launchServer({
     headless: false,  // Use headed mode to avoid detection
     args: [
       '--disable-blink-features=AutomationControlled',
@@ -69,37 +62,106 @@ async function startBrowserServer(storageStatePath, pidFile, endpointFile) {
       '--disable-web-security'
     ]
   });
+}
 
-  const wsEndpoint = browserServer.wsEndpoint();
-  console.error(`✓ Browser server started`);
-  console.error(`WebSocket endpoint: ${wsEndpoint}`);
+async function startBrowserServer(storageStatePath, pidFile, endpointFile) {
+  console.error("=== Starting Browser Server ===");
+  console.error(`Storage state: ${storageStatePath}`);
+  console.error(`PID file: ${pidFile}`);
+  console.error(`Endpoint file: ${endpointFile}`);
   console.error("");
 
-  // Write PID file
-  const pid = process.pid;
-  fs.writeFileSync(pidFile, `${pid}\n`, "utf8");
-  console.error(`✓ PID ${pid} written to: ${pidFile}`);
+  let browserServer = null;
+  let healthCheckInterval = null;
+  let isShuttingDown = false;
 
-  // Write endpoint file
-  fs.writeFileSync(endpointFile, `${wsEndpoint}\n`, "utf8");
-  console.error(`✓ Endpoint written to: ${endpointFile}`);
-  console.error("");
+  const startBrowser = async () => {
+    try {
+      // Launch browser in server mode
+      browserServer = await launchBrowser();
 
-  // Health check: connect and verify
-  console.error("Running health check...");
-  const browser = await chromium.connect(wsEndpoint);
-  const version = await browser.version();
-  console.error(`✓ Health check passed (browser version: ${version})`);
-  await browser.close();  // Close connection, not the server
-  console.error("");
+      const wsEndpoint = browserServer.wsEndpoint();
+      console.error(`✓ Browser server started`);
+      console.error(`WebSocket endpoint: ${wsEndpoint}`);
+      console.error("");
 
-  console.error("Browser server is running. Press Ctrl+C to stop.");
-  console.error("");
+      // Write PID file
+      const pid = process.pid;
+      fs.writeFileSync(pidFile, `${pid}\n`, "utf8");
+      console.error(`✓ PID ${pid} written to: ${pidFile}`);
+
+      // Write endpoint file
+      fs.writeFileSync(endpointFile, `${wsEndpoint}\n`, "utf8");
+      console.error(`✓ Endpoint written to: ${endpointFile}`);
+      console.error("");
+
+      // Health check: connect and verify
+      console.error("Running initial health check...");
+      const browser = await chromium.connect(wsEndpoint);
+      const version = await browser.version();
+      console.error(`✓ Health check passed (browser version: ${version})`);
+      await browser.close();  // Close connection, not the server
+      console.error("");
+
+      // Monitor browser disconnect
+      browserServer.on('close', async () => {
+        if (isShuttingDown) {
+          console.error("Browser closed during shutdown (expected)");
+          return;
+        }
+
+        console.error("");
+        console.error("⚠️  Browser server disconnected unexpectedly!");
+        console.error("Attempting to restart...");
+        console.error("");
+
+        // Clear health check interval
+        if (healthCheckInterval) {
+          clearInterval(healthCheckInterval);
+          healthCheckInterval = null;
+        }
+
+        // Wait a bit before restarting
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Restart browser
+        await startBrowser();
+      });
+
+      // Periodic health check (every 60 seconds)
+      healthCheckInterval = setInterval(async () => {
+        try {
+          const browser = await chromium.connect(wsEndpoint);
+          await browser.version();  // Quick health check
+          await browser.close();
+          console.error(`[${new Date().toISOString()}] Health check: OK`);
+        } catch (e) {
+          console.error(`[${new Date().toISOString()}] Health check failed: ${e.message}`);
+          // Don't restart here - let the 'close' event handler do it
+        }
+      }, 60000);
+
+      console.error("Browser server is running. Press Ctrl+C to stop.");
+      console.error("");
+
+    } catch (error) {
+      console.error(`Failed to start browser: ${error.message}`);
+      throw error;
+    }
+  };
 
   // Cleanup handler
   const cleanup = async () => {
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+
     console.error("");
     console.error("Shutting down browser server...");
+
+    // Clear health check
+    if (healthCheckInterval) {
+      clearInterval(healthCheckInterval);
+    }
 
     // Remove files
     if (fs.existsSync(pidFile)) {
@@ -112,13 +174,19 @@ async function startBrowserServer(storageStatePath, pidFile, endpointFile) {
     }
 
     // Close browser
-    await browserServer.close();
-    console.error("✓ Browser server stopped");
+    if (browserServer) {
+      await browserServer.close();
+      console.error("✓ Browser server stopped");
+    }
+
     process.exit(0);
   };
 
   process.on('SIGTERM', cleanup);
   process.on('SIGINT', cleanup);
+
+  // Start the browser
+  await startBrowser();
 
   // Keep process alive
   setInterval(() => {}, 1000);

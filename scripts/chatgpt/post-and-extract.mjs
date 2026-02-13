@@ -77,26 +77,31 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
   }
 
   // Fallback: launch new browser if connection failed
+  let context, page;
   if (!browser) {
-    browser = await chromium.launch({
-      headless: false,  // Use headed mode to avoid detection
+    // Use launchPersistentContext for non-incognito mode with persistent profile
+    const userDataDir = path.join(process.cwd(), '.browser-profiles/chatgpt-profile');
+    context = await chromium.launchPersistentContext(userDataDir, {
+      headless: false,
+      viewport: { width: 1280, height: 800 },
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       args: [
         '--disable-blink-features=AutomationControlled',
         '--no-sandbox',
         '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-web-security'
+        '--disable-dev-shm-usage'
       ]
     });
+    page = context.pages()[0] || await context.newPage();
+  } else {
+    // Using existing browser server - create context with storage state
+    context = await browser.newContext({
+      storageState: storageStatePath,
+      viewport: { width: 1280, height: 800 },
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    });
+    page = await context.newPage();
   }
-
-  const context = await browser.newContext({
-    storageState: storageStatePath,
-    viewport: { width: 1280, height: 800 },
-    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-  });
-
-  const page = await context.newPage();
 
   try {
     console.error(`Navigating to: ${conversationUrl}`);
