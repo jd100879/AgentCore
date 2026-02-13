@@ -89,3 +89,13 @@ panes/*.identity
 
 # Process IDs
 pids/
+
+# Flywheel runtime state
+.flywheel/*-pid.txt
+.flywheel/browser-ready.txt
+.flywheel/browser-response.json
+
+# Test artifacts
+tmp/*.txt
+tmp/*.json
+tmp/*.sh
