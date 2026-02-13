@@ -351,15 +351,15 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     return { response: result, usingServerBrowser };
 
   } finally {
-    // Close context and page, but keep server browser alive
-    await page.close();
-    await context.close();
-
     if (usingServerBrowser) {
+      // Don't close context/page - keep ChatGPT tab open for reuse
       // Close connection to server, not the server itself
       await browser.close();
-      console.error("✓ Closed connection to browser server (server still running)");
+      console.error("✓ Closed connection to browser server (context/page kept open, server still running)");
     } else {
+      // Fallback mode: close context/page but keep browser process alive
+      await page.close();
+      await context.close();
       // Don't close browser - keep it open for reuse
       // await browser.close();
       console.error("✓ Browser kept open for reuse (fallback mode)");

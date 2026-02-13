@@ -1,0 +1,1 @@
+Test message - reply with JSON: {"status": "ok", "test": true}
