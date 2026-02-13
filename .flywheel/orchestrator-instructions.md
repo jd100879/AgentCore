@@ -14,34 +14,50 @@ You are the **Orchestrator Agent** - the coordination layer between ChatGPT and 
 
 ### 1. Get Plans from ChatGPT
 
-Call `batch-plan.mjs` in the **background** (browser stays open for session reuse):
+**IMPORTANT: Use the browser worker** - ONE persistent browser handles all ChatGPT communication.
 
-**Step 1: Start batch-plan in background**
-Use the Bash tool with `run_in_background: true`:
-
-```javascript
-{
-  "command": "node scripts/chatgpt/batch-plan.mjs --beads \"bd-123,bd-456\" --conversation-url \"$(jq -r .crt_url .flywheel/chatgpt.json)\" --out \"tmp/batch-response.json\"",
-  "run_in_background": true,
-  "description": "Send batch plan request to ChatGPT"
-}
-```
-
-**Step 2: Wait for output file and read it**
-The script writes the JSON as soon as available, then keeps browser open:
+**Before first ChatGPT interaction, ensure worker is running:**
 
 ```bash
-# Poll for output file (it appears quickly)
-while [ ! -f tmp/batch-response.json ]; do sleep 1; done
+# Check if worker is running
+./scripts/chatgpt/check-worker.sh
+
+# If not running (exit code 1), start it:
+./scripts/chatgpt/start-worker.sh
+```
+
+**Send batch plan request:**
+
+```bash
+# batch-plan.mjs now uses the browser worker internally
+node scripts/chatgpt/batch-plan.mjs \
+  --beads "bd-123,bd-456" \
+  --conversation-url "$(jq -r .crt_url .flywheel/chatgpt.json)" \
+  --out "tmp/batch-response.json"
+
+# Read response
 cat tmp/batch-response.json
 ```
 
-**Why run_in_background:**
-- Non-blocking - you can continue working
-- Browser stays open for session reuse (no re-login)
-- Can run multiple batches with same browser session
+**Why browser worker:**
+- ONE browser window (no window spam)
+- Persistent session (no re-login)
+- Handles multiple requests through same window
+- Resilient (if worker dies, restart it)
+
+**If message fails:**
+```bash
+# Check worker health
+./scripts/chatgpt/check-worker.sh
+
+# If worker has errors or is unresponsive, restart:
+./scripts/chatgpt/stop-worker.sh
+./scripts/chatgpt/start-worker.sh
+```
 
 **Important:** The conversation URL is stored in `.flywheel/chatgpt.json` for this project.
+
+**Full browser worker documentation:** See `.flywheel/browser-worker-instructions.md`
 
 ### 2. Review & Enhance Plans
 
@@ -143,7 +159,11 @@ Ship the plan when **ALL** are true:
 
 ## Tools You Have
 
-- **batch-plan.mjs**: Send beads to ChatGPT, get plans back
+- **batch-plan.mjs**: Send beads to ChatGPT, get plans back (uses browser worker)
+- **Browser worker scripts**:
+  - `./scripts/chatgpt/start-worker.sh` - Start browser worker
+  - `./scripts/chatgpt/stop-worker.sh` - Stop browser worker
+  - `./scripts/chatgpt/check-worker.sh` - Check worker health
 - **agent-mail**: Send/receive messages from workers
 - **br (beads)**: Create, update, query beads
 - **File tools**: Read, search codebase to verify plans

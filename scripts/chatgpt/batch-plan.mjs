@@ -163,18 +163,19 @@ Return ONLY the JSON array, no commentary.`;
   fs.writeFileSync(requestFile, request, "utf8");
   console.error(`Request saved to ${requestFile} (${request.length} chars)`);
 
-  // Call post-and-extract.mjs to handle the actual ChatGPT interaction
+  // Call send-to-worker.mjs to use the persistent browser worker
   console.error("");
-  console.error("Posting to ChatGPT and extracting response...");
+  console.error("Sending to browser worker...");
 
   const responseFile = outPath || "tmp/batch-response.json";
   try {
     execSync(
-      `node scripts/chatgpt/post-and-extract.mjs --message-file "${requestFile}" --conversation-url "${conversationUrl}" --out "${responseFile}" --timeout 120000`,
+      `node scripts/chatgpt/send-to-worker.mjs --message-file "${requestFile}" --conversation-url "${conversationUrl}" --out "${responseFile}" --timeout 120000`,
       { encoding: "utf8", stdio: "inherit" }
     );
   } catch (e) {
-    console.error(`Failed to post and extract: ${e.message}`);
+    console.error(`Failed to send to worker: ${e.message}`);
+    console.error(`Hint: Check if browser worker is running with: ./scripts/chatgpt/check-worker.sh`);
     process.exit(1);
   }
 
