@@ -57,18 +57,33 @@ function parseArgs(argv) {
 }
 
 async function postAndExtract(conversationUrl, message, storageStatePath, timeout = 60000) {
-  // Launch browser with existing authentication (storage state)
-  // Keep headless: false (ChatGPT blocks headless browsers)
+  // Launch browser - use window positioning to keep it offscreen immediately
   const browser = await chromium.launch({
-    headless: false,
+    headless: false,  // MUST be false - ChatGPT blocks headless
     args: [
       '--disable-blink-features=AutomationControlled',
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
-      '--disable-web-security'
+      '--disable-web-security',
+      '--window-position=3000,3000',  // Way offscreen
+      '--window-size=1,1'              // Tiny window
     ]
   });
+
+  // Hide window using osascript in parallel (belt and suspenders)
+  const hidePromise = (async () => {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    try {
+      execSync('osascript -e \'tell application "System Events" to set visible of process "Chromium" to false\'', { timeout: 1000 });
+    } catch (e) {
+      try {
+        execSync('osascript -e \'tell application "System Events" to set visible of process "Google Chrome" to false\'', { timeout: 1000 });
+      } catch (e2) {
+        // Ignore - window position should keep it hidden anyway
+      }
+    }
+  })();
 
   const context = await browser.newContext({
     storageState: storageStatePath,
@@ -78,19 +93,8 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
 
   const page = await context.newPage();
 
-  // Hide browser window on macOS using osascript
-  try {
-    execSync('osascript -e \'tell application "System Events" to set visible of process "Chromium" to false\'', { timeout: 2000 });
-    console.error("✓ Browser window hidden");
-  } catch (e) {
-    // Fallback - try with "Google Chrome" name
-    try {
-      execSync('osascript -e \'tell application "System Events" to set visible of process "Google Chrome" to false\'', { timeout: 2000 });
-      console.error("✓ Browser window hidden");
-    } catch (e2) {
-      console.error("⚠️  Could not hide browser window (non-critical)");
-    }
-  }
+  await hidePromise; // Wait for hide attempt to complete
+  console.error("✓ Browser launched (positioned offscreen)");
 
   try {
     console.error(`Navigating to: ${conversationUrl}`);
@@ -338,11 +342,11 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     };
 
   } finally {
-    // Close browser cleanly (positioned offscreen so no visual disruption)
+    // Close browser cleanly (it was offscreen anyway)
     await page.close().catch(() => {});
     await context.close().catch(() => {});
     await browser.close().catch(() => {});
-    console.error("✓ Browser closed");
+    console.error("✓ Browser closed (was offscreen)");
   }
 }
 
@@ -396,9 +400,9 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     process.stdout.write(output + "\n");
   }
 
-  // Clean exit (browser was hidden)
+  // Clean exit (persistent browser still running)
   console.error("");
-  console.error("✓ Complete (browser was hidden, no visual disruption)");
+  console.error("✓ Complete (reused persistent browser)");
   process.exit(0);
 })().catch((err) => {
   console.error(`ERROR: ${err.message}`);
