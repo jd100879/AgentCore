@@ -56,52 +56,21 @@ function parseArgs(argv) {
 }
 
 async function postAndExtract(conversationUrl, message, storageStatePath, timeout = 60000) {
-  // Try to connect to existing browser server first
-  const endpointFile = ".flywheel/browser-endpoint.txt";
-  let browser = null;
-  let usingServerBrowser = false;
+  // Use launchPersistentContext for persistent profile (not incognito)
+  const userDataDir = path.join(process.cwd(), '.browser-profiles/chatgpt-profile');
+  const context = await chromium.launchPersistentContext(userDataDir, {
+    headless: false,
+    viewport: { width: 1280, height: 800 },
+    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    args: [
+      '--disable-blink-features=AutomationControlled',
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage'
+    ]
+  });
 
-  if (fs.existsSync(endpointFile)) {
-    try {
-      const wsEndpoint = fs.readFileSync(endpointFile, "utf8").trim();
-      console.error(`Attempting to connect to browser server: ${wsEndpoint}`);
-      browser = await chromium.connect(wsEndpoint);
-      usingServerBrowser = true;
-      console.error("✓ Connected to existing browser server");
-    } catch (e) {
-      console.error(`Failed to connect to browser server: ${e.message}`);
-      console.error("Falling back to launching new browser...");
-    }
-  } else {
-    console.error("No browser server endpoint found, launching new browser...");
-  }
-
-  // Fallback: launch new browser if connection failed
-  let context, page;
-  if (!browser) {
-    // Use launchPersistentContext for non-incognito mode with persistent profile
-    const userDataDir = path.join(process.cwd(), '.browser-profiles/chatgpt-profile');
-    context = await chromium.launchPersistentContext(userDataDir, {
-      headless: false,
-      viewport: { width: 1280, height: 800 },
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      args: [
-        '--disable-blink-features=AutomationControlled',
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage'
-      ]
-    });
-    page = context.pages()[0] || await context.newPage();
-  } else {
-    // Using existing browser server - create context with storage state
-    context = await browser.newContext({
-      storageState: storageStatePath,
-      viewport: { width: 1280, height: 800 },
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-    });
-    page = await context.newPage();
-  }
+  const page = context.pages()[0] || await context.newPage();
 
   try {
     console.error(`Navigating to: ${conversationUrl}`);
@@ -340,7 +309,7 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     }
 
     // Return structured response with both raw text and parsed JSON
-    const result = {
+    return {
       ok: true,
       raw_text: rawText,
       parse_ok: parseOk,
@@ -348,22 +317,9 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
       error: error
     };
 
-    return { response: result, usingServerBrowser };
-
   } finally {
-    if (usingServerBrowser) {
-      // Don't close context/page - keep ChatGPT tab open for reuse
-      // Close connection to server, not the server itself
-      await browser.close();
-      console.error("✓ Closed connection to browser server (context/page kept open, server still running)");
-    } else {
-      // Fallback mode: close context/page but keep browser process alive
-      await page.close();
-      await context.close();
-      // Don't close browser - keep it open for reuse
-      // await browser.close();
-      console.error("✓ Browser kept open for reuse (fallback mode)");
-    }
+    // Don't close context or page - keep browser alive with persistent profile
+    console.error("✓ Browser kept open (persistent profile)");
   }
 }
 
@@ -404,7 +360,7 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
   console.error(`Timeout: ${timeout}ms`);
   console.error("");
 
-  const { response, usingServerBrowser } = await postAndExtract(conversationUrl, message, storageStatePath, timeout);
+  const response = await postAndExtract(conversationUrl, message, storageStatePath, timeout);
 
   const output = JSON.stringify(response, null, 2);
 
@@ -417,19 +373,12 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     process.stdout.write(output + "\n");
   }
 
-  if (usingServerBrowser) {
-    // Clean exit when using server browser
-    console.error("");
-    console.error("✓ Using persistent browser server (clean exit)");
-    process.exit(0);
-  } else {
-    // Keep browser open for session reuse in fallback mode
-    console.error("");
-    console.error("✓ Browser window left open for session reuse (fallback mode)");
-    console.error("  (Process will stay alive - orchestrator should use run_in_background: true)");
-    // Keep process alive
-    setInterval(() => {}, 1000);
-  }
+  // Keep browser open for session reuse
+  console.error("");
+  console.error("✓ Browser window left open (persistent profile)");
+  console.error("  (Process will stay alive - orchestrator should use run_in_background: true)");
+  // Keep process alive
+  setInterval(() => {}, 1000);
 })().catch((err) => {
   console.error(`ERROR: ${err.message}`);
   process.exit(1);
