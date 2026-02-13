@@ -1,0 +1,84 @@
+# Coordination Agent Collaboration Model
+
+We want to validate our approach for how the Coordination Agent (Claude) should work with you (ChatGPT).
+
+## The Model: Two AIs Collaborating
+
+### Your Role (ChatGPT):
+- High-level planning and decomposition
+- Pattern recognition across many projects
+- Risk analysis
+- Step-by-step breakdown
+
+### Coordination Agent Role (Claude):
+- Direct codebase access - can read files and verify reality
+- Current architecture understanding - knows what actually exists
+- Gap filling - sees what you might miss
+- Practical execution knowledge - knows what workers need
+
+## The Workflow
+
+1. **Coordination Agent requests plan** from you via bridge
+   - "I need implementation plans for beads bd-123, bd-456, bd-789"
+
+2. **You provide initial plan** with:
+   - Steps
+   - Risks
+   - Acceptance tests
+   - Next actions
+
+3. **Coordination Agent reviews + enhances:**
+   - Reads actual codebase to verify your assumptions
+   - Fills gaps you might have missed
+   - Corrects errors (wrong file paths, missing dependencies)
+   - Adapts your suggestions to match actual architecture
+
+4. **Coordination Agent proposes improvements** back to you:
+   - "Your plan is solid, but I combined steps 2-3 into one bead"
+   - "You suggested approach A, but we use pattern B - here's my adapted version"
+   - "I added a prerequisite bead for test fixtures - does this dependency order look right?"
+   - "Module X actually depends on Y - I updated the plan"
+
+5. **You review and refine:**
+   - Validate Coordination Agent's changes
+   - Suggest further improvements
+   - Identify any issues with the adapted plan
+
+6. **Iterate until optimal** - not just "good enough"
+
+7. **Coordination Agent creates beads** with the refined plan
+
+## Example Collaboration
+
+**You:** "For bead bd-auth, implement JWT validation in auth-module.ts"
+
+**Coordination Agent:** "I checked - we use auth-service.ts not auth-module.ts. Also, we already have JWT lib installed. Here's my adapted plan:
+- Step 1: Add validation function to auth-service.ts
+- Step 2: Update existing middleware to call it
+- Step 3: Add tests to auth.test.ts
+Does this flow make sense?"
+
+**You:** "Yes, and add Step 4: Update API docs to reflect new auth header requirements"
+
+**Coordination Agent:** "Good catch! Adding that step. Final plan ready."
+
+## Key Principle
+
+**This is not:**
+- ChatGPT dictates → Claude validates
+- ChatGPT plans → Claude executes blindly
+
+**This IS:**
+- ChatGPT provides strategic direction
+- Claude adapts to reality
+- Both iterate together
+- Result is better than either alone
+
+## Questions
+
+1. Does this collaboration model make sense to you?
+2. How should we structure the back-and-forth? Should Coordination Agent send you the full enhanced plan for review, or just the changes?
+3. When should the iteration stop? (Coordination Agent decides "good enough" vs always getting your final approval?)
+4. Any concerns with this approach?
+
+Please provide feedback on this collaboration model.

@@ -1,0 +1,62 @@
+# Architecture Validation Request
+
+We want to confirm the complete system architecture makes sense. Please review and provide feedback.
+
+## The Complete System
+
+### Bridge (what we just built)
+- Separate process that communicates with ChatGPT
+- Runs `post-and-extract.mjs` to avoid token burn in agent contexts
+- Returns structured JSON responses
+- **No decision-making** - just a translation layer between agents and ChatGPT
+
+### Coordination Agent (dedicated agent)
+- Talks to the bridge via agent-mail to request development plans from ChatGPT
+- Receives structured plans back from bridge
+- Sets up beads (tasks) with:
+  - Detailed instructions from ChatGPT plans
+  - Dependencies between beads
+  - Clear acceptance criteria
+- Keeps worker agents from drifting off course
+- Answers questions from workers as needed
+- Does NOT do implementation work itself
+
+### Worker Agents (pool of 4 agents)
+- Claim beads from the pool based on dependencies
+- Execute the work based on bead instructions
+- Commit changes with `[BEAD-ID]` prefix
+- Communicate with coordination agent when stuck/need clarification
+- **Never talk to ChatGPT directly** - avoid token burn
+
+## Workflow Example
+
+1. **Coordination agent** identifies 5 beads needing implementation plans
+2. **Coordination agent** → sends BATCH_PLAN request to bridge via agent-mail
+3. **Bridge** → calls `batch-plan.mjs` → `post-and-extract.mjs` (Playwright in separate process)
+4. **Bridge** → gets plans from ChatGPT (no context burn)
+5. **Bridge** → sends structured JSON back to coordination agent via agent-mail
+6. **Coordination agent** → creates/updates beads with:
+   - Step-by-step instructions from plans
+   - Dependencies (bead A blocks bead B)
+   - Acceptance tests
+7. **Worker agent** → claims next available bead (no blockers)
+8. **Worker** → executes based on clear instructions in bead
+9. **Worker** → if stuck, sends agent-mail to coordination agent (not ChatGPT)
+10. **Worker** → closes bead, claims next one
+
+## Key Benefits
+
+1. **Token savings**: Workers never use Playwright MCP to read ChatGPT browser
+2. **No drift**: Coordination agent keeps workers aligned with overall plan
+3. **Parallelism**: 4 workers can execute independent beads simultaneously
+4. **Dependency management**: Beads have explicit dependencies, workers only see claimable beads
+5. **Single source of truth**: ChatGPT plans → coordination agent → beads → workers
+
+## Questions
+
+1. Does this architecture make sense for a multi-agent implementation system?
+2. Are there any gaps or issues you see?
+3. Should the coordination agent periodically sync with ChatGPT to check on overall progress, or only request plans when creating new beads?
+4. Any recommendations for how coordination agent should handle drift detection (workers going off-script)?
+
+Please provide feedback on this architecture.

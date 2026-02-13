@@ -1,0 +1,5 @@
+{
+  "error": "NO_JSON_STRUCTURE_FOUND",
+  "raw_text": "JSON\n[\n  {\n    \"bead_id\": \"bd-s18\",\n    \"plan\": [\n      {\n        \"step\": 1,\n        \"action\": \"Identify what bd-s18 is supposed to accomplish by locating its origin (mail trigger, coordinator note, CI failure, or recent commit) and update the bead with a concrete",
+  "message": "ChatGPT response could not be parsed as JSON. Agent should review raw_text and decide how to proceed."
+}

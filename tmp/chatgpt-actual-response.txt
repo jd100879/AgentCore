@@ -1,0 +1,78 @@
+JSON
+[
+        "action": "Implement minimal fix/change, add targeted tests, and validate acceptance criteria",
+        "owner": "any",
+        "evidence": "Tests/verification pass and evidence is recorded for bead closure"
+      }
+    ],
+    "risks": [
+      {
+        "risk": "Underspecified bead causes incorrect assumptions and rework",
+        "mitigation": "Make clarification + DoD a blocking P0 step before implementation"
+      },
+      {
+        "risk": "Lack of trigger context leads to symptom-level fix that misses root cause",
+        "mitigation": "Require attaching the original trigger (mail/log/CI) and baseline repro output before coding"
+      },
+      {
+        "risk": "Flaky or non-reproducible behavior prevents confident closure",
+        "mitigation": "Create deterministic repro script/test and record environment details (OS, node version, commit hash)"
+      }
+    ],
+    "acceptance_tests": [
+      "bd-25o has Title, Description, Trigger reference, and Definition of Done recorded",
+      "Baseline repro/verify evidence exists (commands + outputs) prior to fix",
+      "Post-fix verification passes with evidence attached (commands + expected output)"
+    ],
+    "next_actions": [
+      {
+        "task": "Clarify bd-25o scope, trigger, and definition of done (blocking)",
+        "assign_to": "any",
+        "priority": "P0",
+        "blocking": true,
+        "notes": "1) Open bead bd-25o in the bead system.\n2) Locate why bd-25o exists:\n   - Search agent-mail for bd-25o reference or matching timestamp.\n   - Check coordinator logs for bead creation event.\n   - Check CI/test history for failures around that time.\n3) Update bd-25o fields:\n   - Title: specific and actionable\n   - Description: current vs desired behavior + constraints\n   - Definition of Done: concrete outcomes + required evidence\n4) Add a Trigger section including at least one:\n   - Mail subject/body excerpt\n   - Log snippet\n   - CI job link/name + failing test\n   - Commit hash/PR reference\n5) Notify coordinator via agent-mail with the clarified bead and trigger reference so any pool agent can execute next steps.",
+        "requirements": [
+          "Access to bead system records for bd-25o",
+          "Access to agent-mail/coordinator/CI logs"
+        ],
+        "acceptance": [
+          "bd-25o Title/Description/DoD populated",
+          "Trigger reference attached (mail/log/CI/commit)",
+          "Coordinator notified with clarified bead content"
+        ]
+      },
+      {
+        "task": "Capture baseline repro/verify evidence for bd-25o (blocking)",
+        "assign_to": "any",
+        "priority": "P1",
+        "blocking": true,
+        "notes": "1) Checkout the correct branch referenced by bd-25o (default: feature/agent-flywheel-protocol).\n2) Follow the bead's Repro/Verify steps; if missing, derive them from Trigger details and document them in the bead.\n3) Run the baseline steps twice to confirm repeatability.\n4) Record evidence in bd-25o:\n   - git rev-parse HEAD\n   - node -v (if applicable) / rustc --version (if applicable)\n   - commands run\n   - outputs (key lines)\n5) Send baseline summary to coordinator via agent-mail.\n\nCopy/paste commands:\n- git rev-parse HEAD\n- node -v || true\n- rustc --version || true",
+        "requirements": [
+          "Local dev environment and repo access",
+          "Ability to run relevant commands/tests"
+        ],
+        "acceptance": [
+          "Baseline evidence attached (commands + outputs)",
+          "Repro/verify is repeatable",
+          "Coordinator notified with baseline + suspected root cause"
+        ]
+      },
+      {
+        "task": "Implement bd-25o fix/change and validate acceptance",
+        "assign_to": "any",
+        "priority": "P1",
+        "blocking": false,
+        "notes": "1) Implement the minimal fix/change required by bd-25o Definition of Done.\n2) Add or update targeted tests to prevent regression.\n3) Run acceptance checks and capture outputs.\n4) Update bd-25o with:\n   - Files changed\n   - Commands run + outputs\n   - Any remaining risks\n5) Commit changes referencing bd-25o.\n\nExample acceptance command patterns (adapt):\n- npm test -- <target>\n- node scripts/<tool>.mjs --help\n- cargo test -p <crate> <test_name>",
+        "requirements": [
+          "Write access to repo and ability to commit/PR",
+          "Test tooling for affected module(s)"
+        ],
+        "acceptance": [
+          "Acceptance checks pass (commands + expected output recorded)",
+          "Targeted tests added/updated for regression protection",
+          "Commit/PR references bd-25o"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,6636 @@
+- generic [ref=e1]:
+  - link "Skip to content" [ref=e3] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e6]:
+    - generic [ref=e8]:
+      - generic:
+        - generic:
+          - generic:
+            - button "Open sidebar":
+              - img
+        - generic:
+          - generic:
+            - link:
+              - /url: /
+              - generic:
+                - img
+          - generic:
+            - generic:
+              - generic:
+                - img
+          - generic:
+            - link:
+              - /url: /images
+              - generic:
+                - img
+        - generic:
+          - generic:
+            - button "Open profile menu":
+              - generic:
+                - generic:
+                  - img "Profile image"
+      - generic [ref=e9]:
+        - heading "Chat history" [level=2] [ref=e10]
+        - navigation "Chat history" [ref=e11]:
+          - generic [ref=e14]:
+            - link "Home" [ref=e15] [cursor=pointer]:
+              - /url: /
+              - img [ref=e16]
+            - button "Close sidebar" [expanded] [ref=e19]:
+              - img [ref=e20]
+          - complementary [ref=e22]:
+            - link "New chat Shift Command O" [ref=e23] [cursor=pointer]:
+              - /url: /
+              - generic [ref=e24]:
+                - img [ref=e26]
+                - generic [ref=e29]: New chat
+              - generic [ref=e31]:
+                - generic "Shift" [ref=e32]:
+                  - generic [ref=e33]: ⇧
+                - generic "Command" [ref=e34]:
+                  - generic [ref=e35]: ⌘
+                - generic [ref=e37]: O
+            - generic [ref=e38] [cursor=pointer]:
+              - generic [ref=e39]:
+                - img [ref=e41]
+                - generic [ref=e44]: Search chats
+              - generic [ref=e46]:
+                - generic "Command" [ref=e47]:
+                  - generic [ref=e48]: ⌘
+                - generic [ref=e50]: K
+            - link "Images" [ref=e51] [cursor=pointer]:
+              - /url: /images
+              - img [ref=e53]
+              - generic [ref=e56]: Images
+          - generic [ref=e57]:
+            - link "Apps" [ref=e58] [cursor=pointer]:
+              - /url: /apps
+              - img [ref=e60]
+              - generic [ref=e63]: Apps
+            - link "Deep research" [ref=e138] [cursor=pointer]:
+              - /url: /deep-research
+              - img [ref=e140]
+              - generic [ref=e143]: Deep research
+            - link "Codex" [ref=e64] [cursor=pointer]:
+              - /url: /codex
+              - generic [ref=e65]:
+                - img [ref=e67]
+                - generic [ref=e70]: Codex
+              - img [ref=e72]
+          - generic [ref=e144]:
+            - button "GPTs" [expanded] [ref=e145] [cursor=pointer]:
+              - heading "GPTs" [level=2] [ref=e146]
+            - link "AutoGPT Agent" [ref=e147] [cursor=pointer]:
+              - /url: /g/g-POb5UhhJ6-autogpt-agent
+              - generic [ref=e152]: AutoGPT Agent
+              - button [ref=e154]:
+                - img [ref=e156]
+            - link "Explore GPTs" [ref=e158] [cursor=pointer]:
+              - /url: /gpts
+              - img [ref=e160]
+              - generic [ref=e163]: Explore GPTs
+          - generic [ref=e164]:
+            - button "Projects" [expanded] [ref=e165] [cursor=pointer]:
+              - heading "Projects" [level=2] [ref=e166]
+            - generic [ref=e167] [cursor=pointer]:
+              - img [ref=e169]
+              - generic [ref=e172]: New project
+            - link "Rust+PostGres Modules" [ref=e173] [cursor=pointer]:
+              - /url: /g/g-p-698c7e2090308191ba6e6eac93e3cc59-rust-postgres-modules/project
+              - generic [ref=e174]:
+                - button [ref=e176]:
+                  - img [ref=e179]
+                - generic [ref=e188]: Rust+PostGres Modules
+              - button [ref=e190]:
+                - img [ref=e192]
+            - link "Fireproof Documentation" [ref=e194] [cursor=pointer]:
+              - /url: /g/g-p-68bafa85f8a481919ab1e211f8d4693b-fireproof-documentation/project
+              - generic [ref=e195]:
+                - button [ref=e197]:
+                  - img [ref=e200]
+                - generic [ref=e209]: Fireproof Documentation
+              - button [ref=e211]:
+                - img [ref=e213]
+            - link "Database + Backend" [ref=e215] [cursor=pointer]:
+              - /url: /g/g-p-68a761f0ae888191bd11e751c4260f59-database-backend/project
+              - generic [ref=e216]:
+                - button [ref=e218]:
+                  - img [ref=e221]
+                - generic [ref=e230]: Database + Backend
+              - button [ref=e232]:
+                - img [ref=e234]
+            - link "Database Structure" [ref=e236] [cursor=pointer]:
+              - /url: /g/g-p-68a365ed7b7881919281f54554a45ce2-database-structure/project
+              - generic [ref=e237]:
+                - button [ref=e239]:
+                  - img [ref=e242]
+                - generic [ref=e251]: Database Structure
+              - button [ref=e253]:
+                - img [ref=e255]
+            - link "ChatGPT Lessons" [ref=e257] [cursor=pointer]:
+              - /url: /g/g-p-689f12d6606081919a56dd82480b706e-chatgpt-lessons/project
+              - generic [ref=e258]:
+                - button [ref=e260]:
+                  - img [ref=e263]
+                - generic [ref=e272]: ChatGPT Lessons
+              - button [ref=e274]:
+                - img [ref=e276]
+            - generic [ref=e278] [cursor=pointer]:
+              - img [ref=e280]
+              - generic [ref=e283]: See more
+          - generic [ref=e284]:
+            - button "Your chats" [expanded] [ref=e285] [cursor=pointer]:
+              - heading "Your chats" [level=2] [ref=e286]
+            - generic [ref=e287]:
+              - link "Agent Flywheel Setup Open conversation options" [ref=e288] [cursor=pointer]:
+                - /url: /c/698de3b1-63c8-8329-b1b9-5e916d806e4b
+                - generic [ref=e290]: Agent Flywheel Setup
+                - button "Open conversation options" [ref=e293]:
+                  - img [ref=e295]
+              - link "Disk Space Issue Debugging Open conversation options" [ref=e298] [cursor=pointer]:
+                - /url: /c/698dcaab-fce4-8330-81c0-8fdc53fd5ab1
+                - generic [ref=e300]: Disk Space Issue Debugging
+                - button "Open conversation options" [ref=e303]:
+                  - img [ref=e305]
+              - link "Access 7D Module Repo Open conversation options" [ref=e308] [cursor=pointer]:
+                - /url: /c/698cffc2-1744-832c-a434-db900e68867c
+                - generic [ref=e310]: Access 7D Module Repo
+                - button "Open conversation options" [ref=e313]:
+                  - img [ref=e315]
+              - link "No conversation content Open conversation options" [ref=e318] [cursor=pointer]:
+                - /url: /c/698cb52c-63f0-832c-bde3-77391cada393
+                - generic [ref=e320]: No conversation content
+                - button "Open conversation options" [ref=e323]:
+                  - img [ref=e325]
+              - link "Silver Trading Start Time Open conversation options" [ref=e328] [cursor=pointer]:
+                - /url: /c/69891420-c7f4-8332-b23e-fe2fca190fc5
+                - generic [ref=e330]: Silver Trading Start Time
+                - button "Open conversation options" [ref=e333]:
+                  - img [ref=e335]
+              - link "Teen Unaware of Super Bowl Open conversation options" [ref=e338] [cursor=pointer]:
+                - /url: /c/6988b56f-5a6c-8327-a443-70ceaf109629
+                - generic [ref=e340]: Teen Unaware of Super Bowl
+                - button "Open conversation options" [ref=e343]:
+                  - img [ref=e345]
+              - link "Christian song makeup reference Open conversation options" [ref=e348] [cursor=pointer]:
+                - /url: /c/6988acfe-89e8-8328-9634-7e57e66edd51
+                - generic "Christian song makeup reference" [ref=e350]
+                - button "Open conversation options" [ref=e353]:
+                  - img [ref=e355]
+              - link "Presidential Family Records Open conversation options" [ref=e358] [cursor=pointer]:
+                - /url: /c/6987f928-8248-832b-a92e-10bd9893ebf6
+                - generic [ref=e360]: Presidential Family Records
+                - button "Open conversation options" [ref=e363]:
+                  - img [ref=e365]
+              - link "Subscription Local Usage Guide Open conversation options" [ref=e368] [cursor=pointer]:
+                - /url: /c/6987b37b-212c-8329-b9a9-239ee4e1869c
+                - generic "Subscription Local Usage Guide" [ref=e370]
+                - button "Open conversation options" [ref=e373]:
+                  - img [ref=e375]
+              - link "Kingdom Token Review Open conversation options" [ref=e378] [cursor=pointer]:
+                - /url: /c/69866a6a-1c44-8325-9509-e062911a27fc
+                - generic [ref=e380]: Kingdom Token Review
+                - button "Open conversation options" [ref=e383]:
+                  - img [ref=e385]
+              - link "Convert 4UPS to Number Pad Open conversation options" [ref=e388] [cursor=pointer]:
+                - /url: /c/6985f81d-c5bc-832d-838d-45ff83330f88
+                - generic "Convert 4UPS to Number Pad" [ref=e390]
+                - button "Open conversation options" [ref=e393]:
+                  - img [ref=e395]
+              - link "Silver Trading Pauses Open conversation options" [ref=e398] [cursor=pointer]:
+                - /url: /c/698538b9-c020-832b-b3ca-06b59e81ded1
+                - generic [ref=e400]: Silver Trading Pauses
+                - button "Open conversation options" [ref=e403]:
+                  - img [ref=e405]
+              - link "Fanuc Lathe Tool Offset Open conversation options" [ref=e408] [cursor=pointer]:
+                - /url: /c/6984f944-0f30-8331-b9a3-2f5653091c89
+                - generic [ref=e410]: Fanuc Lathe Tool Offset
+                - button "Open conversation options" [ref=e413]:
+                  - img [ref=e415]
+              - link "30K lbs Gooseneck Setup Open conversation options" [ref=e418] [cursor=pointer]:
+                - /url: /c/6983e536-1180-8325-ac34-b7392069faee
+                - generic [ref=e420]: 30K lbs Gooseneck Setup
+                - button "Open conversation options" [ref=e423]:
+                  - img [ref=e425]
+              - link "6061-T6 Fusion 360 Settings Open conversation options" [ref=e428] [cursor=pointer]:
+                - /url: /c/69823372-62c4-832b-9046-b19801e38173
+                - generic [ref=e430]: 6061-T6 Fusion 360 Settings
+                - button "Open conversation options" [ref=e433]:
+                  - img [ref=e435]
+              - link "T-Mobile Hotspot Data Options Open conversation options" [ref=e438] [cursor=pointer]:
+                - /url: /c/69825ecc-9a60-8331-ab48-eddaf0b3f3de
+                - generic "T-Mobile Hotspot Data Options" [ref=e440]
+                - button "Open conversation options" [ref=e443]:
+                  - img [ref=e445]
+              - link "Lookup Request Open conversation options" [ref=e448] [cursor=pointer]:
+                - /url: /c/6982104b-1c3c-832c-b7e4-c35f80161d00
+                - generic [ref=e450]: Lookup Request
+                - button "Open conversation options" [ref=e453]:
+                  - img [ref=e455]
+              - link "Yellow Switches Overview Open conversation options" [ref=e458] [cursor=pointer]:
+                - /url: /c/6981fa7c-ae00-8331-8428-322c5f6a2944
+                - generic [ref=e460]: Yellow Switches Overview
+                - button "Open conversation options" [ref=e463]:
+                  - img [ref=e465]
+              - link "Quiet Fortnite Keyboards Open conversation options" [ref=e468] [cursor=pointer]:
+                - /url: /c/6981f3fd-1ef4-832a-bbd2-a5c3d2195470
+                - generic [ref=e470]: Quiet Fortnite Keyboards
+                - button "Open conversation options" [ref=e473]:
+                  - img [ref=e475]
+              - link "Fast Quiet Mechanical Keyboards Open conversation options" [ref=e478] [cursor=pointer]:
+                - /url: /c/697fc015-2b78-8333-87ee-e2c783ca373e
+                - generic "Fast Quiet Mechanical Keyboards" [ref=e480]
+                - button "Open conversation options" [ref=e483]:
+                  - img [ref=e485]
+              - link "Honda Pilot Garage Setup Open conversation options" [ref=e488] [cursor=pointer]:
+                - /url: /c/697fa054-3fd8-8326-a426-0ba629b707ef
+                - generic [ref=e490]: Honda Pilot Garage Setup
+                - button "Open conversation options" [ref=e493]:
+                  - img [ref=e495]
+              - link "Using ChatGPT Subscription Locally Open conversation options" [ref=e498] [cursor=pointer]:
+                - /url: /c/697e177b-7adc-8325-8972-d30f51fefabf
+                - generic "Using ChatGPT Subscription Locally" [ref=e500]
+                - button "Open conversation options" [ref=e503]:
+                  - img [ref=e505]
+              - link "Gühring 5511 Speed Feed Open conversation options" [ref=e508] [cursor=pointer]:
+                - /url: /c/697bc5b8-dc30-8327-931e-6d72184d6e8a
+                - generic [ref=e510]: Gühring 5511 Speed Feed
+                - button "Open conversation options" [ref=e513]:
+                  - img [ref=e515]
+              - link "Boswell OK Pipeline Opportunities Open conversation options" [ref=e518] [cursor=pointer]:
+                - /url: /c/697c1c91-5efc-832e-a396-3fc7e199208b
+                - generic "Boswell OK Pipeline Opportunities" [ref=e520]
+                - button "Open conversation options" [ref=e523]:
+                  - img [ref=e525]
+              - link "PSLV Explanation Open conversation options" [ref=e528] [cursor=pointer]:
+                - /url: /c/697b8a41-1174-8325-a75b-c72db8466d61
+                - generic [ref=e530]: PSLV Explanation
+                - button "Open conversation options" [ref=e533]:
+                  - img [ref=e535]
+              - link "Rust in Claude Code Open conversation options" [ref=e538] [cursor=pointer]:
+                - /url: /c/697add44-da10-8331-acab-7dd01888a41e
+                - generic [ref=e540]: Rust in Claude Code
+                - button "Open conversation options" [ref=e543]:
+                  - img [ref=e545]
+              - link "Gold Trump Coin Value Open conversation options" [ref=e548] [cursor=pointer]:
+                - /url: /c/697aced2-e8f0-832d-871e-25eaac083a5c
+                - generic [ref=e550]: Gold Trump Coin Value
+                - button "Open conversation options" [ref=e553]:
+                  - img [ref=e555]
+              - link "Silver Bar Conversion Open conversation options" [ref=e558] [cursor=pointer]:
+                - /url: /c/697a88f8-781c-832d-9a79-7480fb4f54cf
+                - generic [ref=e560]: Silver Bar Conversion
+                - button "Open conversation options" [ref=e563]:
+                  - img [ref=e565]
+          - button "Open profile menu" [ref=e77] [cursor=pointer]:
+            - img "Profile image" [ref=e568]
+            - generic [ref=e80]:
+              - generic [ref=e82]: James Dickson
+              - generic [ref=e85]: Plus
+    - generic [ref=e87]:
+      - banner:
+        - button "Model selector, current model is 5.2" [ref=e88] [cursor=pointer]:
+          - generic [ref=e89]: ChatGPT 5.2
+          - img [ref=e90]
+        - generic [ref=e94]:
+          - button "Share" [ref=e95] [cursor=pointer]:
+            - generic [ref=e96]:
+              - img [ref=e97]
+              - text: Share
+          - button "Open conversation options" [ref=e101] [cursor=pointer]:
+            - img [ref=e102]
+      - main [ref=e104]:
+        - generic [ref=e105]:
+          - generic [ref=e569]:
+            - article [ref=e570]:
+              - heading "You said:" [level=5] [ref=e571]
+              - generic [ref=e573]:
+                - generic [ref=e578]: "Context: Agent Flywheel Multi-Agent System + Persistent ChatGPT Browser Sessions I run a multi-agent system called Agent Flywheel where multiple Claude Code CLI instances run simultaneously in tmux panes, coordinating via a JSON message queue (agent-mail) and tracking work via \"beads\" (lightweight issue units). The project lives at /Users/james/Projects/agent-flywheel-integration/ on macOS. Current browser setup: Each Claude Code session has a built-in Playwright MCP plugin (playwright@claude-plugins-official) that gives agents browser tools: browser_navigate, browser_snapshot, browser_click, browser_type, browser_evaluate, browser_run_code, etc. The plugin launches the MCP server with the --isolated flag: npx @playwright/mcp@latest --isolated This means every session gets a fresh in-memory browser profile — no cookies persist. The browser uses a temp directory: --user-data-dir=/var/folders/rm/.../T/playwright_chromiumdev_profile-XXXXXX What we want: Agents should be able to navigate to a shared ChatGPT conversation URL and interact with it (read messages, post replies) without needing to log in each time. The login state should persist across agent sessions and agent restarts. What the Playwright MCP server supports (from --help): - --isolated — keep browser profile in memory only (currently active) - --user-data-dir <path> — path to persistent user data directory - --storage-state <path> — path to storage state file for isolated sessions (loads cookies/localStorage into an isolated browser) Our plan (Option B — storage-state approach): 1. Create .browser-profiles/ directory in the project, add to .gitignore 2. Write a one-time init script that launches Playwright in headed mode, navigates to chat.openai.com, lets me log in manually, then exports the session via context.storageState({ path: '.browser-profiles/chatgpt-state.json' }) 3. Reconfigure the Claude Code Playwright plugin to launch with --storage-state .browser-profiles/chatgpt-state.json so every agent session starts pre-authenticated 4. Keep --isolated so multiple agents don't fight over a shared profile directory on disk Why not --user-data-dir instead? Multiple agents (4-8 concurrent Claude Code instances) each spawn their own Playwright MCP server process. If they all point --user-data-dir at the same directory, Chrome profile locks would conflict. --storage-state reads the file at launch and runs in-memory — no lock contention. What I need from you: 1. Validate or improve this plan 2. Help me write the one-time init script that logs in and exports storage state 3. Help me figure out how to reconfigure the Claude Code built-in Playwright plugin to add the --storage-state flag — or whether I need to disable the built-in plugin and add a custom MCP server entry in .claude/mcp_settings.json instead 4. Any gotchas with ChatGPT session tokens expiring, Cloudflare challenges, or cookie rotation that would break this approach"
+                - generic [ref=e579]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e580]:
+              - heading "ChatGPT said:" [level=6] [ref=e581]
+              - generic [ref=e583]:
+                - generic [ref=e584]:
+                  - button "Thought for 46s" [ref=e589] [cursor=pointer]:
+                    - generic [ref=e591]:
+                      - generic [ref=e593]: Thought for 46s
+                      - img [ref=e594]
+                  - generic [ref=e598]:
+                    - paragraph [ref=e599]:
+                      - text: "Here’s the straight assessment:"
+                      - strong [ref=e600]: Option B (storage-state + isolated) is the right architecture
+                      - text: "for “4–8 concurrent agents” with “no profile locking” and “no re-login per pane.” It matches exactly what Playwright MCP is designed to do: load cookies/localStorage from a file into an otherwise isolated (incognito-like) context."
+                      - link "GitHub" [ref=e603] [cursor=pointer]:
+                        - /url: https://github.com/microsoft/playwright-mcp
+                        - generic [ref=e606]: GitHub
+                    - separator [ref=e607]
+                    - heading "1) Validate + improve the plan" [level=2] [ref=e608]
+                    - heading "✅ What you have right" [level=3] [ref=e609]
+                    - list [ref=e610]:
+                      - listitem [ref=e611]:
+                        - paragraph [ref=e612]:
+                          - strong [ref=e613]:
+                            - text: Keep
+                            - code [ref=e614]: "--isolated"
+                          - text: to avoid Chrome profile lock contention across concurrent MCP servers.
+                      - listitem [ref=e615]:
+                        - paragraph [ref=e616]:
+                          - strong [ref=e617]:
+                            - text: Use
+                            - code [ref=e618]: "--storage-state <path>"
+                          - text: to “pre-auth” each isolated context from the same exported state file.
+                          - link "GitHub" [ref=e621] [cursor=pointer]:
+                            - /url: https://github.com/microsoft/playwright-mcp
+                            - generic [ref=e624]: GitHub
+                    - heading "Improvements I’d make" [level=3] [ref=e625]
+                    - list [ref=e626]:
+                      - listitem [ref=e627]:
+                        - paragraph [ref=e628]:
+                          - strong [ref=e629]:
+                            - text: Treat
+                            - code [ref=e630]: chatgpt-state.json
+                            - text: as a secret
+                        - list [ref=e631]:
+                          - listitem [ref=e632]:
+                            - paragraph [ref=e633]: It will contain auth cookies and localStorage tokens.
+                          - listitem [ref=e634]:
+                            - paragraph [ref=e635]:
+                              - text: Put it in
+                              - code [ref=e636]: .gitignore
+                              - text: (you already planned that) and also
+                              - code [ref=e637]: chmod 600
+                              - text: it.
+                      - listitem [ref=e638]:
+                        - paragraph [ref=e639]:
+                          - strong [ref=e640]: Add a “refresh state” path
+                        - list [ref=e641]:
+                          - listitem [ref=e642]:
+                            - paragraph [ref=e643]: ChatGPT sessions can expire/rotate. When that happens, every agent will start “logged out” until you regenerate state.
+                          - listitem [ref=e644]:
+                            - paragraph [ref=e645]:
+                              - text: "Make regeneration a first-class bead:"
+                              - code [ref=e646]: bead-auth-refresh
+                              - text: that reruns the init script.
+                      - listitem [ref=e647]:
+                        - paragraph [ref=e648]:
+                          - strong [ref=e649]: Consider the Playwright MCP Chrome Extension as your fallback
+                        - list [ref=e650]:
+                          - listitem [ref=e651]:
+                            - paragraph [ref=e652]:
+                              - text: The official MCP server supports a Chrome extension that can attach to an existing (already logged-in) browser/tab/session. This is often the cleanest workaround when anti-bot friction spikes.
+                              - link "GitHub" [ref=e655] [cursor=pointer]:
+                                - /url: https://github.com/microsoft/playwright-mcp
+                                - generic [ref=e658]: GitHub
+                    - separator [ref=e659]
+                    - heading "2) One-time init script (manual login, export storage state)" [level=2] [ref=e660]
+                    - paragraph [ref=e661]:
+                      - text: Below is a
+                      - strong [ref=e662]: drop-in Node script
+                      - text: "that:"
+                    - list [ref=e663]:
+                      - listitem [ref=e664]:
+                        - paragraph [ref=e665]:
+                          - text: launches
+                          - strong [ref=e666]: headed Chromium
+                      - listitem [ref=e667]:
+                        - paragraph [ref=e668]: navigates to ChatGPT
+                      - listitem [ref=e669]:
+                        - paragraph [ref=e670]: waits until you’re logged in (you confirm by pressing Enter)
+                      - listitem [ref=e671]:
+                        - paragraph [ref=e672]:
+                          - text: writes
+                          - code [ref=e673]: .browser-profiles/chatgpt-state.json
+                    - 'heading "Create: scripts/init-chatgpt-storage-state.mjs" [level=3] [ref=e674]':
+                      - text: "Create:"
+                      - code [ref=e675]: scripts/init-chatgpt-storage-state.mjs
+                    - generic [ref=e682]:
+                      - generic [ref=e684]:
+                        - generic [ref=e685]: JavaScript
+                        - generic [ref=e686]:
+                          - button "Copy" [ref=e687] [cursor=pointer]:
+                            - img [ref=e688]
+                          - button "Edit" [ref=e691] [cursor=pointer]:
+                            - img [ref=e693]
+                      - textbox "Edit code" [ref=e701]:
+                        - generic [ref=e702]: "#!/usr/bin/env node"
+                        - generic [ref=e703]: import fs from "node:fs";
+                        - generic [ref=e704]: import path from "node:path";
+                        - generic [ref=e705]: import readline from "node:readline";
+                        - generic [ref=e706]: "import { chromium } from \"playwright\";"
+                        - generic [ref=e708]: const PROJECT_ROOT = process.cwd();
+                        - generic [ref=e709]: const PROFILE_DIR = path.join(PROJECT_ROOT, ".browser-profiles");
+                        - generic [ref=e710]: const STATE_PATH = path.join(PROFILE_DIR, "chatgpt-state.json");
+                        - generic [ref=e712]: // Prefer chatgpt.com, but chat.openai.com still works in some environments.
+                        - generic [ref=e713]: // Use whichever your org/account actually uses.
+                        - generic [ref=e714]: const CHATGPT_URL = "https://chatgpt.com/";
+                        - generic [ref=e716]: "function waitForEnter(prompt) {"
+                        - generic [ref=e717]: "return new Promise((resolve) => {"
+                        - generic [ref=e718]: "const rl = readline.createInterface({ input: process.stdin, output: process.stdout });"
+                        - generic [ref=e719]: "rl.question(prompt, () => {"
+                        - generic [ref=e720]: rl.close();
+                        - generic [ref=e721]: resolve();
+                        - generic [ref=e722]: "});"
+                        - generic [ref=e723]: "});"
+                        - generic [ref=e724]: "}"
+                        - generic [ref=e726]: "(async () => {"
+                        - generic [ref=e727]: "fs.mkdirSync(PROFILE_DIR, { recursive: true });"
+                        - generic [ref=e729]: console.log("Launching headed Chromium for one-time ChatGPT login...");
+                        - generic [ref=e730]: "const browser = await chromium.launch({"
+                        - generic [ref=e731]: "headless: false,"
+                        - generic [ref=e732]: "args: ["
+                        - generic [ref=e733]: "\"--disable-blink-features=AutomationControlled\","
+                        - generic [ref=e734]: "],"
+                        - generic [ref=e735]: "});"
+                        - generic [ref=e737]: "const context = await browser.newContext({"
+                    - heading "Run it" [level=3] [ref=e739]
+                    - generic [ref=e746]:
+                      - generic [ref=e748]:
+                        - generic [ref=e749]: Bash
+                        - generic [ref=e750]:
+                          - button "Copy" [ref=e751] [cursor=pointer]:
+                            - img [ref=e752]
+                          - button "Edit" [ref=e755] [cursor=pointer]:
+                            - img [ref=e757]
+                      - textbox "Edit code" [ref=e764]:
+                        - generic [ref=e765]: cd /Users/james/Projects/agent-flywheel-integration
+                        - generic [ref=e766]: npm i -D playwright
+                        - generic [ref=e767]: npx playwright install chromium
+                        - generic [ref=e768]: node scripts/init-chatgpt-storage-state.mjs
+                    - heading "Add to .gitignore" [level=3] [ref=e769]:
+                      - text: Add to
+                      - code [ref=e770]: .gitignore
+                    - generic [ref=e777]:
+                      - generic [ref=e779]:
+                        - generic [ref=e780]: gitignore
+                        - generic [ref=e781]:
+                          - button "Copy" [ref=e782] [cursor=pointer]:
+                            - img [ref=e783]
+                          - button "Edit" [ref=e786] [cursor=pointer]:
+                            - img [ref=e788]
+                      - textbox "Edit code" [ref=e795]:
+                        - generic [ref=e796]: .browser-profiles/
+                    - separator [ref=e797]
+                    - heading "3) Reconfigure Claude Code Playwright MCP to use --storage-state" [level=2] [ref=e798]:
+                      - text: 3) Reconfigure Claude Code Playwright MCP to use
+                      - code [ref=e799]: "--storage-state"
+                    - heading "Key constraint" [level=3] [ref=e800]
+                    - paragraph [ref=e801]: "If the built-in plugin hardcodes:"
+                    - generic [ref=e808]:
+                      - generic [ref=e810]:
+                        - generic [ref=e811]: Code
+                        - generic [ref=e812]:
+                          - button "Copy" [ref=e813] [cursor=pointer]:
+                            - img [ref=e814]
+                          - button "Edit" [ref=e817] [cursor=pointer]:
+                            - img [ref=e819]
+                      - textbox "Edit code" [ref=e826]:
+                        - generic [ref=e827]: npx @playwright/mcp@latest --isolated
+                    - paragraph [ref=e828]:
+                      - text: …then you
+                      - strong [ref=e829]: can’t “tack on flags” unless the plugin exposes config
+                      - text: . Claude Code’s docs make it clear plugin-provided MCP servers are managed by the plugin (not by
+                      - code [ref=e830]: /mcp
+                      - text: commands).
+                      - link "Claude Code" [ref=e833] [cursor=pointer]:
+                        - /url: https://code.claude.com/docs/en/mcp
+                        - generic [ref=e836]: Claude Code
+                    - heading "Practical approach (what I’d do)" [level=3] [ref=e837]
+                    - paragraph [ref=e838]:
+                      - strong [ref=e839]: Disable the built-in Playwright plugin
+                      - text: (for this project), then add your own MCP server definition that includes the flags you need.
+                    - paragraph [ref=e840]:
+                      - text: Claude Code supports configuring MCP servers and distinguishes plugin-provided servers vs user-configured ones.
+                      - link "Claude Code +1" [ref=e843] [cursor=pointer]:
+                        - /url: https://code.claude.com/docs/en/mcp
+                        - generic [ref=e845]:
+                          - generic [ref=e846]: Claude Code
+                          - generic [ref=e847]: "+1"
+                    - 'heading "Option 1: Add a project-scoped MCP server via CLI" [level=4] [ref=e848]'
+                    - paragraph [ref=e849]:
+                      - text: Use
+                      - code [ref=e850]: claude mcp add
+                      - text: (project directory matters—config is tied to the repo path).
+                      - link "TIL +1" [ref=e853] [cursor=pointer]:
+                        - /url: https://til.simonwillison.net/claude-code/playwright-mcp-claude-code
+                        - generic [ref=e855]:
+                          - generic [ref=e856]: TIL
+                          - generic [ref=e857]: "+1"
+                    - paragraph [ref=e858]: "Example (shape):"
+                    - generic [ref=e865]:
+                      - generic [ref=e867]:
+                        - generic [ref=e868]: Bash
+                        - generic [ref=e869]:
+                          - button "Copy" [ref=e870] [cursor=pointer]:
+                            - img [ref=e871]
+                          - button "Edit" [ref=e874] [cursor=pointer]:
+                            - img [ref=e876]
+                      - textbox "Edit code" [ref=e883]:
+                        - generic [ref=e884]: "# From inside /Users/james/Projects/agent-flywheel-integration"
+                        - generic [ref=e885]: claude mcp add --transport stdio playwright -- \
+                        - generic [ref=e886]: npx -y @playwright/mcp@latest \
+                        - generic [ref=e887]: "--isolated \\"
+                        - generic [ref=e888]: "--storage-state=.browser-profiles/chatgpt-state.json"
+                    - paragraph [ref=e889]: "Notes:"
+                    - list [ref=e890]:
+                      - listitem [ref=e891]:
+                        - paragraph [ref=e892]:
+                          - text: The
+                          - code [ref=e893]: "--"
+                          - text: separator is used in Claude Code examples to pass through command args cleanly.
+                          - link "Claude Code" [ref=e896] [cursor=pointer]:
+                            - /url: https://code.claude.com/docs/en/mcp
+                            - generic [ref=e899]: Claude Code
+                      - listitem [ref=e900]:
+                        - paragraph [ref=e901]:
+                          - text: After changes, you generally need to restart Claude Code for MCP lifecycle changes to apply (plugins in particular).
+                          - link "Claude Code" [ref=e904] [cursor=pointer]:
+                            - /url: https://code.claude.com/docs/en/mcp
+                            - generic [ref=e907]: Claude Code
+                    - 'heading "Option 2: Define it in a project .claude/ config file" [level=4] [ref=e908]':
+                      - text: "Option 2: Define it in a project"
+                      - code [ref=e909]: .claude/
+                      - text: config file
+                    - paragraph [ref=e910]:
+                      - text: If you prefer config-as-code, you can keep MCP server config at project scope (committed) or local scope (gitignored). Claude Code documents these scopes explicitly.
+                      - link "Claude Code +1" [ref=e913] [cursor=pointer]:
+                        - /url: https://code.claude.com/docs/en/settings
+                        - generic [ref=e915]:
+                          - generic [ref=e916]: Claude Code
+                          - generic [ref=e917]: "+1"
+                    - paragraph [ref=e918]:
+                      - text: (Exact filenames differ by Claude Code version/settings layout, so I’m not going to lie and give you a fake path—use
+                      - code [ref=e919]: /mcp
+                      - text: inside Claude Code to see where it’s loading from, and mirror that structure.)
+                    - paragraph [ref=e920]:
+                      - strong [ref=e921]: "Decision rule:"
+                    - list [ref=e922]:
+                      - listitem [ref=e923]:
+                        - paragraph [ref=e924]:
+                          - text: "If you want every tmux agent (same repo) to behave identically:"
+                          - strong [ref=e925]: project scope
+                          - text: .
+                      - listitem [ref=e926]:
+                        - paragraph [ref=e927]:
+                          - text: If you want it only on
+                          - emphasis [ref=e928]: your
+                          - text: "machine:"
+                          - strong [ref=e929]: local scope
+                          - text: (gitignored).
+                    - separator [ref=e930]
+                    - 'heading "4) Gotchas: expiry, Cloudflare challenges, cookie rotation" [level=2] [ref=e931]'
+                    - heading "Session expiry / rotation" [level=3] [ref=e932]
+                    - list [ref=e933]:
+                      - listitem [ref=e934]:
+                        - paragraph [ref=e935]:
+                          - text: Expect this occasionally. Storage state is not magic—it’s just persisted cookies + localStorage. Playwright explicitly frames this as “reusing authenticated state,” which still depends on the site’s auth lifetime.
+                          - link "Playwright +1" [ref=e938] [cursor=pointer]:
+                            - /url: https://playwright.dev/docs/auth?utm_source=chatgpt.com
+                            - generic [ref=e940]:
+                              - generic [ref=e941]: Playwright
+                              - generic [ref=e942]: "+1"
+                      - listitem [ref=e943]:
+                        - paragraph [ref=e944]:
+                          - text: Plan for a
+                          - strong [ref=e945]: repeatable refresh
+                          - text: ":"
+                        - list [ref=e946]:
+                          - listitem [ref=e947]:
+                            - paragraph [ref=e948]:
+                              - text: "When agents detect redirect to login, fail fast and mark a bead:"
+                              - code [ref=e949]: AUTH_REFRESH_REQUIRED
+                              - text: .
+                          - listitem [ref=e950]:
+                            - paragraph [ref=e951]: You rerun the init script and overwrite the JSON.
+                    - heading "Cloudflare / bot challenges" [level=3] [ref=e952]
+                    - list [ref=e953]:
+                      - listitem [ref=e954]:
+                        - paragraph [ref=e955]: Automating ChatGPT via browser can trigger challenges (especially headless). You’re already using headed via MCP most of the time, which helps.
+                      - listitem [ref=e956]:
+                        - paragraph [ref=e957]:
+                          - text: If you get stuck in a challenge loop, the
+                          - strong [ref=e958]: MCP Chrome Extension
+                          - text: path (attach to your real daily browser session) is the least painful fallback.
+                          - link "GitHub" [ref=e961] [cursor=pointer]:
+                            - /url: https://github.com/microsoft/playwright-mcp
+                            - generic [ref=e964]: GitHub
+                    - heading "Multi-agent concurrency" [level=3] [ref=e965]
+                    - list [ref=e966]:
+                      - listitem [ref=e967]:
+                        - paragraph [ref=e968]: Many agents reading the same storage-state file is fine.
+                      - listitem [ref=e969]:
+                        - paragraph [ref=e970]:
+                          - text: Don’t have multiple agents
+                          - emphasis [ref=e971]: rewriting
+                          - text: it. Make refresh a single “owner” action (your manual run).
+                    - heading "Operational hygiene" [level=3] [ref=e972]
+                    - list [ref=e973]:
+                      - listitem [ref=e974]:
+                        - paragraph [ref=e975]:
+                          - code [ref=e976]: .browser-profiles/chatgpt-state.json
+                          - text: "should be:"
+                        - list [ref=e977]:
+                          - listitem [ref=e978]:
+                            - paragraph [ref=e979]: excluded from git
+                          - listitem [ref=e980]:
+                            - paragraph [ref=e981]: treated like an API key
+                          - listitem [ref=e982]:
+                            - paragraph [ref=e983]:
+                              - text: readable only by you (
+                              - code [ref=e984]: chmod 600
+                              - text: )
+                    - separator [ref=e985]
+                    - paragraph [ref=e986]:
+                      - text: If you want, I can also give you a tiny “health-check” snippet your agents can run after
+                      - code [ref=e987]: browser_navigate
+                      - text: that decides
+                      - strong [ref=e988]: (a)
+                      - text: “we’re logged in and can see prompt box” vs
+                      - strong [ref=e989]: (b)
+                      - text: “we got bounced to auth/challenge” and then emits a bead into agent-mail.
+                - generic [ref=e990]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+                    - button "Sources":
+                      - generic:
+                        - generic:
+                          - img
+                      - generic: Sources
+            - article [ref=e991]:
+              - heading "You said:" [level=5] [ref=e992]
+              - generic [ref=e994]:
+                - generic [ref=e999]: "ChatGPT's Response: Solid Overall ChatGPT nailed the important parts: - Init script: Clean, correct, handles the storageState() export properly - Security advice: chmod 600, treat as secret — good - Gotchas: Session expiry, Cloudflare, multi-agent read-only on the state file — all accurate - Auth refresh as a bead: Smart operational pattern - Health-check snippet: Yes, ask for that — it's a good idea One Thing ChatGPT Got Right That I Can Now Confirm The built-in plugin is literally just this .mcp.json: { \"playwright\": { \"command\": \"npx\", \"args\": [\"@playwright/mcp@latest\", \"--isolated\"] } } So the exact approach is: 1. Disable playwright@claude-plugins-official in ~/.claude/settings.json 2. Add a custom MCP server via: claude mcp add --scope local playwright -- \\ npx @playwright/mcp@latest \\ --isolated \\ --storage-state /Users/james/Projects/agent-flywheel-integration/.browser-profiles/chatgpt-state.json 2. (Use absolute path — the MCP server's CWD may not be the project root. --scope local keeps it per-machine/gitignored.) Follow-Up Questions for ChatGPT 1. Ask for the health-check snippet — yes, get that. Agents should detect \"bounced to login\" and emit an alert via agent-mail. 2. Cookie lifetime — ChatGPT auth tokens typically last how long? Days? Weeks? This determines how often you'd need to rerun the init script. 3. chatgpt.com vs chat.openai.com — the script defaults to chatgpt.com. Which domain actually holds the session cookies? Should we navigate to both?"
+                - generic [ref=e1000]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e1001]:
+              - heading "ChatGPT said:" [level=6] [ref=e1002]
+              - generic [ref=e1004]:
+                - generic [ref=e1005]:
+                  - button "Thought for 28s" [ref=e1010] [cursor=pointer]:
+                    - generic [ref=e1012]:
+                      - generic [ref=e1014]: Thought for 28s
+                      - img [ref=e1015]
+                  - generic [ref=e1019]:
+                    - heading "1) Health-check snippet (detect “logged in” vs “bounced to auth/challenge”)" [level=2] [ref=e1020]
+                    - paragraph [ref=e1021]:
+                      - text: This is designed to run via
+                      - code [ref=e1022]: browser_evaluate
+                      - text: and return a small JSON payload your agent can map to a bead / agent-mail alert.
+                    - heading "browser_evaluate payload" [level=3] [ref=e1023]:
+                      - code [ref=e1024]: browser_evaluate
+                      - text: payload
+                    - generic [ref=e1031]:
+                      - generic [ref=e1033]:
+                        - generic [ref=e1034]: JavaScript
+                        - generic [ref=e1035]:
+                          - button "Copy" [ref=e1036] [cursor=pointer]:
+                            - img [ref=e1037]
+                          - button "Edit" [ref=e1040] [cursor=pointer]:
+                            - img [ref=e1042]
+                      - textbox "Edit code" [ref=e1050]:
+                        - generic [ref=e1051]: "(() => {"
+                        - generic [ref=e1052]: const href = location.href;
+                        - generic [ref=e1054]: // Common “not in the app” signals
+                        - generic [ref=e1055]: const onAuth =
+                        - generic [ref=e1056]: /\/auth\/|\/login|\/account\/login|auth\.openai\.com/i.test(href);
+                        - generic [ref=e1058]: // Cloudflare / bot checks often show these patterns
+                        - generic [ref=e1059]: const onChallenge =
+                        - generic [ref=e1060]: /challenges\.cloudflare\.com|cf-chl|__cf_chl/i.test(href) ||
+                        - generic [ref=e1061]: "!!document.querySelector('input[name=\"cf-turnstile-response\"], iframe[src*=\"challenges.cloudflare.com\"]');"
+                        - generic [ref=e1063]: // Heuristics for “Chat UI is present”
+                        - generic [ref=e1064]: const promptBox =
+                        - generic [ref=e1065]: document.querySelector('textarea, [contenteditable="true"][role="textbox"]');
+                        - generic [ref=e1067]: // Heuristics for “logged out” landing pages
+                        - generic [ref=e1068]: const loginLinkOrButton =
+                        - generic [ref=e1069]: Array.from(document.querySelectorAll('a,button')).some(el =>
+                        - generic [ref=e1070]: /log in|sign in/i.test((el.textContent || "").trim())
+                        - generic [ref=e1071]: );
+                        - generic [ref=e1073]: let status = "unknown";
+                        - generic [ref=e1074]: if (onChallenge) status = "challenge";
+                        - generic [ref=e1075]: else if (onAuth) status = "auth";
+                        - generic [ref=e1076]: else if (promptBox) status = "ok";
+                        - generic [ref=e1077]: else if (loginLinkOrButton) status = "logged_out";
+                        - generic [ref=e1078]: else status = "unknown";
+                        - generic [ref=e1080]: "return {"
+                        - generic [ref=e1081]: status,
+                        - generic [ref=e1082]: href,
+                        - generic [ref=e1083]: "hasPromptBox: !!promptBox,"
+                        - generic [ref=e1084]: "sawLoginCta: !!loginLinkOrButton,"
+                        - generic [ref=e1085]: "sawChallenge: !!onChallenge"
+                        - generic [ref=e1086]: "};"
+                    - heading "Suggested agent behavior" [level=3] [ref=e1088]
+                    - list [ref=e1089]:
+                      - listitem [ref=e1090]:
+                        - paragraph [ref=e1091]:
+                          - text: If
+                          - code [ref=e1092]: status === "ok"
+                          - text: → proceed.
+                      - listitem [ref=e1093]:
+                        - paragraph [ref=e1094]:
+                          - text: If
+                          - code [ref=e1095]: status
+                          - text: is
+                          - code [ref=e1096]: auth|logged_out|challenge
+                          - text: →
+                          - strong [ref=e1097]: emit agent-mail alert
+                          - text: "like:"
+                        - list [ref=e1098]:
+                          - listitem [ref=e1099]:
+                            - paragraph [ref=e1100]:
+                              - code [ref=e1101]: AUTH_REFRESH_REQUIRED
+                              - text: (auth/logged_out)
+                          - listitem [ref=e1102]:
+                            - paragraph [ref=e1103]:
+                              - code [ref=e1104]: CLOUDFLARE_CHALLENGE
+                              - text: (challenge)
+                    - paragraph [ref=e1105]: (If you want, I can format the exact agent-mail JSON message shape to match your queue schema.)
+                    - separator [ref=e1106]
+                    - 'heading "2) Cookie / token lifetime: how often will you need to refresh?" [level=2] [ref=e1107]'
+                    - paragraph [ref=e1108]:
+                      - text: There isn’t a single “ChatGPT auth lasts X days” public SLA. Practically,
+                      - strong [ref=e1109]: expect variability
+                      - text: (account security posture, IP/VPN changes, unusual activity flags, etc.).
+                    - paragraph [ref=e1110]:
+                      - text: What we
+                      - emphasis [ref=e1111]: can
+                      - text: "ground in official docs: OpenAI’s cookie policy lists several"
+                      - strong [ref=e1112]: chatgpt.com
+                      - text: cookies and their durations, which range from
+                      - strong [ref=e1113]: Session
+                      - text: to
+                      - strong [ref=e1114]: hours
+                      - text: ","
+                      - strong [ref=e1115]: days
+                      - text: ", and up to"
+                      - strong [ref=e1116]: 1 year
+                      - text: . Notably, it includes entries like
+                      - code [ref=e1117]: _puid
+                      - text: (7 days),
+                      - code [ref=e1118]: _uasid
+                      - text: (1 day),
+                      - code [ref=e1119]: _account
+                      - text: (Session), and others (e.g.,
+                      - code [ref=e1120]: oai-sc
+                      - text: 1 year).
+                      - link "OpenAI" [ref=e1123] [cursor=pointer]:
+                        - /url: https://openai.com/policies/cookie-policy/
+                        - generic [ref=e1126]: OpenAI
+                    - paragraph [ref=e1127]: "What that means for your storage-state approach:"
+                    - list [ref=e1128]:
+                      - listitem [ref=e1129]:
+                        - paragraph [ref=e1130]:
+                          - text: Your exported state may stay valid
+                          - strong [ref=e1131]: for days to weeks
+                          - text: in the common case, but it can also break sooner (session cookies, risk signals, IP change).
+                      - listitem [ref=e1132]:
+                        - paragraph [ref=e1133]:
+                          - text: "Operationally: your “auth refresh bead” pattern is the right answer. Treat refresh as"
+                          - strong [ref=e1134]: on-demand
+                          - text: ", not time-based."
+                      - listitem [ref=e1135]:
+                        - paragraph [ref=e1136]:
+                          - text: "If you still want a schedule:"
+                          - strong [ref=e1137]: weekly refresh
+                          - text: is a reasonable maintenance cadence, but don’t be surprised if you go longer—or if you need a refresh sooner after network changes.
+                    - separator [ref=e1138]
+                    - 'heading "3) chatgpt.com vs chat.openai.com: which domain holds session cookies?" [level=2] [ref=e1139]'
+                    - paragraph [ref=e1140]:
+                      - text: From OpenAI’s cookie policy, the key “service functionality / security” cookies relevant to ChatGPT are explicitly listed under the
+                      - strong [ref=e1141]:
+                        - code [ref=e1142]: chatgpt.com
+                        - text: domain
+                      - text: .
+                      - link "OpenAI" [ref=e1145] [cursor=pointer]:
+                        - /url: https://openai.com/policies/cookie-policy/
+                        - generic [ref=e1148]: OpenAI
+                    - paragraph [ref=e1149]:
+                      - text: However, OpenAI’s network allowlist guidance still includes
+                      - strong [ref=e1150]: both
+                      - code [ref=e1151]: "*.chatgpt.com"
+                      - text: and
+                      - code [ref=e1152]: chat.openai.com
+                      - text: (legacy / redirects / some clients), plus auth and Cloudflare challenge domains.
+                      - link "OpenAI Help Center" [ref=e1155] [cursor=pointer]:
+                        - /url: https://help.openai.com/en/articles/9247338-network-recommendations-for-chatgpt-errors-on-web-and-apps
+                        - generic [ref=e1158]: OpenAI Help Center
+                    - heading "What I recommend" [level=3] [ref=e1159]
+                    - list [ref=e1160]:
+                      - listitem [ref=e1161]:
+                        - paragraph [ref=e1162]:
+                          - strong [ref=e1163]:
+                            - text: Normalize all automation targets to
+                            - code [ref=e1164]: https://chatgpt.com/...
+                          - text: (conversation URLs included). That keeps your cookies and origin consistent.
+                      - listitem [ref=e1165]:
+                        - paragraph [ref=e1166]: "In your init script, it doesn’t hurt to “touch” the legacy domain once:"
+                        - list [ref=e1167]:
+                          - listitem [ref=e1168]:
+                            - paragraph [ref=e1169]:
+                              - code [ref=e1170]: page.goto("https://chat.openai.com/")
+                              - text: (let it redirect)
+                          - listitem [ref=e1171]:
+                            - paragraph [ref=e1172]:
+                              - code [ref=e1173]: page.goto("https://chatgpt.com/")
+                          - listitem [ref=e1174]:
+                            - paragraph [ref=e1175]:
+                              - text: then export
+                              - code [ref=e1176]: storageState
+                    - paragraph [ref=e1177]: This way, if anything still sets/reads cookies during the redirect chain, your exported state captures it.
+                    - separator [ref=e1178]
+                    - paragraph [ref=e1179]:
+                      - text: If you paste your agent-mail JSON schema (even just one example message), I’ll wire the health-check result into a
+                      - strong [ref=e1180]: copy/paste emitter
+                      - text: that your agents can drop into their “preflight” step.
+                - generic [ref=e1181]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+                    - button "Sources":
+                      - generic: Sources
+            - article [ref=e1182]:
+              - heading "You said:" [level=5] [ref=e1183]
+              - generic [ref=e1185]:
+                - generic [ref=e1190]:
+                  - text: "My Assessment of ChatGPT's Response All three sections are solid: 1. Health-check snippet — Good heuristics. The selectors for prompt box (textarea, [contenteditable=\"true\"][role=\"textbox\"]) and login CTA detection are reasonable. One minor note: our browser_evaluate tool takes a function parameter as a string, so the IIFE format works directly. 2. Cookie lifetime — Practical answer. \"Days to weeks, plan for on-demand refresh\" is the right operational stance. Weekly maintenance cadence as a default is reasonable. 3. Domain guidance — Correct. Normalize to chatgpt.com, touch chat.openai.com during init to capture redirect cookies. Smart. What to Paste Back to ChatGPT Here's the agent-mail schema it asked for, plus a follow-up: --- Agent-mail schema for the health-check emitter: Messages are sent via shell command: ./scripts/agent-mail-helper.sh send \"<to_agents>\" \"<subject>\" \"<body>\" [importance] - to_agents: comma-separated agent names (e.g. \"james\" or \"NavyBrook,WindyOtter\") — for auth alerts, send to the human operator - subject: string (convention: [bd-xxx] Topic where bd-xxx is the bead ID) - body: markdown string - importance: optional — normal (default), high, urgent The underlying JSON-RPC payload looks like: { \"sender_name\": \"QuietDune\", \"to\": [\"james\"], \"subject\": \"[bd-xxx] AUTH_REFRESH_REQUIRED\", \"body_md\": \"ChatGPT session expired. Agent detected redirect to login page.\\n\\nURL: https://chatgpt.com/auth/login\\nStatus: auth\\n\\nAction: Rerun"
+                  - code [ref=e1191]: node
+                  - text: scripts/init-chatgpt-storage-state.mjs
+                  - code [ref=e1192]: to refresh cookies.",
+                  - text: "\"importance\": \"urgent\" } So the agent preflight flow would be: 1. browser_navigate to the ChatGPT conversation URL 2. browser_evaluate the health-check function 3. If status !== \"ok\", run the shell command: ./scripts/agent-mail-helper.sh send \"james\" \"[bd-xxx] AUTH_REFRESH_REQUIRED\" \"ChatGPT session expired at URL: <href>. Status: <status>. Rerun init script.\" \"urgent\" 4. Abort the ChatGPT interaction (don't try to type into a login page) Please wire the health-check result into an exact shell command the agent can execute via Bash tool, including proper escaping. Also, please give us the full implementation plan as a numbered checklist we can execute step-by-step, incorporating everything we've discussed (directory setup, gitignore, init script, MCP reconfiguration, health-check preflight). --- That should get us the final implementation plan from ChatGPT. ✻ Crunched for 43s ❯ i am wondering if we are getting too sophisticated...and over engineering this ⏺ Honestly, yes. Let me step back. What you actually need: 1. An agent navigates to a ChatGPT conversation URL 2. It can read messages and post replies 3. It stays logged in across sessions What we've been designing: - Health-check evaluators with Cloudflare detection heuristics - Agent-mail alert pipelines for auth refresh - Custom MCP server reconfiguration - Domain redirect cookie capture chains - Bead-tracked auth refresh workflows That's a lot of machinery for \"browser remembers my cookies.\" What I'd actually do: 1. mkdir .browser-profiles + .gitignore it 2. Run one script to log in and save cookies 3. claude mcp add with --storage-state pointing to the file 4. Try it. See if it works. If cookies expire, you'll notice because the agent will snapshot a login page instead of a chat. You log in again. That's it. No alert system needed — you'll see it fail in the pane. The health check, the agent-mail integration, the refresh beads — those are optimizations for a problem we haven't even confirmed exists yet. We don't know how often cookies expire. We don't know if Cloudflare will be an issue. We're solving hypothetical problems. Want me to just build the minimal version and we see what happens?"
+                - generic [ref=e1193]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e1194]:
+              - heading "ChatGPT said:" [level=6] [ref=e1195]
+              - generic [ref=e1197]:
+                - generic [ref=e1201]:
+                  - paragraph [ref=e1202]:
+                    - text: You’re not over-engineering
+                    - strong [ref=e1203]: the core
+                    - text: (storage-state + isolated + custom MCP). That’s the minimal
+                    - emphasis [ref=e1204]: reliable
+                    - text: way to keep 4–8 concurrent agents logged in without Chrome profile locks.
+                  - paragraph [ref=e1205]:
+                    - text: You
+                    - emphasis [ref=e1206]: are
+                    - text: in danger of over-engineering
+                    - strong [ref=e1207]: the ops layer
+                    - text: (Cloudflare heuristics + agent-mail + beads)
+                    - emphasis [ref=e1208]: before you’ve observed failure modes
+                    - text: .
+                  - paragraph [ref=e1209]:
+                    - text: "So: ship"
+                    - strong [ref=e1210]: MVP auth persistence
+                    - text: first, then add alerts only if reality demands it.
+                  - separator [ref=e1211]
+                  - heading "Minimal version (do this first)" [level=2] [ref=e1212]
+                  - heading "0) Directory + gitignore" [level=3] [ref=e1213]
+                  - generic [ref=e1220]:
+                    - generic [ref=e1222]:
+                      - generic [ref=e1223]: Bash
+                      - generic [ref=e1224]:
+                        - button "Copy" [ref=e1225] [cursor=pointer]:
+                          - img [ref=e1226]
+                        - button "Edit" [ref=e1229] [cursor=pointer]:
+                          - img [ref=e1231]
+                    - textbox "Edit code" [ref=e1238]:
+                      - generic [ref=e1239]: cd /Users/james/Projects/agent-flywheel-integration
+                      - generic [ref=e1240]: mkdir -p .browser-profiles scripts
+                      - generic [ref=e1241]: printf ".browser-profiles/\n" >> .gitignore
+                  - heading "1) Init script (manual login → export storage state)" [level=3] [ref=e1242]
+                  - paragraph [ref=e1243]:
+                    - text: Create
+                    - code [ref=e1244]: scripts/init-chatgpt-storage-state.mjs
+                    - text: with the script you already have.
+                  - paragraph [ref=e1245]: "Run:"
+                  - generic [ref=e1252]:
+                    - generic [ref=e1254]:
+                      - generic [ref=e1255]: Bash
+                      - generic [ref=e1256]:
+                        - button "Copy" [ref=e1257] [cursor=pointer]:
+                          - img [ref=e1258]
+                        - button "Edit" [ref=e1261] [cursor=pointer]:
+                          - img [ref=e1263]
+                    - textbox "Edit code" [ref=e1270]:
+                      - generic [ref=e1271]: npm i -D playwright
+                      - generic [ref=e1272]: npx playwright install chromium
+                      - generic [ref=e1273]: node scripts/init-chatgpt-storage-state.mjs
+                  - heading "2) Disable built-in plugin" [level=3] [ref=e1274]
+                  - paragraph [ref=e1275]:
+                    - text: Edit
+                    - code [ref=e1276]: ~/.claude/settings.json
+                    - text: and disable
+                    - code [ref=e1277]: playwright@claude-plugins-official
+                    - text: (as you described).
+                  - heading "3) Add custom MCP server (local scope, absolute path)" [level=3] [ref=e1278]
+                  - generic [ref=e1285]:
+                    - generic [ref=e1287]:
+                      - generic [ref=e1288]: Bash
+                      - generic [ref=e1289]:
+                        - button "Copy" [ref=e1290] [cursor=pointer]:
+                          - img [ref=e1291]
+                        - button "Edit" [ref=e1294] [cursor=pointer]:
+                          - img [ref=e1296]
+                    - textbox "Edit code" [ref=e1303]:
+                      - generic [ref=e1304]: claude mcp add --scope local playwright -- \
+                      - generic [ref=e1305]: npx -y @playwright/mcp@latest \
+                      - generic [ref=e1306]: "--isolated \\"
+                      - generic [ref=e1307]: "--storage-state /Users/james/Projects/agent-flywheel-integration/.browser-profiles/chatgpt-state.json"
+                  - paragraph [ref=e1308]: Restart Claude Code / your agents.
+                  - heading "4) Smoke test" [level=3] [ref=e1309]
+                  - paragraph [ref=e1310]: "Have one agent:"
+                  - list [ref=e1311]:
+                    - listitem [ref=e1312]:
+                      - paragraph [ref=e1313]:
+                        - code [ref=e1314]: browser_navigate
+                        - text: to a ChatGPT conversation URL on
+                        - code [ref=e1315]: https://chatgpt.com/...
+                    - listitem [ref=e1316]:
+                      - paragraph [ref=e1317]:
+                        - code [ref=e1318]: browser_snapshot
+                        - text: If it’s logged in, you’re done.
+                  - paragraph [ref=e1319]:
+                    - text: That’s the
+                    - emphasis [ref=e1320]: minimum viable
+                    - text: path.
+                  - separator [ref=e1321]
+                  - heading "Add the preflight + agent-mail only if you want it now" [level=2] [ref=e1322]
+                  - paragraph [ref=e1323]: If you do want it now (it’s not crazy—just extra), here’s the exact “wire it in” you asked for.
+                  - heading "A) Health-check evaluate function (IIFE string)" [level=3] [ref=e1324]
+                  - paragraph [ref=e1325]:
+                    - text: Use exactly this as the
+                    - code [ref=e1326]: browser_evaluate
+                    - text: "string:"
+                  - generic [ref=e1333]:
+                    - generic [ref=e1335]:
+                      - generic [ref=e1336]: JavaScript
+                      - generic [ref=e1337]:
+                        - button "Copy" [ref=e1338] [cursor=pointer]:
+                          - img [ref=e1339]
+                        - button "Edit" [ref=e1342] [cursor=pointer]:
+                          - img [ref=e1344]
+                    - textbox "Edit code" [ref=e1352]:
+                      - generic [ref=e1353]: "(() => {"
+                      - generic [ref=e1354]: const href = location.href;
+                      - generic [ref=e1356]: const onAuth =
+                      - generic [ref=e1357]: /\/auth\/|\/login|\/account\/login|auth\.openai\.com/i.test(href);
+                      - generic [ref=e1359]: const onChallenge =
+                      - generic [ref=e1360]: /challenges\.cloudflare\.com|cf-chl|__cf_chl/i.test(href) ||
+                      - generic [ref=e1361]: "!!document.querySelector('input[name=\"cf-turnstile-response\"], iframe[src*=\"challenges.cloudflare.com\"]');"
+                      - generic [ref=e1363]: const promptBox =
+                      - generic [ref=e1364]: document.querySelector('textarea, [contenteditable="true"][role="textbox"]');
+                      - generic [ref=e1366]: const loginLinkOrButton =
+                      - generic [ref=e1367]: Array.from(document.querySelectorAll('a,button')).some(el =>
+                      - generic [ref=e1368]: /log in|sign in/i.test((el.textContent || "").trim())
+                      - generic [ref=e1369]: );
+                      - generic [ref=e1371]: let status = "unknown";
+                      - generic [ref=e1372]: if (onChallenge) status = "challenge";
+                      - generic [ref=e1373]: else if (onAuth) status = "auth";
+                      - generic [ref=e1374]: else if (promptBox) status = "ok";
+                      - generic [ref=e1375]: else if (loginLinkOrButton) status = "logged_out";
+                      - generic [ref=e1376]: else status = "unknown";
+                      - generic [ref=e1378]: "return {"
+                      - generic [ref=e1379]: status,
+                      - generic [ref=e1380]: href,
+                      - generic [ref=e1381]: "hasPromptBox: !!promptBox,"
+                      - generic [ref=e1382]: "sawLoginCta: !!loginLinkOrButton,"
+                      - generic [ref=e1383]: "sawChallenge: !!onChallenge"
+                      - generic [ref=e1384]: "};"
+                      - generic [ref=e1385]: "})()"
+                  - heading "B) Exact shell command emitter with safe escaping (Bash)" [level=3] [ref=e1386]
+                  - paragraph [ref=e1387]: "Assuming your Bash tool can run a small inline script, this is the cleanest way: pass values via env vars and avoid quote hell."
+                  - generic [ref=e1394]:
+                    - generic [ref=e1396]:
+                      - generic [ref=e1397]: Bash
+                      - generic [ref=e1398]:
+                        - button "Copy" [ref=e1399] [cursor=pointer]:
+                          - img [ref=e1400]
+                        - button "Edit" [ref=e1403] [cursor=pointer]:
+                          - img [ref=e1405]
+                    - textbox "Edit code" [ref=e1413]:
+                      - generic [ref=e1414]: BD_ID="bd-xxx"
+                      - generic [ref=e1415]: STATUS="auth"
+                      - generic [ref=e1416]: HREF="https://chatgpt.com/auth/login"
+                      - generic [ref=e1418]: SUBJECT="[$BD_ID] AUTH_REFRESH_REQUIRED"
+                      - generic [ref=e1419]: BODY_MD=$(cat <<EOF
+                      - generic [ref=e1420]: ChatGPT session expired or not authenticated.
+                      - generic [ref=e1422]: "URL: $HREF"
+                      - generic [ref=e1423]: "Status: $STATUS"
+                      - generic [ref=e1425]: "Action: Rerun:"
+                      - generic [ref=e1426]: node scripts/init-chatgpt-storage-state.mjs
+                      - generic [ref=e1427]: EOF
+                      - generic [ref=e1428]: )
+                      - generic [ref=e1430]: ./scripts/agent-mail-helper.sh send "james" "$SUBJECT" "$BODY_MD" "urgent"
+                  - paragraph [ref=e1431]:
+                    - strong [ref=e1432]: "How the agent uses it:"
+                  - list [ref=e1433]:
+                    - listitem [ref=e1434]:
+                      - paragraph [ref=e1435]:
+                        - text: Run
+                        - code [ref=e1436]: browser_evaluate
+                        - text: → capture
+                        - code [ref=e1437]: "{status, href}"
+                    - listitem [ref=e1438]:
+                      - paragraph [ref=e1439]:
+                        - text: If
+                        - code [ref=e1440]: status != ok
+                        - text: ", set"
+                        - code [ref=e1441]: STATUS
+                        - text: and
+                        - code [ref=e1442]: HREF
+                        - text: accordingly, then run the block above, then abort.
+                  - paragraph [ref=e1443]: If you want a single-line command instead (less readable), you’ll fight escaping; the heredoc is the robust approach.
+                  - separator [ref=e1444]
+                  - heading "Full implementation checklist (step-by-step)" [level=2] [ref=e1445]
+                  - list [ref=e1446]:
+                    - listitem [ref=e1447]:
+                      - paragraph [ref=e1448]:
+                        - strong [ref=e1449]: Create local profile directory
+                      - list [ref=e1450]:
+                        - listitem [ref=e1451]:
+                          - paragraph [ref=e1452]:
+                            - code [ref=e1453]: mkdir -p .browser-profiles
+                        - listitem [ref=e1454]:
+                          - paragraph [ref=e1455]:
+                            - text: Add
+                            - code [ref=e1456]: .browser-profiles/
+                            - text: to
+                            - code [ref=e1457]: .gitignore
+                    - listitem [ref=e1458]:
+                      - paragraph [ref=e1459]:
+                        - strong [ref=e1460]: Add init script
+                      - list [ref=e1461]:
+                        - listitem [ref=e1462]:
+                          - paragraph [ref=e1463]:
+                            - text: Create
+                            - code [ref=e1464]: scripts/init-chatgpt-storage-state.mjs
+                        - listitem [ref=e1465]:
+                          - paragraph [ref=e1466]:
+                            - code [ref=e1467]: npm i -D playwright
+                        - listitem [ref=e1468]:
+                          - paragraph [ref=e1469]:
+                            - code [ref=e1470]: npx playwright install chromium
+                    - listitem [ref=e1471]:
+                      - paragraph [ref=e1472]:
+                        - strong [ref=e1473]: Generate storage state
+                      - list [ref=e1474]:
+                        - listitem [ref=e1475]:
+                          - paragraph [ref=e1476]:
+                            - code [ref=e1477]: node scripts/init-chatgpt-storage-state.mjs
+                        - listitem [ref=e1478]:
+                          - paragraph [ref=e1479]:
+                            - text: Confirm
+                            - code [ref=e1480]: .browser-profiles/chatgpt-state.json
+                            - text: exists
+                        - listitem [ref=e1481]:
+                          - paragraph [ref=e1482]:
+                            - text: (Optional)
+                            - code [ref=e1483]: chmod 600 .browser-profiles/chatgpt-state.json
+                    - listitem [ref=e1484]:
+                      - paragraph [ref=e1485]:
+                        - strong [ref=e1486]: Disable built-in Playwright plugin
+                      - list [ref=e1487]:
+                        - listitem [ref=e1488]:
+                          - paragraph [ref=e1489]:
+                            - text: In
+                            - code [ref=e1490]: ~/.claude/settings.json
+                            - text: ", disable"
+                            - code [ref=e1491]: playwright@claude-plugins-official
+                    - listitem [ref=e1492]:
+                      - paragraph [ref=e1493]:
+                        - strong [ref=e1494]: Register custom MCP server (local scope)
+                      - list [ref=e1495]:
+                        - listitem [ref=e1496]:
+                          - paragraph [ref=e1497]:
+                            - code [ref=e1498]: claude mcp add --scope local playwright -- npx -y @playwright/mcp@latest --isolated --storage-state <ABS_PATH>
+                        - listitem [ref=e1499]:
+                          - paragraph [ref=e1500]: Restart Claude Code / restart tmux agents
+                    - listitem [ref=e1501]:
+                      - paragraph [ref=e1502]:
+                        - strong [ref=e1503]: Smoke test
+                      - list [ref=e1504]:
+                        - listitem [ref=e1505]:
+                          - paragraph [ref=e1506]:
+                            - code [ref=e1507]: browser_navigate
+                            - text: to
+                            - code [ref=e1508]: https://chatgpt.com/c/<conversation-id>
+                        - listitem [ref=e1509]:
+                          - paragraph [ref=e1510]:
+                            - code [ref=e1511]: browser_snapshot
+                            - text: to confirm prompt UI visible
+                    - listitem [ref=e1512]:
+                      - paragraph [ref=e1513]:
+                        - strong [ref=e1514]: (Optional) Add preflight
+                      - list [ref=e1515]:
+                        - listitem [ref=e1516]:
+                          - paragraph [ref=e1517]: "Before any “type reply” action:"
+                          - list [ref=e1518]:
+                            - listitem [ref=e1519]:
+                              - paragraph [ref=e1520]:
+                                - code [ref=e1521]: browser_evaluate
+                                - text: health-check
+                            - listitem [ref=e1522]:
+                              - paragraph [ref=e1523]: if not ok → snapshot + agent-mail alert + abort
+                    - listitem [ref=e1524]:
+                      - paragraph [ref=e1525]:
+                        - strong [ref=e1526]: (Optional) Add “auth refresh” bead
+                      - list [ref=e1527]:
+                        - listitem [ref=e1528]:
+                          - paragraph [ref=e1529]: When you get an alert/failure, rerun init script and proceed.
+                  - separator [ref=e1530]
+                  - heading "The pragmatic call" [level=3] [ref=e1531]
+                  - paragraph [ref=e1532]:
+                    - text: Start with steps
+                    - strong [ref=e1533]: 1–6 only
+                    - text: . That’s not over-engineering; it’s the minimum to make concurrency work.
+                  - paragraph [ref=e1534]: "Then observe:"
+                  - list [ref=e1535]:
+                    - listitem [ref=e1536]:
+                      - paragraph [ref=e1537]: How often does state expire?
+                    - listitem [ref=e1538]:
+                      - paragraph [ref=e1539]: Do you ever hit challenges?
+                    - listitem [ref=e1540]:
+                      - paragraph [ref=e1541]: Do agents ever misfire on a login page?
+                  - paragraph [ref=e1542]: If the answer is “rare,” skip the ops layer. If it’s “annoying,” add the preflight + mail alert (which is small and clean).
+                - generic [ref=e1543]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e1544]:
+              - heading "You said:" [level=5] [ref=e1545]
+              - generic [ref=e1547]:
+                - generic [ref=e1552]: "ChatGPT and I are aligned. Steps 1-6 are the right scope. One flag: Disabling the plugin is global. Setting playwright@claude-plugins-official to false in ~/.claude/settings.json kills Playwright for ALL projects/sessions (including the other tmux agents and the besteman-land-cattle project). The custom MCP server you add with --scope local only applies to this one project. Two options: - Disable globally, add custom MCP per-project — cleanest, but you'd need to add a plain claude mcp add (without --storage-state) to any other project that needs browser tools - Keep plugin enabled, add custom server with a different name — e.g. claude mcp add --scope local playwright-chatgpt -- npx -y @playwright/mcp@latest --isolated --storage-state ... — gives you both: default browser tools everywhere + ChatGPT-authenticated browser as a second set of tools Other than that, the plan is ready to execute. Want to go?"
+                - generic [ref=e1553]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e1554]:
+              - heading "ChatGPT said:" [level=6] [ref=e1555]
+              - generic [ref=e1557]:
+                - generic [ref=e1561]:
+                  - paragraph [ref=e1562]: Go.
+                  - paragraph [ref=e1563]:
+                    - text: Keep the plugin enabled and add a
+                    - strong [ref=e1564]: second MCP server with a different name
+                    - text: . That gives you “browser tools everywhere” plus a dedicated “ChatGPT-authenticated browser” for this repo, with zero global blast radius.
+                  - heading "Execute steps 1–6 (with the naming tweak)" [level=2] [ref=e1565]
+                  - heading "1) Directory + gitignore" [level=3] [ref=e1566]
+                  - generic [ref=e1573]:
+                    - generic [ref=e1575]:
+                      - generic [ref=e1576]: Bash
+                      - generic [ref=e1577]:
+                        - button "Copy" [ref=e1578] [cursor=pointer]:
+                          - img [ref=e1579]
+                        - button "Edit" [ref=e1582] [cursor=pointer]:
+                          - img [ref=e1584]
+                    - textbox "Edit code" [ref=e1591]:
+                      - generic [ref=e1592]: cd /Users/james/Projects/agent-flywheel-integration
+                      - generic [ref=e1593]: mkdir -p .browser-profiles scripts
+                      - generic [ref=e1594]: printf ".browser-profiles/\n" >> .gitignore
+                  - heading "2) Init script (manual login → export storage state)" [level=3] [ref=e1595]
+                  - paragraph [ref=e1596]:
+                    - text: Create
+                    - code [ref=e1597]: scripts/init-chatgpt-storage-state.mjs
+                    - text: (the one we already drafted).
+                  - paragraph [ref=e1598]: "Then:"
+                  - generic [ref=e1605]:
+                    - generic [ref=e1607]:
+                      - generic [ref=e1608]: Bash
+                      - generic [ref=e1609]:
+                        - button "Copy" [ref=e1610] [cursor=pointer]:
+                          - img [ref=e1611]
+                        - button "Edit" [ref=e1614] [cursor=pointer]:
+                          - img [ref=e1616]
+                    - textbox "Edit code" [ref=e1623]:
+                      - generic [ref=e1624]: npm i -D playwright
+                      - generic [ref=e1625]: npx playwright install chromium
+                      - generic [ref=e1626]: node scripts/init-chatgpt-storage-state.mjs
+                      - generic [ref=e1627]: chmod 600 .browser-profiles/chatgpt-state.json
+                  - heading "3) Add a second MCP server (local scope, unique name)" [level=3] [ref=e1628]:
+                    - text: 3) Add a
+                    - emphasis [ref=e1629]: second
+                    - text: MCP server (local scope, unique name)
+                  - paragraph [ref=e1630]:
+                    - text: Do
+                    - strong [ref=e1631]: not
+                    - text: disable the plugin.
+                  - generic [ref=e1638]:
+                    - generic [ref=e1640]:
+                      - generic [ref=e1641]: Bash
+                      - generic [ref=e1642]:
+                        - button "Copy" [ref=e1643] [cursor=pointer]:
+                          - img [ref=e1644]
+                        - button "Edit" [ref=e1647] [cursor=pointer]:
+                          - img [ref=e1649]
+                    - textbox "Edit code" [ref=e1656]:
+                      - generic [ref=e1657]: claude mcp add --scope local playwright-chatgpt -- \
+                      - generic [ref=e1658]: npx -y @playwright/mcp@latest \
+                      - generic [ref=e1659]: "--isolated \\"
+                      - generic [ref=e1660]: "--storage-state /Users/james/Projects/agent-flywheel-integration/.browser-profiles/chatgpt-state.json"
+                  - paragraph [ref=e1661]: Restart the Claude Code sessions for this repo (your tmux agents).
+                  - heading "4) Smoke test" [level=3] [ref=e1662]
+                  - paragraph [ref=e1663]:
+                    - text: In a Claude Code agent in this repo, use the tools for
+                    - strong [ref=e1664]:
+                      - code [ref=e1665]: playwright-chatgpt
+                    - text: "to:"
+                  - list [ref=e1666]:
+                    - listitem [ref=e1667]:
+                      - paragraph [ref=e1668]:
+                        - text: navigate to a
+                        - code [ref=e1669]: https://chatgpt.com/c/...
+                        - text: conversation URL
+                    - listitem [ref=e1670]:
+                      - paragraph [ref=e1671]: snapshot and confirm you see the prompt UI
+                  - heading "5) Operational rule" [level=3] [ref=e1672]
+                  - list [ref=e1673]:
+                    - listitem [ref=e1674]:
+                      - paragraph [ref=e1675]:
+                        - text: "If it ever lands on login: rerun"
+                        - code [ref=e1676]: node scripts/init-chatgpt-storage-state.mjs
+                        - text: and keep going.
+                  - paragraph [ref=e1677]: That’s it.
+                - generic [ref=e1678]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e1679]:
+              - heading "You said:" [level=5] [ref=e1680]
+              - generic [ref=e1682]:
+                - generic [ref=e1687]: "✅ Success! The playwright-chatgpt setup is working perfectly. I'm QuietDune, a Claude Code agent running in the agent-flywheel-integration project. I was able to: 1. Navigate to this ChatGPT conversation using the playwright-chatgpt MCP server 2. See that I'm logged in as james@7dmanufacturing.com 3. Read the entire conversation from the beginning 4. Interact with the page to post this reply The persistent browser session is working - no login required. All the browser tools (navigate, snapshot, click, type, evaluate) are functional. The integration is ready for multi-agent collaboration! 🎉"
+                - generic [ref=e1688]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e1689]:
+              - heading "ChatGPT said:" [level=6] [ref=e1690]
+              - generic [ref=e1692]:
+                - generic [ref=e1696]:
+                  - paragraph [ref=e1697]: Good. That’s the result you wanted.
+                  - paragraph [ref=e1698]: "You now have:"
+                  - list [ref=e1699]:
+                    - listitem [ref=e1700]:
+                      - paragraph [ref=e1701]: Default Playwright (plugin) for general browsing
+                    - listitem [ref=e1702]:
+                      - paragraph [ref=e1703]:
+                        - code [ref=e1704]: playwright-chatgpt
+                        - text: for authenticated ChatGPT sessions
+                    - listitem [ref=e1705]:
+                      - paragraph [ref=e1706]: Isolated contexts per agent
+                    - listitem [ref=e1707]:
+                      - paragraph [ref=e1708]: Shared storage-state file
+                    - listitem [ref=e1709]:
+                      - paragraph [ref=e1710]: No profile locking
+                    - listitem [ref=e1711]:
+                      - paragraph [ref=e1712]: No login churn
+                  - paragraph [ref=e1713]: That’s the correct architecture for multi-agent coordination.
+                  - separator [ref=e1714]
+                  - heading "What This Actually Unlocks" [level=2] [ref=e1715]
+                  - paragraph [ref=e1716]: "You now have a deterministic bridge between:"
+                  - list [ref=e1717]:
+                    - listitem [ref=e1718]:
+                      - paragraph [ref=e1719]: Agent Flywheel bead/task system
+                    - listitem [ref=e1720]:
+                      - paragraph [ref=e1721]: Live ChatGPT conversations
+                    - listitem [ref=e1722]:
+                      - paragraph [ref=e1723]: Multi-agent browser-driven collaboration
+                  - paragraph [ref=e1724]: "This means agents can:"
+                  - list [ref=e1725]:
+                    - listitem [ref=e1726]:
+                      - paragraph [ref=e1727]: Read upstream reasoning from ChatGPT threads
+                    - listitem [ref=e1728]:
+                      - paragraph [ref=e1729]: Post structured replies
+                    - listitem [ref=e1730]:
+                      - paragraph [ref=e1731]: Use ChatGPT as a shared reasoning surface
+                    - listitem [ref=e1732]:
+                      - paragraph [ref=e1733]: Coordinate across tmux panes via a single persistent session
+                  - paragraph [ref=e1734]: That’s powerful.
+                  - separator [ref=e1735]
+                  - heading "Important Guardrails (Minimal, Not Over-Engineered)" [level=2] [ref=e1736]
+                  - paragraph [ref=e1737]: "Now that it works, keep it stable:"
+                  - heading "1. Do not let multiple agents type simultaneously into the same ChatGPT thread" [level=3] [ref=e1738]:
+                    - text: 1. Do
+                    - strong [ref=e1739]: not
+                    - text: let multiple agents type simultaneously into the same ChatGPT thread
+                  - paragraph [ref=e1740]: Race conditions will happen.
+                  - paragraph [ref=e1741]: "Solution:"
+                  - list [ref=e1742]:
+                    - listitem [ref=e1743]:
+                      - paragraph [ref=e1744]: Assign one “ChatGPT writer agent”
+                    - listitem [ref=e1745]:
+                      - paragraph [ref=e1746]: Others can read via snapshot/evaluate
+                    - listitem [ref=e1747]:
+                      - paragraph [ref=e1748]: Writing goes through a queue/bead
+                  - paragraph [ref=e1749]: You already have the orchestration layer for that.
+                  - separator [ref=e1750]
+                  - heading "2. Treat .browser-profiles/chatgpt-state.json as a credential" [level=3] [ref=e1751]:
+                    - text: 2. Treat
+                    - code [ref=e1752]: .browser-profiles/chatgpt-state.json
+                    - text: as a credential
+                  - paragraph [ref=e1753]: "You already set:"
+                  - generic [ref=e1760]:
+                    - generic [ref=e1762]:
+                      - generic [ref=e1763]: Code
+                      - generic [ref=e1764]:
+                        - button "Copy" [ref=e1765] [cursor=pointer]:
+                          - img [ref=e1766]
+                        - button "Edit" [ref=e1769] [cursor=pointer]:
+                          - img [ref=e1771]
+                    - textbox "Edit code" [ref=e1778]:
+                      - generic [ref=e1779]: chmod 600
+                  - paragraph [ref=e1780]: "Do not:"
+                  - list [ref=e1781]:
+                    - listitem [ref=e1782]:
+                      - paragraph [ref=e1783]: Commit it
+                    - listitem [ref=e1784]:
+                      - paragraph [ref=e1785]: Sync it to cloud drives
+                    - listitem [ref=e1786]:
+                      - paragraph [ref=e1787]: Copy it between machines casually
+                  - paragraph [ref=e1788]: If compromised, regenerate.
+                  - separator [ref=e1789]
+                  - heading "3. Expect occasional session expiration" [level=3] [ref=e1790]
+                  - paragraph [ref=e1791]: "When it happens:"
+                  - list [ref=e1792]:
+                    - listitem [ref=e1793]:
+                      - paragraph [ref=e1794]: Page lands on login
+                    - listitem [ref=e1795]:
+                      - paragraph [ref=e1796]: You rerun init script
+                    - listitem [ref=e1797]:
+                      - paragraph [ref=e1798]: Everything resumes
+                  - paragraph [ref=e1799]: No need for automation until it becomes frequent.
+                  - separator [ref=e1800]
+                  - heading "Architectural Maturity Check" [level=2] [ref=e1801]
+                  - paragraph [ref=e1802]: This is not over-engineered.
+                  - paragraph [ref=e1803]: "You implemented:"
+                  - list [ref=e1804]:
+                    - listitem [ref=e1805]:
+                      - paragraph [ref=e1806]: Persistent auth
+                    - listitem [ref=e1807]:
+                      - paragraph [ref=e1808]: Concurrency-safe isolation
+                    - listitem [ref=e1809]:
+                      - paragraph [ref=e1810]: Local-only configuration
+                    - listitem [ref=e1811]:
+                      - paragraph [ref=e1812]: Project-scoped behavior
+                    - listitem [ref=e1813]:
+                      - paragraph [ref=e1814]: Zero global blast radius
+                  - paragraph [ref=e1815]: That’s clean engineering.
+                  - separator [ref=e1816]
+                  - paragraph [ref=e1817]: "If you want the next level, the real question becomes:"
+                  - paragraph [ref=e1818]:
+                    - text: Do you want agents merely
+                    - emphasis [ref=e1819]: posting
+                    - text: into ChatGPT…
+                  - paragraph [ref=e1820]: Or do you want a structured protocol where ChatGPT becomes a formal reasoning co-processor in the Flywheel system?
+                  - paragraph [ref=e1821]: That’s a different tier of sophistication.
+                  - paragraph [ref=e1822]: For now — ship it.
+                - generic [ref=e1823]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e1824]:
+              - heading "You said:" [level=5] [ref=e1825]
+              - generic [ref=e1827]:
+                - generic [ref=e1832]: How would that look? The structured protocol where ChatGPT becomes a formal reasoning co-processor in the Flywheel system? What would the architecture and workflow be? How would agents interact with you as a reasoning partner versus just posting messages?
+                - generic [ref=e1833]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e1834]:
+              - heading "ChatGPT said:" [level=6] [ref=e1835]
+              - generic [ref=e1837]:
+                - generic [ref=e1841]:
+                  - paragraph [ref=e1842]:
+                    - text: "Here’s what “ChatGPT as a formal reasoning co-processor” looks like in Flywheel terms:"
+                    - strong [ref=e1843]: ChatGPT becomes a stateful, shared “Reasoning Surface + Arbiter”
+                    - text: that agents consult through a
+                    - emphasis [ref=e1844]: protocol
+                    - text: ", not ad-hoc chat. You stop “posting messages” and start doing"
+                    - strong [ref=e1845]: request/response RPC over a conversation thread
+                    - text: ", with a predictable schema and lifecycle tied to beads."
+                  - heading "Core idea" [level=2] [ref=e1846]
+                  - list [ref=e1847]:
+                    - listitem [ref=e1848]:
+                      - paragraph [ref=e1849]:
+                        - strong [ref=e1850]: Flywheel is your execution fabric
+                        - text: (agents do work).
+                    - listitem [ref=e1851]:
+                      - paragraph [ref=e1852]:
+                        - strong [ref=e1853]: ChatGPT thread is your coordination brain
+                        - text: (decisions, synthesis, arbitration, acceptance).
+                    - listitem [ref=e1854]:
+                      - paragraph [ref=e1855]:
+                        - text: Agents interact with ChatGPT by posting
+                        - strong [ref=e1856]: structured packets
+                        - text: and reading
+                        - strong [ref=e1857]: structured replies
+                        - text: .
+                  - paragraph [ref=e1858]: "This gives you: reproducibility, traceability, gating, and fewer “lost in chat” decisions."
+                  - separator [ref=e1859]
+                  - heading "Architecture" [level=1] [ref=e1860]
+                  - heading "Components" [level=2] [ref=e1861]
+                  - list [ref=e1862]:
+                    - listitem [ref=e1863]:
+                      - paragraph [ref=e1864]:
+                        - strong [ref=e1865]: Beads (work units)
+                  - list [ref=e1866]:
+                    - listitem [ref=e1867]:
+                      - paragraph [ref=e1868]: Source of truth for what’s being attempted.
+                    - listitem [ref=e1869]:
+                      - paragraph [ref=e1870]: "Each bead has: goal, constraints, artifacts, owner, status, acceptance tests."
+                  - list [ref=e1871]:
+                    - listitem [ref=e1872]:
+                      - paragraph [ref=e1873]:
+                        - strong [ref=e1874]: Agent-mail queue
+                  - list [ref=e1875]:
+                    - listitem [ref=e1876]:
+                      - paragraph [ref=e1877]: Still the internal transport for execution coordination.
+                  - list [ref=e1878]:
+                    - listitem [ref=e1879]:
+                      - paragraph [ref=e1880]:
+                        - strong [ref=e1881]: ChatGPT Reasoning Thread (CRT)
+                  - list [ref=e1882]:
+                    - listitem [ref=e1883]:
+                      - paragraph [ref=e1884]: A dedicated conversation per “program” (or per major workstream).
+                    - listitem [ref=e1885]:
+                      - paragraph [ref=e1886]: "ChatGPT acts as:"
+                      - list [ref=e1887]:
+                        - listitem [ref=e1888]:
+                          - paragraph [ref=e1889]:
+                            - strong [ref=e1890]: Planner
+                            - text: (decompose bead → tasks)
+                        - listitem [ref=e1891]:
+                          - paragraph [ref=e1892]:
+                            - strong [ref=e1893]: Arbiter
+                            - text: (choose between conflicting agent outputs)
+                        - listitem [ref=e1894]:
+                          - paragraph [ref=e1895]:
+                            - strong [ref=e1896]: Sentry
+                            - text: (spot inconsistencies, missing constraints)
+                        - listitem [ref=e1897]:
+                          - paragraph [ref=e1898]:
+                            - strong [ref=e1899]: Integrator
+                            - text: (merge into a coherent patch plan / spec)
+                  - list [ref=e1900]:
+                    - listitem [ref=e1901]:
+                      - paragraph [ref=e1902]:
+                        - strong [ref=e1903]: Protocol Layer
+                  - list [ref=e1904]:
+                    - listitem [ref=e1905]:
+                      - paragraph [ref=e1906]: Defines message envelopes, required fields, expected response shapes.
+                    - listitem [ref=e1907]:
+                      - paragraph [ref=e1908]: Prevents free-form drift.
+                  - list [ref=e1909]:
+                    - listitem [ref=e1910]:
+                      - paragraph [ref=e1911]:
+                        - strong [ref=e1912]: ChatGPT Bridge Agent (Writer / Reader)
+                  - list [ref=e1913]:
+                    - listitem [ref=e1914]:
+                      - paragraph [ref=e1915]: One agent is the only writer to the CRT (prevents collisions).
+                    - listitem [ref=e1916]:
+                      - paragraph [ref=e1917]: "It:"
+                      - list [ref=e1918]:
+                        - listitem [ref=e1919]:
+                          - paragraph [ref=e1920]:
+                            - text: posts packets to ChatGPT via
+                            - code [ref=e1921]: playwright-chatgpt
+                        - listitem [ref=e1922]:
+                          - paragraph [ref=e1923]: reads replies
+                        - listitem [ref=e1924]:
+                          - paragraph [ref=e1925]: parses them
+                        - listitem [ref=e1926]:
+                          - paragraph [ref=e1927]: emits new bead updates / tasks via agent-mail
+                  - paragraph [ref=e1928]:
+                    - text: "This is the key move:"
+                    - strong [ref=e1929]: one I/O gateway agent
+                    - text: .
+                  - separator [ref=e1930]
+                  - heading "Workflow" [level=1] [ref=e1931]
+                  - heading "Roles" [level=2] [ref=e1932]
+                  - list [ref=e1933]:
+                    - listitem [ref=e1934]:
+                      - paragraph [ref=e1935]:
+                        - strong [ref=e1936]: Executor agents
+                        - text: ": do implementation, tests, research, diffs."
+                    - listitem [ref=e1937]:
+                      - paragraph [ref=e1938]:
+                        - strong [ref=e1939]: Bridge agent (QuietDune / dedicated)
+                        - text: ": talks to ChatGPT thread."
+                    - listitem [ref=e1940]:
+                      - paragraph [ref=e1941]:
+                        - strong [ref=e1942]: ChatGPT
+                        - text: ": responds with decisions and structured outputs."
+                  - heading "Bead lifecycle with ChatGPT co-processor" [level=2] [ref=e1943]
+                  - heading "Stage 0 — Bead intake" [level=3] [ref=e1944]
+                  - paragraph [ref=e1945]: "Bead created with:"
+                  - list [ref=e1946]:
+                    - listitem [ref=e1947]:
+                      - paragraph [ref=e1948]: objective, constraints, environment, “definition of done”
+                  - heading "Stage 1 — “Request for Plan” (RFP) packet to ChatGPT" [level=3] [ref=e1949]
+                  - paragraph [ref=e1950]: "Bridge posts a packet:"
+                  - list [ref=e1951]:
+                    - listitem [ref=e1952]:
+                      - paragraph [ref=e1953]: context summary (short)
+                    - listitem [ref=e1954]:
+                      - paragraph [ref=e1955]: constraints (hard)
+                    - listitem [ref=e1956]:
+                      - paragraph [ref=e1957]: requested output type (plan, arbitration, spec, test strategy)
+                    - listitem [ref=e1958]:
+                      - paragraph [ref=e1959]: artifacts available (links, diffs, logs)
+                  - paragraph [ref=e1960]: "ChatGPT returns:"
+                  - list [ref=e1961]:
+                    - listitem [ref=e1962]:
+                      - paragraph [ref=e1963]: task decomposition (with dependencies)
+                    - listitem [ref=e1964]:
+                      - paragraph [ref=e1965]: risks
+                    - listitem [ref=e1966]:
+                      - paragraph [ref=e1967]: acceptance tests
+                    - listitem [ref=e1968]:
+                      - paragraph [ref=e1969]: required evidence
+                  - paragraph [ref=e1970]: "Bridge converts that into:"
+                  - list [ref=e1971]:
+                    - listitem [ref=e1972]:
+                      - paragraph [ref=e1973]: agent-mail tasks to executor agents
+                    - listitem [ref=e1974]:
+                      - paragraph [ref=e1975]: updates bead state
+                  - heading "Stage 2 — Execution" [level=3] [ref=e1976]
+                  - paragraph [ref=e1977]: "Executor agents run tasks, produce artifacts:"
+                  - list [ref=e1978]:
+                    - listitem [ref=e1979]:
+                      - paragraph [ref=e1980]: patches, diffs, logs, benchmark results, screenshots, tables
+                  - paragraph [ref=e1981]: They post results back to agent-mail.
+                  - heading "Stage 3 — “Evidence bundle” packet to ChatGPT" [level=3] [ref=e1982]
+                  - paragraph [ref=e1983]: "Bridge posts:"
+                  - list [ref=e1984]:
+                    - listitem [ref=e1985]:
+                      - paragraph [ref=e1986]: the evidence bundle (structured)
+                    - listitem [ref=e1987]:
+                      - paragraph [ref=e1988]: "explicit question: “accept/reject? what’s missing? choose among options?”"
+                  - paragraph [ref=e1989]: "ChatGPT returns:"
+                  - list [ref=e1990]:
+                    - listitem [ref=e1991]:
+                      - paragraph [ref=e1992]: verdict (accept / revise / reject)
+                    - listitem [ref=e1993]:
+                      - paragraph [ref=e1994]: missing items
+                    - listitem [ref=e1995]:
+                      - paragraph [ref=e1996]: merge plan / patch strategy
+                    - listitem [ref=e1997]:
+                      - paragraph [ref=e1998]: priority ordering
+                  - paragraph [ref=e1999]: Bridge updates bead and dispatches follow-ups.
+                  - heading "Stage 4 — Final acceptance" [level=3] [ref=e2000]
+                  - paragraph [ref=e2001]: "Once ChatGPT says “accept,” bridge posts final summary to CRT:"
+                  - list [ref=e2002]:
+                    - listitem [ref=e2003]:
+                      - paragraph [ref=e2004]: what changed
+                    - listitem [ref=e2005]:
+                      - paragraph [ref=e2006]: evidence
+                    - listitem [ref=e2007]:
+                      - paragraph [ref=e2008]: what remains
+                  - paragraph [ref=e2009]: Bead closes.
+                  - separator [ref=e2010]
+                  - heading "The Protocol (concrete)" [level=1] [ref=e2011]
+                  - heading "Message Envelope (agent → ChatGPT)" [level=2] [ref=e2012]
+                  - paragraph [ref=e2013]: "Use a rigid wrapper so you can parse it reliably:"
+                  - generic [ref=e2020]:
+                    - generic [ref=e2022]:
+                      - generic [ref=e2023]: JSON
+                      - generic [ref=e2024]:
+                        - button "Copy" [ref=e2025] [cursor=pointer]:
+                          - img [ref=e2026]
+                        - button "Edit" [ref=e2029] [cursor=pointer]:
+                          - img [ref=e2031]
+                    - textbox "Edit code" [ref=e2039]:
+                      - generic [ref=e2040]: "{"
+                      - generic [ref=e2041]: "\"proto\": \"flywheel.chatgpt.v1\","
+                      - generic [ref=e2042]: "\"bead_id\": \"bd-1j5d\","
+                      - generic [ref=e2043]: "\"msg_type\": \"RFP_PLAN\","
+                      - generic [ref=e2044]: "\"sender\": \"QuietDune\","
+                      - generic [ref=e2045]: "\"ts\": \"2026-02-12T14:22:00-06:00\","
+                      - generic [ref=e2046]: "\"context\": {"
+                      - generic [ref=e2047]: "\"repo\": \"agent-flywheel-integration\","
+                      - generic [ref=e2048]: "\"branch\": \"main\","
+                      - generic [ref=e2049]: "\"goal\": \"Make ChatGPT persistent session available to multi-agent runtime\","
+                      - generic [ref=e2050]: "\"constraints\": [\"isolated\", \"no profile locks\", \"local scope config\"]"
+                      - generic [ref=e2051]: "},"
+                      - generic [ref=e2052]: "\"inputs\": {"
+                      - generic [ref=e2053]: "\"artifacts\": ["
+                      - generic [ref=e2054]: "{\"type\": \"log\", \"label\": \"mcp help output\", \"content\": \"...\"},"
+                      - generic [ref=e2055]: "{\"type\": \"config\", \"label\": \".mcp.json\", \"content\": \"{...}\"}"
+                      - generic [ref=e2056]: "],"
+                      - generic [ref=e2057]: "\"questions\": ["
+                      - generic [ref=e2058]: "\"Propose minimal architecture\","
+                      - generic [ref=e2059]: "\"Call out gotchas\""
+                      - generic [ref=e2060]: "]"
+                      - generic [ref=e2061]: "},"
+                      - generic [ref=e2062]: "\"requested_output\": {"
+                      - generic [ref=e2063]: "\"format\": \"json\","
+                      - generic [ref=e2064]: "\"fields\": [\"plan\", \"risks\", \"acceptance_tests\", \"next_actions\"]"
+                      - generic [ref=e2065]: "}"
+                      - generic [ref=e2066]: "}"
+                  - heading "ChatGPT Response Envelope (ChatGPT → agent)" [level=3] [ref=e2067]
+                  - paragraph [ref=e2068]: "Ask ChatGPT to respond with a parseable structure:"
+                  - generic [ref=e2075]:
+                    - generic [ref=e2077]:
+                      - generic [ref=e2078]: JSON
+                      - generic [ref=e2079]:
+                        - button "Copy" [ref=e2080] [cursor=pointer]:
+                          - img [ref=e2081]
+                        - button "Edit" [ref=e2084] [cursor=pointer]:
+                          - img [ref=e2086]
+                    - textbox "Edit code" [ref=e2094]:
+                      - generic [ref=e2095]: "{"
+                      - generic [ref=e2096]: "\"proto\": \"flywheel.chatgpt.v1\","
+                      - generic [ref=e2097]: "\"bead_id\": \"bd-1j5d\","
+                      - generic [ref=e2098]: "\"msg_type\": \"RFP_PLAN_RESPONSE\","
+                      - generic [ref=e2099]: "\"verdict\": \"ok\","
+                      - generic [ref=e2100]: "\"plan\": ["
+                      - generic [ref=e2101]: "{\"step\": 1, \"action\": \"...\", \"owner\": \"Bridge\", \"evidence\": \"...\"},"
+                      - generic [ref=e2102]: "{\"step\": 2, \"action\": \"...\", \"owner\": \"Executor\", \"evidence\": \"...\"}"
+                      - generic [ref=e2103]: "],"
+                      - generic [ref=e2104]: "\"risks\": ["
+                      - generic [ref=e2105]: "{\"risk\": \"cookie expiry\", \"mitigation\": \"rerun init script\"}"
+                      - generic [ref=e2106]: "],"
+                      - generic [ref=e2107]: "\"acceptance_tests\": ["
+                      - generic [ref=e2108]: "\"Agent can navigate to chatgpt.com/c/... and see prompt UI without login\""
+                      - generic [ref=e2109]: "],"
+                      - generic [ref=e2110]: "\"next_actions\": ["
+                      - generic [ref=e2111]: "{\"task\": \"Implement init script\", \"assign_to\": \"ExecutorA\"}"
+                      - generic [ref=e2112]: "]"
+                      - generic [ref=e2113]: "}"
+                  - paragraph [ref=e2114]:
+                    - text: Bridge parses
+                    - code [ref=e2115]: next_actions
+                    - text: → creates bead tasks.
+                  - separator [ref=e2116]
+                  - heading "How agents interact with ChatGPT as a partner (not just posting)" [level=1] [ref=e2117]
+                  - heading "Interaction modes" [level=2] [ref=e2118]
+                  - heading "1) Planner mode" [level=3] [ref=e2119]
+                  - paragraph [ref=e2120]:
+                    - strong [ref=e2121]: "Input:"
+                    - text: “Here’s the bead + constraints.”
+                    - strong [ref=e2122]: "Output:"
+                    - text: task graph + acceptance tests.
+                  - heading "2) Arbiter mode (most valuable)" [level=3] [ref=e2123]
+                  - paragraph [ref=e2124]:
+                    - text: Agents disagree. You post two or three candidate solutions with evidence.
+                    - text: ChatGPT chooses and explains tradeoffs, and picks the “merge path.”
+                  - paragraph [ref=e2125]: This eliminates “loudest agent wins.”
+                  - heading "3) Spec lock mode" [level=3] [ref=e2126]
+                  - paragraph [ref=e2127]: "You ask ChatGPT to produce a “frozen contract”:"
+                  - list [ref=e2128]:
+                    - listitem [ref=e2129]:
+                      - paragraph [ref=e2130]:
+                        - text: schema, OpenAPI shape, event names, error codes
+                        - text: Then you enforce it in CI.
+                  - heading "4) Review / audit mode" [level=3] [ref=e2131]
+                  - paragraph [ref=e2132]:
+                    - text: You post diffs + tests + logs.
+                    - text: "ChatGPT returns:"
+                  - list [ref=e2133]:
+                    - listitem [ref=e2134]:
+                      - paragraph [ref=e2135]: red flags
+                    - listitem [ref=e2136]:
+                      - paragraph [ref=e2137]: missing cases
+                    - listitem [ref=e2138]:
+                      - paragraph [ref=e2139]: failure modes
+                    - listitem [ref=e2140]:
+                      - paragraph [ref=e2141]: “ship / don’t ship” call
+                  - heading "5) Memory / continuity mode" [level=3] [ref=e2142]
+                  - paragraph [ref=e2143]: "ChatGPT thread becomes the narrative continuity of a long multi-week effort:"
+                  - list [ref=e2144]:
+                    - listitem [ref=e2145]:
+                      - paragraph [ref=e2146]: why decisions were made
+                    - listitem [ref=e2147]:
+                      - paragraph [ref=e2148]: what constraints were binding
+                    - listitem [ref=e2149]:
+                      - paragraph [ref=e2150]: what was tried and rejected
+                  - paragraph [ref=e2151]: Flywheel retains the execution artifacts; ChatGPT retains the rationale.
+                  - separator [ref=e2152]
+                  - heading "Practical implementation (minimum to make this real)" [level=1] [ref=e2153]
+                  - heading "A) Create a “ChatGPT Bridge” bead type" [level=2] [ref=e2154]
+                  - list [ref=e2155]:
+                    - listitem [ref=e2156]:
+                      - paragraph [ref=e2157]: Only one writer agent per CRT
+                    - listitem [ref=e2158]:
+                      - paragraph [ref=e2159]: Others never type, only read or send structured packets to bridge via agent-mail
+                  - heading "B) Add a “packet builder”" [level=2] [ref=e2160]
+                  - paragraph [ref=e2161]: "A small helper script that:"
+                  - list [ref=e2162]:
+                    - listitem [ref=e2163]:
+                      - paragraph [ref=e2164]: takes bead info + artifacts
+                    - listitem [ref=e2165]:
+                      - paragraph [ref=e2166]: outputs the JSON envelope as a markdown code block
+                    - listitem [ref=e2167]:
+                      - paragraph [ref=e2168]: bridge pastes it into ChatGPT
+                  - heading "C) Add a “response parser”" [level=2] [ref=e2169]
+                  - paragraph [ref=e2170]:
+                    - text: Bridge reads ChatGPT response, extracts JSON, validates basic fields.
+                    - text: If invalid, bridge asks ChatGPT to re-emit strictly valid JSON.
+                  - heading "D) Add “decision gates”" [level=2] [ref=e2171]
+                  - paragraph [ref=e2172]: "Bead cannot move to DONE until ChatGPT replies with:"
+                  - list [ref=e2173]:
+                    - listitem [ref=e2174]:
+                      - paragraph [ref=e2175]:
+                        - code [ref=e2176]: "verdict: accept"
+                    - listitem [ref=e2177]:
+                      - paragraph [ref=e2178]: acceptance tests satisfied evidence attached
+                  - paragraph [ref=e2179]:
+                    - text: This turns ChatGPT into a
+                    - strong [ref=e2180]: formal gate
+                    - text: .
+                  - separator [ref=e2181]
+                  - heading "Failure modes and controls" [level=1] [ref=e2182]
+                  - heading "Concurrency" [level=2] [ref=e2183]
+                  - list [ref=e2184]:
+                    - listitem [ref=e2185]:
+                      - paragraph [ref=e2186]: One writer agent (non-negotiable)
+                    - listitem [ref=e2187]:
+                      - paragraph [ref=e2188]:
+                        - text: "Optional: a simple lock file in repo:"
+                        - code [ref=e2189]: .flywheel/locks/chatgpt_writer.lock
+                  - heading "Prompt drift" [level=2] [ref=e2190]
+                  - list [ref=e2191]:
+                    - listitem [ref=e2192]:
+                      - paragraph [ref=e2193]:
+                        - text: Always include
+                        - code [ref=e2194]: requested_output.format = json
+                    - listitem [ref=e2195]:
+                      - paragraph [ref=e2196]:
+                        - text: Always include
+                        - code [ref=e2197]: fields
+                        - text: list
+                    - listitem [ref=e2198]:
+                      - paragraph [ref=e2199]: "If response isn’t valid JSON, auto-reprompt: “Re-emit strictly valid JSON only.”"
+                  - heading "Hallucinated “facts”" [level=2] [ref=e2200]
+                  - list [ref=e2201]:
+                    - listitem [ref=e2202]:
+                      - paragraph [ref=e2203]: ChatGPT should only arbitrate based on supplied evidence
+                    - listitem [ref=e2204]:
+                      - paragraph [ref=e2205]: "Your protocol should include:"
+                      - list [ref=e2206]:
+                        - listitem [ref=e2207]:
+                          - paragraph [ref=e2208]:
+                            - code [ref=e2209]: assumptions[]
+                        - listitem [ref=e2210]:
+                          - paragraph [ref=e2211]:
+                            - code [ref=e2212]: evidence_required[]
+                        - listitem [ref=e2213]:
+                          - paragraph [ref=e2214]:
+                            - code [ref=e2215]: confidence
+                            - text: per claim
+                  - separator [ref=e2216]
+                  - heading "What it looks like day-to-day" [level=1] [ref=e2217]
+                  - list [ref=e2218]:
+                    - listitem [ref=e2219]:
+                      - paragraph [ref=e2220]: Bead created
+                    - listitem [ref=e2221]:
+                      - paragraph [ref=e2222]:
+                        - text: Bridge posts
+                        - code [ref=e2223]: RFP_PLAN
+                    - listitem [ref=e2224]:
+                      - paragraph [ref=e2225]: ChatGPT returns plan + tasks
+                    - listitem [ref=e2226]:
+                      - paragraph [ref=e2227]: Bridge dispatches tasks to executor agents
+                    - listitem [ref=e2228]:
+                      - paragraph [ref=e2229]: Executors return results
+                    - listitem [ref=e2230]:
+                      - paragraph [ref=e2231]:
+                        - text: Bridge posts
+                        - code [ref=e2232]: EVIDENCE_BUNDLE
+                    - listitem [ref=e2233]:
+                      - paragraph [ref=e2234]:
+                        - text: ChatGPT returns
+                        - code [ref=e2235]: ACCEPT/REVISE
+                        - text: + next actions
+                    - listitem [ref=e2236]:
+                      - paragraph [ref=e2237]: Loop until accept
+                    - listitem [ref=e2238]:
+                      - paragraph [ref=e2239]: Bead closes with ChatGPT “Decision Record” attached
+                  - separator [ref=e2240]
+                  - paragraph [ref=e2241]:
+                    - text: "If you want to actually operationalize this next, the fastest win is:"
+                    - strong [ref=e2242]: define 5 message types
+                    - text: "and enforce them:"
+                  - list [ref=e2243]:
+                    - listitem [ref=e2244]:
+                      - paragraph [ref=e2245]:
+                        - code [ref=e2246]: RFP_PLAN
+                    - listitem [ref=e2247]:
+                      - paragraph [ref=e2248]:
+                        - code [ref=e2249]: RFP_ARBITRATE
+                    - listitem [ref=e2250]:
+                      - paragraph [ref=e2251]:
+                        - code [ref=e2252]: EVIDENCE_BUNDLE
+                    - listitem [ref=e2253]:
+                      - paragraph [ref=e2254]:
+                        - code [ref=e2255]: SPEC_LOCK
+                    - listitem [ref=e2256]:
+                      - paragraph [ref=e2257]:
+                        - code [ref=e2258]: ACCEPTANCE_GATE
+                  - paragraph [ref=e2259]:
+                    - text: Say the word and I’ll write the exact JSON schemas for those packets + a tiny
+                    - code [ref=e2260]: packet-build.sh
+                    - text: helper that formats them for copy/paste into ChatGPT.
+                - generic [ref=e2261]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e2262]:
+              - heading "You said:" [level=5] [ref=e2263]
+              - generic [ref=e2265]:
+                - generic [ref=e2270]: "I want to implement this agent flywheel protocol. Can you help me create a detailed implementation plan? Consider: 1. Where should the packet schemas be defined? 2. How should the bridge component work? 3. What's the best way to integrate this with the existing AgentCore bead system? 4. Should we create the packet-build.sh helper first or the schemas? Current context: I'm on a fresh feature branch (feature/agent-flywheel-protocol) in the AgentCore project."
+                - generic [ref=e2271]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e2272]:
+              - heading "ChatGPT said:" [level=6] [ref=e2273]
+              - generic [ref=e2275]:
+                - generic [ref=e2279]:
+                  - paragraph [ref=e2280]:
+                    - text: "Yes. Below is a concrete implementation plan that fits your current reality:"
+                    - strong [ref=e2281]: AgentCore + beads + agent-mail + one Bridge agent
+                    - text: +
+                    - strong [ref=e2282]: ChatGPT thread as a protocol endpoint
+                    - text: .
+                  - paragraph [ref=e2283]: "I’m going to optimize for: (1) minimal moving parts, (2) strong determinism, (3) incremental adoption."
+                  - separator [ref=e2284]
+                  - heading "Architecture decisions up front" [level=2] [ref=e2285]
+                  - heading "Packet schemas location" [level=3] [ref=e2286]
+                  - paragraph [ref=e2287]:
+                    - text: Define schemas in
+                    - strong [ref=e2288]: AgentCore
+                    - text: ", not in"
+                    - code [ref=e2289]: agent-flywheel-integration
+                    - text: .
+                  - paragraph [ref=e2290]:
+                    - strong [ref=e2291]: "Why:"
+                    - text: "the protocol is a first-class contract for your orchestrator/runtime, not a local experiment. Keeping schemas in AgentCore lets you:"
+                  - list [ref=e2292]:
+                    - listitem [ref=e2293]:
+                      - paragraph [ref=e2294]: version the protocol
+                    - listitem [ref=e2295]:
+                      - paragraph [ref=e2296]: validate packets in CI
+                    - listitem [ref=e2297]:
+                      - paragraph [ref=e2298]: reuse across all projects that adopt Flywheel
+                  - paragraph [ref=e2299]:
+                    - strong [ref=e2300]: Recommended path in AgentCore
+                  - generic [ref=e2307]:
+                    - generic [ref=e2309]:
+                      - generic [ref=e2310]: Code
+                      - generic [ref=e2311]:
+                        - button "Copy" [ref=e2312] [cursor=pointer]:
+                          - img [ref=e2313]
+                        - button "Edit" [ref=e2316] [cursor=pointer]:
+                          - img [ref=e2318]
+                    - textbox "Edit code" [ref=e2326]:
+                      - generic [ref=e2327]: AgentCore/
+                      - generic [ref=e2328]: schemas/
+                      - generic [ref=e2329]: flywheel/
+                      - generic [ref=e2330]: chatgpt/
+                      - generic [ref=e2331]: v1/
+                      - generic [ref=e2332]: envelope.schema.json
+                      - generic [ref=e2333]: msg-rfp-plan.schema.json
+                      - generic [ref=e2334]: msg-arbitrate.schema.json
+                      - generic [ref=e2335]: msg-evidence-bundle.schema.json
+                      - generic [ref=e2336]: msg-spec-lock.schema.json
+                      - generic [ref=e2337]: msg-acceptance-gate.schema.json
+                  - heading "Bridge component concept" [level=3] [ref=e2338]
+                  - paragraph [ref=e2339]:
+                    - text: Treat Bridge as an
+                    - strong [ref=e2340]: I/O gateway
+                    - text: "with one job:"
+                  - list [ref=e2341]:
+                    - listitem [ref=e2342]:
+                      - paragraph [ref=e2343]:
+                        - strong [ref=e2344]: Read
+                        - text: ": accept “requests to consult ChatGPT” from bead workflow (agent-mail or bead record)"
+                    - listitem [ref=e2345]:
+                      - paragraph [ref=e2346]:
+                        - strong [ref=e2347]: Write
+                        - text: ": post packets into the ChatGPT Reasoning Thread (CRT)"
+                    - listitem [ref=e2348]:
+                      - paragraph [ref=e2349]:
+                        - strong [ref=e2350]: Read back
+                        - text: ": pull ChatGPT responses, parse JSON, validate against schemas"
+                    - listitem [ref=e2351]:
+                      - paragraph [ref=e2352]:
+                        - strong [ref=e2353]: Emit
+                        - text: ": convert response → bead updates + agent-mail tasks"
+                  - paragraph [ref=e2354]:
+                    - strong [ref=e2355]: "Hard rule:"
+                    - text: only one writer to a given CRT (per project/workstream).
+                  - heading "Integration with beads (AgentCore)" [level=3] [ref=e2356]
+                  - paragraph [ref=e2357]: "Integrate at the bead workflow layer by adding a new optional “gate” step:"
+                  - list [ref=e2358]:
+                    - listitem [ref=e2359]:
+                      - paragraph [ref=e2360]:
+                        - code [ref=e2361]: chatgpt_consult
+                        - text: (planning/arbitration/spec gate)
+                    - listitem [ref=e2362]:
+                      - paragraph [ref=e2363]:
+                        - code [ref=e2364]: chatgpt_acceptance
+                        - text: (final acceptance gate)
+                  - paragraph [ref=e2365]:
+                    - text: This should be
+                    - strong [ref=e2366]: non-invasive
+                    - text: ": beads that don’t opt in continue to work unchanged."
+                  - heading "Schemas vs helper first?" [level=3] [ref=e2367]
+                  - paragraph [ref=e2368]:
+                    - strong [ref=e2369]: Schemas first
+                    - text: ", then helper."
+                  - paragraph [ref=e2370]: "Reason: helpers should produce and validate against the schema you commit. If you write helper first, you’ll drift and “fix the schema later” never happens cleanly."
+                  - separator [ref=e2371]
+                  - heading "Implementation plan (feature/agent-flywheel-protocol)" [level=2] [ref=e2372]
+                  - heading "Phase 0 — Define the protocol surface (schemas + conventions)" [level=3] [ref=e2373]
+                  - list [ref=e2374]:
+                    - listitem [ref=e2375]:
+                      - paragraph [ref=e2376]:
+                        - strong [ref=e2377]: Create the schema directory structure
+                        - text: (paths above)
+                    - listitem [ref=e2378]:
+                      - paragraph [ref=e2379]:
+                        - strong [ref=e2380]: Define a shared envelope schema
+                        - text: "Fields I’d standardize across all packet types:"
+                  - list [ref=e2381]:
+                    - listitem [ref=e2382]:
+                      - paragraph [ref=e2383]:
+                        - code [ref=e2384]: proto
+                        - text: "(fixed string:"
+                        - code [ref=e2385]: flywheel.chatgpt.v1
+                        - text: )
+                    - listitem [ref=e2386]:
+                      - paragraph [ref=e2387]:
+                        - code [ref=e2388]: bead_id
+                    - listitem [ref=e2389]:
+                      - paragraph [ref=e2390]:
+                        - code [ref=e2391]: msg_type
+                        - text: (enum)
+                    - listitem [ref=e2392]:
+                      - paragraph [ref=e2393]:
+                        - code [ref=e2394]: sender
+                    - listitem [ref=e2395]:
+                      - paragraph [ref=e2396]:
+                        - code [ref=e2397]: ts
+                    - listitem [ref=e2398]:
+                      - paragraph [ref=e2399]:
+                        - code [ref=e2400]: context
+                        - text: (repo, branch, constraints)
+                    - listitem [ref=e2401]:
+                      - paragraph [ref=e2402]:
+                        - code [ref=e2403]: inputs
+                        - text: (artifacts, questions, options)
+                    - listitem [ref=e2404]:
+                      - paragraph [ref=e2405]:
+                        - code [ref=e2406]: requested_output
+                        - text: (format=json, required fields)
+                    - listitem [ref=e2407]:
+                      - paragraph [ref=e2408]:
+                        - code [ref=e2409]: idempotency_key
+                        - text: (optional but strongly recommended)
+                  - list [ref=e2410]:
+                    - listitem [ref=e2411]:
+                      - paragraph [ref=e2412]:
+                        - strong [ref=e2413]: Define 5 message-type schemas
+                        - text: "Start with exactly these (don’t add more yet):"
+                  - list [ref=e2414]:
+                    - listitem [ref=e2415]:
+                      - paragraph [ref=e2416]:
+                        - code [ref=e2417]: RFP_PLAN
+                    - listitem [ref=e2418]:
+                      - paragraph [ref=e2419]:
+                        - code [ref=e2420]: RFP_ARBITRATE
+                    - listitem [ref=e2421]:
+                      - paragraph [ref=e2422]:
+                        - code [ref=e2423]: EVIDENCE_BUNDLE
+                    - listitem [ref=e2424]:
+                      - paragraph [ref=e2425]:
+                        - code [ref=e2426]: SPEC_LOCK
+                    - listitem [ref=e2427]:
+                      - paragraph [ref=e2428]:
+                        - code [ref=e2429]: ACCEPTANCE_GATE
+                  - paragraph [ref=e2430]: "Each schema should:"
+                  - list [ref=e2431]:
+                    - listitem [ref=e2432]:
+                      - paragraph [ref=e2433]:
+                        - code [ref=e2434]: allOf
+                        - text: ": envelope + type-specific requirements"
+                    - listitem [ref=e2435]:
+                      - paragraph [ref=e2436]: lock down the expected output fields (so the response can be validated)
+                  - list [ref=e2437]:
+                    - listitem [ref=e2438]:
+                      - paragraph [ref=e2439]:
+                        - strong [ref=e2440]: Define a response schema per message type
+                        - text: Do not accept “freeform assistant replies” as protocol responses.
+                        - text: "Require:"
+                  - list [ref=e2441]:
+                    - listitem [ref=e2442]:
+                      - paragraph [ref=e2443]:
+                        - code [ref=e2444]: proto
+                        - text: ","
+                        - code [ref=e2445]: bead_id
+                        - text: ","
+                        - code [ref=e2446]: msg_type
+                        - text: ","
+                        - code [ref=e2447]: verdict
+                    - listitem [ref=e2448]:
+                      - paragraph [ref=e2449]: plus the type-specific payload
+                  - list [ref=e2450]:
+                    - listitem [ref=e2451]:
+                      - paragraph [ref=e2452]:
+                        - strong [ref=e2453]: Add a simple validator utility
+                        - text: "Pick one:"
+                  - list [ref=e2454]:
+                    - listitem [ref=e2455]:
+                      - paragraph [ref=e2456]:
+                        - text: "Node:"
+                        - code [ref=e2457]: ajv
+                    - listitem [ref=e2458]:
+                      - paragraph [ref=e2459]:
+                        - text: "Python:"
+                        - code [ref=e2460]: jsonschema
+                  - paragraph [ref=e2461]:
+                    - text: Given your environment is already heavy bash/Node in places,
+                    - strong [ref=e2462]: Node + ajv
+                    - text: is usually easiest for CLI tools.
+                  - paragraph [ref=e2463]:
+                    - text: "Deliverable:"
+                    - code [ref=e2464]: scripts/validate-packet.mjs
+                    - text: that validates either request or response.
+                  - separator [ref=e2465]
+                  - heading "Phase 1 — Add packet builder + parser tooling (CLI, local dev UX)" [level=3] [ref=e2466]
+                  - list [ref=e2467]:
+                    - listitem [ref=e2468]:
+                      - paragraph [ref=e2469]:
+                        - strong [ref=e2470]:
+                          - text: Implement
+                          - code [ref=e2471]: packet-build
+                          - text: helper (after schemas exist)
+                        - text: I’d do Node (more reliable JSON + templating), but if you insist on bash, keep it dumb.
+                  - paragraph [ref=e2472]: "Recommended:"
+                  - generic [ref=e2479]:
+                    - generic [ref=e2481]:
+                      - generic [ref=e2482]: Code
+                      - generic [ref=e2483]:
+                        - button "Copy" [ref=e2484] [cursor=pointer]:
+                          - img [ref=e2485]
+                        - button "Edit" [ref=e2488] [cursor=pointer]:
+                          - img [ref=e2490]
+                    - textbox "Edit code" [ref=e2497]:
+                      - generic [ref=e2498]: scripts/chatgpt/
+                      - generic [ref=e2499]: packet-build.mjs
+                      - generic [ref=e2500]: packet-validate.mjs (thin wrapper around validate utility)
+                      - generic [ref=e2501]: packet-extract.mjs (extract JSON from a ChatGPT reply text)
+                  - paragraph [ref=e2502]: "Core behaviors:"
+                  - list [ref=e2503]:
+                    - listitem [ref=e2504]:
+                      - paragraph [ref=e2505]:
+                        - text: "takes:"
+                        - code [ref=e2506]: "--bead bd-xxx --type RFP_PLAN --context file.json --artifacts dir/"
+                    - listitem [ref=e2507]:
+                      - paragraph [ref=e2508]:
+                        - text: "outputs: a"
+                        - strong [ref=e2509]: single JSON object
+                        - text: (or markdown with fenced JSON if you prefer)
+                    - listitem [ref=e2510]:
+                      - paragraph [ref=e2511]: "optional: immediately validate output against schema"
+                  - list [ref=e2512]:
+                    - listitem [ref=e2513]:
+                      - paragraph [ref=e2514]:
+                        - strong [ref=e2515]: Implement response extraction
+                        - text: "ChatGPT replies may include commentary. Your protocol should demand “JSON only”, but in practice, you need a robust extractor:"
+                  - list [ref=e2516]:
+                    - listitem [ref=e2517]:
+                      - paragraph [ref=e2518]:
+                        - text: find first
+                        - code [ref=e2519]: "{"
+                        - text: and last
+                        - code [ref=e2520]: "}"
+                        - text: and parse
+                    - listitem [ref=e2521]:
+                      - paragraph [ref=e2522]: fail loudly if invalid JSON
+                    - listitem [ref=e2523]:
+                      - paragraph [ref=e2524]: optionally auto-generate a “re-emit JSON only” reprompt packet (nice-to-have)
+                  - separator [ref=e2525]
+                  - heading "Phase 2 — Bridge MVP (no fancy automation yet)" [level=3] [ref=e2526]
+                  - list [ref=e2527]:
+                    - listitem [ref=e2528]:
+                      - paragraph [ref=e2529]:
+                        - strong [ref=e2530]: Define a Bridge runtime contract
+                        - text: "Bridge needs a place to store thread configuration:"
+                  - list [ref=e2531]:
+                    - listitem [ref=e2532]:
+                      - paragraph [ref=e2533]: CRT URL for the project/workstream
+                    - listitem [ref=e2534]:
+                      - paragraph [ref=e2535]:
+                        - text: tool alias to use (
+                        - code [ref=e2536]: playwright-chatgpt
+                        - text: in your integration repo)
+                    - listitem [ref=e2537]:
+                      - paragraph [ref=e2538]: writer lock (to prevent two bridge processes)
+                  - paragraph [ref=e2539]:
+                    - text: Put this in a config file that’s
+                    - emphasis [ref=e2540]: project-specific
+                    - text: ", not global:"
+                  - generic [ref=e2547]:
+                    - generic [ref=e2549]:
+                      - generic [ref=e2550]: Code
+                      - generic [ref=e2551]:
+                        - button "Copy" [ref=e2552] [cursor=pointer]:
+                          - img [ref=e2553]
+                        - button "Edit" [ref=e2556] [cursor=pointer]:
+                          - img [ref=e2558]
+                    - textbox "Edit code" [ref=e2565]:
+                      - generic [ref=e2566]: .flywheel/chatgpt.json
+                      - generic [ref=e2567]: "{"
+                      - generic [ref=e2568]: "\"crt_url\": \"https://chatgpt.com/c/....\","
+                      - generic [ref=e2569]: "\"mcp_server\": \"playwright-chatgpt\","
+                      - generic [ref=e2570]: "\"writer_agent\": \"QuietDune\""
+                      - generic [ref=e2571]: "}"
+                  - list [ref=e2572]:
+                    - listitem [ref=e2573]:
+                      - paragraph [ref=e2574]:
+                        - strong [ref=e2575]: Bridge as a CLI “agent role”
+                        - text: "Don’t build a daemon first. Build a command that runs one cycle:"
+                  - list [ref=e2576]:
+                    - listitem [ref=e2577]:
+                      - paragraph [ref=e2578]:
+                        - code [ref=e2579]: bridge pull
+                        - text: (check for new “consult ChatGPT” requests)
+                    - listitem [ref=e2580]:
+                      - paragraph [ref=e2581]:
+                        - code [ref=e2582]: bridge push
+                        - text: (post packet to CRT)
+                    - listitem [ref=e2583]:
+                      - paragraph [ref=e2584]:
+                        - code [ref=e2585]: bridge read
+                        - text: (read response + parse)
+                    - listitem [ref=e2586]:
+                      - paragraph [ref=e2587]:
+                        - code [ref=e2588]: bridge emit
+                        - text: (create tasks / update bead)
+                  - paragraph [ref=e2589]:
+                    - text: "MVP:"
+                    - code [ref=e2590]: bridge run-once --bead bd-xxx --packet path.json
+                  - list [ref=e2591]:
+                    - listitem [ref=e2592]:
+                      - paragraph [ref=e2593]:
+                        - strong [ref=e2594]: Bridge posting mechanism
+                        - text: "You have two viable routes:"
+                  - paragraph [ref=e2595]:
+                    - strong [ref=e2596]: "Route A (fastest): human-in-the-loop posting"
+                  - list [ref=e2597]:
+                    - listitem [ref=e2598]:
+                      - paragraph [ref=e2599]: Bridge generates packet and prints it
+                    - listitem [ref=e2600]:
+                      - paragraph [ref=e2601]: You paste into ChatGPT
+                    - listitem [ref=e2602]:
+                      - paragraph [ref=e2603]: Bridge then reads the response and parses it
+                  - paragraph [ref=e2604]:
+                    - strong [ref=e2605]: "Route B (what you can do now with playwright-chatgpt): automated posting"
+                  - list [ref=e2606]:
+                    - listitem [ref=e2607]:
+                      - paragraph [ref=e2608]:
+                        - text: Bridge uses
+                        - code [ref=e2609]: playwright-chatgpt
+                        - text: "to:"
+                      - list [ref=e2610]:
+                        - listitem [ref=e2611]:
+                          - paragraph [ref=e2612]: navigate to CRT URL
+                        - listitem [ref=e2613]:
+                          - paragraph [ref=e2614]: paste packet into composer
+                        - listitem [ref=e2615]:
+                          - paragraph [ref=e2616]: click send
+                        - listitem [ref=e2617]:
+                          - paragraph [ref=e2618]: wait for assistant response to complete
+                        - listitem [ref=e2619]:
+                          - paragraph [ref=e2620]: scrape the last assistant message text
+                  - paragraph [ref=e2621]:
+                    - text: "Given you already proved you can post/read with Playwright:"
+                    - strong [ref=e2622]: do Route B
+                    - text: .
+                  - list [ref=e2623]:
+                    - listitem [ref=e2624]:
+                      - paragraph [ref=e2625]:
+                        - strong [ref=e2626]: Bridge “read last response”
+                        - text: "Implement a deterministic selector strategy:"
+                  - list [ref=e2627]:
+                    - listitem [ref=e2628]:
+                      - paragraph [ref=e2629]: identify last assistant message node
+                    - listitem [ref=e2630]:
+                      - paragraph [ref=e2631]: extract text content
+                    - listitem [ref=e2632]:
+                      - paragraph [ref=e2633]:
+                        - text: run
+                        - code [ref=e2634]: packet-extract
+                        - text: → JSON
+                    - listitem [ref=e2635]:
+                      - paragraph [ref=e2636]: validate vs schema
+                  - list [ref=e2637]:
+                    - listitem [ref=e2638]:
+                      - paragraph [ref=e2639]:
+                        - strong [ref=e2640]: Bridge emits back to AgentCore
+                        - text: "Emit two things:"
+                  - list [ref=e2641]:
+                    - listitem [ref=e2642]:
+                      - paragraph [ref=e2643]: bead state update (phase/status)
+                    - listitem [ref=e2644]:
+                      - paragraph [ref=e2645]:
+                        - text: agent-mail dispatch for executor tasks (from
+                        - code [ref=e2646]: next_actions
+                        - text: )
+                  - paragraph [ref=e2647]: "Don’t overthink: MVP emission can be one shell call:"
+                  - list [ref=e2648]:
+                    - listitem [ref=e2649]:
+                      - paragraph [ref=e2650]:
+                        - code [ref=e2651]: ./scripts/agent-mail-helper.sh send ...
+                  - separator [ref=e2652]
+                  - heading "Phase 3 — Integrate with AgentCore bead lifecycle cleanly" [level=3] [ref=e2653]
+                  - list [ref=e2654]:
+                    - listitem [ref=e2655]:
+                      - paragraph [ref=e2656]:
+                        - strong [ref=e2657]: Extend bead schema with optional ChatGPT protocol metadata
+                        - text: "Add optional fields to bead record:"
+                  - list [ref=e2658]:
+                    - listitem [ref=e2659]:
+                      - paragraph [ref=e2660]:
+                        - code [ref=e2661]: "chatgpt.enabled: boolean"
+                    - listitem [ref=e2662]:
+                      - paragraph [ref=e2663]:
+                        - code [ref=e2664]: chatgpt.crt_url
+                    - listitem [ref=e2665]:
+                      - paragraph [ref=e2666]:
+                        - code [ref=e2667]: chatgpt.last_packet_id
+                    - listitem [ref=e2668]:
+                      - paragraph [ref=e2669]:
+                        - code [ref=e2670]: chatgpt.last_verdict
+                    - listitem [ref=e2671]:
+                      - paragraph [ref=e2672]:
+                        - code [ref=e2673]: "chatgpt.required_gate: [\"plan\",\"acceptance\"]"
+                        - text: etc.
+                  - paragraph [ref=e2674]: Keep it optional so existing beads are unaffected.
+                  - list [ref=e2675]:
+                    - listitem [ref=e2676]:
+                      - paragraph [ref=e2677]:
+                        - strong [ref=e2678]: Add bead workflow steps
+                        - text: "Add states like:"
+                  - list [ref=e2679]:
+                    - listitem [ref=e2680]:
+                      - paragraph [ref=e2681]:
+                        - code [ref=e2682]: NEEDS_CHATGPT_PLAN
+                    - listitem [ref=e2683]:
+                      - paragraph [ref=e2684]:
+                        - code [ref=e2685]: IN_EXECUTION
+                    - listitem [ref=e2686]:
+                      - paragraph [ref=e2687]:
+                        - code [ref=e2688]: NEEDS_CHATGPT_ACCEPTANCE
+                    - listitem [ref=e2689]:
+                      - paragraph [ref=e2690]:
+                        - code [ref=e2691]: DONE
+                  - paragraph [ref=e2692]: "Bridge transitions:"
+                  - list [ref=e2693]:
+                    - listitem [ref=e2694]:
+                      - paragraph [ref=e2695]:
+                        - code [ref=e2696]: NEEDS_CHATGPT_PLAN
+                        - text: →
+                        - code [ref=e2697]: IN_EXECUTION
+                    - listitem [ref=e2698]:
+                      - paragraph [ref=e2699]:
+                        - code [ref=e2700]: NEEDS_CHATGPT_ACCEPTANCE
+                        - text: →
+                        - code [ref=e2701]: DONE
+                        - text: if verdict accept
+                  - list [ref=e2702]:
+                    - listitem [ref=e2703]:
+                      - paragraph [ref=e2704]:
+                        - strong [ref=e2705]: Acceptance gating
+                        - text: Wire “close bead” logic so that if
+                        - code [ref=e2706]: chatgpt.required_gate
+                        - text: includes
+                        - code [ref=e2707]: acceptance
+                        - text: ", the bead cannot close without:"
+                  - list [ref=e2708]:
+                    - listitem [ref=e2709]:
+                      - paragraph [ref=e2710]:
+                        - text: valid
+                        - code [ref=e2711]: ACCEPTANCE_GATE_RESPONSE
+                    - listitem [ref=e2712]:
+                      - paragraph [ref=e2713]:
+                        - code [ref=e2714]: verdict=accept
+                  - separator [ref=e2715]
+                  - heading "Phase 4 — Minimal safety + concurrency controls (not over-engineered)" [level=3] [ref=e2716]
+                  - list [ref=e2717]:
+                    - listitem [ref=e2718]:
+                      - paragraph [ref=e2719]:
+                        - strong [ref=e2720]: Writer lock
+                        - text: "Create a simple lock file:"
+                  - list [ref=e2721]:
+                    - listitem [ref=e2722]:
+                      - paragraph [ref=e2723]:
+                        - code [ref=e2724]: .flywheel/locks/chatgpt_writer.lock
+                        - text: Write PID + timestamp. Bridge refuses to run if lock exists and process is alive.
+                  - list [ref=e2725]:
+                    - listitem [ref=e2726]:
+                      - paragraph [ref=e2727]:
+                        - strong [ref=e2728]: Idempotency
+                        - text: Add
+                        - code [ref=e2729]: idempotency_key
+                        - text: "to packets:"
+                  - list [ref=e2730]:
+                    - listitem [ref=e2731]:
+                      - paragraph [ref=e2732]:
+                        - text: e.g.
+                        - code [ref=e2733]: "${bead_id}:${msg_type}:${hash(inputs)}"
+                        - text: Bridge can store posted keys to avoid double-posts.
+                  - list [ref=e2734]:
+                    - listitem [ref=e2735]:
+                      - paragraph [ref=e2736]:
+                        - strong [ref=e2737]: Failure modes
+                        - text: "MVP behaviors:"
+                  - list [ref=e2738]:
+                    - listitem [ref=e2739]:
+                      - paragraph [ref=e2740]: "if response invalid JSON: emit an “operator attention” mail and stop"
+                    - listitem [ref=e2741]:
+                      - paragraph [ref=e2742]: "if bounced to login: stop with clear error (you already have the manual refresh script)"
+                  - separator [ref=e2743]
+                  - heading "What I’d build first (recommended order)" [level=2] [ref=e2744]
+                  - list [ref=e2745]:
+                    - listitem [ref=e2746]:
+                      - paragraph [ref=e2747]:
+                        - strong [ref=e2748]: Schemas (envelope + 5 msg types + 5 response types)
+                    - listitem [ref=e2749]:
+                      - paragraph [ref=e2750]:
+                        - strong [ref=e2751]: Validator tool
+                        - text: (ajv-based)
+                    - listitem [ref=e2752]:
+                      - paragraph [ref=e2753]:
+                        - strong [ref=e2754]: Packet builder
+                        - text: (generates valid JSON + validates)
+                    - listitem [ref=e2755]:
+                      - paragraph [ref=e2756]:
+                        - strong [ref=e2757]: Packet extractor
+                        - text: (parse JSON from reply)
+                    - listitem [ref=e2758]:
+                      - paragraph [ref=e2759]:
+                        - strong [ref=e2760]: Bridge run-once
+                        - text: (post + read + parse + validate)
+                    - listitem [ref=e2761]:
+                      - paragraph [ref=e2762]:
+                        - strong [ref=e2763]: Bead integration fields + workflow gates
+                  - paragraph [ref=e2764]: This order gives you a functioning vertical slice early.
+                  - separator [ref=e2765]
+                  - heading "Deliverables checklist for your branch" [level=2] [ref=e2766]
+                  - list [ref=e2767]:
+                    - listitem [ref=e2768]:
+                      - paragraph [ref=e2769]:
+                        - checkbox [disabled] [ref=e2770]
+                        - code [ref=e2771]: schemas/flywheel/chatgpt/v1/*.schema.json
+                    - listitem [ref=e2772]:
+                      - paragraph [ref=e2773]:
+                        - checkbox [disabled] [ref=e2774]
+                        - code [ref=e2775]: scripts/chatgpt/packet-build.mjs
+                    - listitem [ref=e2776]:
+                      - paragraph [ref=e2777]:
+                        - checkbox [disabled] [ref=e2778]
+                        - code [ref=e2779]: scripts/chatgpt/packet-validate.mjs
+                    - listitem [ref=e2780]:
+                      - paragraph [ref=e2781]:
+                        - checkbox [disabled] [ref=e2782]
+                        - code [ref=e2783]: scripts/chatgpt/packet-extract.mjs
+                    - listitem [ref=e2784]:
+                      - paragraph [ref=e2785]:
+                        - checkbox [disabled] [ref=e2786]
+                        - code [ref=e2787]: scripts/chatgpt/bridge-run-once.mjs
+                        - text: (or similar)
+                    - listitem [ref=e2788]:
+                      - paragraph [ref=e2789]:
+                        - checkbox [disabled] [ref=e2790]
+                        - text: Bead schema updated (optional ChatGPT fields)
+                    - listitem [ref=e2791]:
+                      - paragraph [ref=e2792]:
+                        - checkbox [disabled] [ref=e2793]
+                        - text: Bead workflow states updated (optional gating)
+                    - listitem [ref=e2794]:
+                      - paragraph [ref=e2795]:
+                        - checkbox [disabled] [ref=e2796]
+                        - text: "Minimal docs:"
+                        - code [ref=e2797]: docs/flywheel-chatgpt-protocol.md
+                  - separator [ref=e2798]
+                  - paragraph [ref=e2799]:
+                    - text: "If you want to move immediately: tell me what language AgentCore is primarily using for CLI/runtime (Node, Python, Go, Rust). I’ll then give you the"
+                    - strong [ref=e2800]: exact file tree + full contents
+                    - text: for the schema set and the first two tools (
+                    - code [ref=e2801]: packet-build
+                    - text: +
+                    - code [ref=e2802]: packet-validate
+                    - text: ) so you can drop them in on
+                    - code [ref=e2803]: feature/agent-flywheel-protocol
+                    - text: .
+                - generic [ref=e2804]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e2805]:
+              - heading "You said:" [level=5] [ref=e2806]
+              - generic [ref=e2808]:
+                - generic [ref=e2813]: "AgentCore is polyglot: - **Rust** for the core bead system (br CLI) - **Node.js** for integration tooling (already using it for ChatGPT scripts) - **Bash** for orchestration For the flywheel protocol packet schemas and tools, **Node.js** makes the most sense. Please give me the exact file tree + full contents for the schema set and the first two tools (packet-build + packet-validate)."
+                - generic [ref=e2814]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e2815]:
+              - heading "ChatGPT said:" [level=6] [ref=e2816]
+              - generic [ref=e2818]:
+                - generic [ref=e2819]:
+                  - button "Thought for 30s" [ref=e2824] [cursor=pointer]:
+                    - generic [ref=e2826]:
+                      - generic [ref=e2828]: Thought for 30s
+                      - img [ref=e2829]
+                  - generic [ref=e2833]:
+                    - paragraph [ref=e2834]:
+                      - text: Below is a
+                      - strong [ref=e2835]: drop-in
+                      - text: schema set + the first two Node tools (
+                      - strong [ref=e2836]: packet-build
+                      - text: and
+                      - strong [ref=e2837]: packet-validate
+                      - text: ) for your
+                      - code [ref=e2838]: feature/agent-flywheel-protocol
+                      - text: branch.
+                    - paragraph [ref=e2839]:
+                      - text: Everything is
+                      - strong [ref=e2840]: copy/paste ready
+                      - text: .
+                    - separator [ref=e2841]
+                    - heading "File tree to create" [level=2] [ref=e2842]
+                    - generic [ref=e2849]:
+                      - generic [ref=e2851]:
+                        - generic [ref=e2852]: Code
+                        - generic [ref=e2853]:
+                          - button "Copy" [ref=e2854] [cursor=pointer]:
+                            - img [ref=e2855]
+                          - button "Edit" [ref=e2858] [cursor=pointer]:
+                            - img [ref=e2860]
+                      - textbox "Edit code" [ref=e2868]:
+                        - generic [ref=e2869]: AgentCore/
+                        - generic [ref=e2870]: schemas/
+                        - generic [ref=e2871]: flywheel/
+                        - generic [ref=e2872]: chatgpt/
+                        - generic [ref=e2873]: v1/
+                        - generic [ref=e2874]: envelope.schema.json
+                        - generic [ref=e2875]: common.schema.json
+                        - generic [ref=e2876]: msg-rfp-plan.schema.json
+                        - generic [ref=e2877]: msg-rfp-arbitrate.schema.json
+                        - generic [ref=e2878]: msg-evidence-bundle.schema.json
+                        - generic [ref=e2879]: msg-spec-lock.schema.json
+                        - generic [ref=e2880]: msg-acceptance-gate.schema.json
+                        - generic [ref=e2881]: resp-rfp-plan.schema.json
+                        - generic [ref=e2882]: resp-rfp-arbitrate.schema.json
+                        - generic [ref=e2883]: resp-evidence-bundle.schema.json
+                        - generic [ref=e2884]: resp-spec-lock.schema.json
+                        - generic [ref=e2885]: resp-acceptance-gate.schema.json
+                        - generic [ref=e2886]: scripts/
+                        - generic [ref=e2887]: chatgpt/
+                        - generic [ref=e2888]: packet-build.mjs
+                        - generic [ref=e2889]: packet-validate.mjs
+                    - separator [ref=e2890]
+                    - heading "Dependencies (Node)" [level=2] [ref=e2891]
+                    - paragraph [ref=e2892]: "Add these to your Node tooling (wherever you keep integration deps in AgentCore):"
+                    - generic [ref=e2899]:
+                      - generic [ref=e2901]:
+                        - generic [ref=e2902]: Bash
+                        - generic [ref=e2903]:
+                          - button "Copy" [ref=e2904] [cursor=pointer]:
+                            - img [ref=e2905]
+                          - button "Edit" [ref=e2908] [cursor=pointer]:
+                            - img [ref=e2910]
+                      - textbox "Edit code" [ref=e2917]:
+                        - generic [ref=e2918]: npm i -D ajv ajv-formats
+                    - blockquote [ref=e2919]:
+                      - paragraph [ref=e2920]:
+                        - text: If AgentCore has a separate
+                        - code [ref=e2921]: package.json
+                        - text: for tooling, run this in that directory.
+                    - separator [ref=e2922]
+                    - heading "SCHEMAS" [level=1] [ref=e2923]
+                    - heading "schemas/flywheel/chatgpt/v1/common.schema.json" [level=3] [ref=e2924]:
+                      - code [ref=e2925]: schemas/flywheel/chatgpt/v1/common.schema.json
+                    - generic [ref=e2932]:
+                      - generic [ref=e2934]:
+                        - generic [ref=e2935]: JSON
+                        - generic [ref=e2936]:
+                          - button "Copy" [ref=e2937] [cursor=pointer]:
+                            - img [ref=e2938]
+                          - button "Edit" [ref=e2941] [cursor=pointer]:
+                            - img [ref=e2943]
+                      - textbox "Edit code" [ref=e2951]:
+                        - generic [ref=e2952]: "{"
+                        - generic [ref=e2953]: "\"$schema\": \"https://json-schema.org/draft/2020-12/schema\","
+                        - generic [ref=e2954]: "\"$id\": \"flywheel.chatgpt.v1/common.schema.json\","
+                        - generic [ref=e2955]: "\"title\": \"Flywheel ChatGPT Protocol Common Types (v1)\","
+                        - generic [ref=e2956]: "\"type\": \"object\","
+                        - generic [ref=e2957]: "\"$defs\": {"
+                        - generic [ref=e2958]: "\"proto\": {"
+                        - generic [ref=e2959]: "\"type\": \"string\","
+                        - generic [ref=e2960]: "\"const\": \"flywheel.chatgpt.v1\""
+                        - generic [ref=e2961]: "},"
+                        - generic [ref=e2962]: "\"bead_id\": {"
+                        - generic [ref=e2963]: "\"type\": \"string\","
+                        - generic [ref=e2964]: "\"pattern\": \"^bd-[A-Za-z0-9][A-Za-z0-9_-]{1,63}$\""
+                        - generic [ref=e2965]: "},"
+                        - generic [ref=e2966]: "\"iso_datetime\": {"
+                        - generic [ref=e2967]: "\"type\": \"string\","
+                        - generic [ref=e2968]: "\"format\": \"date-time\""
+                        - generic [ref=e2969]: "},"
+                        - generic [ref=e2970]: "\"msg_type_request\": {"
+                        - generic [ref=e2971]: "\"type\": \"string\","
+                        - generic [ref=e2972]: "\"enum\": [\"RFP_PLAN\", \"RFP_ARBITRATE\", \"EVIDENCE_BUNDLE\", \"SPEC_LOCK\", \"ACCEPTANCE_GATE\"]"
+                        - generic [ref=e2973]: "},"
+                        - generic [ref=e2974]: "\"msg_type_response\": {"
+                        - generic [ref=e2975]: "\"type\": \"string\","
+                        - generic [ref=e2976]: "\"enum\": ["
+                        - generic [ref=e2977]: "\"RFP_PLAN_RESPONSE\","
+                        - generic [ref=e2978]: "\"RFP_ARBITRATE_RESPONSE\","
+                        - generic [ref=e2979]: "\"EVIDENCE_BUNDLE_RESPONSE\","
+                        - generic [ref=e2980]: "\"SPEC_LOCK_RESPONSE\","
+                        - generic [ref=e2981]: "\"ACCEPTANCE_GATE_RESPONSE\""
+                        - generic [ref=e2982]: "]"
+                        - generic [ref=e2983]: "},"
+                        - generic [ref=e2984]: "\"verdict\": {"
+                        - generic [ref=e2985]: "\"type\": \"string\","
+                        - generic [ref=e2986]: "\"enum\": [\"ok\", \"revise\", \"reject\", \"error\"]"
+                        - generic [ref=e2987]: "},"
+                    - separator [ref=e2989]
+                    - heading "schemas/flywheel/chatgpt/v1/envelope.schema.json" [level=3] [ref=e2990]:
+                      - code [ref=e2991]: schemas/flywheel/chatgpt/v1/envelope.schema.json
+                    - generic [ref=e2998]:
+                      - generic [ref=e3000]:
+                        - generic [ref=e3001]: JSON
+                        - generic [ref=e3002]:
+                          - button "Copy" [ref=e3003] [cursor=pointer]:
+                            - img [ref=e3004]
+                          - button "Edit" [ref=e3007] [cursor=pointer]:
+                            - img [ref=e3009]
+                      - textbox "Edit code" [ref=e3017]:
+                        - generic [ref=e3018]: "{"
+                        - generic [ref=e3019]: "\"$schema\": \"https://json-schema.org/draft/2020-12/schema\","
+                        - generic [ref=e3020]: "\"$id\": \"flywheel.chatgpt.v1/envelope.schema.json\","
+                        - generic [ref=e3021]: "\"title\": \"Flywheel ChatGPT Protocol Envelope (v1)\","
+                        - generic [ref=e3022]: "\"type\": \"object\","
+                        - generic [ref=e3023]: "\"additionalProperties\": false,"
+                        - generic [ref=e3024]: "\"required\": ["
+                        - generic [ref=e3025]: "\"proto\","
+                        - generic [ref=e3026]: "\"bead_id\","
+                        - generic [ref=e3027]: "\"msg_type\","
+                        - generic [ref=e3028]: "\"sender\","
+                        - generic [ref=e3029]: "\"ts\","
+                        - generic [ref=e3030]: "\"context\","
+                        - generic [ref=e3031]: "\"inputs\","
+                        - generic [ref=e3032]: "\"requested_output\""
+                        - generic [ref=e3033]: "],"
+                        - generic [ref=e3034]: "\"properties\": {"
+                        - generic [ref=e3035]: "\"proto\": { \"$ref\": \"common.schema.json#/$defs/proto\" },"
+                        - generic [ref=e3036]: "\"bead_id\": { \"$ref\": \"common.schema.json#/$defs/bead_id\" },"
+                        - generic [ref=e3037]: "\"msg_type\": {"
+                        - generic [ref=e3038]: "\"type\": \"string\","
+                        - generic [ref=e3039]: "\"minLength\": 1"
+                        - generic [ref=e3040]: "},"
+                        - generic [ref=e3041]: "\"sender\": { \"type\": \"string\", \"minLength\": 1 },"
+                        - generic [ref=e3042]: "\"ts\": { \"$ref\": \"common.schema.json#/$defs/iso_datetime\" },"
+                        - generic [ref=e3044]: "\"idempotency_key\": { \"type\": \"string\", \"minLength\": 8 },"
+                        - generic [ref=e3046]: "\"context\": { \"$ref\": \"common.schema.json#/$defs/context\" },"
+                        - generic [ref=e3048]: "\"inputs\": {"
+                        - generic [ref=e3049]: "\"type\": \"object\","
+                        - generic [ref=e3050]: "\"additionalProperties\": false,"
+                        - generic [ref=e3051]: "\"required\": [\"artifacts\", \"questions\"],"
+                        - generic [ref=e3052]: "\"properties\": {"
+                        - generic [ref=e3053]: "\"artifacts\": {"
+                    - separator [ref=e3055]
+                    - heading "Request message schemas" [level=2] [ref=e3056]
+                    - heading "schemas/flywheel/chatgpt/v1/msg-rfp-plan.schema.json" [level=3] [ref=e3057]:
+                      - code [ref=e3058]: schemas/flywheel/chatgpt/v1/msg-rfp-plan.schema.json
+                    - generic [ref=e3065]:
+                      - generic [ref=e3067]:
+                        - generic [ref=e3068]: JSON
+                        - generic [ref=e3069]:
+                          - button "Copy" [ref=e3070] [cursor=pointer]:
+                            - img [ref=e3071]
+                          - button "Edit" [ref=e3074] [cursor=pointer]:
+                            - img [ref=e3076]
+                      - textbox "Edit code" [ref=e3084]:
+                        - generic [ref=e3085]: "{"
+                        - generic [ref=e3086]: "\"$schema\": \"https://json-schema.org/draft/2020-12/schema\","
+                        - generic [ref=e3087]: "\"$id\": \"flywheel.chatgpt.v1/msg-rfp-plan.schema.json\","
+                        - generic [ref=e3088]: "\"title\": \"RFP_PLAN (v1)\","
+                        - generic [ref=e3089]: "\"allOf\": ["
+                        - generic [ref=e3090]: "{ \"$ref\": \"envelope.schema.json\" },"
+                        - generic [ref=e3091]: "{"
+                        - generic [ref=e3092]: "\"type\": \"object\","
+                        - generic [ref=e3093]: "\"properties\": {"
+                        - generic [ref=e3094]: "\"msg_type\": { \"const\": \"RFP_PLAN\" }"
+                        - generic [ref=e3095]: "}"
+                        - generic [ref=e3096]: "}"
+                        - generic [ref=e3097]: "]"
+                        - generic [ref=e3098]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/msg-rfp-arbitrate.schema.json" [level=3] [ref=e3099]:
+                      - code [ref=e3100]: schemas/flywheel/chatgpt/v1/msg-rfp-arbitrate.schema.json
+                    - generic [ref=e3107]:
+                      - generic [ref=e3109]:
+                        - generic [ref=e3110]: JSON
+                        - generic [ref=e3111]:
+                          - button "Copy" [ref=e3112] [cursor=pointer]:
+                            - img [ref=e3113]
+                          - button "Edit" [ref=e3116] [cursor=pointer]:
+                            - img [ref=e3118]
+                      - textbox "Edit code" [ref=e3126]:
+                        - generic [ref=e3127]: "{"
+                        - generic [ref=e3128]: "\"$schema\": \"https://json-schema.org/draft/2020-12/schema\","
+                        - generic [ref=e3129]: "\"$id\": \"flywheel.chatgpt.v1/msg-rfp-arbitrate.schema.json\","
+                        - generic [ref=e3130]: "\"title\": \"RFP_ARBITRATE (v1)\","
+                        - generic [ref=e3131]: "\"allOf\": ["
+                        - generic [ref=e3132]: "{ \"$ref\": \"envelope.schema.json\" },"
+                        - generic [ref=e3133]: "{"
+                        - generic [ref=e3134]: "\"type\": \"object\","
+                        - generic [ref=e3135]: "\"properties\": {"
+                        - generic [ref=e3136]: "\"msg_type\": { \"const\": \"RFP_ARBITRATE\" }"
+                        - generic [ref=e3137]: "}"
+                        - generic [ref=e3138]: "}"
+                        - generic [ref=e3139]: "]"
+                        - generic [ref=e3140]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/msg-evidence-bundle.schema.json" [level=3] [ref=e3141]:
+                      - code [ref=e3142]: schemas/flywheel/chatgpt/v1/msg-evidence-bundle.schema.json
+                    - generic [ref=e3149]:
+                      - generic [ref=e3151]:
+                        - generic [ref=e3152]: JSON
+                        - generic [ref=e3153]:
+                          - button "Copy" [ref=e3154] [cursor=pointer]:
+                            - img [ref=e3155]
+                          - button "Edit" [ref=e3158] [cursor=pointer]:
+                            - img [ref=e3160]
+                      - textbox "Edit code" [ref=e3168]:
+                        - generic [ref=e3169]: "{"
+                        - generic [ref=e3170]: "\"$schema\": \"https://json-schema.org/draft/2020-12/schema\","
+                        - generic [ref=e3171]: "\"$id\": \"flywheel.chatgpt.v1/msg-evidence-bundle.schema.json\","
+                        - generic [ref=e3172]: "\"title\": \"EVIDENCE_BUNDLE (v1)\","
+                        - generic [ref=e3173]: "\"allOf\": ["
+                        - generic [ref=e3174]: "{ \"$ref\": \"envelope.schema.json\" },"
+                        - generic [ref=e3175]: "{"
+                        - generic [ref=e3176]: "\"type\": \"object\","
+                        - generic [ref=e3177]: "\"properties\": {"
+                        - generic [ref=e3178]: "\"msg_type\": { \"const\": \"EVIDENCE_BUNDLE\" }"
+                        - generic [ref=e3179]: "}"
+                        - generic [ref=e3180]: "}"
+                        - generic [ref=e3181]: "]"
+                        - generic [ref=e3182]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/msg-spec-lock.schema.json" [level=3] [ref=e3183]:
+                      - code [ref=e3184]: schemas/flywheel/chatgpt/v1/msg-spec-lock.schema.json
+                    - generic [ref=e3191]:
+                      - generic [ref=e3193]:
+                        - generic [ref=e3194]: JSON
+                        - generic [ref=e3195]:
+                          - button "Copy" [ref=e3196] [cursor=pointer]:
+                            - img [ref=e3197]
+                          - button "Edit" [ref=e3200] [cursor=pointer]:
+                            - img [ref=e3202]
+                      - textbox "Edit code" [ref=e3210]:
+                        - generic [ref=e3211]: "{"
+                        - generic [ref=e3212]: "\"$schema\": \"https://json-schema.org/draft/2020-12/schema\","
+                        - generic [ref=e3213]: "\"$id\": \"flywheel.chatgpt.v1/msg-spec-lock.schema.json\","
+                        - generic [ref=e3214]: "\"title\": \"SPEC_LOCK (v1)\","
+                        - generic [ref=e3215]: "\"allOf\": ["
+                        - generic [ref=e3216]: "{ \"$ref\": \"envelope.schema.json\" },"
+                        - generic [ref=e3217]: "{"
+                        - generic [ref=e3218]: "\"type\": \"object\","
+                        - generic [ref=e3219]: "\"properties\": {"
+                        - generic [ref=e3220]: "\"msg_type\": { \"const\": \"SPEC_LOCK\" }"
+                        - generic [ref=e3221]: "}"
+                        - generic [ref=e3222]: "}"
+                        - generic [ref=e3223]: "]"
+                        - generic [ref=e3224]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/msg-acceptance-gate.schema.json" [level=3] [ref=e3225]:
+                      - code [ref=e3226]: schemas/flywheel/chatgpt/v1/msg-acceptance-gate.schema.json
+                    - generic [ref=e3233]:
+                      - generic [ref=e3235]:
+                        - generic [ref=e3236]: JSON
+                        - generic [ref=e3237]:
+                          - button "Copy" [ref=e3238] [cursor=pointer]:
+                            - img [ref=e3239]
+                          - button "Edit" [ref=e3242] [cursor=pointer]:
+                            - img [ref=e3244]
+                      - textbox "Edit code" [ref=e3252]:
+                        - generic [ref=e3253]: "{"
+                        - generic [ref=e3254]: "\"$schema\": \"https://json-schema.org/draft/2020-12/schema\","
+                        - generic [ref=e3255]: "\"$id\": \"flywheel.chatgpt.v1/msg-acceptance-gate.schema.json\","
+                        - generic [ref=e3256]: "\"title\": \"ACCEPTANCE_GATE (v1)\","
+                        - generic [ref=e3257]: "\"allOf\": ["
+                        - generic [ref=e3258]: "{ \"$ref\": \"envelope.schema.json\" },"
+                        - generic [ref=e3259]: "{"
+                        - generic [ref=e3260]: "\"type\": \"object\","
+                        - generic [ref=e3261]: "\"properties\": {"
+                        - generic [ref=e3262]: "\"msg_type\": { \"const\": \"ACCEPTANCE_GATE\" }"
+                        - generic [ref=e3263]: "}"
+                        - generic [ref=e3264]: "}"
+                        - generic [ref=e3265]: "]"
+                        - generic [ref=e3266]: "}"
+                    - separator [ref=e3267]
+                    - heading "Response message schemas" [level=2] [ref=e3268]
+                    - paragraph [ref=e3269]: These are what your Bridge will validate after scraping ChatGPT replies.
+                    - heading "schemas/flywheel/chatgpt/v1/resp-rfp-plan.schema.json" [level=3] [ref=e3270]:
+                      - code [ref=e3271]: schemas/flywheel/chatgpt/v1/resp-rfp-plan.schema.json
+                    - generic [ref=e3278]:
+                      - generic [ref=e3280]:
+                        - generic [ref=e3281]: JSON
+                        - generic [ref=e3282]:
+                          - button "Copy" [ref=e3283] [cursor=pointer]:
+                            - img [ref=e3284]
+                          - button "Edit" [ref=e3287] [cursor=pointer]:
+                            - img [ref=e3289]
+                      - textbox "Edit code" [ref=e3297]:
+                        - generic [ref=e3298]: "{"
+                        - generic [ref=e3299]: "\"$schema\": \"https://json-schema.org/draft/2020-12/schema\","
+                        - generic [ref=e3300]: "\"$id\": \"flywheel.chatgpt.v1/resp-rfp-plan.schema.json\","
+                        - generic [ref=e3301]: "\"title\": \"RFP_PLAN_RESPONSE (v1)\","
+                        - generic [ref=e3302]: "\"type\": \"object\","
+                        - generic [ref=e3303]: "\"additionalProperties\": false,"
+                        - generic [ref=e3304]: "\"required\": [\"proto\", \"bead_id\", \"msg_type\", \"verdict\", \"plan\", \"risks\", \"acceptance_tests\", \"next_actions\"],"
+                        - generic [ref=e3305]: "\"properties\": {"
+                        - generic [ref=e3306]: "\"proto\": { \"$ref\": \"common.schema.json#/$defs/proto\" },"
+                        - generic [ref=e3307]: "\"bead_id\": { \"$ref\": \"common.schema.json#/$defs/bead_id\" },"
+                        - generic [ref=e3308]: "\"msg_type\": { \"const\": \"RFP_PLAN_RESPONSE\" },"
+                        - generic [ref=e3309]: "\"verdict\": { \"$ref\": \"common.schema.json#/$defs/verdict\" },"
+                        - generic [ref=e3311]: "\"plan\": {"
+                        - generic [ref=e3312]: "\"type\": \"array\","
+                        - generic [ref=e3313]: "\"items\": {"
+                        - generic [ref=e3314]: "\"type\": \"object\","
+                        - generic [ref=e3315]: "\"additionalProperties\": false,"
+                        - generic [ref=e3316]: "\"required\": [\"step\", \"action\", \"owner\"],"
+                        - generic [ref=e3317]: "\"properties\": {"
+                        - generic [ref=e3318]: "\"step\": { \"type\": \"integer\", \"minimum\": 1 },"
+                        - generic [ref=e3319]: "\"action\": { \"type\": \"string\", \"minLength\": 1 },"
+                        - generic [ref=e3320]: "\"owner\": { \"type\": \"string\", \"minLength\": 1 },"
+                        - generic [ref=e3321]: "\"evidence\": { \"type\": \"string\" }"
+                        - generic [ref=e3322]: "}"
+                        - generic [ref=e3323]: "}"
+                        - generic [ref=e3324]: "},"
+                        - generic [ref=e3325]: "\"risks\": {"
+                        - generic [ref=e3326]: "\"type\": \"array\","
+                        - generic [ref=e3327]: "\"items\": {"
+                        - generic [ref=e3328]: "\"type\": \"object\","
+                        - generic [ref=e3329]: "\"additionalProperties\": false,"
+                        - generic [ref=e3330]: "\"required\": [\"risk\", \"mitigation\"],"
+                        - generic [ref=e3331]: "\"properties\": {"
+                        - generic [ref=e3332]: "\"risk\": { \"type\": \"string\", \"minLength\": 1 },"
+                        - generic [ref=e3333]: "\"mitigation\": { \"type\": \"string\", \"minLength\": 1 }"
+                    - heading "schemas/flywheel/chatgpt/v1/resp-rfp-arbitrate.schema.json" [level=3] [ref=e3335]:
+                      - code [ref=e3336]: schemas/flywheel/chatgpt/v1/resp-rfp-arbitrate.schema.json
+                    - generic [ref=e3343]:
+                      - generic [ref=e3345]:
+                        - generic [ref=e3346]: JSON
+                        - generic [ref=e3347]:
+                          - button "Copy" [ref=e3348] [cursor=pointer]:
+                            - img [ref=e3349]
+                          - button "Edit" [ref=e3352] [cursor=pointer]:
+                            - img [ref=e3354]
+                      - textbox "Edit code" [ref=e3362]:
+                        - generic [ref=e3363]: "{"
+                        - generic [ref=e3364]: "\"$schema\": \"https://json-schema.org/draft/2020-12/schema\","
+                        - generic [ref=e3365]: "\"$id\": \"flywheel.chatgpt.v1/resp-rfp-arbitrate.schema.json\","
+                        - generic [ref=e3366]: "\"title\": \"RFP_ARBITRATE_RESPONSE (v1)\","
+                        - generic [ref=e3367]: "\"type\": \"object\","
+                        - generic [ref=e3368]: "\"additionalProperties\": false,"
+                        - generic [ref=e3369]: "\"required\": [\"proto\", \"bead_id\", \"msg_type\", \"verdict\", \"decision\", \"rationale\", \"next_actions\"],"
+                        - generic [ref=e3370]: "\"properties\": {"
+                        - generic [ref=e3371]: "\"proto\": { \"$ref\": \"common.schema.json#/$defs/proto\" },"
+                        - generic [ref=e3372]: "\"bead_id\": { \"$ref\": \"common.schema.json#/$defs/bead_id\" },"
+                        - generic [ref=e3373]: "\"msg_type\": { \"const\": \"RFP_ARBITRATE_RESPONSE\" },"
+                        - generic [ref=e3374]: "\"verdict\": { \"$ref\": \"common.schema.json#/$defs/verdict\" },"
+                        - generic [ref=e3376]: "\"decision\": { \"type\": \"string\", \"minLength\": 1 },"
+                        - generic [ref=e3377]: "\"rationale\": { \"type\": \"string\", \"minLength\": 1 },"
+                        - generic [ref=e3378]: "\"tradeoffs\": {"
+                        - generic [ref=e3379]: "\"type\": \"array\","
+                        - generic [ref=e3380]: "\"items\": { \"type\": \"string\", \"minLength\": 1 },"
+                        - generic [ref=e3381]: "\"default\": []"
+                        - generic [ref=e3382]: "},"
+                        - generic [ref=e3383]: "\"next_actions\": {"
+                        - generic [ref=e3384]: "\"type\": \"array\","
+                        - generic [ref=e3385]: "\"items\": { \"$ref\": \"common.schema.json#/$defs/next_action\" },"
+                        - generic [ref=e3386]: "\"default\": []"
+                        - generic [ref=e3387]: "},"
+                        - generic [ref=e3389]: "\"notes\": { \"type\": \"string\" }"
+                        - generic [ref=e3390]: "}"
+                        - generic [ref=e3391]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/resp-evidence-bundle.schema.json" [level=3] [ref=e3392]:
+                      - code [ref=e3393]: schemas/flywheel/chatgpt/v1/resp-evidence-bundle.schema.json
+                    - generic [ref=e3400]:
+                      - generic [ref=e3402]:
+                        - generic [ref=e3403]: JSON
+                        - generic [ref=e3404]:
+                          - button "Copy" [ref=e3405] [cursor=pointer]:
+                            - img [ref=e3406]
+                          - button "Edit" [ref=e3409] [cursor=pointer]:
+                            - img [ref=e3411]
+                      - textbox "Edit code" [ref=e3419]:
+                        - generic [ref=e3420]: "{"
+                        - generic [ref=e3421]: "\"$schema\": \"https://json-schema.org/draft/2020-12/schema\","
+                        - generic [ref=e3422]: "\"$id\": \"flywheel.chatgpt.v1/resp-evidence-bundle.schema.json\","
+                        - generic [ref=e3423]: "\"title\": \"EVIDENCE_BUNDLE_RESPONSE (v1)\","
+                        - generic [ref=e3424]: "\"type\": \"object\","
+                        - generic [ref=e3425]: "\"additionalProperties\": false,"
+                        - generic [ref=e3426]: "\"required\": [\"proto\", \"bead_id\", \"msg_type\", \"verdict\", \"findings\", \"missing\", \"next_actions\"],"
+                        - generic [ref=e3427]: "\"properties\": {"
+                        - generic [ref=e3428]: "\"proto\": { \"$ref\": \"common.schema.json#/$defs/proto\" },"
+                        - generic [ref=e3429]: "\"bead_id\": { \"$ref\": \"common.schema.json#/$defs/bead_id\" },"
+                        - generic [ref=e3430]: "\"msg_type\": { \"const\": \"EVIDENCE_BUNDLE_RESPONSE\" },"
+                        - generic [ref=e3431]: "\"verdict\": { \"$ref\": \"common.schema.json#/$defs/verdict\" },"
+                        - generic [ref=e3433]: "\"findings\": {"
+                        - generic [ref=e3434]: "\"type\": \"array\","
+                        - generic [ref=e3435]: "\"items\": { \"type\": \"string\", \"minLength\": 1 },"
+                        - generic [ref=e3436]: "\"default\": []"
+                        - generic [ref=e3437]: "},"
+                        - generic [ref=e3438]: "\"missing\": {"
+                        - generic [ref=e3439]: "\"type\": \"array\","
+                        - generic [ref=e3440]: "\"items\": { \"type\": \"string\", \"minLength\": 1 },"
+                        - generic [ref=e3441]: "\"default\": []"
+                        - generic [ref=e3442]: "},"
+                        - generic [ref=e3443]: "\"next_actions\": {"
+                        - generic [ref=e3444]: "\"type\": \"array\","
+                        - generic [ref=e3445]: "\"items\": { \"$ref\": \"common.schema.json#/$defs/next_action\" },"
+                        - generic [ref=e3446]: "\"default\": []"
+                        - generic [ref=e3447]: "},"
+                        - generic [ref=e3449]: "\"notes\": { \"type\": \"string\" }"
+                        - generic [ref=e3450]: "}"
+                        - generic [ref=e3451]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/resp-spec-lock.schema.json" [level=3] [ref=e3452]:
+                      - code [ref=e3453]: schemas/flywheel/chatgpt/v1/resp-spec-lock.schema.json
+                    - generic [ref=e3460]:
+                      - generic [ref=e3462]:
+                        - generic [ref=e3463]: JSON
+                        - generic [ref=e3464]:
+                          - button "Copy" [ref=e3465] [cursor=pointer]:
+                            - img [ref=e3466]
+                          - button "Edit" [ref=e3469] [cursor=pointer]:
+                            - img [ref=e3471]
+                      - textbox "Edit code" [ref=e3479]:
+                        - generic [ref=e3480]: "{"
+                        - generic [ref=e3481]: "\"$schema\": \"https://json-schema.org/draft/2020-12/schema\","
+                        - generic [ref=e3482]: "\"$id\": \"flywheel.chatgpt.v1/resp-spec-lock.schema.json\","
+                        - generic [ref=e3483]: "\"title\": \"SPEC_LOCK_RESPONSE (v1)\","
+                        - generic [ref=e3484]: "\"type\": \"object\","
+                        - generic [ref=e3485]: "\"additionalProperties\": false,"
+                        - generic [ref=e3486]: "\"required\": [\"proto\", \"bead_id\", \"msg_type\", \"verdict\", \"spec\", \"next_actions\"],"
+                        - generic [ref=e3487]: "\"properties\": {"
+                        - generic [ref=e3488]: "\"proto\": { \"$ref\": \"common.schema.json#/$defs/proto\" },"
+                        - generic [ref=e3489]: "\"bead_id\": { \"$ref\": \"common.schema.json#/$defs/bead_id\" },"
+                        - generic [ref=e3490]: "\"msg_type\": { \"const\": \"SPEC_LOCK_RESPONSE\" },"
+                        - generic [ref=e3491]: "\"verdict\": { \"$ref\": \"common.schema.json#/$defs/verdict\" },"
+                        - generic [ref=e3493]: "\"spec\": {"
+                        - generic [ref=e3494]: "\"type\": \"object\","
+                        - generic [ref=e3495]: "\"description\": \"Arbitrary locked spec payload (schema, API, event names, constraints).\","
+                        - generic [ref=e3496]: "\"additionalProperties\": true"
+                        - generic [ref=e3497]: "},"
+                        - generic [ref=e3498]: "\"next_actions\": {"
+                        - generic [ref=e3499]: "\"type\": \"array\","
+                        - generic [ref=e3500]: "\"items\": { \"$ref\": \"common.schema.json#/$defs/next_action\" },"
+                        - generic [ref=e3501]: "\"default\": []"
+                        - generic [ref=e3502]: "},"
+                        - generic [ref=e3504]: "\"notes\": { \"type\": \"string\" }"
+                        - generic [ref=e3505]: "}"
+                        - generic [ref=e3506]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/resp-acceptance-gate.schema.json" [level=3] [ref=e3507]:
+                      - code [ref=e3508]: schemas/flywheel/chatgpt/v1/resp-acceptance-gate.schema.json
+                    - generic [ref=e3515]:
+                      - generic [ref=e3517]:
+                        - generic [ref=e3518]: JSON
+                        - generic [ref=e3519]:
+                          - button "Copy" [ref=e3520] [cursor=pointer]:
+                            - img [ref=e3521]
+                          - button "Edit" [ref=e3524] [cursor=pointer]:
+                            - img [ref=e3526]
+                      - textbox "Edit code" [ref=e3534]:
+                        - generic [ref=e3535]: "{"
+                        - generic [ref=e3536]: "\"$schema\": \"https://json-schema.org/draft/2020-12/schema\","
+                        - generic [ref=e3537]: "\"$id\": \"flywheel.chatgpt.v1/resp-acceptance-gate.schema.json\","
+                        - generic [ref=e3538]: "\"title\": \"ACCEPTANCE_GATE_RESPONSE (v1)\","
+                        - generic [ref=e3539]: "\"type\": \"object\","
+                        - generic [ref=e3540]: "\"additionalProperties\": false,"
+                        - generic [ref=e3541]: "\"required\": [\"proto\", \"bead_id\", \"msg_type\", \"verdict\", \"acceptance\", \"next_actions\"],"
+                        - generic [ref=e3542]: "\"properties\": {"
+                        - generic [ref=e3543]: "\"proto\": { \"$ref\": \"common.schema.json#/$defs/proto\" },"
+                        - generic [ref=e3544]: "\"bead_id\": { \"$ref\": \"common.schema.json#/$defs/bead_id\" },"
+                        - generic [ref=e3545]: "\"msg_type\": { \"const\": \"ACCEPTANCE_GATE_RESPONSE\" },"
+                        - generic [ref=e3546]: "\"verdict\": { \"$ref\": \"common.schema.json#/$defs/verdict\" },"
+                        - generic [ref=e3548]: "\"acceptance\": {"
+                        - generic [ref=e3549]: "\"type\": \"object\","
+                        - generic [ref=e3550]: "\"additionalProperties\": false,"
+                        - generic [ref=e3551]: "\"required\": [\"passed\", \"evidence\"],"
+                        - generic [ref=e3552]: "\"properties\": {"
+                        - generic [ref=e3553]: "\"passed\": { \"type\": \"boolean\" },"
+                        - generic [ref=e3554]: "\"evidence\": {"
+                        - generic [ref=e3555]: "\"type\": \"array\","
+                        - generic [ref=e3556]: "\"items\": { \"type\": \"string\", \"minLength\": 1 },"
+                        - generic [ref=e3557]: "\"default\": []"
+                        - generic [ref=e3558]: "},"
+                        - generic [ref=e3559]: "\"failed_reasons\": {"
+                        - generic [ref=e3560]: "\"type\": \"array\","
+                        - generic [ref=e3561]: "\"items\": { \"type\": \"string\", \"minLength\": 1 },"
+                        - generic [ref=e3562]: "\"default\": []"
+                        - generic [ref=e3563]: "}"
+                        - generic [ref=e3564]: "}"
+                        - generic [ref=e3565]: "},"
+                        - generic [ref=e3567]: "\"next_actions\": {"
+                        - generic [ref=e3568]: "\"type\": \"array\","
+                        - generic [ref=e3569]: "\"items\": { \"$ref\": \"common.schema.json#/$defs/next_action\" },"
+                        - generic [ref=e3570]: "\"default\": []"
+                    - separator [ref=e3572]
+                    - heading "TOOLS" [level=1] [ref=e3573]
+                    - heading "1) Packet builder" [level=2] [ref=e3574]
+                    - heading "scripts/chatgpt/packet-build.mjs" [level=3] [ref=e3575]:
+                      - code [ref=e3576]: scripts/chatgpt/packet-build.mjs
+                    - generic [ref=e3583]:
+                      - generic [ref=e3585]:
+                        - generic [ref=e3586]: JavaScript
+                        - generic [ref=e3587]:
+                          - button "Copy" [ref=e3588] [cursor=pointer]:
+                            - img [ref=e3589]
+                          - button "Edit" [ref=e3592] [cursor=pointer]:
+                            - img [ref=e3594]
+                      - textbox "Edit code" [ref=e3602]:
+                        - generic [ref=e3603]: "#!/usr/bin/env node"
+                        - generic [ref=e3604]: import fs from "node:fs";
+                        - generic [ref=e3605]: import path from "node:path";
+                        - generic [ref=e3607]: "function usage(exitCode = 1) {"
+                        - generic [ref=e3608]: "console.error(`"
+                        - generic [ref=e3609]: packet-build.mjs
+                        - generic [ref=e6804]: Build a Flywheel ChatGPT protocol request packet (v1).
+                        - generic [ref=e6806]: "Usage:"
+                        - generic [ref=e6807]: node scripts/chatgpt/packet-build.mjs \\
+                        - generic [ref=e3615]: "--type RFP_PLAN \\\\"
+                        - generic [ref=e3616]: "--bead bd-xxxx \\\\"
+                        - generic [ref=e3617]: "--sender QuietDune \\\\"
+                        - generic [ref=e3618]: "--context path/to/context.json \\\\"
+                        - generic [ref=e3619]: "--question \"What should we do next?\" \\\\"
+                        - generic [ref=e3620]: "[--question \"Second question...\"] \\\\"
+                        - generic [ref=e3621]: "[--artifact path/to/artifact.json] \\\\"
+                        - generic [ref=e3622]: "[--idempotency-key \"bd-xxxx:RFP_PLAN:...\"] \\\\"
+                        - generic [ref=e3628]: "[--out path/to/packet.json]"
+                        - generic [ref=e6808]: "Notes:"
+                        - generic [ref=e6809]: "- --context must be a JSON file matching: { repo, branch, goal, constraints[] }"
+                        - generic [ref=e6810]: "- --artifact files must be JSON matching: { type, label, content } (content is a string)"
+                        - generic [ref=e6811]: "`);"
+                        - generic [ref=e3629]: process.exit(exitCode);
+                        - generic [ref=e3630]: "}"
+                        - generic [ref=e3632]: "function parseArgs(argv) {"
+                        - generic [ref=e3633]: "const args = {};"
+                        - generic [ref=e3634]: const rest = [];
+                        - generic [ref=e3635]: "for (let i = 2; i < argv.length; i++) {"
+                        - generic [ref=e3636]: const a = argv[i];
+                        - generic [ref=e3637]: "if (a.startsWith(\"--\")) {"
+                        - generic [ref=e3638]: const key = a.slice(2);
+                    - separator [ref=e3640]
+                    - heading "2) Packet validator" [level=2] [ref=e3641]
+                    - heading "scripts/chatgpt/packet-validate.mjs" [level=3] [ref=e3642]:
+                      - code [ref=e3643]: scripts/chatgpt/packet-validate.mjs
+                    - generic [ref=e3650]:
+                      - generic [ref=e3652]:
+                        - generic [ref=e3653]: JavaScript
+                        - generic [ref=e3654]:
+                          - button "Copy" [ref=e3655] [cursor=pointer]:
+                            - img [ref=e3656]
+                          - button "Edit" [ref=e3659] [cursor=pointer]:
+                            - img [ref=e3661]
+                      - textbox "Edit code" [ref=e3669]:
+                        - generic [ref=e3670]: "#!/usr/bin/env node"
+                        - generic [ref=e3671]: import fs from "node:fs";
+                        - generic [ref=e3672]: import path from "node:path";
+                        - generic [ref=e3673]: import process from "node:process";
+                        - generic [ref=e3674]: import Ajv from "ajv";
+                        - generic [ref=e3675]: import addFormats from "ajv-formats";
+                        - generic [ref=e3677]: "function usage(exitCode = 1) {"
+                        - generic [ref=e3678]: "console.error(`"
+                        - generic [ref=e3692]: packet-validate.mjs
+                        - generic [ref=e3679]: Validate a Flywheel ChatGPT protocol packet (request or response) against local schemas.
+                        - generic [ref=e6813]: "Usage:"
+                        - generic [ref=e6814]: node scripts/chatgpt/packet-validate.mjs --file path/to/packet.json
+                        - generic [ref=e6815]: cat packet.json | node scripts/chatgpt/packet-validate.mjs --stdin
+                        - generic [ref=e6817]: "Exit codes:"
+                        - generic [ref=e6818]: 0 = valid
+                        - generic [ref=e6819]: 2 = invalid (schema errors)
+                        - generic [ref=e6820]: 1 = tool error
+                        - generic [ref=e6822]: "`);"
+                        - generic [ref=e3693]: process.exit(exitCode);
+                        - generic [ref=e3694]: "}"
+                        - generic [ref=e3696]: "function parseArgs(argv) {"
+                        - generic [ref=e3697]: "const args = {};"
+                        - generic [ref=e3698]: "for (let i = 2; i < argv.length; i++) {"
+                        - generic [ref=e3699]: const a = argv[i];
+                        - generic [ref=e3700]: "if (a.startsWith(\"--\")) {"
+                        - generic [ref=e3701]: const key = a.slice(2);
+                        - generic [ref=e3702]: const next = argv[i + 1];
+                        - generic [ref=e3703]: "if (!next || next.startsWith(\"--\")) {"
+                        - generic [ref=e3704]: args[key] = true;
+                        - generic [ref=e3705]: "} else {"
+                    - separator [ref=e3707]
+                    - heading "Quick smoke test" [level=2] [ref=e3708]
+                    - list [ref=e3709]:
+                      - listitem [ref=e3710]:
+                        - paragraph [ref=e3711]: "Create a context file:"
+                    - heading "tmp/context.json" [level=3] [ref=e3712]:
+                      - code [ref=e3713]: tmp/context.json
+                    - generic [ref=e3720]:
+                      - generic [ref=e3722]:
+                        - generic [ref=e3723]: JSON
+                        - generic [ref=e3724]:
+                          - button "Copy" [ref=e3725] [cursor=pointer]:
+                            - img [ref=e3726]
+                          - button "Edit" [ref=e3729] [cursor=pointer]:
+                            - img [ref=e3731]
+                      - textbox "Edit code" [ref=e3738]:
+                        - generic [ref=e3739]: "{"
+                        - generic [ref=e3740]: "\"repo\": \"AgentCore\","
+                        - generic [ref=e3741]: "\"branch\": \"feature/agent-flywheel-protocol\","
+                        - generic [ref=e3742]: "\"goal\": \"Implement Flywheel ChatGPT protocol scaffolding\","
+                        - generic [ref=e3743]: "\"constraints\": [\"json-only responses\", \"single writer\", \"schema validation\"]"
+                        - generic [ref=e3744]: "}"
+                    - list [ref=e3745]:
+                      - listitem [ref=e3746]:
+                        - paragraph [ref=e3747]: "Build + validate:"
+                    - generic [ref=e3754]:
+                      - generic [ref=e3756]:
+                        - generic [ref=e3757]: Bash
+                        - generic [ref=e3758]:
+                          - button "Copy" [ref=e3759] [cursor=pointer]:
+                            - img [ref=e3760]
+                          - button "Edit" [ref=e3763] [cursor=pointer]:
+                            - img [ref=e3765]
+                      - textbox "Edit code" [ref=e3773]:
+                        - generic [ref=e3774]: node scripts/chatgpt/packet-build.mjs \
+                        - generic [ref=e3775]: "--type RFP_PLAN \\"
+                        - generic [ref=e3776]: "--bead bd-1234 \\"
+                        - generic [ref=e3777]: "--sender QuietDune \\"
+                        - generic [ref=e3778]: "--context tmp/context.json \\"
+                        - generic [ref=e3779]: "--question \"Produce an implementation plan and acceptance tests.\" \\"
+                        - generic [ref=e3780]: "--out tmp/packet.json"
+                        - generic [ref=e3782]: node scripts/chatgpt/packet-validate.mjs --file tmp/packet.json
+                    - separator [ref=e3783]
+                    - paragraph [ref=e3784]:
+                      - text: If you want the next step after this (Bridge work), the very next file is
+                      - code [ref=e3785]: scripts/chatgpt/packet-extract.mjs
+                      - text: (parse JSON from ChatGPT message text) and then a
+                      - code [ref=e3786]: bridge-run-once.mjs
+                      - text: that uses your
+                      - code [ref=e3787]: playwright-chatgpt
+                      - text: MCP to post + scrape + validate responses.
+                - generic [ref=e3788]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e3789]:
+              - heading "You said:" [level=5] [ref=e3790]
+              - generic [ref=e3792]:
+                - generic [ref=e3797]:
+                  - text: "Important design clarification: The agent system uses a **pool-based model**, not named agents. Here's why: 1. **Agents are general-purpose**, not specialized 2. **Agent pool is dynamic** - agents come and go 3. **Any agent should be able to pick up any task** So instead of:"
+                  - code [ref=e3799]: "json {\"task\": \"Install JWT\", \"assign_to\": \"agent-1\"}"
+                  - text: "We need:"
+                  - code [ref=e3801]: "json {\"task\": \"Install JWT\", \"assign_to\": \"any\", \"notes\": \"Step-by-step instructions...\"}"
+                  - text: "**Key changes needed:** 1. Make"
+                  - code [ref=e3802]: assign_to
+                  - text: optional or default to "any" 2. The
+                  - code [ref=e3803]: notes
+                  - text: field should contain **detailed, step-by-step instructions** that any agent can follow 3. ChatGPT should write verbose instructions, not assume agent capabilities Can you update the
+                  - code [ref=e3804]: next_action
+                  - text: schema and provide guidance on how to prompt you to generate pool-friendly tasks with detailed instructions?
+                - generic [ref=e3805]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e3806]:
+              - heading "ChatGPT said:" [level=6] [ref=e3807]
+              - generic [ref=e3809]:
+                - generic [ref=e3813]:
+                  - paragraph [ref=e3814]: Absolutely — pool-based is the right model, and the schema should reflect “dispatchable work” rather than “named assignees.”
+                  - 'heading "1) Schema update: pool-friendly next_action" [level=2] [ref=e3815]':
+                    - text: "1) Schema update: pool-friendly"
+                    - code [ref=e3816]: next_action
+                  - heading "What changes" [level=3] [ref=e3817]
+                  - list [ref=e3818]:
+                    - listitem [ref=e3819]:
+                      - paragraph [ref=e3820]:
+                        - code [ref=e3821]: assign_to
+                        - text: becomes
+                        - strong [ref=e3822]: optional
+                        - text: and defaults to
+                        - code [ref=e3823]: "\"any\""
+                        - text: .
+                    - listitem [ref=e3824]:
+                      - paragraph [ref=e3825]:
+                        - code [ref=e3826]: notes
+                        - text: becomes
+                        - strong [ref=e3827]: required
+                        - text: and is where the
+                        - strong [ref=e3828]: step-by-step instructions
+                        - text: live.
+                    - listitem [ref=e3829]:
+                      - paragraph [ref=e3830]:
+                        - text: Add optional
+                        - code [ref=e3831]: requirements
+                        - text: +
+                        - code [ref=e3832]: acceptance
+                        - text: to make tasks executable by any agent with no tribal knowledge.
+                  - heading "Replace $defs.next_action in schemas/flywheel/chatgpt/v1/common.schema.json with this" [level=3] [ref=e3833]:
+                    - text: Replace
+                    - code [ref=e3834]: $defs.next_action
+                    - text: in
+                    - code [ref=e3835]: schemas/flywheel/chatgpt/v1/common.schema.json
+                    - text: with this
+                  - generic [ref=e3842]:
+                    - generic [ref=e3844]:
+                      - generic [ref=e3845]: JSON
+                      - generic [ref=e3846]:
+                        - button "Copy" [ref=e3847] [cursor=pointer]:
+                          - img [ref=e3848]
+                        - button "Edit" [ref=e3851] [cursor=pointer]:
+                          - img [ref=e3853]
+                    - textbox "Edit code" [ref=e3861]:
+                      - generic [ref=e3862]: "\"next_action\": {"
+                      - generic [ref=e3863]: "\"type\": \"object\","
+                      - generic [ref=e3864]: "\"additionalProperties\": false,"
+                      - generic [ref=e3865]: "\"required\": [\"task\", \"notes\"],"
+                      - generic [ref=e3866]: "\"properties\": {"
+                      - generic [ref=e3867]: "\"task\": { \"type\": \"string\", \"minLength\": 1 },"
+                      - generic [ref=e3869]: "\"assign_to\": {"
+                      - generic [ref=e3870]: "\"type\": \"string\","
+                      - generic [ref=e3871]: "\"default\": \"any\","
+                      - generic [ref=e3872]: "\"description\": \"Pool-based assignment. Use 'any' unless a special capability is required.\""
+                      - generic [ref=e3873]: "},"
+                      - generic [ref=e3875]: "\"priority\": {"
+                      - generic [ref=e3876]: "\"type\": \"string\","
+                      - generic [ref=e3877]: "\"enum\": [\"P0\", \"P1\", \"P2\", \"P3\"],"
+                      - generic [ref=e3878]: "\"default\": \"P2\""
+                      - generic [ref=e3879]: "},"
+                      - generic [ref=e3881]: "\"blocking\": { \"type\": \"boolean\", \"default\": false },"
+                      - generic [ref=e3883]: "\"notes\": {"
+                      - generic [ref=e3884]: "\"type\": \"string\","
+                      - generic [ref=e3885]: "\"minLength\": 20,"
+                      - generic [ref=e3886]: "\"description\": \"Step-by-step, copy/paste-ready instructions that any general-purpose agent can follow.\""
+                      - generic [ref=e3887]: "},"
+                      - generic [ref=e3889]: "\"requirements\": {"
+                      - generic [ref=e3890]: "\"type\": \"array\","
+                      - generic [ref=e3891]: "\"items\": { \"type\": \"string\", \"minLength\": 1 },"
+                      - generic [ref=e3892]: "\"default\": [],"
+                      - generic [ref=e3893]: "\"description\": \"Prereqs/tools/paths needed (e.g., 'Node 20', 'run from repo root', 'env var X set').\""
+                      - generic [ref=e3894]: "},"
+                      - generic [ref=e3896]: "\"acceptance\": {"
+                      - generic [ref=e3897]: "\"type\": \"array\","
+                  - heading "Notes on compatibility" [level=3] [ref=e3899]
+                  - list [ref=e3900]:
+                    - listitem [ref=e3901]:
+                      - paragraph [ref=e3902]:
+                        - text: Your existing response schemas already reference
+                        - code [ref=e3903]: $defs.next_action
+                        - text: ", so"
+                        - strong [ref=e3904]: no other schema files need edits
+                        - text: besides
+                        - code [ref=e3905]: common.schema.json
+                        - text: .
+                    - listitem [ref=e3906]:
+                      - paragraph [ref=e3907]: After editing, re-run your validator against any sample packets.
+                  - separator [ref=e3908]
+                  - 'heading "2) Guidance: how to prompt ChatGPT for pool-friendly tasks" [level=2] [ref=e3909]'
+                  - paragraph [ref=e3910]: When you want tasks that any ephemeral agent can pick up, you need to explicitly constrain the response style and assumptions.
+                  - heading "Add this to every protocol request’s requested_output.notes" [level=3] [ref=e3911]:
+                    - text: Add this to every protocol request’s
+                    - code [ref=e3912]: requested_output.notes
+                  - paragraph [ref=e3913]: "Use it verbatim:"
+                  - blockquote [ref=e3914]:
+                    - paragraph [ref=e3915]:
+                      - strong [ref=e3916]: "Task-writing rules (pool-based):"
+                    - list [ref=e3917]:
+                      - listitem [ref=e3918]:
+                        - paragraph [ref=e3919]:
+                          - text: Produce
+                          - code [ref=e3920]: next_actions[]
+                          - text: where each item is executable by any general-purpose agent.
+                      - listitem [ref=e3921]:
+                        - paragraph [ref=e3922]:
+                          - text: Set
+                          - code [ref=e3923]: assign_to
+                          - text: to
+                          - code [ref=e3924]: "\"any\""
+                          - text: (or omit it). Do not use named agents.
+                      - listitem [ref=e3925]:
+                        - paragraph [ref=e3926]:
+                          - code [ref=e3927]: notes
+                          - text: MUST be detailed, step-by-step, copy/paste-ready. Assume no prior context beyond what’s in
+                          - code [ref=e3928]: inputs.artifacts
+                          - text: and
+                          - code [ref=e3929]: context
+                          - text: .
+                      - listitem [ref=e3930]:
+                        - paragraph [ref=e3931]: Include exact file paths, commands, and what to expect after each step.
+                      - listitem [ref=e3932]:
+                        - paragraph [ref=e3933]:
+                          - text: Include
+                          - code [ref=e3934]: requirements[]
+                          - text: and
+                          - code [ref=e3935]: acceptance[]
+                          - text: for each action.
+                      - listitem [ref=e3936]:
+                        - paragraph [ref=e3937]: Do not hand-wave (“just update X”). Specify the exact edits or commands.
+                  - heading "Also include a “capability assumption” line in the questions" [level=3] [ref=e3938]
+                  - paragraph [ref=e3939]: "Example question text:"
+                  - list [ref=e3940]:
+                    - listitem [ref=e3941]:
+                      - paragraph [ref=e3942]: “Assume agents are general-purpose, may be brand-new to this repo, and must succeed using only the instructions you provide.”
+                  - 'heading "Optional: enforce output structure hard" [level=3] [ref=e3943]'
+                  - paragraph [ref=e3944]: "Add this to the end of your prompt:"
+                  - list [ref=e3945]:
+                    - listitem [ref=e3946]:
+                      - paragraph [ref=e3947]:
+                        - text: “Return
+                        - strong [ref=e3948]: JSON only
+                        - text: . No commentary. If you cannot comply, return
+                        - code [ref=e3949]: verdict:"error"
+                        - text: and explain in
+                        - code [ref=e3950]: notes
+                        - text: .”
+                  - separator [ref=e3951]
+                  - 'heading "Small recommendation: bump packet-build defaults" [level=2] [ref=e3952]':
+                    - text: "Small recommendation: bump"
+                    - code [ref=e3953]: packet-build
+                    - text: defaults
+                  - paragraph [ref=e3954]:
+                    - text: Right now,
+                    - code [ref=e3955]: packet-build
+                    - text: sets
+                    - code [ref=e3956]: requested_output.fields
+                    - text: based on type. Keep that, but start routinely adding
+                    - code [ref=e3957]: requested_output.notes
+                    - text: (either via CLI flag later, or by editing the packet before posting) to include the rules above. That’s the easiest way to make “verbose pool tasks” the default behavior.
+                  - paragraph [ref=e3958]:
+                    - text: If you want, I can also patch
+                    - code [ref=e3959]: packet-build.mjs
+                    - text: to accept
+                    - code [ref=e3960]: "--output-notes <file>"
+                    - text: or
+                    - code [ref=e3961]: "--output-notes-text \"...\""
+                    - text: so you don’t have to hand-edit packets.
+                - generic [ref=e3962]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e3963]:
+              - heading "You said:" [level=5] [ref=e3964]
+              - generic [ref=e3966]:
+                - generic [ref=e3971]: "Update: Turns out the user ALREADY has a working agent flywheel in production on their 7d-solutions platform! Their system: - PearlOwl (coordinator agent) works directly with ChatGPT using natural language - PearlOwl creates beads and directs EmeraldBear (worker agent) - EmeraldBear executes tasks and reports back - All natural language, no formal schemas needed - Quote: \"I thought Chat knew what we currently had\" 😅 Reality check: We just designed a complex JSON schema protocol with 12 schema files, validation tooling, and formal message types... when they already have a simpler system that works perfectly. Their verdict: \"I think what I have will work just fine...Chat evidently wasn't aware of my superior system.\" So the question: When does natural language agent coordination beat formal protocols? Apparently when you have competent agents that already understand instructions! Any thoughts on what actual enhancements would help vs. what we over-engineered?"
+                - generic [ref=e3972]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e3973]:
+              - heading "ChatGPT said:" [level=6] [ref=e3974]
+              - generic [ref=e3976]:
+                - generic [ref=e3980]:
+                  - paragraph [ref=e3981]:
+                    - text: "You’re seeing the real boundary:"
+                    - strong [ref=e3982]: formal protocols win when you need determinism, auditability, and machine-checkable gates
+                    - text: ; natural language wins when
+                    - strong [ref=e3983]: humans (and capable agents) are already the “compiler”
+                    - text: and the system is moving fast with low coordination friction.
+                  - heading "When natural language beats formal protocols" [level=3] [ref=e3984]
+                  - paragraph [ref=e3985]: "Natural language coordination is better when most of these are true:"
+                  - list [ref=e3986]:
+                    - listitem [ref=e3987]:
+                      - paragraph [ref=e3988]:
+                        - strong [ref=e3989]: Single coordinator brain
+                        - text: (PearlOwl) already maintains coherence end-to-end.
+                    - listitem [ref=e3990]:
+                      - paragraph [ref=e3991]:
+                        - strong [ref=e3992]: Low ambiguity tasks
+                        - text: (implement X, run tests, report results) and short feedback loops.
+                    - listitem [ref=e3993]:
+                      - paragraph [ref=e3994]:
+                        - strong [ref=e3995]: Strong agent competence
+                        - text: (EmeraldBear reliably executes without needing a rigid contract).
+                    - listitem [ref=e3996]:
+                      - paragraph [ref=e3997]:
+                        - strong [ref=e3998]: Small team / low concurrency on the same artifact
+                        - text: (fewer race conditions, less merge contention).
+                    - listitem [ref=e3999]:
+                      - paragraph [ref=e4000]:
+                        - strong [ref=e4001]: Human is present
+                        - text: and can spot nonsense quickly.
+                    - listitem [ref=e4002]:
+                      - paragraph [ref=e4003]:
+                        - strong [ref=e4004]: Failure cost is low
+                        - text: (you can retry quickly, you don’t need hard compliance evidence every time).
+                  - paragraph [ref=e4005]: "In that world, schemas are overhead: they slow cadence without adding much safety."
+                  - heading "When formal protocols beat natural language" [level=3] [ref=e4006]
+                  - paragraph [ref=e4007]: "Protocols start paying for themselves when one or more of these shows up:"
+                  - list [ref=e4008]:
+                    - listitem [ref=e4009]:
+                      - paragraph [ref=e4010]:
+                        - strong [ref=e4011]: Many agents / high parallelism
+                        - text: (8–30+ workers) and you need predictable dispatch.
+                    - listitem [ref=e4012]:
+                      - paragraph [ref=e4013]:
+                        - strong [ref=e4014]: Multi-day beads
+                        - text: where context drift becomes a real problem.
+                    - listitem [ref=e4015]:
+                      - paragraph [ref=e4016]:
+                        - strong [ref=e4017]: Hard compliance gates
+                        - text: (ISO/QMS-style evidence, reproducible acceptance, audit trails).
+                    - listitem [ref=e4018]:
+                      - paragraph [ref=e4019]:
+                        - strong [ref=e4020]: Cross-module contracts
+                        - text: (events, schemas, API interfaces) where “almost right” breaks the system.
+                    - listitem [ref=e4021]:
+                      - paragraph [ref=e4022]:
+                        - strong [ref=e4023]: Need to automate
+                        - text: ": route tasks, validate responses, close beads automatically, prevent duplicates."
+                    - listitem [ref=e4024]:
+                      - paragraph [ref=e4025]:
+                        - strong [ref=e4026]: You’re scaling beyond “PearlOwl can hold it all in its head.”
+                  - paragraph [ref=e4027]:
+                    - text: Protocols are basically how you make the system
+                    - strong [ref=e4028]: scale without PearlOwl as a bottleneck
+                    - text: .
+                  - separator [ref=e4029]
+                  - heading "What you actually over-engineered" [level=2] [ref=e4030]
+                  - paragraph [ref=e4031]:
+                    - text: Not the idea of “ChatGPT as a co-processor” — that’s valid. What was extra
+                    - emphasis [ref=e4032]: right now
+                    - text: ":"
+                  - list [ref=e4033]:
+                    - listitem [ref=e4034]:
+                      - paragraph [ref=e4035]: 12 schema files up front
+                    - listitem [ref=e4036]:
+                      - paragraph [ref=e4037]: strict validator tooling before you hit real failure modes
+                    - listitem [ref=e4038]:
+                      - paragraph [ref=e4039]: message-type taxonomy before you needed automation to parse/route
+                    - listitem [ref=e4040]:
+                      - paragraph [ref=e4041]: “pool dispatch” via JSON when PearlOwl already dispatches naturally
+                  - paragraph [ref=e4042]:
+                    - text: You built for
+                    - strong [ref=e4043]: future scale and automation
+                    - text: ", not for your"
+                    - strong [ref=e4044]: current operating regime
+                    - text: .
+                  - separator [ref=e4045]
+                  - heading "What enhancements would help (without blowing up the system)" [level=2] [ref=e4046]
+                  - heading "1) Add lightweight structure, not full schemas" [level=3] [ref=e4047]:
+                    - text: 1) Add
+                    - emphasis [ref=e4048]: lightweight structure
+                    - text: ", not full schemas"
+                  - paragraph [ref=e4049]:
+                    - text: Keep natural language, but standardize a
+                    - strong [ref=e4050]: template
+                    - text: PearlOwl uses that’s still human-readable.
+                  - paragraph [ref=e4051]: "Example “Bead Brief” format (markdown):"
+                  - list [ref=e4052]:
+                    - listitem [ref=e4053]:
+                      - paragraph [ref=e4054]: Goal
+                    - listitem [ref=e4055]:
+                      - paragraph [ref=e4056]: Constraints
+                    - listitem [ref=e4057]:
+                      - paragraph [ref=e4058]: Definition of Done
+                    - listitem [ref=e4059]:
+                      - paragraph [ref=e4060]: Steps (explicit)
+                    - listitem [ref=e4061]:
+                      - paragraph [ref=e4062]: Evidence required (commands + expected output)
+                    - listitem [ref=e4063]:
+                      - paragraph [ref=e4064]: Risks / rollback
+                  - paragraph [ref=e4065]: This gives you 80% of protocol benefit with 5% of complexity.
+                  - heading "2) Add “evidence discipline”" [level=3] [ref=e4066]
+                  - paragraph [ref=e4067]: "Your system becomes dramatically more reliable if EmeraldBear always reports back as:"
+                  - list [ref=e4068]:
+                    - listitem [ref=e4069]:
+                      - paragraph [ref=e4070]: What I did (commands / files changed)
+                    - listitem [ref=e4071]:
+                      - paragraph [ref=e4072]: What I observed (logs/test output)
+                    - listitem [ref=e4073]:
+                      - paragraph [ref=e4074]: What’s still failing (exact error)
+                    - listitem [ref=e4075]:
+                      - paragraph [ref=e4076]: Proposed next step
+                  - paragraph [ref=e4077]:
+                    - text: This is basically
+                    - emphasis [ref=e4078]: a protocol
+                    - text: ", but in English."
+                  - heading "3) Add concurrency controls (this is high ROI)" [level=3] [ref=e4079]
+                  - paragraph [ref=e4080]: "If you have multiple workers:"
+                  - list [ref=e4081]:
+                    - listitem [ref=e4082]:
+                      - paragraph [ref=e4083]: "file-level locks (even coarse: “one bead owns one directory/module”)"
+                    - listitem [ref=e4084]:
+                      - paragraph [ref=e4085]: “one writer” rule per artifact area
+                    - listitem [ref=e4086]:
+                      - paragraph [ref=e4087]: explicit “merge owner” when multiple patches touch same surface
+                  - paragraph [ref=e4088]: "This prevents the worst multi-agent failure mode: conflicting edits."
+                  - heading "4) Add idempotency / dedupe at bead level" [level=3] [ref=e4089]
+                  - paragraph [ref=e4090]: Even in natural language systems, duplicate work is common.
+                  - list [ref=e4091]:
+                    - listitem [ref=e4092]:
+                      - paragraph [ref=e4093]: hash bead intent + target paths
+                    - listitem [ref=e4094]:
+                      - paragraph [ref=e4095]: detect “we already did this bead / already have a patch”
+                  - heading "5) Add a minimal “handoff snapshot” artifact per bead" [level=3] [ref=e4096]
+                  - paragraph [ref=e4097]: "At bead close:"
+                  - list [ref=e4098]:
+                    - listitem [ref=e4099]:
+                      - paragraph [ref=e4100]: final summary
+                    - listitem [ref=e4101]:
+                      - paragraph [ref=e4102]: key decisions
+                    - listitem [ref=e4103]:
+                      - paragraph [ref=e4104]: exact acceptance evidence
+                    - listitem [ref=e4105]:
+                      - paragraph [ref=e4106]: links to diffs/tests
+                  - paragraph [ref=e4107]: "This solves the “Chat didn’t know what we currently had” problem better than schemas: it keeps your system’s truth in one place."
+                  - heading "6) Add a “capability contract” once, not per message" [level=3] [ref=e4108]
+                  - paragraph [ref=e4109]: "Instead of JSON schemas, define:"
+                  - list [ref=e4110]:
+                    - listitem [ref=e4111]:
+                      - paragraph [ref=e4112]: what PearlOwl can assume about any worker agent (tools, repo access, how to report)
+                    - listitem [ref=e4113]:
+                      - paragraph [ref=e4114]: what the worker must always include in responses
+                  - paragraph [ref=e4115]: That’s your “protocol,” but it’s stable and written once.
+                  - separator [ref=e4116]
+                  - heading "The real lesson from “Chat didn’t know what we currently had”" [level=2] [ref=e4117]
+                  - paragraph [ref=e4118]:
+                    - text: This wasn’t a protocol problem. It was a
+                    - strong [ref=e4119]: context boundary problem
+                    - text: ":"
+                  - list [ref=e4120]:
+                    - listitem [ref=e4121]:
+                      - paragraph [ref=e4122]:
+                        - text: ChatGPT doesn’t magically know your production coordinator patterns unless you
+                        - strong [ref=e4123]: encode them
+                        - text: somewhere it can reliably see (docs, pinned thread, system prompt, or a “current system summary” artifact).
+                    - listitem [ref=e4124]:
+                      - paragraph [ref=e4125]:
+                        - text: "So the fix is: create a"
+                        - strong [ref=e4126]: single canonical doc
+                        - text: describing the existing PearlOwl/EmeraldBear workflow and keep it current.
+                  - paragraph [ref=e4127]: That is higher leverage than a new protocol.
+                  - separator [ref=e4128]
+                  - heading "A pragmatic recommendation" [level=2] [ref=e4129]
+                  - paragraph [ref=e4130]: "Keep your working system. Add only these three upgrades now:"
+                  - list [ref=e4131]:
+                    - listitem [ref=e4132]:
+                      - paragraph [ref=e4133]:
+                        - strong [ref=e4134]: Bead Brief markdown template
+                    - listitem [ref=e4135]:
+                      - paragraph [ref=e4136]:
+                        - strong [ref=e4137]: Worker report template (commands + evidence)
+                    - listitem [ref=e4138]:
+                      - paragraph [ref=e4139]:
+                        - strong [ref=e4140]: One-writer + lock discipline
+                  - paragraph [ref=e4141]:
+                    - text: Then, if you later hit scale pain (context drift, duplicate work, failed gating), you can “graduate” to formal schemas in a targeted way — starting with just
+                    - strong [ref=e4142]: one
+                    - text: "structured object:"
+                    - code [ref=e4143]: next_actions[]
+                    - text: in JSON, everything else natural language.
+                  - paragraph [ref=e4144]: If you want, paste your current PearlOwl → EmeraldBear bead creation format (even one example). I’ll propose the smallest template changes that improve reliability without changing how your system feels.
+                - generic [ref=e4145]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e4146]:
+              - heading "You said:" [level=5] [ref=e4147]
+              - generic [ref=e4149]:
+                - generic [ref=e4154]: "Quick check before I build more: The user wants a dedicated Bridge agent that: 1. Auto-restarts when it compacts/exits (like their existing agent runner pattern) 2. Handles batch planning - multiple beads → one ChatGPT request → multiple plans back 3. Runs in tmux pane, receives requests via agent-mail (br mail) The problem: Using Playwright MCP burns massive context (386KB snapshots per call). My solution: External helper process that uses Playwright library directly - Bridge agent calls: node post-and-extract.mjs --message-file request.txt --out response.json - Helper runs in separate process (no context burn to bridge agent) - Helper posts to ChatGPT, waits for response, extracts JSON, exits Is this the right approach? Or is there a simpler/better way to avoid the context burn while still automating ChatGPT posts?"
+                - generic [ref=e4155]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e4156]:
+              - heading "ChatGPT said:" [level=6] [ref=e4157]
+              - generic [ref=e4159]:
+                - generic [ref=e4163]:
+                  - paragraph [ref=e4164]:
+                    - text: Yes —
+                    - strong [ref=e4165]: an external helper that uses Playwright directly is the right move
+                    - text: if your main pain is
+                    - strong [ref=e4166]: LLM-context bloat from MCP snapshots
+                    - text: .
+                  - paragraph [ref=e4167]: "You’re basically separating concerns correctly:"
+                  - list [ref=e4168]:
+                    - listitem [ref=e4169]:
+                      - paragraph [ref=e4170]:
+                        - strong [ref=e4171]: Bridge agent (LLM)
+                        - text: ": routing, batching, interpreting, writing to agent-mail, tmux lifecycle"
+                    - listitem [ref=e4172]:
+                      - paragraph [ref=e4173]:
+                        - strong [ref=e4174]: Helper process (deterministic code)
+                        - text: ": browser automation + DOM extraction + JSON parsing"
+                  - paragraph [ref=e4175]: That’s how you keep the “reasoning brain” small and the “I/O machinery” out-of-band.
+                  - separator [ref=e4176]
+                  - heading "Why this works (and why MCP hurts)" [level=2] [ref=e4177]
+                  - paragraph [ref=e4178]: "Playwright MCP is optimized for “agent uses browser interactively,” so it tends to:"
+                  - list [ref=e4179]:
+                    - listitem [ref=e4180]:
+                      - paragraph [ref=e4181]:
+                        - text: emit
+                        - strong [ref=e4182]: big snapshots
+                    - listitem [ref=e4183]:
+                      - paragraph [ref=e4184]:
+                        - text: carry
+                        - strong [ref=e4185]: UI state
+                        - text: repeatedly
+                    - listitem [ref=e4186]:
+                      - paragraph [ref=e4187]: "burn context even when you only need: “post text → read last assistant reply”"
+                  - paragraph [ref=e4188]: "Your helper avoids that by returning only:"
+                  - list [ref=e4189]:
+                    - listitem [ref=e4190]:
+                      - paragraph [ref=e4191]:
+                        - code [ref=e4192]: response_json
+                        - text: (or a small structured error)
+                    - listitem [ref=e4193]:
+                      - paragraph [ref=e4194]:
+                        - text: maybe a small
+                        - code [ref=e4195]: debug
+                        - text: field when it fails
+                  - paragraph [ref=e4196]:
+                    - text: "So yes:"
+                    - strong [ref=e4197]: the helper process is the simplest reliable way to eliminate context burn
+                    - text: while keeping web automation.
+                  - separator [ref=e4198]
+                  - 'heading "Even better than “spawn per request”: make the helper a daemon" [level=2] [ref=e4199]'
+                  - paragraph [ref=e4200]:
+                    - text: Spawning Chromium fresh for every
+                    - code [ref=e4201]: post-and-extract.mjs
+                    - text: "will work, but you’ll pay in:"
+                  - list [ref=e4202]:
+                    - listitem [ref=e4203]:
+                      - paragraph [ref=e4204]: startup latency
+                    - listitem [ref=e4205]:
+                      - paragraph [ref=e4206]: higher chance of intermittent login/challenge
+                    - listitem [ref=e4207]:
+                      - paragraph [ref=e4208]: heavier CPU
+                  - paragraph [ref=e4209]: "The best architecture is:"
+                  - 'heading "Option A (good): short-lived helper per request" [level=3] [ref=e4210]'
+                  - paragraph [ref=e4211]:
+                    - code [ref=e4212]: node post-and-extract.mjs --message-file ... --out ...
+                  - list [ref=e4213]:
+                    - listitem [ref=e4214]:
+                      - paragraph [ref=e4215]: simple, stateless
+                    - listitem [ref=e4216]:
+                      - paragraph [ref=e4217]: easiest to ship
+                    - listitem [ref=e4218]:
+                      - paragraph [ref=e4219]: fine if volume is low/moderate
+                  - 'heading "Option B (best): long-running helper daemon" [level=3] [ref=e4220]'
+                  - paragraph [ref=e4221]: "Bridge talks to helper over stdin/stdout (or a unix socket), helper keeps:"
+                  - list [ref=e4222]:
+                    - listitem [ref=e4223]:
+                      - paragraph [ref=e4224]: one browser instance
+                    - listitem [ref=e4225]:
+                      - paragraph [ref=e4226]: one logged-in context (via storage-state)
+                    - listitem [ref=e4227]:
+                      - paragraph [ref=e4228]: one open CRT tab
+                    - listitem [ref=e4229]:
+                      - paragraph [ref=e4230]: posts messages and extracts replies
+                  - paragraph [ref=e4231]:
+                    - text: This minimizes both
+                    - strong [ref=e4232]: context burn
+                    - text: and
+                    - strong [ref=e4233]: runtime overhead
+                    - text: .
+                  - paragraph [ref=e4234]: If your Bridge is “auto-restarting in tmux,” the helper can also be auto-restarted independently.
+                  - separator [ref=e4235]
+                  - heading "Batch planning (multiple beads → one request → multiple plans)" [level=2] [ref=e4236]
+                  - paragraph [ref=e4237]: This is compatible with either helper style.
+                  - paragraph [ref=e4238]: "Your batch packet should look like:"
+                  - list [ref=e4239]:
+                    - listitem [ref=e4240]:
+                      - paragraph [ref=e4241]: "A single message containing:"
+                      - list [ref=e4242]:
+                        - listitem [ref=e4243]:
+                          - paragraph [ref=e4244]: list of beads
+                        - listitem [ref=e4245]:
+                          - paragraph [ref=e4246]: per-bead goal/constraints/evidence
+                        - listitem [ref=e4247]:
+                          - paragraph [ref=e4248]:
+                            - text: "required output:"
+                            - code [ref=e4249]: plans[]
+                            - text: keyed by
+                            - code [ref=e4250]: bead_id
+                  - paragraph [ref=e4251]: "Require ChatGPT to return:"
+                  - generic [ref=e4258]:
+                    - generic [ref=e4260]:
+                      - generic [ref=e4261]: JSON
+                      - generic [ref=e4262]:
+                        - button "Copy" [ref=e4263] [cursor=pointer]:
+                          - img [ref=e4264]
+                        - button "Edit" [ref=e4267] [cursor=pointer]:
+                          - img [ref=e4269]
+                    - textbox "Edit code" [ref=e4276]:
+                      - generic [ref=e4277]: "{"
+                      - generic [ref=e4278]: "\"plans\": ["
+                      - generic [ref=e4279]: "{ \"bead_id\": \"bd-123\", \"plan\": [...], \"next_actions\": [...] },"
+                      - generic [ref=e4280]: "{ \"bead_id\": \"bd-124\", \"plan\": [...], \"next_actions\": [...] }"
+                      - generic [ref=e4281]: "]"
+                      - generic [ref=e4282]: "}"
+                  - paragraph [ref=e4283]: Your helper extracts JSON. The Bridge splits plans back into bead updates + mail dispatch.
+                  - separator [ref=e4284]
+                  - heading "“Is there a simpler way?”" [level=2] [ref=e4285]
+                  - paragraph [ref=e4286]: "There are only three ways to avoid MCP context burn:"
+                  - heading "1) Stop using snapshots and use evaluate-only scraping in MCP" [level=3] [ref=e4287]:
+                    - text: 1)
+                    - strong [ref=e4288]: Stop using snapshots
+                    - text: and use
+                    - emphasis [ref=e4289]: evaluate-only
+                    - text: scraping in MCP
+                  - paragraph [ref=e4290]:
+                    - text: If your MCP wrapper always includes snapshots in tool output, you’re stuck. If you can configure it to
+                    - strong [ref=e4291]: not attach snapshots
+                    - text: ", you could stay in MCP and only return extracted text. But you don’t control that in many MCP integrations."
+                  - heading "2) Use the OpenAI API instead of the web UI" [level=3] [ref=e4292]:
+                    - text: 2)
+                    - strong [ref=e4293]: Use the OpenAI API instead of the web UI
+                  - paragraph [ref=e4294]: This is the cleanest in principle (no browser at all), but it changes auth/cost model and removes “shared ChatGPT thread” semantics unless you build your own thread store. Given your setup is explicitly “ChatGPT conversation as shared surface,” you’re choosing web UI.
+                  - heading "3) External helper (your approach)" [level=3] [ref=e4295]:
+                    - text: 3)
+                    - strong [ref=e4296]: External helper (your approach)
+                  - paragraph [ref=e4297]: This is the pragmatic answer and matches your constraints.
+                  - paragraph [ref=e4298]:
+                    - text: "So:"
+                    - strong [ref=e4299]: your approach is the simplest that actually works
+                    - text: without changing the product surface.
+                  - separator [ref=e4300]
+                  - heading "Design tips so it stays robust" [level=2] [ref=e4301]
+                  - heading "Helper should return a tight, parseable envelope" [level=3] [ref=e4302]
+                  - paragraph [ref=e4303]: "Even if ChatGPT returns junk sometimes, your helper should always output one of:"
+                  - paragraph [ref=e4304]:
+                    - strong [ref=e4305]: Success
+                  - generic [ref=e4312]:
+                    - generic [ref=e4314]:
+                      - generic [ref=e4315]: JSON
+                      - generic [ref=e4316]:
+                        - button "Copy" [ref=e4317] [cursor=pointer]:
+                          - img [ref=e4318]
+                        - button "Edit" [ref=e4321] [cursor=pointer]:
+                          - img [ref=e4323]
+                    - textbox "Edit code" [ref=e4330]:
+                      - generic [ref=e4331]: "{ \"ok\": true, \"json\": { ... }, \"meta\": { \"message_id\": \"...\", \"latency_ms\": 1234 } }"
+                  - paragraph [ref=e4332]:
+                    - strong [ref=e4333]: Failure
+                  - generic [ref=e4340]:
+                    - generic [ref=e4342]:
+                      - generic [ref=e4343]: JSON
+                      - generic [ref=e4344]:
+                        - button "Copy" [ref=e4345] [cursor=pointer]:
+                          - img [ref=e4346]
+                        - button "Edit" [ref=e4349] [cursor=pointer]:
+                          - img [ref=e4351]
+                    - textbox "Edit code" [ref=e4358]:
+                      - generic [ref=e4359]: "{ \"ok\": false, \"error\": \"LOGIN_REQUIRED\", \"href\": \"https://chatgpt.com/auth/login\" }"
+                  - paragraph [ref=e4360]: No screenshots. No giant HTML. Keep it tiny.
+                  - heading "Helper should extract via DOM, not screenshots" [level=3] [ref=e4361]
+                  - paragraph [ref=e4362]: Use Playwright locators to grab the last assistant message text content. Don’t snapshot unless debugging.
+                  - heading "Rate / stability" [level=3] [ref=e4363]
+                  - paragraph [ref=e4364]: "Add:"
+                  - list [ref=e4365]:
+                    - listitem [ref=e4366]:
+                      - paragraph [ref=e4367]: “wait until response finishes streaming” logic
+                    - listitem [ref=e4368]:
+                      - paragraph [ref=e4369]: retries for transient navigation errors
+                    - listitem [ref=e4370]:
+                      - paragraph [ref=e4371]:
+                        - text: explicit detect “login/challenge” and return
+                        - code [ref=e4372]: LOGIN_REQUIRED
+                  - separator [ref=e4373]
+                  - heading "Recommendation" [level=2] [ref=e4374]
+                  - paragraph [ref=e4375]:
+                    - text: Start with
+                    - strong [ref=e4376]: Option A (stateless helper per request)
+                    - text: to validate end-to-end, then graduate to
+                    - strong [ref=e4377]: Option B (daemon)
+                    - text: once volume/latency matters.
+                  - paragraph [ref=e4378]: "If you want, paste:"
+                  - list [ref=e4379]:
+                    - listitem [ref=e4380]:
+                      - paragraph [ref=e4381]:
+                        - text: your current
+                        - code [ref=e4382]: br mail
+                        - text: request shape (what the Bridge receives)
+                    - listitem [ref=e4383]:
+                      - paragraph [ref=e4384]: the exact CRT URL pattern you’re using
+                    - listitem [ref=e4385]:
+                      - paragraph [ref=e4386]:
+                        - text: whether the helper should post into
+                        - emphasis [ref=e4387]: one
+                        - text: CRT thread or
+                        - emphasis [ref=e4388]: per workstream
+                  - paragraph [ref=e4389]:
+                    - text: …and I’ll give you a concrete
+                    - code [ref=e4390]: post-and-extract.mjs
+                    - text: implementation (plus an optional daemon variant) that is minimal and production-stable.
+                - generic [ref=e4391]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e4392]:
+              - heading "You said:" [level=5] [ref=e4393]
+              - generic [ref=e4395]:
+                - generic [ref=e4400]: "Quick follow-up on the helper daemon: If a batch response is long (multiple screens worth), what's the safest way to extract the complete JSON? Options I'm considering: 1. Just use page.locator('pre code').last() - Playwright gets full DOM even off-screen 2. Scroll to bottom first, then extract - ensures everything loaded 3. Use page.content() and parse full HTML - most reliable but fragile In your experience with ChatGPT's DOM: - Does the full response get loaded into DOM even if off-screen? - Or does ChatGPT lazy-load content as you scroll? - Is there a \"response complete\" signal I should wait for? What's the most reliable extraction approach?"
+                - generic [ref=e4401]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e4402]:
+              - heading "ChatGPT said:" [level=6] [ref=e4403]
+              - generic [ref=e4405]:
+                - generic [ref=e4406]:
+                  - button "Thought for 20s" [ref=e4411] [cursor=pointer]:
+                    - generic [ref=e4413]:
+                      - generic [ref=e4415]: Thought for 20s
+                      - img [ref=e4416]
+                  - generic [ref=e4420]:
+                    - paragraph [ref=e4421]:
+                      - text: "Your instincts are good:"
+                      - strong [ref=e4422]:
+                        - text: avoid
+                        - code [ref=e4423]: page.content()
+                      - text: "and don’t rely on “what’s visible.” The reliable path is:"
+                    - list [ref=e4424]:
+                      - listitem [ref=e4425]:
+                        - paragraph [ref=e4426]:
+                          - strong [ref=e4427]: Wait for the assistant response to finish streaming
+                      - listitem [ref=e4428]:
+                        - paragraph [ref=e4429]:
+                          - strong [ref=e4430]: Extract from the last assistant message node
+                          - text: (textContent/innerText)
+                      - listitem [ref=e4431]:
+                        - paragraph [ref=e4432]:
+                          - strong [ref=e4433]: "Parse JSON from a fenced ```json block"
+                          - text: (or a clear delimiter)
+                    - 'heading "DOM reality: off-screen vs lazy-load" [level=3] [ref=e4434]'
+                    - list [ref=e4435]:
+                      - listitem [ref=e4436]:
+                        - paragraph [ref=e4437]:
+                          - strong [ref=e4438]: Within a single assistant message
+                          - text: (even if it’s multiple screens long), the content is typically
+                          - strong [ref=e4439]: one DOM subtree
+                          - text: and Playwright can read it
+                          - strong [ref=e4440]: without scrolling
+                          - text: as long as that message node exists.
+                      - listitem [ref=e4441]:
+                        - paragraph [ref=e4442]:
+                          - text: The
+                          - strong [ref=e4443]: conversation list
+                          - text: may or may not virtualize/unload
+                          - emphasis [ref=e4444]: older messages
+                          - text: depending on implementation and chat size; there are reports of both “DOM keeps growing” and “lazy-load when scrolling heavy chats,” so don’t assume either globally.
+                          - link "Web Applications Stack Exchange +1" [ref=e4447] [cursor=pointer]:
+                            - /url: https://webapps.stackexchange.com/questions/181643/how-to-prevent-chatgpts-dom-from-growing-too-large-in-browser-and-slowing-down?utm_source=chatgpt.com
+                            - generic [ref=e4449]:
+                              - generic [ref=e4450]: Web Applications Stack Exchange
+                              - generic [ref=e4451]: "+1"
+                      - listitem [ref=e4452]:
+                        - paragraph [ref=e4453]:
+                          - text: "Practical takeaway:"
+                          - strong [ref=e4454]: for long batch JSON in the most recent message
+                          - text: ", you almost always get the full payload from the message container without scrolling. Scrolling is mainly relevant when you need"
+                          - emphasis [ref=e4455]: older
+                          - text: content that might not be mounted.
+                    - heading "“Response complete” — what to wait for" [level=3] [ref=e4456]
+                    - paragraph [ref=e4457]:
+                      - text: There isn’t a blessed public DOM event, so use a
+                      - strong [ref=e4458]: two-signal gate
+                      - text: ":"
+                    - paragraph [ref=e4459]:
+                      - strong [ref=e4460]: "Signal A (UI):"
+                      - text: “Stop generating” goes away (or becomes disabled/hidden).
+                      - strong [ref=e4461]: "Signal B (content):"
+                      - text: last assistant message text stops changing for N consecutive polls.
+                    - paragraph [ref=e4462]: This is the most robust approach across UI changes because it doesn’t depend on exact classnames.
+                    - heading "Most reliable extraction approach" [level=3] [ref=e4463]
+                    - paragraph [ref=e4464]: "Ranked:"
+                    - paragraph [ref=e4465]:
+                      - strong [ref=e4466]: "Best (recommended):"
+                    - list [ref=e4467]:
+                      - listitem [ref=e4468]:
+                        - paragraph [ref=e4469]:
+                          - text: Target the
+                          - strong [ref=e4470]: last assistant message container
+                          - text: (not
+                          - code [ref=e4471]: pre code
+                          - text: globally)
+                      - listitem [ref=e4472]:
+                        - paragraph [ref=e4473]:
+                          - text: Get its
+                          - strong [ref=e4474]: full innerText
+                      - listitem [ref=e4475]:
+                        - paragraph [ref=e4476]: Extract the JSON code fence from that text
+                    - paragraph [ref=e4477]: "Why: works even if the response includes multiple code blocks or prose, and avoids DOM fragility."
+                    - paragraph [ref=e4478]:
+                      - strong [ref=e4479]: "OK with constraints:"
+                    - list [ref=e4480]:
+                      - listitem [ref=e4481]:
+                        - paragraph [ref=e4482]:
+                          - code [ref=e4483]: page.locator('pre code').last()
+                          - text: works
+                          - strong [ref=e4484]: only if
+                          - text: you enforce “JSON-only in the last message” AND “exactly one JSON code block.” Otherwise you’ll occasionally grab the wrong code block.
+                    - paragraph [ref=e4485]:
+                      - strong [ref=e4486]: "Avoid:"
+                    - list [ref=e4487]:
+                      - listitem [ref=e4488]:
+                        - paragraph [ref=e4489]:
+                          - code [ref=e4490]: page.content()
+                          - text: + HTML parsing — huge, brittle, and most likely to break as markup changes.
+                    - heading "Concrete pattern for your helper daemon" [level=3] [ref=e4491]
+                    - paragraph [ref=e4492]:
+                      - strong [ref=e4493]: 1) Require the model to emit JSON in a fenced block
+                      - text: "In your request, end with:"
+                    - blockquote [ref=e4494]:
+                      - paragraph [ref=e4495]:
+                        - text: Output
+                        - strong [ref=e4496]: only
+                        - text: one fenced code block labeled
+                        - code [ref=e4497]: json
+                        - text: containing the full response object. No other code blocks.
+                    - paragraph [ref=e4498]:
+                      - strong [ref=e4499]: 2) Wait-for-complete logic (robust)
+                    - list [ref=e4500]:
+                      - listitem [ref=e4501]:
+                        - paragraph [ref=e4502]: "After clicking Send:"
+                        - list [ref=e4503]:
+                          - listitem [ref=e4504]:
+                            - paragraph [ref=e4505]: wait for a new assistant message to appear
+                          - listitem [ref=e4506]:
+                            - paragraph [ref=e4507]: then poll its text until stable (e.g., unchanged for 2–3 seconds)
+                          - listitem [ref=e4508]:
+                            - paragraph [ref=e4509]: additionally wait until “Stop generating” is not present/visible
+                    - paragraph [ref=e4510]:
+                      - strong [ref=e4511]: 3) Extract
+                    - list [ref=e4512]:
+                      - listitem [ref=e4513]:
+                        - paragraph [ref=e4514]:
+                          - text: Pull
+                          - code [ref=e4515]: innerText
+                          - text: from the last assistant message container
+                      - listitem [ref=e4516]:
+                        - paragraph [ref=e4517]: "Regex extract:"
+                        - list [ref=e4518]:
+                          - listitem [ref=e4519]:
+                            - paragraph [ref=e4520]:
+                              - text: first match of
+                              - code [ref=e4521]: json …
+                              - text: (or last match, depending on your convention)
+                      - listitem [ref=e4522]:
+                        - paragraph [ref=e4523]: Parse JSON
+                      - listitem [ref=e4524]:
+                        - paragraph [ref=e4525]: If parse fails, return a small error envelope with the raw extracted block length + first/last 200 chars (not the whole thing)
+                    - heading "Do you need to scroll?" [level=3] [ref=e4526]
+                    - list [ref=e4527]:
+                      - listitem [ref=e4528]:
+                        - paragraph [ref=e4529]:
+                          - text: For
+                          - strong [ref=e4530]: the latest response
+                          - text: ": usually"
+                          - strong [ref=e4531]: "no"
+                          - text: .
+                      - listitem [ref=e4532]:
+                        - paragraph [ref=e4533]: "Add scroll only as a fallback:"
+                        - list [ref=e4534]:
+                          - listitem [ref=e4535]:
+                            - paragraph [ref=e4536]: if you can’t find the JSON fence, scroll the message container (or page) to bottom, re-read, retry once.
+                          - listitem [ref=e4537]:
+                            - paragraph [ref=e4538]: don’t make scroll part of the mainline unless you observe truncation.
+                    - heading "TL;DR recommendation" [level=3] [ref=e4539]
+                    - paragraph [ref=e4540]:
+                      - text: "Implement:"
+                      - strong [ref=e4541]: (wait until stable + stop-button gone) → read last assistant message innerText → extract fenced JSON
+                      - text: .
+                      - text: Only add scrolling as a fallback. Skip
+                      - code [ref=e4542]: page.content()
+                      - text: .
+                    - paragraph [ref=e4543]:
+                      - text: If you want, paste your current selectors for “assistant message nodes” and the composer/send button (from a quick Playwright
+                      - code [ref=e4544]: page.evaluate(() => ...)
+                      - text: dump), and I’ll give you a hardened selector set for the ChatGPT UI you’re seeing in your environment.
+                - generic [ref=e4545]:
+                  - generic:
+                    - generic:
+                      - button "Previous response":
+                        - img
+                      - generic: 2/2
+                      - button "Next response" [disabled]:
+                        - img
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+                    - button "Sources":
+                      - generic: Sources
+            - article [ref=e4546]:
+              - heading "You said:" [level=5] [ref=e4547]
+              - generic [ref=e4549]:
+                - generic [ref=e4554]:
+                  - text: "Quick checkpoint: I just implemented the extraction pattern you recommended in post-and-extract.mjs: 1. Two-signal wait: \"Stop generating\" button gone + text stable 4s 2. Extract from [data-message-author-role=\"assistant\"] last message 3. Use innerText() 4. Regex: /"
+                  - code [ref=e4556]: json\s*([\s\S]*?)\s*
+                  - text: "/ Before testing, want to confirm the gameplan: **Bridge System Architecture:** - External helper process (post-and-extract.mjs) uses Playwright library directly - Returns only JSON (not MCP snapshots) - Bridge agent loop calls helper, relays to workers via agent-mail - Auto-restart wrapper keeps bridge running after compact **Test Plan:** 1. Start bridge: ./scripts/start-bridge-agent.sh 2. Send BATCH_PLAN request via agent-mail 3. Verify JSON extraction from your multi-screen response 4. Confirm no context burn in bridge agent Does this sound solid? Any concerns before we test?"
+                - generic [ref=e4557]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e4558]:
+              - heading "ChatGPT said:" [level=6] [ref=e4559]
+              - generic [ref=e4561]:
+                - generic [ref=e4565]:
+                  - paragraph [ref=e4566]: Sounds solid. You’ve got the right separation of concerns and the extraction pattern is the correct “least fragile” approach.
+                  - paragraph [ref=e4567]: "A few concrete concerns to preempt before you run the first test (all low-effort fixes):"
+                  - heading "1) Make sure you’re extracting the new assistant reply, not the previous one" [level=2] [ref=e4568]:
+                    - text: 1) Make sure you’re extracting the
+                    - emphasis [ref=e4569]: new
+                    - text: assistant reply, not the previous one
+                  - paragraph [ref=e4570]: "If you do:"
+                  - list [ref=e4571]:
+                    - listitem [ref=e4572]:
+                      - paragraph [ref=e4573]: post message
+                    - listitem [ref=e4574]:
+                      - paragraph [ref=e4575]:
+                        - text: then
+                        - code [ref=e4576]: locator(...assistant...).last()
+                  - paragraph [ref=e4577]: …you can race and read the prior assistant message if the new one hasn’t mounted yet.
+                  - paragraph [ref=e4578]:
+                    - strong [ref=e4579]: "Guard:"
+                    - text: capture a “baseline” count (or last message id) before sending, then wait until it increments.
+                  - list [ref=e4580]:
+                    - listitem [ref=e4581]:
+                      - paragraph [ref=e4582]:
+                        - code [ref=e4583]: const before = await page.locator('[data-message-author-role="assistant"]').count();
+                    - listitem [ref=e4584]:
+                      - paragraph [ref=e4585]: click send
+                    - listitem [ref=e4586]:
+                      - paragraph [ref=e4587]:
+                        - code [ref=e4588]: await expect(locator).toHaveCount(before + 1)
+                        - text: (or poll until
+                        - code [ref=e4589]: "> before"
+                        - text: )
+                  - heading "2) “Stop generating” selector brittleness" [level=2] [ref=e4590]
+                  - paragraph [ref=e4591]: Good as a signal, but the exact label can change (“Stop generating”, icon-only, etc.).
+                  - paragraph [ref=e4592]:
+                    - strong [ref=e4593]: "Guard:"
+                    - text: treat it as best-effort and rely on “text stable” as the real gate.
+                  - paragraph [ref=e4594]: "Pattern:"
+                  - list [ref=e4595]:
+                    - listitem [ref=e4596]:
+                      - paragraph [ref=e4597]: if stop button found → wait for it to disappear
+                    - listitem [ref=e4598]:
+                      - paragraph [ref=e4599]: else → skip and proceed with stability check
+                  - heading "3) InnerText vs TextContent" [level=2] [ref=e4600]
+                  - paragraph [ref=e4601]:
+                    - code [ref=e4602]: innerText()
+                    - text: is fine for code fences, but it can normalize whitespace in some browsers. Usually OK.
+                  - paragraph [ref=e4603]:
+                    - strong [ref=e4604]: "Guard:"
+                    - text: "if JSON parsing fails unexpectedly, retry once using:"
+                  - list [ref=e4605]:
+                    - listitem [ref=e4606]:
+                      - paragraph [ref=e4607]:
+                        - code [ref=e4608]: textContent()
+                        - text: for the same message node
+                    - listitem [ref=e4609]:
+                      - paragraph [ref=e4610]:
+                        - text: or grab the
+                        - code [ref=e4611]: pre
+                        - text: element text (only as fallback)
+                  - heading "4) Regex robustness" [level=2] [ref=e4612]
+                  - paragraph [ref=e4613]:
+                    - text: Your regex is good
+                    - strong [ref=e4614]: if
+                    - text: you enforce exactly one
+                    - code [ref=e4615]: "```json"
+                    - text: fenced block.
+                  - paragraph [ref=e4616]:
+                    - strong [ref=e4617]: "Guard:"
+                    - text: if you ever get multiple JSON blocks, choose the
+                    - strong [ref=e4618]: last
+                    - text: "match (often the final answer), not the first. Easiest: run a global regex and take last capture."
+                  - paragraph [ref=e4619]:
+                    - text: "Also handle “```” without"
+                    - code [ref=e4620]: json
+                    - text: label as fallback if needed.
+                  - heading "5) Batch size limits" [level=2] [ref=e4621]
+                  - paragraph [ref=e4622]: "Multi-screen JSON can get large. The UI can still handle it, but you may hit:"
+                  - list [ref=e4623]:
+                    - listitem [ref=e4624]:
+                      - paragraph [ref=e4625]: generation truncation
+                    - listitem [ref=e4626]:
+                      - paragraph [ref=e4627]: “continue” behavior
+                    - listitem [ref=e4628]:
+                      - paragraph [ref=e4629]: model refusing JSON-only sometimes
+                  - paragraph [ref=e4630]:
+                    - strong [ref=e4631]: "Guard for MVP:"
+                    - text: cap batch size (e.g., 3–5 beads) until you verify reliability. Add chunking later.
+                  - 'heading "6) Bridge auto-restart: avoid duplicate postings on restart" [level=2] [ref=e4632]'
+                  - paragraph [ref=e4633]: If the bridge compacts/exits mid-cycle and restarts, you don’t want it to repost the same batch.
+                  - paragraph [ref=e4634]:
+                    - strong [ref=e4635]: "Guard:"
+                    - text: put an
+                    - code [ref=e4636]: idempotency_key
+                    - text: in the request file and persist “posted keys” (even a small local file DB) so restart is safe.
+                  - paragraph [ref=e4637]:
+                    - text: "Minimal: write a marker file per request ID under"
+                    - code [ref=e4638]: .flywheel/bridge/sent/<id>.json
+                    - text: .
+                  - heading "7) “No context burn” verification" [level=2] [ref=e4639]
+                  - paragraph [ref=e4640]:
+                    - text: You’ll still have
+                    - emphasis [ref=e4641]: some
+                    - text: "context usage in the Bridge agent (it’s reading mail, writing mail). The point is: no huge snapshot payloads."
+                  - paragraph [ref=e4642]:
+                    - strong [ref=e4643]: "Verify:"
+                    - text: "log the helper’s stdout length and ensure Bridge only sees:"
+                  - list [ref=e4644]:
+                    - listitem [ref=e4645]:
+                      - paragraph [ref=e4646]: request summary
+                    - listitem [ref=e4647]:
+                      - paragraph [ref=e4648]: response JSON (already structured)
+                    - listitem [ref=e4649]:
+                      - paragraph [ref=e4650]: not screenshots/HTML dumps
+                  - separator [ref=e4651]
+                  - heading "Your test plan is correct" [level=3] [ref=e4652]
+                  - list [ref=e4653]:
+                    - listitem [ref=e4654]:
+                      - paragraph [ref=e4655]: Start bridge
+                    - listitem [ref=e4656]:
+                      - paragraph [ref=e4657]:
+                        - text: Send
+                        - code [ref=e4658]: BATCH_PLAN
+                    - listitem [ref=e4659]:
+                      - paragraph [ref=e4660]: Verify JSON extracted from a long response
+                    - listitem [ref=e4661]:
+                      - paragraph [ref=e4662]: Confirm the bridge pane doesn’t balloon context
+                  - paragraph [ref=e4663]: "I’d add one more validation step:"
+                  - paragraph [ref=e4664]:
+                    - strong [ref=e4665]: 5) Validate response JSON against schema (optional but cheap)
+                    - text: Even if you’re “natural language heavy,” schema validation here catches partial/truncated JSON immediately. Since you already built
+                    - code [ref=e4666]: packet-validate
+                    - text: ", run it in the bridge loop before dispatching tasks."
+                  - separator [ref=e4667]
+                  - paragraph [ref=e4668]: If you’ve already implemented baseline-count gating + last-match JSON capture + idempotency marker, you’re ready to test. If not, I’d add those three now—they’re the only “real” failure modes that will bite you on first run.
+                - generic [ref=e4669]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e4670]:
+              - heading "You said:" [level=5] [ref=e4671]
+              - generic [ref=e4673]:
+                - generic [ref=e4678]: What will need to be done when your context begins to run low? What is your context window?
+                - generic [ref=e4679]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e4680]:
+              - heading "ChatGPT said:" [level=6] [ref=e4681]
+              - generic [ref=e4683]:
+                - generic [ref=e4687]:
+                  - paragraph [ref=e4688]: Good question. This is exactly the right time to think about it.
+                  - separator [ref=e4689]
+                  - heading "1️⃣ My Context Window" [level=2] [ref=e4690]
+                  - paragraph [ref=e4691]:
+                    - text: In this environment (GPT-5.2 class models), the context window is
+                    - strong [ref=e4692]: very large (hundreds of thousands of tokens)
+                    - text: — but it is
+                    - strong [ref=e4693]: not infinite
+                    - text: .
+                  - paragraph [ref=e4694]: "Two important realities:"
+                  - list [ref=e4695]:
+                    - listitem [ref=e4696]:
+                      - paragraph [ref=e4697]: "The window includes:"
+                      - list [ref=e4698]:
+                        - listitem [ref=e4699]:
+                          - paragraph [ref=e4700]: Your current conversation
+                        - listitem [ref=e4701]:
+                          - paragraph [ref=e4702]: System/developer instructions
+                        - listitem [ref=e4703]:
+                          - paragraph [ref=e4704]: Any artifacts you paste
+                        - listitem [ref=e4705]:
+                          - paragraph [ref=e4706]: Any long outputs I generate
+                    - listitem [ref=e4707]:
+                      - paragraph [ref=e4708]: "When it fills up:"
+                      - list [ref=e4709]:
+                        - listitem [ref=e4710]:
+                          - paragraph [ref=e4711]: Older content is truncated
+                        - listitem [ref=e4712]:
+                          - paragraph [ref=e4713]: Or the model becomes less precise about earlier details
+                        - listitem [ref=e4714]:
+                          - paragraph [ref=e4715]: Or the platform forces a new conversation
+                  - paragraph [ref=e4716]:
+                    - text: So even with a large window,
+                    - strong [ref=e4717]: long-running architectural threads will eventually degrade
+                    - text: .
+                  - separator [ref=e4718]
+                  - heading "2️⃣ What Happens When Context Runs Low?" [level=2] [ref=e4719]
+                  - paragraph [ref=e4720]: "There are three degradation patterns:"
+                  - heading "A) Silent memory loss" [level=3] [ref=e4721]
+                  - paragraph [ref=e4722]:
+                    - text: Earlier parts of the thread get trimmed.
+                    - text: "You’ll see:"
+                  - list [ref=e4723]:
+                    - listitem [ref=e4724]:
+                      - paragraph [ref=e4725]: I stop remembering earlier decisions
+                    - listitem [ref=e4726]:
+                      - paragraph [ref=e4727]: I re-suggest things you already rejected
+                    - listitem [ref=e4728]:
+                      - paragraph [ref=e4729]: I forget constraints
+                  - heading "B) Coherence drift" [level=3] [ref=e4730]
+                  - paragraph [ref=e4731]: "I still “remember,” but precision drops:"
+                  - list [ref=e4732]:
+                    - listitem [ref=e4733]:
+                      - paragraph [ref=e4734]: Subtle constraints are missed
+                    - listitem [ref=e4735]:
+                      - paragraph [ref=e4736]: Previously agreed formats shift slightly
+                  - heading "C) Hard limit" [level=3] [ref=e4737]
+                  - paragraph [ref=e4738]: The interface forces a new chat.
+                  - separator [ref=e4739]
+                  - heading "3️⃣ What You Should Do When It Gets Large" [level=2] [ref=e4740]
+                  - paragraph [ref=e4741]:
+                    - text: Your architecture work is exactly the kind of thing that
+                    - strong [ref=e4742]: should not live only in chat context
+                    - text: .
+                  - paragraph [ref=e4743]: "Here’s the correct operational model:"
+                  - heading "1️⃣ Periodic Snapshot / Handoff Summary" [level=3] [ref=e4744]
+                  - paragraph [ref=e4745]: "Every major milestone, create a structured summary document:"
+                  - list [ref=e4746]:
+                    - listitem [ref=e4747]:
+                      - paragraph [ref=e4748]: Current architecture
+                    - listitem [ref=e4749]:
+                      - paragraph [ref=e4750]: Decisions made
+                    - listitem [ref=e4751]:
+                      - paragraph [ref=e4752]: Open constraints
+                    - listitem [ref=e4753]:
+                      - paragraph [ref=e4754]: Known tradeoffs
+                    - listitem [ref=e4755]:
+                      - paragraph [ref=e4756]: Active work items
+                  - paragraph [ref=e4757]: "Keep this in:"
+                  - generic [ref=e4764]:
+                    - generic [ref=e4766]:
+                      - generic [ref=e4767]: Code
+                      - generic [ref=e4768]:
+                        - button "Copy" [ref=e4769] [cursor=pointer]:
+                          - img [ref=e4770]
+                        - button "Edit" [ref=e4773] [cursor=pointer]:
+                          - img [ref=e4775]
+                    - textbox "Edit code" [ref=e4782]:
+                      - generic [ref=e4783]: docs/ai-context/bridge-system-state.md
+                  - paragraph [ref=e4784]: "Then in a new chat:"
+                  - blockquote [ref=e4785]:
+                    - paragraph [ref=e4786]: “Use this document as the current system state.”
+                  - paragraph [ref=e4787]: That resets entropy.
+                  - separator [ref=e4788]
+                  - heading "2️⃣ Use “State Files,” Not Chat Memory" [level=3] [ref=e4789]
+                  - paragraph [ref=e4790]: "For your Bridge system:"
+                  - paragraph [ref=e4791]: "Instead of relying on this conversation to remember:"
+                  - list [ref=e4792]:
+                    - listitem [ref=e4793]:
+                      - paragraph [ref=e4794]: packet schemas
+                    - listitem [ref=e4795]:
+                      - paragraph [ref=e4796]: extraction strategy
+                    - listitem [ref=e4797]:
+                      - paragraph [ref=e4798]: helper architecture
+                  - paragraph [ref=e4799]: "Store:"
+                  - list [ref=e4800]:
+                    - listitem [ref=e4801]:
+                      - paragraph [ref=e4802]:
+                        - code [ref=e4803]: docs/flywheel-chatgpt-protocol.md
+                    - listitem [ref=e4804]:
+                      - paragraph [ref=e4805]:
+                        - code [ref=e4806]: docs/bridge-architecture.md
+                  - paragraph [ref=e4807]: Then future sessions reference those.
+                  - paragraph [ref=e4808]: Chat becomes a reasoning engine, not the system of record.
+                  - separator [ref=e4809]
+                  - heading "3️⃣ When You Notice Drift" [level=3] [ref=e4810]
+                  - paragraph [ref=e4811]: "If you see:"
+                  - list [ref=e4812]:
+                    - listitem [ref=e4813]:
+                      - paragraph [ref=e4814]: Repeated explanations
+                    - listitem [ref=e4815]:
+                      - paragraph [ref=e4816]: Rehashing prior architecture
+                    - listitem [ref=e4817]:
+                      - paragraph [ref=e4818]: Inconsistent recommendations
+                  - paragraph [ref=e4819]: "Do this:"
+                  - list [ref=e4820]:
+                    - listitem [ref=e4821]:
+                      - paragraph [ref=e4822]: Stop.
+                    - listitem [ref=e4823]:
+                      - paragraph [ref=e4824]: Generate a concise system snapshot.
+                    - listitem [ref=e4825]:
+                      - paragraph [ref=e4826]: Start a new conversation with that snapshot.
+                    - listitem [ref=e4827]:
+                      - paragraph [ref=e4828]: Continue.
+                  - paragraph [ref=e4829]: You’ve already been doing this instinctively.
+                  - separator [ref=e4830]
+                  - heading "4️⃣ What I Need From You When We Reset" [level=2] [ref=e4831]:
+                    - text: 4️⃣ What
+                    - emphasis [ref=e4832]: I
+                    - text: Need From You When We Reset
+                  - paragraph [ref=e4833]: "When context resets, the most useful input is:"
+                  - list [ref=e4834]:
+                    - listitem [ref=e4835]:
+                      - paragraph [ref=e4836]: High-level system architecture
+                    - listitem [ref=e4837]:
+                      - paragraph [ref=e4838]: Current objective
+                    - listitem [ref=e4839]:
+                      - paragraph [ref=e4840]: What has already been decided (non-negotiables)
+                    - listitem [ref=e4841]:
+                      - paragraph [ref=e4842]: What constraints are binding
+                  - paragraph [ref=e4843]: That prevents re-exploration.
+                  - separator [ref=e4844]
+                  - 'heading "5️⃣ Your Specific Setup: You’re Already Resilient" [level=2] [ref=e4845]'
+                  - paragraph [ref=e4846]: "Because you:"
+                  - list [ref=e4847]:
+                    - listitem [ref=e4848]:
+                      - paragraph [ref=e4849]: Use beads
+                    - listitem [ref=e4850]:
+                      - paragraph [ref=e4851]: Use agent-mail
+                    - listitem [ref=e4852]:
+                      - paragraph [ref=e4853]: Have PearlOwl/EmeraldBear
+                    - listitem [ref=e4854]:
+                      - paragraph [ref=e4855]: Maintain structured state in files
+                  - paragraph [ref=e4856]: Your system does not depend on chat memory.
+                  - paragraph [ref=e4857]: That’s mature.
+                  - separator [ref=e4858]
+                  - heading "6️⃣ Practical Rule of Thumb" [level=2] [ref=e4859]
+                  - paragraph [ref=e4860]: "For large architectural builds:"
+                  - list [ref=e4861]:
+                    - listitem [ref=e4862]:
+                      - paragraph [ref=e4863]: Reset conversation every ~100–150 long exchanges
+                    - listitem [ref=e4864]:
+                      - paragraph [ref=e4865]: Or whenever it feels like we’re repeating context
+                    - listitem [ref=e4866]:
+                      - paragraph [ref=e4867]: Or when switching sub-systems (Bridge → Billing → QMS, etc.)
+                  - separator [ref=e4868]
+                  - 'heading "7️⃣ Important: Context ≠ Intelligence" [level=2] [ref=e4869]'
+                  - paragraph [ref=e4870]: "When context shrinks:"
+                  - list [ref=e4871]:
+                    - listitem [ref=e4872]:
+                      - paragraph [ref=e4873]: I don’t get “dumber”
+                    - listitem [ref=e4874]:
+                      - paragraph [ref=e4875]: I just lose history
+                  - paragraph [ref=e4876]: If you give me clean state, I operate at full capability again.
+                  - separator [ref=e4877]
+                  - heading "Bottom Line" [level=3] [ref=e4878]
+                  - paragraph [ref=e4879]: You don’t need to worry about my window for normal use.
+                  - paragraph [ref=e4880]: "But for long-lived architecture efforts like yours:"
+                  - list [ref=e4881]:
+                    - listitem [ref=e4882]:
+                      - paragraph [ref=e4883]: Externalize decisions
+                    - listitem [ref=e4884]:
+                      - paragraph [ref=e4885]: Snapshot periodically
+                    - listitem [ref=e4886]:
+                      - paragraph [ref=e4887]: Start new threads cleanly
+                  - paragraph [ref=e4888]: That’s how you prevent entropy.
+                  - separator [ref=e4889]
+                  - paragraph [ref=e4890]:
+                    - text: If you want, I can generate a
+                    - strong [ref=e4891]: one-page “AI Handoff Snapshot Template”
+                    - text: you can reuse anytime you need to reset context.
+                - generic [ref=e4892]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e4893]:
+              - heading "You said:" [level=5] [ref=e4894]
+              - generic [ref=e4896]:
+                - generic [ref=e4901]: After the agents finish a module will I as the user just need to open a new conversation or will bridge be able to open a new combo
+                - generic [ref=e4902]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e4903]:
+              - heading "ChatGPT said:" [level=6] [ref=e4904]
+              - generic [ref=e4906]:
+                - generic [ref=e4910]:
+                  - paragraph [ref=e4911]: "Short answer:"
+                  - paragraph [ref=e4912]:
+                    - strong [ref=e4913]:
+                      - text: You should open a new conversation.
+                      - text: Bridge should not auto-create new conversations.
+                  - paragraph [ref=e4914]: Let me explain why.
+                  - separator [ref=e4915]
+                  - heading "1️⃣ ChatGPT Conversation Lifecycle Reality" [level=1] [ref=e4916]
+                  - paragraph [ref=e4917]: "ChatGPT web conversations:"
+                  - list [ref=e4918]:
+                    - listitem [ref=e4919]:
+                      - paragraph [ref=e4920]: Have no stable public API for "create new conversation"
+                    - listitem [ref=e4921]:
+                      - paragraph [ref=e4922]: Have no guaranteed DOM selector for “New Chat”
+                    - listitem [ref=e4923]:
+                      - paragraph [ref=e4924]: Have no permanent conversation ID you can pre-allocate
+                    - listitem [ref=e4925]:
+                      - paragraph [ref=e4926]: Are subject to UI changes
+                  - paragraph [ref=e4927]: "Automating “new conversation creation” via Playwright is:"
+                  - list [ref=e4928]:
+                    - listitem [ref=e4929]:
+                      - paragraph [ref=e4930]: Brittle
+                    - listitem [ref=e4931]:
+                      - paragraph [ref=e4932]: Unnecessary
+                    - listitem [ref=e4933]:
+                      - paragraph [ref=e4934]: Adds failure surface
+                    - listitem [ref=e4935]:
+                      - paragraph [ref=e4936]: Hard to detect success deterministically
+                  - paragraph [ref=e4937]:
+                    - text: You
+                    - emphasis [ref=e4938]: can
+                    - text: script it.
+                  - paragraph [ref=e4939]: You should not depend on it.
+                  - separator [ref=e4940]
+                  - heading "2️⃣ The Clean Architecture Pattern" [level=1] [ref=e4941]
+                  - paragraph [ref=e4942]: "The correct pattern for your Bridge system is:"
+                  - heading "🧠 User owns conversation lifecycle" [level=3] [ref=e4943]
+                  - heading "🔁 Bridge owns conversation usage" [level=3] [ref=e4944]
+                  - paragraph [ref=e4945]: "Meaning:"
+                  - list [ref=e4946]:
+                    - listitem [ref=e4947]:
+                      - paragraph [ref=e4948]: You create a new ChatGPT conversation manually when needed
+                    - listitem [ref=e4949]:
+                      - paragraph [ref=e4950]: "You paste the conversation URL into:"
+                      - generic [ref=e4957]:
+                        - generic [ref=e4959]:
+                          - generic [ref=e4960]: Code
+                          - generic [ref=e4961]:
+                            - button "Copy" [ref=e4962] [cursor=pointer]:
+                              - img [ref=e4963]
+                            - button "Edit" [ref=e4966] [cursor=pointer]:
+                              - img [ref=e4968]
+                        - textbox "Edit code" [ref=e4975]:
+                          - generic [ref=e4976]: .flywheel/chatgpt.json
+                    - listitem [ref=e4977]:
+                      - paragraph [ref=e4978]: Bridge uses that CRT URL until you rotate it
+                  - paragraph [ref=e4979]: "This gives you:"
+                  - list [ref=e4980]:
+                    - listitem [ref=e4981]:
+                      - paragraph [ref=e4982]: Clear boundary
+                    - listitem [ref=e4983]:
+                      - paragraph [ref=e4984]: Intentional resets
+                    - listitem [ref=e4985]:
+                      - paragraph [ref=e4986]: Clean architectural snapshots
+                    - listitem [ref=e4987]:
+                      - paragraph [ref=e4988]: No DOM fragility
+                  - separator [ref=e4989]
+                  - heading "3️⃣ When Should You Open a New Conversation?" [level=1] [ref=e4990]
+                  - paragraph [ref=e4991]: "You open a new one when:"
+                  - list [ref=e4992]:
+                    - listitem [ref=e4993]:
+                      - paragraph [ref=e4994]: A module is completed
+                    - listitem [ref=e4995]:
+                      - paragraph [ref=e4996]: Context drift begins
+                    - listitem [ref=e4997]:
+                      - paragraph [ref=e4998]: Planning surface shifts (e.g., from Billing → QMS)
+                    - listitem [ref=e4999]:
+                      - paragraph [ref=e5000]: The thread becomes noisy
+                    - listitem [ref=e5001]:
+                      - paragraph [ref=e5002]: You want a fresh reasoning surface
+                  - paragraph [ref=e5003]: "Think of ChatGPT threads as:"
+                  - blockquote [ref=e5004]:
+                    - paragraph [ref=e5005]: Decision journals, not runtime sessions
+                  - separator [ref=e5006]
+                  - heading "4️⃣ What Bridge Should Do Instead" [level=1] [ref=e5007]:
+                    - text: 4️⃣ What Bridge
+                    - emphasis [ref=e5008]: Should
+                    - text: Do Instead
+                  - paragraph [ref=e5009]: "Bridge should:"
+                  - list [ref=e5010]:
+                    - listitem [ref=e5011]:
+                      - paragraph [ref=e5012]: Detect JSON extraction failures
+                    - listitem [ref=e5013]:
+                      - paragraph [ref=e5014]: Detect login challenges
+                    - listitem [ref=e5015]:
+                      - paragraph [ref=e5016]: Detect message too long
+                    - listitem [ref=e5017]:
+                      - paragraph [ref=e5018]: Detect response truncation
+                    - listitem [ref=e5019]:
+                      - paragraph [ref=e5020]: Emit operator alert
+                  - paragraph [ref=e5021]: "But not:"
+                  - list [ref=e5022]:
+                    - listitem [ref=e5023]:
+                      - paragraph [ref=e5024]: Create new chats
+                    - listitem [ref=e5025]:
+                      - paragraph [ref=e5026]: Decide when to reset reasoning context
+                    - listitem [ref=e5027]:
+                      - paragraph [ref=e5028]: Move itself between threads autonomously
+                  - paragraph [ref=e5029]: That becomes chaotic.
+                  - separator [ref=e5030]
+                  - heading "5️⃣ The Correct Operating Model" [level=1] [ref=e5031]
+                  - paragraph [ref=e5032]: "Your system is now:"
+                  - list [ref=e5033]:
+                    - listitem [ref=e5034]:
+                      - paragraph [ref=e5035]: Beads = execution truth
+                    - listitem [ref=e5036]:
+                      - paragraph [ref=e5037]: Agent-mail = task routing truth
+                    - listitem [ref=e5038]:
+                      - paragraph [ref=e5039]: Git repo = state truth
+                    - listitem [ref=e5040]:
+                      - paragraph [ref=e5041]: ChatGPT thread = reasoning journal
+                  - paragraph [ref=e5042]: The reasoning journal is intentionally human-controlled.
+                  - separator [ref=e5043]
+                  - heading "6️⃣ If You Want Partial Automation" [level=1] [ref=e5044]
+                  - paragraph [ref=e5045]: "If you really wanted semi-automation:"
+                  - paragraph [ref=e5046]: "Bridge could:"
+                  - list [ref=e5047]:
+                    - listitem [ref=e5048]:
+                      - paragraph [ref=e5049]: Append a system “MODULE COMPLETE” summary at end
+                    - listitem [ref=e5050]:
+                      - paragraph [ref=e5051]: "Then emit operator message:"
+                      - blockquote [ref=e5052]:
+                        - paragraph [ref=e5053]: “Recommend new CRT for next module”
+                  - paragraph [ref=e5054]:
+                    - text: "But still:"
+                    - text: You create it.
+                  - separator [ref=e5055]
+                  - heading "7️⃣ Long-Term Scaling Pattern" [level=1] [ref=e5056]
+                  - paragraph [ref=e5057]: "If one day you wanted to remove UI automation entirely:"
+                  - paragraph [ref=e5058]: "You would:"
+                  - list [ref=e5059]:
+                    - listitem [ref=e5060]:
+                      - paragraph [ref=e5061]: Use OpenAI API directly
+                    - listitem [ref=e5062]:
+                      - paragraph [ref=e5063]: Store reasoning transcripts in your own DB
+                    - listitem [ref=e5064]:
+                      - paragraph [ref=e5065]: Eliminate ChatGPT web UI from the loop
+                  - paragraph [ref=e5066]: But that’s a different architecture.
+                  - separator [ref=e5067]
+                  - heading "Final Recommendation" [level=1] [ref=e5068]
+                  - paragraph [ref=e5069]:
+                    - text: ✔️ Keep Bridge using a single configured CRT URL
+                    - text: ✔️ You manually create new conversations
+                    - text: ✔️ Rotate the URL intentionally
+                    - text: ✔️ Treat threads as architectural epochs
+                  - paragraph [ref=e5070]: That keeps the system deterministic and robust.
+                  - separator [ref=e5071]
+                  - paragraph [ref=e5072]:
+                    - text: If you'd like, I can help you define a clean
+                    - strong [ref=e5073]: Conversation Rotation Playbook
+                    - text: so module transitions are structured and consistent.
+                - generic [ref=e5074]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e5075]:
+              - heading "You said:" [level=5] [ref=e5076]
+              - generic [ref=e5078]:
+                - generic [ref=e5083]: "All 7 guards implemented! Ready for first test? Guard #1: Race condition fix - baseline count before send Guard #2: Stop button best-effort + text stability primary Guard #3: innerText/textContent double fallback Guard #4: Last match wins - global regex matchAll() Guard #5: Batch size max 5 beads Guard #6: Idempotency markers in .flywheel/bridge/sent/ Guard #7: Context burn verification - log JSON size Updated: - post-and-extract.mjs (guards 1-4) - batch-plan.mjs (guards 5, 7) - bridge-agent-loop.sh (guard 6)"
+                - generic [ref=e5084]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e5085]:
+              - heading "ChatGPT said:" [level=6] [ref=e5086]
+              - generic [ref=e5088]:
+                - generic [ref=e5092]:
+                  - paragraph [ref=e5093]:
+                    - text: Yes —
+                    - strong [ref=e5094]: you’re ready to test
+                    - text: .
+                    - text: What you’ve implemented covers every
+                    - emphasis [ref=e5095]: real
+                    - text: failure mode that shows up on first contact with the ChatGPT UI.
+                  - paragraph [ref=e5096]:
+                    - text: Here’s a concise
+                    - strong [ref=e5097]: pre-flight + first-run checklist
+                    - text: so the test is clean and diagnosable.
+                  - separator [ref=e5098]
+                  - heading "✅ Pre-Flight (2 minutes)" [level=2] [ref=e5099]
+                  - paragraph [ref=e5100]: "Before starting the bridge:"
+                  - list [ref=e5101]:
+                    - listitem [ref=e5102]:
+                      - paragraph [ref=e5103]:
+                        - strong [ref=e5104]: Clean idempotency state (first run only)
+                      - generic [ref=e5111]:
+                        - generic [ref=e5113]:
+                          - generic [ref=e5114]: Bash
+                          - generic [ref=e5115]:
+                            - button "Copy" [ref=e5116] [cursor=pointer]:
+                              - img [ref=e5117]
+                            - button "Edit" [ref=e5120] [cursor=pointer]:
+                              - img [ref=e5122]
+                        - textbox "Edit code" [ref=e5129]:
+                          - generic [ref=e5130]: rm -rf .flywheel/bridge/sent/*
+                    - listitem [ref=e5131]:
+                      - paragraph [ref=e5132]:
+                        - strong [ref=e5133]: Confirm storage-state freshness
+                      - list [ref=e5134]:
+                        - listitem [ref=e5135]:
+                          - paragraph [ref=e5136]: Open ChatGPT manually once (same account).
+                        - listitem [ref=e5137]:
+                          - paragraph [ref=e5138]: If it loads without login → good.
+                        - listitem [ref=e5139]:
+                          - paragraph [ref=e5140]: If not → rerun init script now, not mid-test.
+                    - listitem [ref=e5141]:
+                      - paragraph [ref=e5142]:
+                        - strong [ref=e5143]: Confirm helper isolation
+                      - list [ref=e5144]:
+                        - listitem [ref=e5145]:
+                          - paragraph [ref=e5146]:
+                            - text: Run
+                            - code [ref=e5147]: node post-and-extract.mjs --help
+                            - text: (or a no-op).
+                        - listitem [ref=e5148]:
+                          - paragraph [ref=e5149]:
+                            - text: Ensure it prints
+                            - emphasis [ref=e5150]: nothing
+                            - text: large to stdout by default.
+                  - separator [ref=e5151]
+                  - heading "▶️ First Test Run (exact order)" [level=2] [ref=e5152]
+                  - heading "1️⃣ Start bridge" [level=3] [ref=e5153]
+                  - generic [ref=e5160]:
+                    - generic [ref=e5162]:
+                      - generic [ref=e5163]: Bash
+                      - generic [ref=e5164]:
+                        - button "Copy" [ref=e5165] [cursor=pointer]:
+                          - img [ref=e5166]
+                        - button "Edit" [ref=e5169] [cursor=pointer]:
+                          - img [ref=e5171]
+                    - textbox "Edit code" [ref=e5178]:
+                      - generic [ref=e5179]: ./scripts/start-bridge-agent.sh
+                  - paragraph [ref=e5180]: "Expected:"
+                  - list [ref=e5181]:
+                    - listitem [ref=e5182]:
+                      - paragraph [ref=e5183]: tmux pane comes up
+                    - listitem [ref=e5184]:
+                      - paragraph [ref=e5185]: bridge enters idle loop
+                    - listitem [ref=e5186]:
+                      - paragraph [ref=e5187]: no Playwright activity yet
+                  - separator [ref=e5188]
+                  - heading "2️⃣ Inject a small BATCH_PLAN (2–3 beads)" [level=3] [ref=e5189]:
+                    - text: 2️⃣ Inject a
+                    - strong [ref=e5190]: small
+                    - text: BATCH_PLAN (2–3 beads)
+                  - paragraph [ref=e5191]: "Keep it boring on first run:"
+                  - list [ref=e5192]:
+                    - listitem [ref=e5193]:
+                      - paragraph [ref=e5194]: short bead descriptions
+                    - listitem [ref=e5195]:
+                      - paragraph [ref=e5196]: ask for JSON-only output
+                    - listitem [ref=e5197]:
+                      - paragraph [ref=e5198]: "explicitly request a fenced ```json block"
+                  - paragraph [ref=e5199]: "Expected:"
+                  - list [ref=e5200]:
+                    - listitem [ref=e5201]:
+                      - paragraph [ref=e5202]: bridge logs receipt
+                    - listitem [ref=e5203]:
+                      - paragraph [ref=e5204]: batch-plan.mjs writes a request file
+                    - listitem [ref=e5205]:
+                      - paragraph [ref=e5206]: helper is invoked once
+                  - separator [ref=e5207]
+                  - heading "3️⃣ Observe helper behavior" [level=3] [ref=e5208]
+                  - paragraph [ref=e5209]: "Watch for:"
+                  - list [ref=e5210]:
+                    - listitem [ref=e5211]:
+                      - paragraph [ref=e5212]: Chromium launches
+                    - listitem [ref=e5213]:
+                      - paragraph [ref=e5214]: message posts
+                    - listitem [ref=e5215]:
+                      - paragraph [ref=e5216]: wait logic engages (stop button / stability)
+                    - listitem [ref=e5217]:
+                      - paragraph [ref=e5218]:
+                        - strong [ref=e5219]: no screenshots dumped
+                    - listitem [ref=e5220]:
+                      - paragraph [ref=e5221]: helper exits cleanly
+                  - paragraph [ref=e5222]: "Expected helper stdout:"
+                  - list [ref=e5223]:
+                    - listitem [ref=e5224]:
+                      - paragraph [ref=e5225]: small JSON envelope
+                    - listitem [ref=e5226]:
+                      - paragraph [ref=e5227]: "log line showing extracted JSON size (Guard #7)"
+                  - separator [ref=e5228]
+                  - heading "4️⃣ Validate extraction" [level=3] [ref=e5229]
+                  - paragraph [ref=e5230]: "Confirm:"
+                  - list [ref=e5231]:
+                    - listitem [ref=e5232]:
+                      - paragraph [ref=e5233]: JSON parsed successfully
+                    - listitem [ref=e5234]:
+                      - paragraph [ref=e5235]: regex last-match worked
+                    - listitem [ref=e5236]:
+                      - paragraph [ref=e5237]: no partial/truncated objects
+                    - listitem [ref=e5238]:
+                      - paragraph [ref=e5239]: batch split correctly back into per-bead plans
+                  - paragraph [ref=e5240]: "If JSON fails:"
+                  - list [ref=e5241]:
+                    - listitem [ref=e5242]:
+                      - paragraph [ref=e5243]: confirm fallback path (textContent) was attempted
+                    - listitem [ref=e5244]:
+                      - paragraph [ref=e5245]:
+                        - text: confirm scroll fallback is
+                        - emphasis [ref=e5246]: not
+                        - text: happening unless needed
+                  - separator [ref=e5247]
+                  - heading "5️⃣ Verify no context burn" [level=3] [ref=e5248]
+                  - paragraph [ref=e5249]: This is the real win.
+                  - paragraph [ref=e5250]:
+                    - text: Confirm in the
+                    - strong [ref=e5251]: bridge agent pane
+                    - text: ":"
+                  - list [ref=e5252]:
+                    - listitem [ref=e5253]:
+                      - paragraph [ref=e5254]: No DOM snapshots
+                    - listitem [ref=e5255]:
+                      - paragraph [ref=e5256]: No HTML dumps
+                    - listitem [ref=e5257]:
+                      - paragraph [ref=e5258]: No assistant message text echoed back
+                    - listitem [ref=e5259]:
+                      - paragraph [ref=e5260]: "Only:"
+                      - list [ref=e5261]:
+                        - listitem [ref=e5262]:
+                          - paragraph [ref=e5263]: request summary
+                        - listitem [ref=e5264]:
+                          - paragraph [ref=e5265]: helper result JSON
+                        - listitem [ref=e5266]:
+                          - paragraph [ref=e5267]: routing logs
+                  - paragraph [ref=e5268]: If the pane scrollback looks boring → success.
+                  - separator [ref=e5269]
+                  - heading "6️⃣ Confirm idempotency" [level=3] [ref=e5270]
+                  - paragraph [ref=e5271]:
+                    - text: Re-send the
+                    - strong [ref=e5272]: same batch request
+                    - text: .
+                  - paragraph [ref=e5273]: "Expected:"
+                  - list [ref=e5274]:
+                    - listitem [ref=e5275]:
+                      - paragraph [ref=e5276]:
+                        - text: bridge detects marker in
+                        - code [ref=e5277]: .flywheel/bridge/sent/
+                    - listitem [ref=e5278]:
+                      - paragraph [ref=e5279]: logs “already sent”
+                    - listitem [ref=e5280]:
+                      - paragraph [ref=e5281]:
+                        - strong [ref=e5282]: does not post again
+                  - paragraph [ref=e5283]: This guard matters more than people think.
+                  - separator [ref=e5284]
+                  - heading "🟢 Go / No-Go Criteria" [level=2] [ref=e5285]
+                  - heading "GO if all are true:" [level=3] [ref=e5286]
+                  - list [ref=e5287]:
+                    - listitem [ref=e5288]:
+                      - paragraph [ref=e5289]: JSON extracted cleanly on first run
+                    - listitem [ref=e5290]:
+                      - paragraph [ref=e5291]: Bridge agent memory stays flat
+                    - listitem [ref=e5292]:
+                      - paragraph [ref=e5293]: Helper exits every time (no zombie Chromium)
+                    - listitem [ref=e5294]:
+                      - paragraph [ref=e5295]: Batch plans routed correctly
+                    - listitem [ref=e5296]:
+                      - paragraph [ref=e5297]: Second send is ignored via idempotency
+                  - heading "NO-GO (pause) if you see:" [level=3] [ref=e5298]
+                  - list [ref=e5299]:
+                    - listitem [ref=e5300]:
+                      - paragraph [ref=e5301]: Partial JSON (missing closing braces)
+                    - listitem [ref=e5302]:
+                      - paragraph [ref=e5303]:
+                        - text: Assistant prose outside code block
+                        - emphasis [ref=e5304]: breaking regex
+                    - listitem [ref=e5305]:
+                      - paragraph [ref=e5306]: Bridge agent logging large text blobs
+                    - listitem [ref=e5307]:
+                      - paragraph [ref=e5308]: Helper hanging waiting for “response complete”
+                  - paragraph [ref=e5309]:
+                    - text: "If NO-GO: don’t add more guards yet — just capture logs and we fix the"
+                    - emphasis [ref=e5310]: one
+                    - text: failure.
+                  - separator [ref=e5311]
+                  - heading "One last strategic note" [level=2] [ref=e5312]
+                  - paragraph [ref=e5313]: "At this point, you’ve crossed the hardest line:"
+                  - blockquote [ref=e5314]:
+                    - paragraph [ref=e5315]:
+                      - strong [ref=e5316]: You decoupled reasoning from I/O.
+                  - paragraph [ref=e5317]: "That means:"
+                  - list [ref=e5318]:
+                    - listitem [ref=e5319]:
+                      - paragraph [ref=e5320]: Bridge can restart forever
+                    - listitem [ref=e5321]:
+                      - paragraph [ref=e5322]: Context size stops mattering
+                    - listitem [ref=e5323]:
+                      - paragraph [ref=e5324]: ChatGPT becomes a bounded coprocessor, not a memory sink
+                    - listitem [ref=e5325]:
+                      - paragraph [ref=e5326]: Scaling is now about throughput, not fragility
+                  - paragraph [ref=e5327]:
+                    - text: You did not overbuild — you
+                    - emphasis [ref=e5328]: stopped at exactly the right layer
+                    - text: .
+                  - separator [ref=e5329]
+                  - heading "Verdict" [level=3] [ref=e5330]
+                  - paragraph [ref=e5331]:
+                    - text: 🚦
+                    - strong [ref=e5332]: Green light. Run the test.
+                  - paragraph [ref=e5333]: "When you’re done, come back with:"
+                  - list [ref=e5334]:
+                    - listitem [ref=e5335]:
+                      - paragraph [ref=e5336]: one successful log excerpt
+                    - listitem [ref=e5337]:
+                      - paragraph [ref=e5338]: or one failure symptom
+                  - paragraph [ref=e5339]:
+                    - text: We’ll tune
+                    - emphasis [ref=e5340]: only if reality demands it
+                    - text: .
+                - generic [ref=e5341]:
+                  - generic:
+                    - generic:
+                      - button "Previous response":
+                        - img
+                      - generic: 2/2
+                      - button "Next response" [disabled]:
+                        - img
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e5342]:
+              - heading "You said:" [level=5] [ref=e5343]
+              - generic [ref=e5345]:
+                - generic [ref=e5350]:
+                  - text: "Test batch response (JSON only):"
+                  - code [ref=e5352]: "json [ { \"bead_id\": \"bd-test1\", \"plan\": [{\"step\": 1, \"action\": \"Test action\", \"owner\": \"any\", \"evidence\": \"Works\"}], \"risks\": [], \"acceptance_tests\": [\"Verify extraction\"], \"next_actions\": [{\"task\": \"Test complete\", \"assign_to\": \"any\", \"notes\": \"All guards working\"}] } ]"
+                - generic [ref=e5353]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e5354]:
+              - heading "ChatGPT said:" [level=6] [ref=e5355]
+              - generic [ref=e5357]:
+                - generic [ref=e5361]:
+                  - paragraph [ref=e5362]: Yep — this is a good extraction test case, and your regex should pull it cleanly.
+                  - paragraph [ref=e5363]: "A couple of practical notes based on what you pasted:"
+                  - heading "1) Your regex should match (but watch the formatting)" [level=2] [ref=e5364]
+                  - paragraph [ref=e5365]: "You have:"
+                  - generic [ref=e5372]:
+                    - generic [ref=e5374]:
+                      - generic [ref=e5375]: JSON
+                      - generic [ref=e5376]:
+                        - button "Copy" [ref=e5377] [cursor=pointer]:
+                          - img [ref=e5378]
+                        - button "Edit" [ref=e5381] [cursor=pointer]:
+                          - img [ref=e5383]
+                    - textbox "Edit code" [ref=e5390]:
+                      - generic [ref=e5391]: "```json [ { ... } ] ```"
+                  - paragraph [ref=e5392]:
+                    - text: Your pattern
+                    - code [ref=e5393]: "/```json\\s*([\\s\\S]*?)\\s*```/"
+                    - text: will capture everything between the opening
+                    - code [ref=e5394]: json and the closing
+                    - text: ", including that leading"
+                    - code [ref=e5395]: "["
+                    - text: .
+                  - paragraph [ref=e5396]:
+                    - text: That said,
+                    - strong [ref=e5397]: "make sure the actual message has a newline after ```json"
+                    - text: "in real runs. Some UIs will “pretty print” differently, and newline is the most stable convention:"
+                  - generic [ref=e5404]:
+                    - generic [ref=e5406]:
+                      - generic [ref=e5407]: JSON
+                      - generic [ref=e5408]:
+                        - button "Copy" [ref=e5409] [cursor=pointer]:
+                          - img [ref=e5410]
+                        - button "Edit" [ref=e5413] [cursor=pointer]:
+                          - img [ref=e5415]
+                    - textbox "Edit code" [ref=e5422]:
+                      - generic [ref=e5423]: "["
+                      - generic [ref=e5424]: "{ ... }"
+                      - generic [ref=e5425]: "]"
+                  - heading "2) JSON parses cleanly" [level=2] [ref=e5426]
+                  - paragraph [ref=e5427]:
+                    - text: Captured payload is a JSON
+                    - strong [ref=e5428]: array
+                    - text: of one object.
+                    - code [ref=e5429]: JSON.parse()
+                    - text: should succeed.
+                  - heading "3) Schema mismatch (if you validate)" [level=2] [ref=e5430]
+                  - paragraph [ref=e5431]:
+                    - text: If you run your
+                    - code [ref=e5432]: packet-validate
+                    - text: tool against this, it will
+                    - strong [ref=e5433]: fail
+                    - text: ", because your response schemas expect an"
+                    - strong [ref=e5434]: enveloped object
+                    - text: "like:"
+                  - list [ref=e5435]:
+                    - listitem [ref=e5436]:
+                      - paragraph [ref=e5437]:
+                        - code [ref=e5438]: proto
+                    - listitem [ref=e5439]:
+                      - paragraph [ref=e5440]:
+                        - code [ref=e5441]: bead_id
+                    - listitem [ref=e5442]:
+                      - paragraph [ref=e5443]:
+                        - code [ref=e5444]: msg_type
+                    - listitem [ref=e5445]:
+                      - paragraph [ref=e5446]:
+                        - code [ref=e5447]: verdict
+                    - listitem [ref=e5448]:
+                      - paragraph [ref=e5449]: etc.
+                  - paragraph [ref=e5450]: "Your test payload is:"
+                  - list [ref=e5451]:
+                    - listitem [ref=e5452]:
+                      - paragraph [ref=e5453]:
+                        - text: just
+                        - code [ref=e5454]: "[{ bead_id, plan, ... }]"
+                  - paragraph [ref=e5455]:
+                    - text: "So:"
+                    - strong [ref=e5456]: extraction is fine
+                    - text: ", but"
+                    - strong [ref=e5457]: schema validation will fail
+                    - text: "unless you either:"
+                  - list [ref=e5458]:
+                    - listitem [ref=e5459]:
+                      - paragraph [ref=e5460]: wrap the batch response in a response envelope (recommended), or
+                    - listitem [ref=e5461]:
+                      - paragraph [ref=e5462]:
+                        - text: create a dedicated
+                        - code [ref=e5463]: BATCH_PLAN_RESPONSE
+                        - text: schema that allows an array.
+                  - 'heading "4) Minor content note: owner vs assign_to" [level=2] [ref=e5464]':
+                    - text: "4) Minor content note:"
+                    - code [ref=e5465]: owner
+                    - text: vs
+                    - code [ref=e5466]: assign_to
+                  - paragraph [ref=e5467]: "In your current schema set:"
+                  - list [ref=e5468]:
+                    - listitem [ref=e5469]:
+                      - paragraph [ref=e5470]:
+                        - code [ref=e5471]: plan[].owner
+                        - text: is a free string (so
+                        - code [ref=e5472]: "\"any\""
+                        - text: is okay)
+                    - listitem [ref=e5473]:
+                      - paragraph [ref=e5474]:
+                        - code [ref=e5475]: next_actions[].assign_to
+                        - text: now defaults to
+                        - code [ref=e5476]: "\"any\""
+                        - text: (good)
+                    - listitem [ref=e5477]:
+                      - paragraph [ref=e5478]:
+                        - code [ref=e5479]: notes
+                        - text: is required (you included it)
+                  - paragraph [ref=e5480]: So the payload is “pool-friendly.”
+                  - separator [ref=e5481]
+                  - heading "If your goal is “JSON-only, multi-bead batch”" [level=3] [ref=e5482]
+                  - paragraph [ref=e5483]: "I’d standardize the response to:"
+                  - generic [ref=e5490]:
+                    - generic [ref=e5492]:
+                      - generic [ref=e5493]: JSON
+                      - generic [ref=e5494]:
+                        - button "Copy" [ref=e5495] [cursor=pointer]:
+                          - img [ref=e5496]
+                        - button "Edit" [ref=e5499] [cursor=pointer]:
+                          - img [ref=e5501]
+                    - textbox "Edit code" [ref=e5509]:
+                      - generic [ref=e5510]: "{"
+                      - generic [ref=e5511]: "\"proto\": \"flywheel.chatgpt.v1\","
+                      - generic [ref=e5512]: "\"msg_type\": \"BATCH_PLAN_RESPONSE\","
+                      - generic [ref=e5513]: "\"verdict\": \"ok\","
+                      - generic [ref=e5514]: "\"plans\": ["
+                      - generic [ref=e5515]: "{ \"bead_id\": \"...\", \"plan\": [...], \"next_actions\": [...] }"
+                      - generic [ref=e5516]: "]"
+                      - generic [ref=e5517]: "}"
+                  - paragraph [ref=e5518]: That gives you one deterministic root object for parsing + future validation.
+                  - paragraph [ref=e5519]: If you paste the actual helper log output (just the small envelope you return), I can sanity-check that your “last match wins” + parse + size logging is behaving exactly as intended.
+                - generic [ref=e5520]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e5521]:
+              - heading "You said:" [level=5] [ref=e5522]
+              - generic [ref=e5524]:
+                - generic [ref=e5529]:
+                  - text: "Critical question before we continue testing: When I test extraction, I'm hitting issues: 1. **Abbreviated JSON**: Your last response had JSON with \"...\" placeholders like:"
+                  - code [ref=e5530]: "{ \"bead_id\": \"...\", \"plan\": [...] }"
+                  - text: "The DOM literally contains \"...\" - not real data. This breaks JSON parsing. 2. **Multiple code blocks**: Response had 2 JSON blocks - one real, one showing regex pattern. Had to filter for blocks starting with { or [. 3. **Storage state**: Direct Playwright with storage state file doesn't work (contenteditable not visible), but MCP Playwright connection works fine. **Core question:** If we send you an actual batch planning request like:"
+                  - code [ref=e5532]: "Plan these 2 beads: - bd-35z: Fix duplicate mail monitors - bd-test: Test batch extraction Return ONLY the JSON array, no commentary."
+                  - text: "Will you: - Return FULL valid JSON (no ... abbreviations)? - Put it in a single"
+                  - code [ref=e5534]: json block we can extract? - Avoid prose/examples that break extraction? OR should we use a different approach entirely (API instead of UI scraping)? This is blocking - we can't test the 7 guards until we know extraction will work reliably.
+                - generic [ref=e5535]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e5536]:
+              - heading "ChatGPT said:" [level=6] [ref=e5537]
+              - generic [ref=e5539]:
+                - generic [ref=e5543]:
+                  - paragraph [ref=e5544]:
+                    - text: You’re right to treat this as blocking. If the DOM contains literal
+                    - code [ref=e5545]: ...
+                    - text: or
+                    - code [ref=e5546]: "[...]"
+                    - text: placeholders,
+                    - strong [ref=e5547]: UI scraping will never be reliable
+                    - text: ", because there’s nothing to parse."
+                  - 'heading "First: the hard truth" [level=3] [ref=e5548]'
+                  - paragraph [ref=e5549]:
+                    - text: I
+                    - strong [ref=e5550]: can
+                    - text: "return full valid JSON in one ```json block, with no prose."
+                    - text: But
+                    - strong [ref=e5551]: you cannot rely on that 100%
+                    - text: in a long-running system unless you enforce it with a tighter “contract” and a retry loop, because occasional failures can happen (format drift, safety/system inserts, accidental extra code blocks, etc.).
+                  - paragraph [ref=e5552]:
+                    - text: "So the right answer is:"
+                    - strong [ref=e5553]: keep UI scraping if you must use the ChatGPT web thread — but add a “strict JSON enforcement + retry” loop in your helper.
+                    - text: Otherwise, use the API.
+                  - separator [ref=e5554]
+                  - heading "1) About the “...” abbreviated JSON" [level=2] [ref=e5555]
+                  - paragraph [ref=e5556]: "That usually comes from one of two causes:"
+                  - list [ref=e5557]:
+                    - listitem [ref=e5558]:
+                      - paragraph [ref=e5559]:
+                        - strong [ref=e5560]: The model actually output placeholders
+                        - text: (
+                        - code [ref=e5561]: "\"...\""
+                        - text: ","
+                        - code [ref=e5562]: "[...]"
+                        - text: ) because it was writing an example.
+                    - listitem [ref=e5563]:
+                      - paragraph [ref=e5564]:
+                        - strong [ref=e5565]: Your extraction is grabbing the wrong block
+                        - text: (e.g., a prose example or a second code block), or you’re reading an intermediate streaming state.
+                  - paragraph [ref=e5566]:
+                    - text: It is
+                    - emphasis [ref=e5567]: not
+                    - text: normal for ChatGPT’s DOM to “auto-abbreviate” code fences like a log viewer would. If you truly see literal
+                    - code [ref=e5568]: ...
+                    - text: inside the code block, the assistant text contained it.
+                  - paragraph [ref=e5569]:
+                    - strong [ref=e5570]: "Fix:"
+                    - text: make the response contract unambiguous and machine-checkable, and if it violates, auto-reprompt.
+                  - separator [ref=e5571]
+                  - heading "2) Multiple code blocks" [level=2] [ref=e5572]
+                  - paragraph [ref=e5573]: This is completely solvable. Don’t rely on “last code block” alone.
+                  - paragraph [ref=e5574]:
+                    - strong [ref=e5575]: "Extraction policy should be:"
+                  - list [ref=e5576]:
+                    - listitem [ref=e5577]:
+                      - paragraph [ref=e5578]: "Find all ```json blocks"
+                    - listitem [ref=e5579]:
+                      - paragraph [ref=e5580]: Prefer the one that parses as JSON
+                    - listitem [ref=e5581]:
+                      - paragraph [ref=e5582]: If more than one parses, prefer the one that matches expected shape (array/object with required keys)
+                    - listitem [ref=e5583]:
+                      - paragraph [ref=e5584]: If none parse, reprompt
+                  - paragraph [ref=e5585]:
+                    - text: You already started filtering for blocks beginning with
+                    - code [ref=e5586]: "{"
+                    - text: or
+                    - code [ref=e5587]: "["
+                    - text: ". Good. Go one step further:"
+                    - emphasis [ref=e5588]: attempt parse
+                    - text: .
+                  - separator [ref=e5589]
+                  - heading "3) Storage-state works in MCP but not direct Playwright" [level=2] [ref=e5590]
+                  - paragraph [ref=e5591]: "That’s a separate, very real issue. Likely causes:"
+                  - list [ref=e5592]:
+                    - listitem [ref=e5593]:
+                      - paragraph [ref=e5594]: different Chromium channel / UA / launch args
+                    - listitem [ref=e5595]:
+                      - paragraph [ref=e5596]: CSP/permissions differences
+                    - listitem [ref=e5597]:
+                      - paragraph [ref=e5598]: storage state missing something MCP retains (or vice versa)
+                    - listitem [ref=e5599]:
+                      - paragraph [ref=e5600]:
+                        - text: automation-detection differences (
+                        - code [ref=e5601]: "--disable-blink-features=AutomationControlled"
+                        - text: ", etc.)"
+                    - listitem [ref=e5602]:
+                      - paragraph [ref=e5603]: you’re landing in a “logged in but not hydrated” state (contenteditable absent) due to redirect/challenge
+                  - paragraph [ref=e5604]:
+                    - strong [ref=e5605]: "Immediate workaround:"
+                    - text: keep using the
+                    - strong [ref=e5606]: same browser setup
+                    - text: "that works:"
+                  - list [ref=e5607]:
+                    - listitem [ref=e5608]:
+                      - paragraph [ref=e5609]: either attach to the MCP-launched browser (hard)
+                    - listitem [ref=e5610]:
+                      - paragraph [ref=e5611]: or replicate MCP’s launch args as closely as possible in your direct Playwright helper
+                  - paragraph [ref=e5612]: "But this doesn’t change the main blocker: extraction reliability."
+                  - separator [ref=e5613]
+                  - 'heading "The real solution: “Strict JSON” + retry loop" [level=1] [ref=e5614]'
+                  - heading "Make your helper enforce this invariant:" [level=3] [ref=e5615]
+                  - blockquote [ref=e5616]:
+                    - paragraph [ref=e5617]: The response is valid JSON and contains no placeholders.
+                  - heading "Contract you should send (copy/paste)" [level=4] [ref=e5618]
+                  - paragraph [ref=e5619]: "End every request with this exact instruction:"
+                  - blockquote [ref=e5620]:
+                    - paragraph [ref=e5621]:
+                      - text: Return
+                      - strong [ref=e5622]: ONLY
+                      - text: a single fenced code block labeled
+                      - code [ref=e5623]: json
+                      - text: .
+                      - text: The content must be
+                      - strong [ref=e5624]: strict JSON
+                      - text: (no comments, no trailing commas).
+                      - text: Do
+                      - strong [ref=e5625]: not
+                      - text: use placeholders like
+                      - code [ref=e5626]: "\"...\""
+                      - text: ","
+                      - code [ref=e5627]: "[...]"
+                      - text: ", or"
+                      - code [ref=e5628]: …
+                      - text: .
+                      - text: Do not include any other text or code blocks.
+                  - paragraph [ref=e5629]: "Then add:"
+                  - blockquote [ref=e5630]:
+                    - paragraph [ref=e5631]:
+                      - text: "If you cannot comply, output this exact JSON instead:"
+                      - code [ref=e5632]: "{\"error\":\"NON_COMPLIANT\"}"
+                  - paragraph [ref=e5633]: That gives you a deterministic failure token.
+                  - heading "Helper enforcement logic" [level=4] [ref=e5634]
+                  - paragraph [ref=e5635]: "After extraction:"
+                  - list [ref=e5636]:
+                    - listitem [ref=e5637]:
+                      - paragraph [ref=e5638]: Parse JSON
+                    - listitem [ref=e5639]:
+                      - paragraph [ref=e5640]: "Reject if:"
+                      - list [ref=e5641]:
+                        - listitem [ref=e5642]:
+                          - paragraph [ref=e5643]:
+                            - text: string contains
+                            - code [ref=e5644]: ...
+                            - text: or
+                            - code [ref=e5645]: …
+                        - listitem [ref=e5646]:
+                          - paragraph [ref=e5647]:
+                            - text: contains
+                            - code [ref=e5648]: "[...]"
+                            - text: literally
+                        - listitem [ref=e5649]:
+                          - paragraph [ref=e5650]: (optional) contains any unquoted ellipses patterns
+                    - listitem [ref=e5651]:
+                      - paragraph [ref=e5652]: "If reject → auto-reprompt in-thread once:"
+                      - list [ref=e5653]:
+                        - listitem [ref=e5654]:
+                          - paragraph [ref=e5655]: "“Re-emit ONLY the JSON. No prose. No placeholders. Single ```json block.”"
+                  - paragraph [ref=e5656]:
+                    - text: If the second attempt fails → return
+                    - code [ref=e5657]: LOGIN_REQUIRED
+                    - text: /
+                    - code [ref=e5658]: NON_COMPLIANT
+                    - text: to Bridge and stop.
+                  - paragraph [ref=e5659]: This makes UI scraping viable.
+                  - separator [ref=e5660]
+                  - heading "Can you trust me to comply with your example prompt?" [level=1] [ref=e5661]
+                  - paragraph [ref=e5662]: "If you send:"
+                  - generic [ref=e5669]:
+                    - generic [ref=e5671]:
+                      - generic [ref=e5672]: Plain text
+                      - generic [ref=e5673]:
+                        - button "Copy" [ref=e5674] [cursor=pointer]:
+                          - img [ref=e5675]
+                        - button "Edit" [ref=e5678] [cursor=pointer]:
+                          - img [ref=e5680]
+                    - textbox "Edit code" [ref=e5687]:
+                      - generic [ref=e5688]: "Plan these 2 beads:"
+                      - generic [ref=e5689]: "- bd-35z: Fix duplicate mail monitors"
+                      - generic [ref=e5690]: "- bd-test: Test batch extraction"
+                      - generic [ref=e5691]: Return ONLY the JSON array, no commentary.
+                  - paragraph [ref=e5692]:
+                    - text: "I will respond with a single ```json block and full JSON"
+                    - strong [ref=e5693]: in this chat
+                    - text: .
+                  - paragraph [ref=e5694]:
+                    - text: "But for the automation system: don’t rely on “will it always behave” — rely on"
+                    - strong [ref=e5695]: the helper enforcing compliance
+                    - text: .
+                  - separator [ref=e5696]
+                  - heading "When to switch to API instead of UI scraping" [level=1] [ref=e5697]
+                  - paragraph [ref=e5698]: "Switch to the API if any of these become true:"
+                  - list [ref=e5699]:
+                    - listitem [ref=e5700]:
+                      - paragraph [ref=e5701]: you need 99.9% reliability without retries
+                    - listitem [ref=e5702]:
+                      - paragraph [ref=e5703]: you need guaranteed “JSON-only” with schema validation
+                    - listitem [ref=e5704]:
+                      - paragraph [ref=e5705]: you want to avoid UI changes breaking selectors
+                    - listitem [ref=e5706]:
+                      - paragraph [ref=e5707]: you want lower latency / higher throughput
+                  - paragraph [ref=e5708]:
+                    - text: If your requirement is specifically “ChatGPT web thread as shared surface,” UI automation is fine — just treat it as
+                    - strong [ref=e5709]: eventually consistent
+                    - text: and enforce correctness.
+                  - separator [ref=e5710]
+                  - heading "If you want, I can do two things next (no extra questions)" [level=2] [ref=e5711]
+                  - list [ref=e5712]:
+                    - listitem [ref=e5713]:
+                      - paragraph [ref=e5714]:
+                        - text: Give you the
+                        - strong [ref=e5715]: exact reprompt text
+                        - text: your helper should post when parse fails.
+                    - listitem [ref=e5716]:
+                      - paragraph [ref=e5717]: "Give you a hardened extraction routine: “find all ```json blocks → try parse → choose best → validate”."
+                  - paragraph [ref=e5718]:
+                    - text: And if you paste the exact failing assistant text that included
+                    - code [ref=e5719]: ...
+                    - text: ", I can tell you whether it was:"
+                  - list [ref=e5720]:
+                    - listitem [ref=e5721]:
+                      - paragraph [ref=e5722]: a model placeholder
+                    - listitem [ref=e5723]:
+                      - paragraph [ref=e5724]: a partial/streaming capture
+                    - listitem [ref=e5725]:
+                      - paragraph [ref=e5726]: the wrong code block being extracted.
+                - generic [ref=e5727]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e5728]:
+              - heading "You said:" [level=5] [ref=e5729]
+              - generic [ref=e5731]:
+                - generic [ref=e5736]:
+                  - text: "Which approach is best for fixing bridge-agent-loop.sh? Context: bridge uses"
+                  - code [ref=e5737]: br mail read/send/archive
+                  - text: which don't exist. A) Direct MCP calls in bridge (duplicate logic from agent-mail-helper.sh) B) Call agent-mail-helper.sh and parse output with jq C) Extend agent-mail-helper.sh with fetch-json --subject command Which is cleanest?
+                - generic [ref=e5738]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e5739]:
+              - heading "ChatGPT said:" [level=6] [ref=e5740]
+              - generic [ref=e5742]:
+                - generic [ref=e5746]:
+                  - paragraph [ref=e5747]:
+                    - strong [ref=e5748]: C is the cleanest
+                    - text: ": extend"
+                    - code [ref=e5749]: agent-mail-helper.sh
+                    - text: with a
+                    - strong [ref=e5750]: machine-friendly fetch mode
+                    - text: (e.g.,
+                    - code [ref=e5751]: fetch-json
+                    - text: /
+                    - code [ref=e5752]: fetch-next
+                    - text: ) and have
+                    - code [ref=e5753]: bridge-agent-loop.sh
+                    - text: consume that.
+                  - heading "Why C beats A and B" [level=3] [ref=e5754]
+                  - list [ref=e5755]:
+                    - listitem [ref=e5756]:
+                      - paragraph [ref=e5757]:
+                        - strong [ref=e5758]: A (direct MCP calls in bridge)
+                        - text: ": worst long-term. You’ll duplicate transport logic, auth, error handling, filtering, pagination, and output formatting. You’ll end up maintaining two mail clients."
+                    - listitem [ref=e5759]:
+                      - paragraph [ref=e5760]:
+                        - strong [ref=e5761]: B (call helper + parse human output)
+                        - text: ": workable but fragile. If the helper’s output is meant for humans, any formatting change breaks your bridge. You’ll spend time “jq-ing around” display text."
+                    - listitem [ref=e5762]:
+                      - paragraph [ref=e5763]:
+                        - strong [ref=e5764]: C (extend helper with JSON output)
+                        - text: ": correct separation of concerns."
+                      - list [ref=e5765]:
+                        - listitem [ref=e5766]:
+                          - paragraph [ref=e5767]: helper = single source of truth for mail access + filtering
+                        - listitem [ref=e5768]:
+                          - paragraph [ref=e5769]: bridge = orchestration loop (state machine)
+                        - listitem [ref=e5770]:
+                          - paragraph [ref=e5771]: contract between them = stable JSON
+                  - separator [ref=e5772]
+                  - heading "What “C” should look like (minimal, stable)" [level=2] [ref=e5773]
+                  - heading "Add to agent-mail-helper.sh" [level=3] [ref=e5774]:
+                    - text: Add to
+                    - code [ref=e5775]: agent-mail-helper.sh
+                  - paragraph [ref=e5776]:
+                    - text: Add a subcommand that returns
+                    - strong [ref=e5777]: one message at a time
+                    - text: "in JSON:"
+                  - list [ref=e5778]:
+                    - listitem [ref=e5779]:
+                      - paragraph [ref=e5780]:
+                        - code [ref=e5781]: fetch-next-json
+                        - text: (preferred) OR
+                        - code [ref=e5782]: fetch-json --subject ...
+                    - listitem [ref=e5783]:
+                      - paragraph [ref=e5784]: "Supports filters:"
+                      - list [ref=e5785]:
+                        - listitem [ref=e5786]:
+                          - paragraph [ref=e5787]:
+                            - code [ref=e5788]: "--subject-contains \"BATCH_PLAN\""
+                        - listitem [ref=e5789]:
+                          - paragraph [ref=e5790]:
+                            - code [ref=e5791]: "--unarchived-only"
+                        - listitem [ref=e5792]:
+                          - paragraph [ref=e5793]:
+                            - code [ref=e5794]: "--limit 1"
+                    - listitem [ref=e5795]:
+                      - paragraph [ref=e5796]: "On “no messages”, return:"
+                      - list [ref=e5797]:
+                        - listitem [ref=e5798]:
+                          - paragraph [ref=e5799]:
+                            - text: exit 0 with
+                            - code [ref=e5800]: "{ \"ok\": true, \"found\": false }"
+                    - listitem [ref=e5801]:
+                      - paragraph [ref=e5802]: "On “found”, return:"
+                      - list [ref=e5803]:
+                        - listitem [ref=e5804]:
+                          - paragraph [ref=e5805]:
+                            - code [ref=e5806]: "{ \"ok\": true, \"found\": true, \"message\": { ... } }"
+                  - paragraph [ref=e5807]:
+                    - text: Include in
+                    - code [ref=e5808]: message
+                    - text: ":"
+                  - list [ref=e5809]:
+                    - listitem [ref=e5810]:
+                      - paragraph [ref=e5811]:
+                        - code [ref=e5812]: id
+                        - text: (internal id)
+                    - listitem [ref=e5813]:
+                      - paragraph [ref=e5814]:
+                        - code [ref=e5815]: sender_name
+                    - listitem [ref=e5816]:
+                      - paragraph [ref=e5817]:
+                        - code [ref=e5818]: subject
+                    - listitem [ref=e5819]:
+                      - paragraph [ref=e5820]:
+                        - code [ref=e5821]: body_md
+                    - listitem [ref=e5822]:
+                      - paragraph [ref=e5823]:
+                        - code [ref=e5824]: ts
+                        - text: (if available)
+                  - heading "Bridge loop then becomes trivial" [level=3] [ref=e5825]
+                  - list [ref=e5826]:
+                    - listitem [ref=e5827]:
+                      - paragraph [ref=e5828]:
+                        - text: poll
+                        - code [ref=e5829]: fetch-next-json
+                    - listitem [ref=e5830]:
+                      - paragraph [ref=e5831]: "if found:"
+                      - list [ref=e5832]:
+                        - listitem [ref=e5833]:
+                          - paragraph [ref=e5834]: process
+                        - listitem [ref=e5835]:
+                          - paragraph [ref=e5836]:
+                            - text: archive by id via helper (
+                            - code [ref=e5837]: archive --id <id>
+                            - text: )
+                    - listitem [ref=e5838]:
+                      - paragraph [ref=e5839]: else sleep
+                  - paragraph [ref=e5840]: "This also fixes idempotency cleanly: the helper controls “mark as processed.”"
+                  - separator [ref=e5841]
+                  - heading "Practical recommendation" [level=2] [ref=e5842]
+                  - paragraph [ref=e5843]:
+                    - text: Implement
+                    - strong [ref=e5844]: two helper commands
+                    - text: ", not one:"
+                  - list [ref=e5845]:
+                    - listitem [ref=e5846]:
+                      - paragraph [ref=e5847]:
+                        - code [ref=e5848]: fetch-next-json --filter ...
+                    - listitem [ref=e5849]:
+                      - paragraph [ref=e5850]:
+                        - code [ref=e5851]: archive --id <id>
+                  - paragraph [ref=e5852]: Avoid subject-only fetch unless you truly need it; “next matching message” is the natural queue primitive.
+                  - separator [ref=e5853]
+                  - heading "If you want the fastest path right now" [level=2] [ref=e5854]
+                  - paragraph [ref=e5855]:
+                    - text: Do
+                    - strong [ref=e5856]: C
+                    - text: "but minimal:"
+                  - list [ref=e5857]:
+                    - listitem [ref=e5858]:
+                      - paragraph [ref=e5859]:
+                        - code [ref=e5860]: fetch-next-json --subject-contains "BATCH_PLAN"
+                    - listitem [ref=e5861]:
+                      - paragraph [ref=e5862]:
+                        - code [ref=e5863]: archive --id
+                  - paragraph [ref=e5864]:
+                    - text: That’s enough to fix
+                    - code [ref=e5865]: bridge-agent-loop.sh
+                    - text: without rewriting the mail stack.
+                  - paragraph [ref=e5866]:
+                    - text: If you paste your current
+                    - code [ref=e5867]: agent-mail-helper.sh
+                    - text: "(or its current CLI), I’ll draft the exact diff: new subcommand(s), expected JSON shape, and the updated"
+                    - code [ref=e5868]: bridge-agent-loop.sh
+                    - text: loop.
+                - generic [ref=e5869]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e5870]:
+              - heading "You said:" [level=5] [ref=e5871]
+              - generic [ref=e5873]:
+                - generic [ref=e5878]:
+                  - text: "Test batch plan for 2 beads: ## Bead 1: bd-35z **Title:** Prevent duplicate mail monitors **Status:** open **Description:** Fix to prevent duplicate mail monitors with file lock ## Bead 2: bd-test **Title:** Test bead for batch planning **Status:** open **Description:** Simple test bead to validate batch planning extraction --- Return ONLY a JSON array with plans for each bead:"
+                  - code [ref=e5880]: "json [ { \"bead_id\": \"bd-35z\", \"plan\": [{\"step\": 1, \"action\": \"Add file lock\", \"owner\": \"any\", \"evidence\": \"Lock file created\"}], \"risks\": [], \"acceptance_tests\": [\"Test no duplicate monitors\"], \"next_actions\": [{\"task\": \"Implement file lock\", \"assign_to\": \"any\", \"notes\": \"Add lock check before monitor start\"}] }, { \"bead_id\": \"bd-test\", \"plan\": [{\"step\": 1, \"action\": \"Run test\", \"owner\": \"any\", \"evidence\": \"Test passes\"}], \"risks\": [], \"acceptance_tests\": [\"Verify batch planning works\"], \"next_actions\": [{\"task\": \"Complete test\", \"assign_to\": \"any\", \"notes\": \"Validate extraction\"}] } ]"
+                - generic [ref=e5881]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e5882]:
+              - heading "ChatGPT said:" [level=6] [ref=e5883]
+              - generic [ref=e5885]:
+                - generic [ref=e5896]:
+                  - generic [ref=e5898]:
+                    - generic [ref=e5899]: JSON
+                    - generic [ref=e5900]:
+                      - button "Copy" [ref=e5901] [cursor=pointer]:
+                        - img [ref=e5902]
+                      - button "Edit" [ref=e5905] [cursor=pointer]:
+                        - img [ref=e5907]
+                  - textbox "Edit code" [ref=e5915]:
+                    - generic [ref=e5916]: "["
+                    - generic [ref=e5917]: "{"
+                    - generic [ref=e5918]: "\"bead_id\": \"bd-35z\","
+                    - generic [ref=e5919]: "\"plan\": ["
+                    - generic [ref=e5920]: "{"
+                    - generic [ref=e5921]: "\"step\": 1,"
+                    - generic [ref=e5922]: "\"action\": \"Create a lock file mechanism to prevent multiple monitor instances\","
+                    - generic [ref=e5923]: "\"owner\": \"any\","
+                    - generic [ref=e5924]: "\"evidence\": \"Lock file is created before monitor start and prevents second instance\""
+                    - generic [ref=e5925]: "},"
+                    - generic [ref=e5926]: "{"
+                    - generic [ref=e5927]: "\"step\": 2,"
+                    - generic [ref=e5928]: "\"action\": \"Check for existing lock file before initializing mail monitor\","
+                    - generic [ref=e5929]: "\"owner\": \"any\","
+                    - generic [ref=e5930]: "\"evidence\": \"Second monitor attempt exits gracefully when lock exists\""
+                    - generic [ref=e5931]: "},"
+                    - generic [ref=e5932]: "{"
+                    - generic [ref=e5933]: "\"step\": 3,"
+                    - generic [ref=e5934]: "\"action\": \"Ensure lock file is removed on clean shutdown\","
+                    - generic [ref=e5935]: "\"owner\": \"any\","
+                    - generic [ref=e5936]: "\"evidence\": \"Lock file no longer exists after monitor stops\""
+                    - generic [ref=e5937]: "}"
+                    - generic [ref=e5938]: "],"
+                    - generic [ref=e5939]: "\"risks\": ["
+                    - generic [ref=e5940]: "{"
+                    - generic [ref=e5941]: "\"risk\": \"Stale lock file after crash prevents monitor restart\","
+                    - generic [ref=e5942]: "\"mitigation\": \"Add PID verification or timestamp expiry check before refusing start\""
+                    - generic [ref=e5943]: "}"
+                    - generic [ref=e5944]: "],"
+                    - generic [ref=e5945]: "\"acceptance_tests\": ["
+                    - generic [ref=e5946]: "\"Start monitor twice and confirm second instance exits\","
+                    - generic [ref=e5947]: "\"Simulate crash and verify stale lock handling logic works\""
+                    - generic [ref=e5948]: "],"
+                    - generic [ref=e5949]: "\"next_actions\": ["
+                    - generic [ref=e5950]: "{"
+                    - generic [ref=e5951]: "\"task\": \"Implement file lock guard in monitor startup routine\","
+                - generic [ref=e5953]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e5954]:
+              - heading "You said:" [level=5] [ref=e5955]
+              - generic [ref=e5957]:
+                - generic [ref=e5962]:
+                  - text: "Test batch plan for 2 beads: ## Bead 1: bd-35z **Title:** Prevent duplicate mail monitors **Status:** open **Description:** Fix to prevent duplicate mail monitors with file lock ## Bead 2: bd-test **Title:** Test bead for batch planning **Status:** open **Description:** Simple test bead to validate batch planning extraction --- Return ONLY a JSON array with plans for each bead:"
+                  - code [ref=e5964]: "json [ { \"bead_id\": \"bd-35z\", \"plan\": [{\"step\": 1, \"action\": \"Add file lock\", \"owner\": \"any\", \"evidence\": \"Lock file created\"}], \"risks\": [], \"acceptance_tests\": [\"Test no duplicate monitors\"], \"next_actions\": [{\"task\": \"Implement file lock\", \"assign_to\": \"any\", \"notes\": \"Add lock check before monitor start\"}] }, { \"bead_id\": \"bd-test\", \"plan\": [{\"step\": 1, \"action\": \"Run test\", \"owner\": \"any\", \"evidence\": \"Test passes\"}], \"risks\": [], \"acceptance_tests\": [\"Verify batch planning works\"], \"next_actions\": [{\"task\": \"Complete test\", \"assign_to\": \"any\", \"notes\": \"Validate extraction\"}] } ]"
+                - generic [ref=e5965]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e5966]:
+              - heading "ChatGPT said:" [level=6] [ref=e5967]
+              - generic [ref=e5969]:
+                - generic [ref=e5980]:
+                  - generic [ref=e5982]:
+                    - generic [ref=e5983]: JSON
+                    - generic [ref=e5984]:
+                      - button "Copy" [ref=e5985] [cursor=pointer]:
+                        - img [ref=e5986]
+                      - button "Edit" [ref=e5989] [cursor=pointer]:
+                        - img [ref=e5991]
+                  - textbox "Edit code" [ref=e5999]:
+                    - generic [ref=e6000]: "["
+                    - generic [ref=e6001]: "{"
+                    - generic [ref=e6002]: "\"bead_id\": \"bd-35z\","
+                    - generic [ref=e6003]: "\"plan\": ["
+                    - generic [ref=e6004]: "{"
+                    - generic [ref=e6005]: "\"step\": 1,"
+                    - generic [ref=e6006]: "\"action\": \"Implement a single-instance file lock to prevent duplicate mail monitor processes\","
+                    - generic [ref=e6007]: "\"owner\": \"any\","
+                    - generic [ref=e6008]: "\"evidence\": \"Second monitor start attempt is blocked when lock is present and valid\""
+                    - generic [ref=e6009]: "},"
+                    - generic [ref=e6010]: "{"
+                    - generic [ref=e6011]: "\"step\": 2,"
+                    - generic [ref=e6012]: "\"action\": \"Handle stale lock recovery (crash/kill) so monitoring can restart safely\","
+                    - generic [ref=e6013]: "\"owner\": \"any\","
+                    - generic [ref=e6014]: "\"evidence\": \"If PID in lock is not running, lock is treated as stale and replaced\""
+                    - generic [ref=e6015]: "},"
+                    - generic [ref=e6016]: "{"
+                    - generic [ref=e6017]: "\"step\": 3,"
+                    - generic [ref=e6018]: "\"action\": \"Ensure lock is released on graceful shutdown and on common termination signals\","
+                    - generic [ref=e6019]: "\"owner\": \"any\","
+                    - generic [ref=e6020]: "\"evidence\": \"Lock file is removed when the monitor exits normally\""
+                    - generic [ref=e6021]: "}"
+                    - generic [ref=e6022]: "],"
+                    - generic [ref=e6023]: "\"risks\": ["
+                    - generic [ref=e6024]: "{"
+                    - generic [ref=e6025]: "\"risk\": \"A stale lock file could permanently block monitoring after an unclean exit\","
+                    - generic [ref=e6026]: "\"mitigation\": \"Store PID + timestamp in the lock file and validate PID liveness before refusing to start\""
+                    - generic [ref=e6027]: "}"
+                    - generic [ref=e6028]: "],"
+                    - generic [ref=e6029]: "\"acceptance_tests\": ["
+                    - generic [ref=e6030]: "\"Start the monitor twice; verify the second instance exits immediately with a clear log message\","
+                    - generic [ref=e6031]: "\"Kill the monitor uncleanly; verify restart detects stale lock and starts successfully\","
+                    - generic [ref=e6032]: "\"Stop the monitor normally; verify the lock file is removed\""
+                    - generic [ref=e6033]: "],"
+                    - generic [ref=e6034]: "\"next_actions\": ["
+                    - generic [ref=e6035]: "{"
+                - generic [ref=e6037]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e6038]:
+              - heading "You said:" [level=5] [ref=e6039]
+              - generic [ref=e6041]:
+                - generic [ref=e6046]:
+                  - text: "Test batch plan for 2 beads: ## Bead 1: bd-35z **Title:** Prevent duplicate mail monitors **Status:** open **Description:** Fix to prevent duplicate mail monitors with file lock ## Bead 2: bd-test **Title:** Test bead for batch planning **Status:** open **Description:** Simple test bead to validate batch planning extraction --- Return ONLY a JSON array with plans for each bead:"
+                  - code [ref=e6048]: "json [ { \"bead_id\": \"bd-35z\", \"plan\": [{\"step\": 1, \"action\": \"Add file lock\", \"owner\": \"any\", \"evidence\": \"Lock file created\"}], \"risks\": [], \"acceptance_tests\": [\"Test no duplicate monitors\"], \"next_actions\": [{\"task\": \"Implement file lock\", \"assign_to\": \"any\", \"notes\": \"Add lock check before monitor start\"}] }, { \"bead_id\": \"bd-test\", \"plan\": [{\"step\": 1, \"action\": \"Run test\", \"owner\": \"any\", \"evidence\": \"Test passes\"}], \"risks\": [], \"acceptance_tests\": [\"Verify batch planning works\"], \"next_actions\": [{\"task\": \"Complete test\", \"assign_to\": \"any\", \"notes\": \"Validate extraction\"}] } ]"
+                - generic [ref=e6049]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e6050]:
+              - heading "ChatGPT said:" [level=6] [ref=e6051]
+              - generic [ref=e6053]:
+                - generic [ref=e6064]:
+                  - generic [ref=e6066]:
+                    - generic [ref=e6067]: JSON
+                    - generic [ref=e6068]:
+                      - button "Copy" [ref=e6069] [cursor=pointer]:
+                        - img [ref=e6070]
+                      - button "Edit" [ref=e6073] [cursor=pointer]:
+                        - img [ref=e6075]
+                  - textbox "Edit code" [ref=e6083]:
+                    - generic [ref=e6084]: "["
+                    - generic [ref=e6085]: "{"
+                    - generic [ref=e6086]: "\"bead_id\": \"bd-35z\","
+                    - generic [ref=e6087]: "\"plan\": ["
+                    - generic [ref=e6088]: "{"
+                    - generic [ref=e6089]: "\"step\": 1,"
+                    - generic [ref=e6090]: "\"action\": \"Add a single-instance lock file to the mail monitor startup path\","
+                    - generic [ref=e6091]: "\"owner\": \"any\","
+                    - generic [ref=e6092]: "\"evidence\": \"Lock file is created before monitoring begins and blocks duplicate starts\""
+                    - generic [ref=e6093]: "},"
+                    - generic [ref=e6094]: "{"
+                    - generic [ref=e6095]: "\"step\": 2,"
+                    - generic [ref=e6096]: "\"action\": \"Implement stale-lock detection so crashes do not permanently block restart\","
+                    - generic [ref=e6097]: "\"owner\": \"any\","
+                    - generic [ref=e6098]: "\"evidence\": \"If PID in lock is not running, lock is treated as stale and replaced\""
+                    - generic [ref=e6099]: "},"
+                    - generic [ref=e6100]: "{"
+                    - generic [ref=e6101]: "\"step\": 3,"
+                    - generic [ref=e6102]: "\"action\": \"Ensure the lock is removed on graceful shutdown and on SIGINT/SIGTERM\","
+                    - generic [ref=e6103]: "\"owner\": \"any\","
+                    - generic [ref=e6104]: "\"evidence\": \"Lock file is removed when the monitor exits normally\""
+                    - generic [ref=e6105]: "}"
+                    - generic [ref=e6106]: "],"
+                    - generic [ref=e6107]: "\"risks\": ["
+                    - generic [ref=e6108]: "{"
+                    - generic [ref=e6109]: "\"risk\": \"A stale lock file could block monitoring after an unclean exit\","
+                    - generic [ref=e6110]: "\"mitigation\": \"Store PID + timestamp in the lock file and validate PID liveness before refusing startup\""
+                    - generic [ref=e6111]: "}"
+                    - generic [ref=e6112]: "],"
+                    - generic [ref=e6113]: "\"acceptance_tests\": ["
+                    - generic [ref=e6114]: "\"Start the mail monitor twice; confirm the second instance exits immediately with a clear message\","
+                    - generic [ref=e6115]: "\"Kill the monitor uncleanly; confirm restart detects stale lock and starts successfully\","
+                    - generic [ref=e6116]: "\"Stop the monitor normally; confirm the lock file is removed\""
+                    - generic [ref=e6117]: "],"
+                    - generic [ref=e6118]: "\"next_actions\": ["
+                    - generic [ref=e6119]: "{"
+                - generic [ref=e6121]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e6122]:
+              - heading "You said:" [level=5] [ref=e6123]
+              - generic [ref=e6125]:
+                - generic [ref=e6130]:
+                  - text: "Test batch plan for 2 beads: ## Bead 1: bd-35z **Title:** Prevent duplicate mail monitors **Status:** open **Description:** Fix to prevent duplicate mail monitors with file lock ## Bead 2: bd-test **Title:** Test bead for batch planning **Status:** open **Description:** Simple test bead to validate batch planning extraction --- Return ONLY a JSON array with plans for each bead:"
+                  - code [ref=e6132]: "json [ { \"bead_id\": \"bd-35z\", \"plan\": [{\"step\": 1, \"action\": \"Add file lock\", \"owner\": \"any\", \"evidence\": \"Lock file created\"}], \"risks\": [], \"acceptance_tests\": [\"Test no duplicate monitors\"], \"next_actions\": [{\"task\": \"Implement file lock\", \"assign_to\": \"any\", \"notes\": \"Add lock check before monitor start\"}] }, { \"bead_id\": \"bd-test\", \"plan\": [{\"step\": 1, \"action\": \"Run test\", \"owner\": \"any\", \"evidence\": \"Test passes\"}], \"risks\": [], \"acceptance_tests\": [\"Verify batch planning works\"], \"next_actions\": [{\"task\": \"Complete test\", \"assign_to\": \"any\", \"notes\": \"Validate extraction\"}] } ]"
+                - generic [ref=e6133]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e6134]:
+              - heading "ChatGPT said:" [level=6] [ref=e6135]
+              - generic [ref=e6137]:
+                - generic [ref=e6148]:
+                  - generic [ref=e6150]:
+                    - generic [ref=e6151]: JSON
+                    - generic [ref=e6152]:
+                      - button "Copy" [ref=e6153] [cursor=pointer]:
+                        - img [ref=e6154]
+                      - button "Edit" [ref=e6157] [cursor=pointer]:
+                        - img [ref=e6159]
+                  - textbox "Edit code" [ref=e6167]:
+                    - generic [ref=e6168]: "["
+                    - generic [ref=e6169]: "{"
+                    - generic [ref=e6170]: "\"bead_id\": \"bd-35z\","
+                    - generic [ref=e6171]: "\"plan\": ["
+                    - generic [ref=e6172]: "{"
+                    - generic [ref=e6173]: "\"step\": 1,"
+                    - generic [ref=e6174]: "\"action\": \"Add a file lock to ensure only one mail monitor runs at a time\","
+                    - generic [ref=e6175]: "\"owner\": \"any\","
+                    - generic [ref=e6176]: "\"evidence\": \"A lock file is created before monitor startup and prevents duplicate instances\""
+                    - generic [ref=e6177]: "},"
+                    - generic [ref=e6178]: "{"
+                    - generic [ref=e6179]: "\"step\": 2,"
+                    - generic [ref=e6180]: "\"action\": \"Detect and recover from stale locks after crashes\","
+                    - generic [ref=e6181]: "\"owner\": \"any\","
+                    - generic [ref=e6182]: "\"evidence\": \"If the lock PID is not running, the lock is replaced and monitoring starts\""
+                    - generic [ref=e6183]: "},"
+                    - generic [ref=e6184]: "{"
+                    - generic [ref=e6185]: "\"step\": 3,"
+                    - generic [ref=e6186]: "\"action\": \"Remove the lock on graceful shutdown and handle SIGINT/SIGTERM cleanup\","
+                    - generic [ref=e6187]: "\"owner\": \"any\","
+                    - generic [ref=e6188]: "\"evidence\": \"Lock file is deleted when the monitor exits normally\""
+                    - generic [ref=e6189]: "}"
+                    - generic [ref=e6190]: "],"
+                    - generic [ref=e6191]: "\"risks\": ["
+                    - generic [ref=e6192]: "{"
+                    - generic [ref=e6193]: "\"risk\": \"Stale lock file could block monitoring after unclean exit\","
+                    - generic [ref=e6194]: "\"mitigation\": \"Store PID + timestamp in lock file and verify PID liveness before refusing start\""
+                    - generic [ref=e6195]: "}"
+                    - generic [ref=e6196]: "],"
+                    - generic [ref=e6197]: "\"acceptance_tests\": ["
+                    - generic [ref=e6198]: "\"Start monitor twice and verify second start is blocked with a clear message\","
+                    - generic [ref=e6199]: "\"Kill monitor uncleanly and verify stale lock is detected and recovered\","
+                    - generic [ref=e6200]: "\"Stop monitor normally and verify lock file is removed\""
+                    - generic [ref=e6201]: "],"
+                    - generic [ref=e6202]: "\"next_actions\": ["
+                    - generic [ref=e6203]: "{"
+                - generic [ref=e6205]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e6206]:
+              - heading "You said:" [level=5] [ref=e6207]
+              - generic [ref=e6209]:
+                - generic [ref=e6214]:
+                  - text: "Test batch plan for 2 beads: ## Bead 1: bd-35z **Title:** Prevent duplicate mail monitors **Status:** open **Description:** Fix to prevent duplicate mail monitors with file lock ## Bead 2: bd-test **Title:** Test bead for batch planning **Status:** open **Description:** Simple test bead to validate batch planning extraction --- Return ONLY a JSON array with plans for each bead:"
+                  - code [ref=e6216]: "json [ { \"bead_id\": \"bd-35z\", \"plan\": [{\"step\": 1, \"action\": \"Add file lock\", \"owner\": \"any\", \"evidence\": \"Lock file created\"}], \"risks\": [], \"acceptance_tests\": [\"Test no duplicate monitors\"], \"next_actions\": [{\"task\": \"Implement file lock\", \"assign_to\": \"any\", \"notes\": \"Add lock check before monitor start\"}] }, { \"bead_id\": \"bd-test\", \"plan\": [{\"step\": 1, \"action\": \"Run test\", \"owner\": \"any\", \"evidence\": \"Test passes\"}], \"risks\": [], \"acceptance_tests\": [\"Verify batch planning works\"], \"next_actions\": [{\"task\": \"Complete test\", \"assign_to\": \"any\", \"notes\": \"Validate extraction\"}] } ]"
+                - generic [ref=e6217]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e6218]:
+              - heading "ChatGPT said:" [level=6] [ref=e6219]
+              - generic [ref=e6221]:
+                - generic [ref=e6232]:
+                  - generic [ref=e6234]:
+                    - generic [ref=e6235]: JSON
+                    - generic [ref=e6236]:
+                      - button "Copy" [ref=e6237] [cursor=pointer]:
+                        - img [ref=e6238]
+                      - button "Edit" [ref=e6241] [cursor=pointer]:
+                        - img [ref=e6243]
+                  - textbox "Edit code" [ref=e6251]:
+                    - generic [ref=e6252]: "["
+                    - generic [ref=e6253]: "{"
+                    - generic [ref=e6254]: "\"bead_id\": \"bd-35z\","
+                    - generic [ref=e6255]: "\"plan\": ["
+                    - generic [ref=e6256]: "{"
+                    - generic [ref=e6257]: "\"step\": 1,"
+                    - generic [ref=e6258]: "\"action\": \"Add a file lock to prevent duplicate mail monitor instances from starting\","
+                    - generic [ref=e6259]: "\"owner\": \"any\","
+                    - generic [ref=e6260]: "\"evidence\": \"Lock file exists while monitor runs; second start attempt is blocked\""
+                    - generic [ref=e6261]: "},"
+                    - generic [ref=e6262]: "{"
+                    - generic [ref=e6263]: "\"step\": 2,"
+                    - generic [ref=e6264]: "\"action\": \"Implement stale-lock detection to allow recovery after crashes\","
+                    - generic [ref=e6265]: "\"owner\": \"any\","
+                    - generic [ref=e6266]: "\"evidence\": \"If lock PID is not running, lock is replaced and monitor starts\""
+                    - generic [ref=e6267]: "},"
+                    - generic [ref=e6268]: "{"
+                    - generic [ref=e6269]: "\"step\": 3,"
+                    - generic [ref=e6270]: "\"action\": \"Release the lock on shutdown and handle SIGINT/SIGTERM cleanup\","
+                    - generic [ref=e6271]: "\"owner\": \"any\","
+                    - generic [ref=e6272]: "\"evidence\": \"Lock file is removed when monitor exits normally\""
+                    - generic [ref=e6273]: "}"
+                    - generic [ref=e6274]: "],"
+                    - generic [ref=e6275]: "\"risks\": ["
+                    - generic [ref=e6276]: "{"
+                    - generic [ref=e6277]: "\"risk\": \"Stale lock file could block monitoring after an unclean exit\","
+                    - generic [ref=e6278]: "\"mitigation\": \"Store PID + timestamp in lock file and verify PID liveness before refusing to start\""
+                    - generic [ref=e6279]: "}"
+                    - generic [ref=e6280]: "],"
+                    - generic [ref=e6281]: "\"acceptance_tests\": ["
+                    - generic [ref=e6282]: "\"Start the monitor twice; verify the second instance exits with a clear 'already running' message\","
+                    - generic [ref=e6283]: "\"Kill the monitor uncleanly; verify restart detects stale lock and starts successfully\","
+                    - generic [ref=e6284]: "\"Stop the monitor normally; verify the lock file is removed\""
+                    - generic [ref=e6285]: "],"
+                    - generic [ref=e6286]: "\"next_actions\": ["
+                    - generic [ref=e6287]: "{"
+                - generic [ref=e6289]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e6290]:
+              - heading "You said:" [level=5] [ref=e6291]
+              - generic [ref=e6293]:
+                - generic [ref=e6298]:
+                  - text: "Test batch plan for 2 beads: ## Bead 1: bd-35z **Title:** Prevent duplicate mail monitors **Status:** open **Description:** Fix to prevent duplicate mail monitors with file lock ## Bead 2: bd-test **Title:** Test bead for batch planning **Status:** open **Description:** Simple test bead to validate batch planning extraction --- Return ONLY a JSON array with plans for each bead:"
+                  - code [ref=e6300]: "json [ { \"bead_id\": \"bd-35z\", \"plan\": [{\"step\": 1, \"action\": \"Add file lock\", \"owner\": \"any\", \"evidence\": \"Lock file created\"}], \"risks\": [], \"acceptance_tests\": [\"Test no duplicate monitors\"], \"next_actions\": [{\"task\": \"Implement file lock\", \"assign_to\": \"any\", \"notes\": \"Add lock check before monitor start\"}] }, { \"bead_id\": \"bd-test\", \"plan\": [{\"step\": 1, \"action\": \"Run test\", \"owner\": \"any\", \"evidence\": \"Test passes\"}], \"risks\": [], \"acceptance_tests\": [\"Verify batch planning works\"], \"next_actions\": [{\"task\": \"Complete test\", \"assign_to\": \"any\", \"notes\": \"Validate extraction\"}] } ]"
+                - generic [ref=e6301]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e6302]:
+              - heading "ChatGPT said:" [level=6] [ref=e6303]
+              - generic [ref=e6305]:
+                - generic [ref=e6316]:
+                  - generic [ref=e6318]:
+                    - generic [ref=e6319]: JSON
+                    - generic [ref=e6320]:
+                      - button "Copy" [ref=e6321] [cursor=pointer]:
+                        - img [ref=e6322]
+                      - button "Edit" [ref=e6325] [cursor=pointer]:
+                        - img [ref=e6327]
+                  - textbox "Edit code" [ref=e6335]:
+                    - generic [ref=e6336]: "["
+                    - generic [ref=e6337]: "{"
+                    - generic [ref=e6338]: "\"bead_id\": \"bd-35z\","
+                    - generic [ref=e6339]: "\"plan\": ["
+                    - generic [ref=e6340]: "{"
+                    - generic [ref=e6341]: "\"step\": 1,"
+                    - generic [ref=e6342]: "\"action\": \"Add a file lock to prevent duplicate mail monitor instances from starting\","
+                    - generic [ref=e6343]: "\"owner\": \"any\","
+                    - generic [ref=e6344]: "\"evidence\": \"Lock file is created before monitoring begins and blocks a second startup\""
+                    - generic [ref=e6345]: "},"
+                    - generic [ref=e6346]: "{"
+                    - generic [ref=e6347]: "\"step\": 2,"
+                    - generic [ref=e6348]: "\"action\": \"Implement stale-lock detection and recovery for crash scenarios\","
+                    - generic [ref=e6349]: "\"owner\": \"any\","
+                    - generic [ref=e6350]: "\"evidence\": \"If the PID in the lock file is not running, the lock is treated as stale and replaced\""
+                    - generic [ref=e6351]: "},"
+                    - generic [ref=e6352]: "{"
+                    - generic [ref=e6353]: "\"step\": 3,"
+                    - generic [ref=e6354]: "\"action\": \"Release the lock on graceful shutdown and handle SIGINT/SIGTERM cleanup\","
+                    - generic [ref=e6355]: "\"owner\": \"any\","
+                    - generic [ref=e6356]: "\"evidence\": \"Lock file is removed when the monitor exits normally\""
+                    - generic [ref=e6357]: "}"
+                    - generic [ref=e6358]: "],"
+                    - generic [ref=e6359]: "\"risks\": ["
+                    - generic [ref=e6360]: "{"
+                    - generic [ref=e6361]: "\"risk\": \"A stale lock file could block monitoring after an unclean exit\","
+                    - generic [ref=e6362]: "\"mitigation\": \"Write PID + timestamp into lock file and verify PID liveness before refusing startup\""
+                    - generic [ref=e6363]: "}"
+                    - generic [ref=e6364]: "],"
+                    - generic [ref=e6365]: "\"acceptance_tests\": ["
+                    - generic [ref=e6366]: "\"Start the mail monitor twice; verify the second instance exits with a clear 'already running' message\","
+                    - generic [ref=e6367]: "\"Kill the monitor uncleanly; verify restart detects stale lock and starts successfully\","
+                    - generic [ref=e6368]: "\"Stop the monitor normally; verify the lock file is removed\""
+                    - generic [ref=e6369]: "],"
+                    - generic [ref=e6370]: "\"next_actions\": ["
+                    - generic [ref=e6371]: "{"
+                - generic [ref=e6373]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e6374]:
+              - heading "You said:" [level=5] [ref=e6375]
+              - generic [ref=e6377]:
+                - generic [ref=e6382]: "I need implementation plans for 2 beads. For EACH bead, provide: 1. **plan** - Array of step objects: { step: number, action: string, owner: string, evidence: string } 2. **risks** - Array of risk objects: { risk: string, mitigation: string } 3. **acceptance_tests** - Array of test descriptions (strings) 4. **next_actions** - Array of next_action objects with pool-based assignment: { \"task\": \"string\", \"assign_to\": \"any\", // Use \"any\" for pool-based assignment \"priority\": \"P0|P1|P2|P3\", \"blocking\": boolean, \"notes\": \"Step-by-step copy/paste-ready instructions\", \"requirements\": [\"prereq1\", \"prereq2\"], \"acceptance\": [\"test command + expected output\"] } Return as valid JSON array where each element corresponds to a bead in order: [ { \"bead_id\": \"bd-s18\", \"plan\": [...], \"risks\": [...], \"acceptance_tests\": [...], \"next_actions\": [...] }, // ... one object per bead ] ## Bead 1: bd-s18 **Title:** No title **Status:** unknown **Description:** No description **Dependencies:** none --- ## Bead 2: bd-25o **Title:** No title **Status:** unknown **Description:** No description **Dependencies:** none Return ONLY the JSON array, no commentary."
+                - generic [ref=e6383]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e6384]:
+              - heading "ChatGPT said:" [level=6] [ref=e6385]
+              - generic [ref=e6387]:
+                - generic [ref=e6398]:
+                  - generic [ref=e6400]:
+                    - generic [ref=e6401]: JSON
+                    - generic [ref=e6402]:
+                      - button "Copy" [ref=e6403] [cursor=pointer]:
+                        - img [ref=e6404]
+                      - button "Edit" [ref=e6407] [cursor=pointer]:
+                        - img [ref=e6409]
+                  - textbox "Edit code" [ref=e6417]:
+                    - generic [ref=e6418]: "["
+                    - generic [ref=e6419]: "{"
+                    - generic [ref=e6420]: "\"bead_id\": \"bd-s18\","
+                    - generic [ref=e6421]: "\"plan\": ["
+                    - generic [ref=e6422]: "{"
+                    - generic [ref=e6423]: "\"step\": 1,"
+                    - generic [ref=e6424]: "\"action\": \"Open the bead record and determine the concrete objective, target files, and current failure/need (the bead is missing title/description)\","
+                    - generic [ref=e6425]: "\"owner\": \"any\","
+                    - generic [ref=e6426]: "\"evidence\": \"Bead is updated with a clear title, description, scope, and definition of done\""
+                    - generic [ref=e6427]: "},"
+                    - generic [ref=e6428]: "{"
+                    - generic [ref=e6429]: "\"step\": 2,"
+                    - generic [ref=e6430]: "\"action\": \"Locate the relevant code path(s) and reproduce the problem (or confirm the requested change) in a controlled way\","
+                    - generic [ref=e6431]: "\"owner\": \"any\","
+                    - generic [ref=e6432]: "\"evidence\": \"Repro steps documented and baseline behavior captured (logs/test output)\""
+                    - generic [ref=e6433]: "},"
+                    - generic [ref=e6434]: "{"
+                    - generic [ref=e6435]: "\"step\": 3,"
+                    - generic [ref=e6436]: "\"action\": \"Design the minimal fix/change and identify acceptance criteria and tests that prove it\","
+                    - generic [ref=e6437]: "\"owner\": \"any\","
+                    - generic [ref=e6438]: "\"evidence\": \"Proposed fix plan + acceptance tests written in the bead\""
+                    - generic [ref=e6439]: "},"
+                    - generic [ref=e6440]: "{"
+                    - generic [ref=e6441]: "\"step\": 4,"
+                    - generic [ref=e6442]: "\"action\": \"Implement the change with smallest safe diff and add/adjust tests as needed\","
+                    - generic [ref=e6443]: "\"owner\": \"any\","
+                    - generic [ref=e6444]: "\"evidence\": \"Code changes committed and tests updated/added\""
+                    - generic [ref=e6445]: "},"
+                    - generic [ref=e6446]: "{"
+                    - generic [ref=e6447]: "\"step\": 5,"
+                    - generic [ref=e6448]: "\"action\": \"Run test suite / targeted checks and capture evidence for bead closure\","
+                    - generic [ref=e6449]: "\"owner\": \"any\","
+                    - generic [ref=e6450]: "\"evidence\": \"Test commands executed successfully with outputs logged in bead\""
+                    - generic [ref=e6451]: "}"
+                    - generic [ref=e6452]: "],"
+                    - generic [ref=e6453]: "\"risks\": ["
+                - generic [ref=e6455]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e6456]:
+              - heading "You said:" [level=5] [ref=e6457]
+              - generic [ref=e6459]:
+                - generic [ref=e6464]: "I need implementation plans for 2 beads. For EACH bead, provide: 1. **plan** - Array of step objects: { step: number, action: string, owner: string, evidence: string } 2. **risks** - Array of risk objects: { risk: string, mitigation: string } 3. **acceptance_tests** - Array of test descriptions (strings) 4. **next_actions** - Array of next_action objects with pool-based assignment: { \"task\": \"string\", \"assign_to\": \"any\", // Use \"any\" for pool-based assignment \"priority\": \"P0|P1|P2|P3\", \"blocking\": boolean, \"notes\": \"Step-by-step copy/paste-ready instructions\", \"requirements\": [\"prereq1\", \"prereq2\"], \"acceptance\": [\"test command + expected output\"] } Return as valid JSON array where each element corresponds to a bead in order: [ { \"bead_id\": \"bd-s18\", \"plan\": [...], \"risks\": [...], \"acceptance_tests\": [...], \"next_actions\": [...] }, // ... one object per bead ] ## Bead 1: bd-s18 **Title:** No title **Status:** unknown **Description:** No description **Dependencies:** none --- ## Bead 2: bd-25o **Title:** No title **Status:** unknown **Description:** No description **Dependencies:** none Return ONLY the JSON array, no commentary."
+                - generic [ref=e6465]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e6466]:
+              - heading "ChatGPT said:" [level=6] [ref=e6467]
+              - generic [ref=e6469]:
+                - generic [ref=e6480]:
+                  - generic [ref=e6482]:
+                    - generic [ref=e6483]: JSON
+                    - generic [ref=e6484]:
+                      - button "Copy" [ref=e6485] [cursor=pointer]:
+                        - img [ref=e6486]
+                      - button "Edit" [ref=e6489] [cursor=pointer]:
+                        - img [ref=e6491]
+                  - textbox "Edit code" [ref=e6499]:
+                    - generic [ref=e6500]: "["
+                    - generic [ref=e6501]: "{"
+                    - generic [ref=e6502]: "\"bead_id\": \"bd-s18\","
+                    - generic [ref=e6503]: "\"plan\": ["
+                    - generic [ref=e6504]: "{"
+                    - generic [ref=e6505]: "\"step\": 1,"
+                    - generic [ref=e6506]: "\"action\": \"Collect missing bead context (title/description/expected outcome) from bead source of truth and annotate bd-s18 with scope + definition of done\","
+                    - generic [ref=e6507]: "\"owner\": \"any\","
+                    - generic [ref=e6508]: "\"evidence\": \"bd-s18 is updated with a clear title, description, scope, and definition of done\""
+                    - generic [ref=e6509]: "},"
+                    - generic [ref=e6510]: "{"
+                    - generic [ref=e6511]: "\"step\": 2,"
+                    - generic [ref=e6512]: "\"action\": \"Identify the target module/files and reproduce the issue (or confirm current behavior) based on the clarified scope\","
+                    - generic [ref=e6513]: "\"owner\": \"any\","
+                    - generic [ref=e6514]: "\"evidence\": \"Baseline reproduction/verification steps and outputs are captured and attached to bd-s18\""
+                    - generic [ref=e6515]: "},"
+                    - generic [ref=e6516]: "{"
+                    - generic [ref=e6517]: "\"step\": 3,"
+                    - generic [ref=e6518]: "\"action\": \"Implement the minimal change that satisfies the definition of done and add targeted tests or a deterministic verification script\","
+                    - generic [ref=e6519]: "\"owner\": \"any\","
+                    - generic [ref=e6520]: "\"evidence\": \"Code changes are committed and tests/verification steps exist and pass locally\""
+                    - generic [ref=e6521]: "},"
+                    - generic [ref=e6522]: "{"
+                    - generic [ref=e6523]: "\"step\": 4,"
+                    - generic [ref=e6524]: "\"action\": \"Run acceptance checks, capture evidence, and prepare bead for closure\","
+                    - generic [ref=e6525]: "\"owner\": \"any\","
+                    - generic [ref=e6526]: "\"evidence\": \"Acceptance tests pass and command outputs/logs are recorded in bd-s18\""
+                    - generic [ref=e6527]: "}"
+                    - generic [ref=e6528]: "],"
+                    - generic [ref=e6529]: "\"risks\": ["
+                    - generic [ref=e6530]: "{"
+                    - generic [ref=e6531]: "\"risk\": \"Bead is underspecified (no title/description), leading to incorrect work or wasted effort\","
+                    - generic [ref=e6532]: "\"mitigation\": \"Treat clarification as a blocking P0 step and do not implement code until definition of done is written\""
+                    - generic [ref=e6533]: "},"
+                    - generic [ref=e6534]: "{"
+                    - generic [ref=e6535]: "\"risk\": \"Agent selects wrong subsystem due to missing pointers (paths, triggers, errors)\","
+                - generic [ref=e6537]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e6538]:
+              - heading "You said:" [level=5] [ref=e6539]
+              - generic [ref=e6541]:
+                - generic [ref=e6546]: "We're simplifying the extraction logic: **Current (complex):** - Wait for text stability (9 seconds of no changes) - Try to extract JSON with regex/bracket matching - Parse and validate JSON - Return parsed result **New plan (simple):** - Wait for \"Stop generating\" button to disappear - Wait 2-3 seconds for DOM to settle - Extract ALL text from last assistant message - Return raw text (no parsing) - Let the Claude agent read and parse it This avoids: - Arbitrary stability timeouts - Brittle JSON extraction logic - Data loss from extraction bugs The Claude agent can then intelligently parse the response with full context. Thoughts on this approach?"
+                - generic [ref=e6547]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e6548]:
+              - heading "ChatGPT said:" [level=6] [ref=e6549]
+              - generic [ref=e6551]:
+                - generic [ref=e6555]:
+                  - paragraph [ref=e6556]:
+                    - text: Your “simple plan” is directionally right for
+                    - strong [ref=e6557]: robustness
+                    - text: ", but it trades away the one thing that makes the Bridge reliable at scale:"
+                    - strong [ref=e6558]: machine-checkable outputs
+                    - text: .
+                  - paragraph [ref=e6559]: "Here’s the clean way to think about it:"
+                  - heading "When your “raw text” approach is the right call" [level=2] [ref=e6560]
+                  - paragraph [ref=e6561]: "Do it if:"
+                  - list [ref=e6562]:
+                    - listitem [ref=e6563]:
+                      - paragraph [ref=e6564]:
+                        - text: You’re still in
+                        - strong [ref=e6565]: bring-up / debugging
+                    - listitem [ref=e6566]:
+                      - paragraph [ref=e6567]:
+                        - text: You expect
+                        - strong [ref=e6568]: format drift
+                        - text: and want maximum observability
+                    - listitem [ref=e6569]:
+                      - paragraph [ref=e6570]: You want to diagnose UI quirks (missing contenteditable, partial replies, etc.)
+                    - listitem [ref=e6571]:
+                      - paragraph [ref=e6572]: You’re okay with occasional human/agent judgment calls
+                  - paragraph [ref=e6573]: In that phase, returning raw text is excellent because you stop losing data to your own extractor.
+                  - heading "Where it will bite you" [level=2] [ref=e6574]
+                  - paragraph [ref=e6575]: "Once you’re running unattended:"
+                  - list [ref=e6576]:
+                    - listitem [ref=e6577]:
+                      - paragraph [ref=e6578]:
+                        - text: You’ve reintroduced
+                        - strong [ref=e6579]: context burn
+                        - text: ", just downstream (Claude agent now has to ingest big text blobs)."
+                    - listitem [ref=e6580]:
+                      - paragraph [ref=e6581]:
+                        - text: You lose the ability to do
+                        - strong [ref=e6582]: fast deterministic gating
+                        - text: (“is this valid JSON?”).
+                    - listitem [ref=e6583]:
+                      - paragraph [ref=e6584]:
+                        - text: You’ll see
+                        - strong [ref=e6585]: non-deterministic parsing
+                        - text: differences between agents (especially pool-based).
+                    - listitem [ref=e6586]:
+                      - paragraph [ref=e6587]: Retries become fuzzy (“did it fail because parsing or because the model answered wrong?”).
+                  - paragraph [ref=e6588]: So it’s robust, but less “systems-y.”
+                  - separator [ref=e6589]
+                  - 'heading "Best compromise: Raw-first, structured-second" [level=1] [ref=e6590]':
+                    - text: "Best compromise:"
+                    - emphasis [ref=e6591]: Raw-first, structured-second
+                  - paragraph [ref=e6592]:
+                    - text: You can keep the simplicity and still preserve determinism by making the helper return
+                    - strong [ref=e6593]: both
+                    - text: ", cheaply:"
+                  - heading "Helper returns:" [level=3] [ref=e6594]
+                  - list [ref=e6595]:
+                    - listitem [ref=e6596]:
+                      - paragraph [ref=e6597]:
+                        - code [ref=e6598]: raw_text
+                        - text: (always)
+                    - listitem [ref=e6599]:
+                      - paragraph [ref=e6600]:
+                        - code [ref=e6601]: extracted_json
+                        - text: (best-effort, optional)
+                    - listitem [ref=e6602]:
+                      - paragraph [ref=e6603]:
+                        - code [ref=e6604]: parse_ok
+                        - text: boolean
+                    - listitem [ref=e6605]:
+                      - paragraph [ref=e6606]:
+                        - code [ref=e6607]: errors
+                        - text: if parse failed
+                  - paragraph [ref=e6608]: "Example:"
+                  - generic [ref=e6615]:
+                    - generic [ref=e6617]:
+                      - generic [ref=e6618]: JSON
+                      - generic [ref=e6619]:
+                        - button "Copy" [ref=e6620] [cursor=pointer]:
+                          - img [ref=e6621]
+                        - button "Edit" [ref=e6624] [cursor=pointer]:
+                          - img [ref=e6626]
+                    - textbox "Edit code" [ref=e6633]:
+                      - generic [ref=e6634]: "{"
+                      - generic [ref=e6635]: "\"ok\": true,"
+                      - generic [ref=e6636]: "\"raw_text\": \"```json\\n[ ... ]\\n```\","
+                      - generic [ref=e6637]: "\"parse_ok\": false,"
+                      - generic [ref=e6638]: "\"extracted_json\": null,"
+                      - generic [ref=e6639]: "\"error\": \"NO_PARSEABLE_JSON_BLOCK\""
+                      - generic [ref=e6640]: "}"
+                  - paragraph [ref=e6641]: "Then:"
+                  - list [ref=e6642]:
+                    - listitem [ref=e6643]:
+                      - paragraph [ref=e6644]:
+                        - text: If
+                        - code [ref=e6645]: parse_ok=true
+                        - text: ", Bridge can route automatically."
+                    - listitem [ref=e6646]:
+                      - paragraph [ref=e6647]:
+                        - text: If
+                        - code [ref=e6648]: parse_ok=false
+                        - text: ", Bridge hands"
+                        - code [ref=e6649]: raw_text
+                        - text: to Claude to salvage.
+                  - paragraph [ref=e6650]: This is the classic “happy path is deterministic, fallback is intelligent.”
+                  - paragraph [ref=e6651]: "You also avoid arbitrary “9 seconds stable” because you still only need:"
+                  - list [ref=e6652]:
+                    - listitem [ref=e6653]:
+                      - paragraph [ref=e6654]: stop button gone
+                    - listitem [ref=e6655]:
+                      - paragraph [ref=e6656]: small settle sleep
+                  - separator [ref=e6657]
+                  - 'heading "Your wait logic: good, but add 2 tiny guards" [level=1] [ref=e6658]'
+                  - paragraph [ref=e6659]: "Even with raw text:"
+                  - list [ref=e6660]:
+                    - listitem [ref=e6661]:
+                      - paragraph [ref=e6662]:
+                        - strong [ref=e6663]: Wait for a new assistant message
+                        - text: after send (baseline count).
+                    - listitem [ref=e6664]:
+                      - paragraph [ref=e6665]:
+                        - strong [ref=e6666]: Stop button best-effort
+                        - text: is fine, but don’t hard fail if selector changes.
+                  - paragraph [ref=e6667]: You don’t need stability polling if you wait for “stop gone” + short settle.
+                  - separator [ref=e6668]
+                  - heading "Practical recommendation" [level=1] [ref=e6669]
+                  - 'heading "For right now (testing): ✅ adopt your simple plan" [level=3] [ref=e6670]'
+                  - paragraph [ref=e6671]: Return raw text. Let Claude parse. You’ll validate end-to-end without fighting extract bugs.
+                  - 'heading "For production: add the “best-effort parse” field" [level=3] [ref=e6672]'
+                  - paragraph [ref=e6673]: "So you keep:"
+                  - list [ref=e6674]:
+                    - listitem [ref=e6675]:
+                      - paragraph [ref=e6676]: robustness (never lose data)
+                    - listitem [ref=e6677]:
+                      - paragraph [ref=e6678]: determinism (when compliant)
+                    - listitem [ref=e6679]:
+                      - paragraph [ref=e6680]: minimal additional complexity
+                  - separator [ref=e6681]
+                  - heading "One more key point" [level=2] [ref=e6682]
+                  - paragraph [ref=e6683]:
+                    - text: If you push parsing to Claude, you should
+                    - strong [ref=e6684]: standardize a parsing instruction
+                    - text: "so any pool agent does it the same way, e.g.:"
+                  - list [ref=e6685]:
+                    - listitem [ref=e6686]:
+                      - paragraph [ref=e6687]:
+                        - text: "“Extract the last ```json block; if none, bracket-match the largest JSON-looking span; reject if contains"
+                        - code [ref=e6688]: ...
+                        - text: .”
+                  - paragraph [ref=e6689]: Otherwise your pool agents will parse differently.
+                  - separator [ref=e6690]
+                  - paragraph [ref=e6691]:
+                    - strong [ref=e6692]: "Bottom line:"
+                    - text: Your simplified approach is a great
+                    - emphasis [ref=e6693]: stabilization step
+                    - text: ", but don’t permanently give up deterministic parsing. Return raw always, parse optionally, and only escalate to Claude when needed."
+                - generic [ref=e6694]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e6695]:
+              - heading "You said:" [level=5] [ref=e6696]
+              - generic [ref=e6698]:
+                - generic [ref=e6703]: "I need implementation plans for 2 beads. For EACH bead, provide: 1. **plan** - Array of step objects: { step: number, action: string, owner: string, evidence: string } 2. **risks** - Array of risk objects: { risk: string, mitigation: string } 3. **acceptance_tests** - Array of test descriptions (strings) 4. **next_actions** - Array of next_action objects with pool-based assignment: { \"task\": \"string\", \"assign_to\": \"any\", // Use \"any\" for pool-based assignment \"priority\": \"P0|P1|P2|P3\", \"blocking\": boolean, \"notes\": \"Step-by-step copy/paste-ready instructions\", \"requirements\": [\"prereq1\", \"prereq2\"], \"acceptance\": [\"test command + expected output\"] } Return as valid JSON array where each element corresponds to a bead in order: [ { \"bead_id\": \"bd-s18\", \"plan\": [...], \"risks\": [...], \"acceptance_tests\": [...], \"next_actions\": [...] }, // ... one object per bead ] ## Bead 1: bd-s18 **Title:** No title **Status:** unknown **Description:** No description **Dependencies:** none --- ## Bead 2: bd-25o **Title:** No title **Status:** unknown **Description:** No description **Dependencies:** none Return ONLY the JSON array, no commentary."
+                - generic [ref=e6704]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e6705]:
+              - heading "ChatGPT said:" [level=6] [ref=e6706]
+              - generic [ref=e6708]:
+                - generic [ref=e6719]:
+                  - generic [ref=e6721]:
+                    - generic [ref=e6722]: JSON
+                    - generic [ref=e6723]:
+                      - button "Copy" [ref=e6724] [cursor=pointer]:
+                        - img [ref=e6725]
+                      - button "Edit" [ref=e6728] [cursor=pointer]:
+                        - img [ref=e6730]
+                  - textbox "Edit code" [ref=e6738]:
+                    - generic [ref=e6739]: "["
+                    - generic [ref=e6740]: "{"
+                    - generic [ref=e6741]: "\"bead_id\": \"bd-s18\","
+                    - generic [ref=e6742]: "\"plan\": ["
+                    - generic [ref=e6743]: "{"
+                    - generic [ref=e6744]: "\"step\": 1,"
+                    - generic [ref=e6745]: "\"action\": \"Identify what bd-s18 is supposed to accomplish by locating its origin (mail trigger, coordinator note, CI failure, or recent commit) and update the bead with a concrete title, scope, and definition of done\","
+                    - generic [ref=e6746]: "\"owner\": \"any\","
+                    - generic [ref=e6747]: "\"evidence\": \"bd-s18 has a specific title, description, scope, and definition of done recorded in the bead system\""
+                    - generic [ref=e6748]: "},"
+                    - generic [ref=e6749]: "{"
+                    - generic [ref=e6750]: "\"step\": 2,"
+                    - generic [ref=e6751]: "\"action\": \"Determine target repo area and reproduce/verify the current behavior against the desired behavior\","
+                    - generic [ref=e6752]: "\"owner\": \"any\","
+                    - generic [ref=e6753]: "\"evidence\": \"Baseline commands and outputs are captured (logs/tests) and attached to bd-s18\""
+                    - generic [ref=e6754]: "},"
+                    - generic [ref=e6755]: "{"
+                    - generic [ref=e6756]: "\"step\": 3,"
+                    - generic [ref=e6757]: "\"action\": \"Implement the minimal fix/change required by the definition of done and add a targeted test or deterministic verification script\","
+                    - generic [ref=e6758]: "\"owner\": \"any\","
+                    - generic [ref=e6759]: "\"evidence\": \"Code changes committed; targeted tests or verification script exists and passes\""
+                    - generic [ref=e6760]: "},"
+                    - generic [ref=e6761]: "{"
+                    - generic [ref=e6762]: "\"step\": 4,"
+                    - generic [ref=e6763]: "\"action\": \"Run acceptance checks, capture evidence, and mark the bead ready for closure\","
+                    - generic [ref=e6764]: "\"owner\": \"any\","
+                    - generic [ref=e6765]: "\"evidence\": \"Acceptance tests pass with command outputs recorded in bd-s18\""
+                    - generic [ref=e6766]: "}"
+                    - generic [ref=e6767]: "],"
+                    - generic [ref=e6768]: "\"risks\": ["
+                    - generic [ref=e6769]: "{"
+                    - generic [ref=e6770]: "\"risk\": \"Bead is underspecified (no title/description), causing incorrect assumptions and rework\","
+                    - generic [ref=e6771]: "\"mitigation\": \"Make clarification and definition-of-done a blocking P0 step before any implementation begins\""
+                    - generic [ref=e6772]: "},"
+                    - generic [ref=e6773]: "{"
+                    - generic [ref=e6774]: "\"risk\": \"Wrong subsystem/files are modified due to missing pointers\","
+                - generic [ref=e6776]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e6777]:
+              - heading "You said:" [level=5] [ref=e6778]
+              - generic [ref=e6780]:
+                - generic [ref=e6785]: "I need implementation plans for 2 beads. For EACH bead, provide: 1. **plan** - Array of step objects: { step: number, action: string, owner: string, evidence: string } 2. **risks** - Array of risk objects: { risk: string, mitigation: string } 3. **acceptance_tests** - Array of test descriptions (strings) 4. **next_actions** - Array of next_action objects with pool-based assignment: { \"task\": \"string\", \"assign_to\": \"any\", // Use \"any\" for pool-based assignment \"priority\": \"P0|P1|P2|P3\", \"blocking\": boolean, \"notes\": \"Step-by-step copy/paste-ready instructions\", \"requirements\": [\"prereq1\", \"prereq2\"], \"acceptance\": [\"test command + expected output\"] } Return as valid JSON array where each element corresponds to a bead in order: [ { \"bead_id\": \"bd-s18\", \"plan\": [...], \"risks\": [...], \"acceptance_tests\": [...], \"next_actions\": [...] }, // ... one object per bead ] ## Bead 1: bd-s18 **Title:** No title **Status:** unknown **Description:** No description **Dependencies:** none --- ## Bead 2: bd-25o **Title:** No title **Status:** unknown **Description:** No description **Dependencies:** none Return ONLY the JSON array, no commentary."
+                - generic [ref=e6786]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e6787]:
+              - heading "ChatGPT said:" [level=6] [ref=e6788]
+          - generic [ref=e107]:
+            - generic [ref=e110]:
+              - generic [ref=e114]:
+                - paragraph [ref=e118]: Ask anything
+                - button "Add files and more" [ref=e121] [cursor=pointer]:
+                  - img
+                - generic [ref=e123]:
+                  - button "Dictate button" [ref=e125] [cursor=pointer]:
+                    - img
+                  - button "Start Voice" [ref=e6800] [cursor=pointer]:
+                    - img [ref=e6801]
+              - button [ref=e130]
+              - button [ref=e131]
+            - generic [ref=e135]: ChatGPT can make mistakes. Check important info.

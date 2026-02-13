@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "flywheel.chatgpt.v1/envelope.schema.json",
+  "title": "Flywheel ChatGPT Protocol Envelope (v1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "proto",
+    "bead_id",
+    "msg_type",
+    "sender",
+    "ts",
+    "context",
+    "inputs",
+    "requested_output"
+  ],
+  "properties": {
+    "proto": { "$ref": "common.schema.json#/$defs/proto" },
+    "bead_id": { "$ref": "common.schema.json#/$defs/bead_id" },
+    "msg_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sender": { "type": "string", "minLength": 1 },
+    "ts": { "$ref": "common.schema.json#/$defs/iso_datetime" },
+
+    "idempotency_key": { "type": "string", "minLength": 8 },
+
+    "context": { "$ref": "common.schema.json#/$defs/context" },
+
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifacts", "questions"],
+      "properties": {
+        "artifacts": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/artifact" },
+          "default": []
+        },
+        "questions": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "default": []
+        },
+        "options": {
+          "type": "array",
+          "items": { "type": "object" },
+          "default": []
+        }
+      }
+    },
+
+    "requested_output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "fields"],
+      "properties": {
+        "format": { "type": "string", "const": "json" },
+        "fields": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1
+        },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

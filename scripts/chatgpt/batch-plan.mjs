@@ -76,31 +76,39 @@ ${b.description || b.body || "No description"}
 `;
   }).join("\n---\n");
 
-  return `I need implementation plans for ${beads.length} beads. For EACH bead, provide:
+  return `I need implementation plans for ${beads.length} beads. For EACH bead, provide a plan following this exact format:
 
-1. **plan** - Array of step objects: { step: number, action: string, owner: string, evidence: string }
-2. **risks** - Array of risk objects: { risk: string, mitigation: string }
-3. **acceptance_tests** - Array of test descriptions (strings)
-4. **next_actions** - Array of next_action objects with pool-based assignment:
-   {
-     "task": "string",
-     "assign_to": "any",  // Use "any" for pool-based assignment
-     "priority": "P0|P1|P2|P3",
-     "blocking": boolean,
-     "notes": "Step-by-step copy/paste-ready instructions",
-     "requirements": ["prereq1", "prereq2"],
-     "acceptance": ["test command + expected output"]
-   }
+{
+  "id": "bd-XXXX",
+  "code": "pXa-01",
+  "title": "Short action-oriented title",
+  "priority": "P0|P1|P2|P3",
+  "depends_on": ["bd-YYYY"],
+
+  "how_to_think": "One focused paragraph explaining the intent of this bead, what must be preserved (idempotency, transaction boundaries, additive changes), and when to stop/escalate. CRITICAL: This helps pool-based agents understand the mindset needed - are they debugging? refactoring? exploring? building new features?",
+
+  "acceptance_criteria": [
+    "Clear measurable outcome",
+    "Another measurable outcome"
+  ],
+
+  "files_to_create": ["path/to/new-file.ts"],
+  "files_to_modify": ["path/to/existing-file.ts"],
+
+  "verification": [
+    "Docker-first or concrete command to run",
+    "What must be true afterward (expected output, state, test results)"
+  ]
+}
 
 Return as valid JSON array where each element corresponds to a bead in order:
 
 [
   {
-    "bead_id": "${beads[0]?.id}",
-    "plan": [...],
-    "risks": [...],
-    "acceptance_tests": [...],
-    "next_actions": [...]
+    "id": "${beads[0]?.id}",
+    "code": "...",
+    "title": "...",
+    ...
   },
   // ... one object per bead
 ]

@@ -1,0 +1,31 @@
+{
+  "proto": "flywheel.chatgpt.v1",
+  "bead_id": "bd-test",
+  "msg_type": "RFP_PLAN",
+  "sender": "OrangeLantern",
+  "ts": "2026-02-12T16:57:38.460Z",
+  "context": {
+    "repo": "AgentCore",
+    "branch": "feature/agent-flywheel-protocol",
+    "goal": "Test the packet build and validation tooling",
+    "constraints": [
+      "json-only responses",
+      "pool-based assignment"
+    ]
+  },
+  "inputs": {
+    "artifacts": [],
+    "questions": [
+      "Test question: Does the tooling work?"
+    ]
+  },
+  "requested_output": {
+    "format": "json",
+    "fields": [
+      "plan",
+      "risks",
+      "acceptance_tests",
+      "next_actions"
+    ]
+  }
+}

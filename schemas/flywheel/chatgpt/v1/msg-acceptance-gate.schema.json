@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "flywheel.chatgpt.v1/msg-acceptance-gate.schema.json",
+  "title": "ACCEPTANCE_GATE (v1)",
+  "allOf": [
+    { "$ref": "envelope.schema.json" },
+    {
+      "type": "object",
+      "properties": {
+        "msg_type": { "const": "ACCEPTANCE_GATE" }
+      }
+    }
+  ]
+}

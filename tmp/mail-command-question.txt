@@ -1,0 +1,9 @@
+Which approach is best for fixing bridge-agent-loop.sh mail commands?
+
+**Context:** bridge script uses `br mail read/send/archive` which don't exist.
+
+**Option A - Direct MCP calls:** Duplicate fetch_inbox/send_message logic from agent-mail-helper.sh into bridge
+**Option B - Parse helper output:** Call `./scripts/agent-mail-helper.sh inbox` and parse with jq
+**Option C - Extend helper:** Add `fetch-json --subject "X"` command to agent-mail-helper.sh
+
+Which is cleanest for production?

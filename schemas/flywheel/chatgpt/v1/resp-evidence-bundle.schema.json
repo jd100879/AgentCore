@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "flywheel.chatgpt.v1/resp-evidence-bundle.schema.json",
+  "title": "EVIDENCE_BUNDLE_RESPONSE (v1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["proto", "bead_id", "msg_type", "verdict", "findings", "missing", "next_actions"],
+  "properties": {
+    "proto": { "$ref": "common.schema.json#/$defs/proto" },
+    "bead_id": { "$ref": "common.schema.json#/$defs/bead_id" },
+    "msg_type": { "const": "EVIDENCE_BUNDLE_RESPONSE" },
+    "verdict": { "$ref": "common.schema.json#/$defs/verdict" },
+
+    "findings": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": []
+    },
+    "missing": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": []
+    },
+    "next_actions": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/next_action" },
+      "default": []
+    },
+
+    "notes": { "type": "string" }
+  }
+}

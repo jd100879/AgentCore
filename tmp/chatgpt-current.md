@@ -1,0 +1,6453 @@
+- generic [ref=e1]:
+  - link "Skip to content" [ref=e3] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e6]:
+    - generic [ref=e8]:
+      - generic:
+        - generic:
+          - generic:
+            - button "Open sidebar":
+              - img
+        - generic:
+          - generic:
+            - link:
+              - /url: /
+              - generic:
+                - img
+          - generic:
+            - generic:
+              - generic:
+                - img
+          - generic:
+            - link:
+              - /url: /images
+              - generic:
+                - img
+        - generic:
+          - generic:
+            - button "Open profile menu":
+              - generic:
+                - generic:
+                  - img "Profile image"
+      - generic [ref=e9]:
+        - heading "Chat history" [level=2] [ref=e10]
+        - navigation "Chat history" [ref=e11]:
+          - generic [ref=e14]:
+            - link "Home" [ref=e15] [cursor=pointer]:
+              - /url: /
+              - img [ref=e16]
+            - button "Close sidebar" [expanded] [ref=e19]:
+              - img [ref=e20]
+          - complementary [ref=e22]:
+            - link "New chat Shift Command O" [ref=e23] [cursor=pointer]:
+              - /url: /
+              - generic [ref=e24]:
+                - img [ref=e26]
+                - generic [ref=e29]: New chat
+              - generic [ref=e31]:
+                - generic "Shift" [ref=e32]:
+                  - generic [ref=e33]: ⇧
+                - generic "Command" [ref=e34]:
+                  - generic [ref=e35]: ⌘
+                - generic [ref=e37]: O
+            - generic [ref=e38] [cursor=pointer]:
+              - generic [ref=e39]:
+                - img [ref=e41]
+                - generic [ref=e44]: Search chats
+              - generic [ref=e46]:
+                - generic "Command" [ref=e47]:
+                  - generic [ref=e48]: ⌘
+                - generic [ref=e50]: K
+            - link "Images" [ref=e51] [cursor=pointer]:
+              - /url: /images
+              - img [ref=e53]
+              - generic [ref=e56]: Images
+          - generic [ref=e57]:
+            - link "Apps" [ref=e58] [cursor=pointer]:
+              - /url: /apps
+              - img [ref=e60]
+              - generic [ref=e63]: Apps
+            - link "Deep research" [ref=e137] [cursor=pointer]:
+              - /url: /deep-research
+              - img [ref=e139]
+              - generic [ref=e142]: Deep research
+            - link "Codex" [ref=e64] [cursor=pointer]:
+              - /url: /codex
+              - generic [ref=e65]:
+                - img [ref=e67]
+                - generic [ref=e70]: Codex
+              - img [ref=e72]
+          - generic [ref=e143]:
+            - button "GPTs" [expanded] [ref=e144] [cursor=pointer]:
+              - heading "GPTs" [level=2] [ref=e145]
+            - link "AutoGPT Agent" [ref=e146] [cursor=pointer]:
+              - /url: /g/g-POb5UhhJ6-autogpt-agent
+              - generic [ref=e151]: AutoGPT Agent
+              - button [ref=e153]:
+                - img [ref=e155]
+            - link "Explore GPTs" [ref=e157] [cursor=pointer]:
+              - /url: /gpts
+              - img [ref=e159]
+              - generic [ref=e162]: Explore GPTs
+          - generic [ref=e163]:
+            - button "Projects" [expanded] [ref=e164] [cursor=pointer]:
+              - heading "Projects" [level=2] [ref=e165]
+            - generic [ref=e166] [cursor=pointer]:
+              - img [ref=e168]
+              - generic [ref=e171]: New project
+            - link "Rust+PostGres Modules" [ref=e172] [cursor=pointer]:
+              - /url: /g/g-p-698c7e2090308191ba6e6eac93e3cc59-rust-postgres-modules/project
+              - generic [ref=e173]:
+                - button [ref=e175]:
+                  - img [ref=e178]
+                - generic [ref=e187]: Rust+PostGres Modules
+              - button [ref=e189]:
+                - img [ref=e191]
+            - link "Fireproof Documentation" [ref=e193] [cursor=pointer]:
+              - /url: /g/g-p-68bafa85f8a481919ab1e211f8d4693b-fireproof-documentation/project
+              - generic [ref=e194]:
+                - button [ref=e196]:
+                  - img [ref=e199]
+                - generic [ref=e208]: Fireproof Documentation
+              - button [ref=e210]:
+                - img [ref=e212]
+            - link "Database + Backend" [ref=e214] [cursor=pointer]:
+              - /url: /g/g-p-68a761f0ae888191bd11e751c4260f59-database-backend/project
+              - generic [ref=e215]:
+                - button [ref=e217]:
+                  - img [ref=e220]
+                - generic [ref=e229]: Database + Backend
+              - button [ref=e231]:
+                - img [ref=e233]
+            - link "Database Structure" [ref=e235] [cursor=pointer]:
+              - /url: /g/g-p-68a365ed7b7881919281f54554a45ce2-database-structure/project
+              - generic [ref=e236]:
+                - button [ref=e238]:
+                  - img [ref=e241]
+                - generic [ref=e250]: Database Structure
+              - button [ref=e252]:
+                - img [ref=e254]
+            - link "ChatGPT Lessons" [ref=e256] [cursor=pointer]:
+              - /url: /g/g-p-689f12d6606081919a56dd82480b706e-chatgpt-lessons/project
+              - generic [ref=e257]:
+                - button [ref=e259]:
+                  - img [ref=e262]
+                - generic [ref=e271]: ChatGPT Lessons
+              - button [ref=e273]:
+                - img [ref=e275]
+            - generic [ref=e277] [cursor=pointer]:
+              - img [ref=e279]
+              - generic [ref=e282]: See more
+          - generic [ref=e283]:
+            - button "Your chats" [expanded] [ref=e284] [cursor=pointer]:
+              - heading "Your chats" [level=2] [ref=e285]
+            - generic [ref=e286]:
+              - link "Agent Flywheel Setup Open conversation options" [ref=e287] [cursor=pointer]:
+                - /url: /c/698de3b1-63c8-8329-b1b9-5e916d806e4b
+                - generic [ref=e289]: Agent Flywheel Setup
+                - button "Open conversation options" [ref=e292]:
+                  - img [ref=e294]
+              - link "Disk Space Issue Debugging Open conversation options" [ref=e297] [cursor=pointer]:
+                - /url: /c/698dcaab-fce4-8330-81c0-8fdc53fd5ab1
+                - generic [ref=e299]: Disk Space Issue Debugging
+                - button "Open conversation options" [ref=e302]:
+                  - img [ref=e304]
+              - link "Access 7D Module Repo Open conversation options" [ref=e307] [cursor=pointer]:
+                - /url: /c/698cffc2-1744-832c-a434-db900e68867c
+                - generic [ref=e309]: Access 7D Module Repo
+                - button "Open conversation options" [ref=e312]:
+                  - img [ref=e314]
+              - link "No conversation content Open conversation options" [ref=e317] [cursor=pointer]:
+                - /url: /c/698cb52c-63f0-832c-bde3-77391cada393
+                - generic [ref=e319]: No conversation content
+                - button "Open conversation options" [ref=e322]:
+                  - img [ref=e324]
+              - link "Silver Trading Start Time Open conversation options" [ref=e327] [cursor=pointer]:
+                - /url: /c/69891420-c7f4-8332-b23e-fe2fca190fc5
+                - generic [ref=e329]: Silver Trading Start Time
+                - button "Open conversation options" [ref=e332]:
+                  - img [ref=e334]
+              - link "Teen Unaware of Super Bowl Open conversation options" [ref=e337] [cursor=pointer]:
+                - /url: /c/6988b56f-5a6c-8327-a443-70ceaf109629
+                - generic [ref=e339]: Teen Unaware of Super Bowl
+                - button "Open conversation options" [ref=e342]:
+                  - img [ref=e344]
+              - link "Christian song makeup reference Open conversation options" [ref=e347] [cursor=pointer]:
+                - /url: /c/6988acfe-89e8-8328-9634-7e57e66edd51
+                - generic "Christian song makeup reference" [ref=e349]
+                - button "Open conversation options" [ref=e352]:
+                  - img [ref=e354]
+              - link "Presidential Family Records Open conversation options" [ref=e357] [cursor=pointer]:
+                - /url: /c/6987f928-8248-832b-a92e-10bd9893ebf6
+                - generic [ref=e359]: Presidential Family Records
+                - button "Open conversation options" [ref=e362]:
+                  - img [ref=e364]
+              - link "Subscription Local Usage Guide Open conversation options" [ref=e367] [cursor=pointer]:
+                - /url: /c/6987b37b-212c-8329-b9a9-239ee4e1869c
+                - generic "Subscription Local Usage Guide" [ref=e369]
+                - button "Open conversation options" [ref=e372]:
+                  - img [ref=e374]
+              - link "Kingdom Token Review Open conversation options" [ref=e377] [cursor=pointer]:
+                - /url: /c/69866a6a-1c44-8325-9509-e062911a27fc
+                - generic [ref=e379]: Kingdom Token Review
+                - button "Open conversation options" [ref=e382]:
+                  - img [ref=e384]
+              - link "Convert 4UPS to Number Pad Open conversation options" [ref=e387] [cursor=pointer]:
+                - /url: /c/6985f81d-c5bc-832d-838d-45ff83330f88
+                - generic "Convert 4UPS to Number Pad" [ref=e389]
+                - button "Open conversation options" [ref=e392]:
+                  - img [ref=e394]
+              - link "Silver Trading Pauses Open conversation options" [ref=e397] [cursor=pointer]:
+                - /url: /c/698538b9-c020-832b-b3ca-06b59e81ded1
+                - generic [ref=e399]: Silver Trading Pauses
+                - button "Open conversation options" [ref=e402]:
+                  - img [ref=e404]
+              - link "Fanuc Lathe Tool Offset Open conversation options" [ref=e407] [cursor=pointer]:
+                - /url: /c/6984f944-0f30-8331-b9a3-2f5653091c89
+                - generic [ref=e409]: Fanuc Lathe Tool Offset
+                - button "Open conversation options" [ref=e412]:
+                  - img [ref=e414]
+              - link "30K lbs Gooseneck Setup Open conversation options" [ref=e417] [cursor=pointer]:
+                - /url: /c/6983e536-1180-8325-ac34-b7392069faee
+                - generic [ref=e419]: 30K lbs Gooseneck Setup
+                - button "Open conversation options" [ref=e422]:
+                  - img [ref=e424]
+              - link "6061-T6 Fusion 360 Settings Open conversation options" [ref=e427] [cursor=pointer]:
+                - /url: /c/69823372-62c4-832b-9046-b19801e38173
+                - generic [ref=e429]: 6061-T6 Fusion 360 Settings
+                - button "Open conversation options" [ref=e432]:
+                  - img [ref=e434]
+              - link "T-Mobile Hotspot Data Options Open conversation options" [ref=e437] [cursor=pointer]:
+                - /url: /c/69825ecc-9a60-8331-ab48-eddaf0b3f3de
+                - generic "T-Mobile Hotspot Data Options" [ref=e439]
+                - button "Open conversation options" [ref=e442]:
+                  - img [ref=e444]
+              - link "Lookup Request Open conversation options" [ref=e447] [cursor=pointer]:
+                - /url: /c/6982104b-1c3c-832c-b7e4-c35f80161d00
+                - generic [ref=e449]: Lookup Request
+                - button "Open conversation options" [ref=e452]:
+                  - img [ref=e454]
+              - link "Yellow Switches Overview Open conversation options" [ref=e457] [cursor=pointer]:
+                - /url: /c/6981fa7c-ae00-8331-8428-322c5f6a2944
+                - generic [ref=e459]: Yellow Switches Overview
+                - button "Open conversation options" [ref=e462]:
+                  - img [ref=e464]
+              - link "Quiet Fortnite Keyboards Open conversation options" [ref=e467] [cursor=pointer]:
+                - /url: /c/6981f3fd-1ef4-832a-bbd2-a5c3d2195470
+                - generic [ref=e469]: Quiet Fortnite Keyboards
+                - button "Open conversation options" [ref=e472]:
+                  - img [ref=e474]
+              - link "Fast Quiet Mechanical Keyboards Open conversation options" [ref=e477] [cursor=pointer]:
+                - /url: /c/697fc015-2b78-8333-87ee-e2c783ca373e
+                - generic "Fast Quiet Mechanical Keyboards" [ref=e479]
+                - button "Open conversation options" [ref=e482]:
+                  - img [ref=e484]
+              - link "Honda Pilot Garage Setup Open conversation options" [ref=e487] [cursor=pointer]:
+                - /url: /c/697fa054-3fd8-8326-a426-0ba629b707ef
+                - generic [ref=e489]: Honda Pilot Garage Setup
+                - button "Open conversation options" [ref=e492]:
+                  - img [ref=e494]
+              - link "Using ChatGPT Subscription Locally Open conversation options" [ref=e497] [cursor=pointer]:
+                - /url: /c/697e177b-7adc-8325-8972-d30f51fefabf
+                - generic "Using ChatGPT Subscription Locally" [ref=e499]
+                - button "Open conversation options" [ref=e502]:
+                  - img [ref=e504]
+              - link "Gühring 5511 Speed Feed Open conversation options" [ref=e507] [cursor=pointer]:
+                - /url: /c/697bc5b8-dc30-8327-931e-6d72184d6e8a
+                - generic [ref=e509]: Gühring 5511 Speed Feed
+                - button "Open conversation options" [ref=e512]:
+                  - img [ref=e514]
+              - link "Boswell OK Pipeline Opportunities Open conversation options" [ref=e517] [cursor=pointer]:
+                - /url: /c/697c1c91-5efc-832e-a396-3fc7e199208b
+                - generic "Boswell OK Pipeline Opportunities" [ref=e519]
+                - button "Open conversation options" [ref=e522]:
+                  - img [ref=e524]
+              - link "PSLV Explanation Open conversation options" [ref=e527] [cursor=pointer]:
+                - /url: /c/697b8a41-1174-8325-a75b-c72db8466d61
+                - generic [ref=e529]: PSLV Explanation
+                - button "Open conversation options" [ref=e532]:
+                  - img [ref=e534]
+              - link "Rust in Claude Code Open conversation options" [ref=e537] [cursor=pointer]:
+                - /url: /c/697add44-da10-8331-acab-7dd01888a41e
+                - generic [ref=e539]: Rust in Claude Code
+                - button "Open conversation options" [ref=e542]:
+                  - img [ref=e544]
+              - link "Gold Trump Coin Value Open conversation options" [ref=e547] [cursor=pointer]:
+                - /url: /c/697aced2-e8f0-832d-871e-25eaac083a5c
+                - generic [ref=e549]: Gold Trump Coin Value
+                - button "Open conversation options" [ref=e552]:
+                  - img [ref=e554]
+              - link "Silver Bar Conversion Open conversation options" [ref=e557] [cursor=pointer]:
+                - /url: /c/697a88f8-781c-832d-9a79-7480fb4f54cf
+                - generic [ref=e559]: Silver Bar Conversion
+                - button "Open conversation options" [ref=e562]:
+                  - img [ref=e564]
+          - button "Open profile menu" [ref=e77] [cursor=pointer]:
+            - img "Profile image" [ref=e567]
+            - generic [ref=e80]:
+              - generic [ref=e82]: James Dickson
+              - generic [ref=e85]: Plus
+    - generic [ref=e87]:
+      - banner:
+        - button "Model selector, current model is 5.2" [ref=e88] [cursor=pointer]:
+          - generic [ref=e89]: ChatGPT 5.2
+          - img [ref=e90]
+        - generic [ref=e94]:
+          - button "Share" [ref=e95] [cursor=pointer]:
+            - generic [ref=e96]:
+              - img [ref=e97]
+              - text: Share
+          - button "Open conversation options" [ref=e101] [cursor=pointer]:
+            - img [ref=e102]
+      - main [ref=e104]:
+        - generic [ref=e105]:
+          - generic [ref=e568]:
+            - article [ref=e569]:
+              - heading "You said:" [level=5] [ref=e570]
+              - generic [ref=e572]:
+                - generic [ref=e577]: "Context: Agent Flywheel Multi-Agent System + Persistent ChatGPT Browser Sessions I run a multi-agent system called Agent Flywheel where multiple Claude Code CLI instances run simultaneously in tmux panes, coordinating via a JSON message queue (agent-mail) and tracking work via \"beads\" (lightweight issue units). The project lives at /Users/james/Projects/agent-flywheel-integration/ on macOS. Current browser setup: Each Claude Code session has a built-in Playwright MCP plugin (playwright@claude-plugins-official) that gives agents browser tools: browser_navigate, browser_snapshot, browser_click, browser_type, browser_evaluate, browser_run_code, etc. The plugin launches the MCP server with the --isolated flag: npx @playwright/mcp@latest --isolated This means every session gets a fresh in-memory browser profile — no cookies persist. The browser uses a temp directory: --user-data-dir=/var/folders/rm/.../T/playwright_chromiumdev_profile-XXXXXX What we want: Agents should be able to navigate to a shared ChatGPT conversation URL and interact with it (read messages, post replies) without needing to log in each time. The login state should persist across agent sessions and agent restarts. What the Playwright MCP server supports (from --help): - --isolated — keep browser profile in memory only (currently active) - --user-data-dir <path> — path to persistent user data directory - --storage-state <path> — path to storage state file for isolated sessions (loads cookies/localStorage into an isolated browser) Our plan (Option B — storage-state approach): 1. Create .browser-profiles/ directory in the project, add to .gitignore 2. Write a one-time init script that launches Playwright in headed mode, navigates to chat.openai.com, lets me log in manually, then exports the session via context.storageState({ path: '.browser-profiles/chatgpt-state.json' }) 3. Reconfigure the Claude Code Playwright plugin to launch with --storage-state .browser-profiles/chatgpt-state.json so every agent session starts pre-authenticated 4. Keep --isolated so multiple agents don't fight over a shared profile directory on disk Why not --user-data-dir instead? Multiple agents (4-8 concurrent Claude Code instances) each spawn their own Playwright MCP server process. If they all point --user-data-dir at the same directory, Chrome profile locks would conflict. --storage-state reads the file at launch and runs in-memory — no lock contention. What I need from you: 1. Validate or improve this plan 2. Help me write the one-time init script that logs in and exports storage state 3. Help me figure out how to reconfigure the Claude Code built-in Playwright plugin to add the --storage-state flag — or whether I need to disable the built-in plugin and add a custom MCP server entry in .claude/mcp_settings.json instead 4. Any gotchas with ChatGPT session tokens expiring, Cloudflare challenges, or cookie rotation that would break this approach"
+                - generic [ref=e578]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e579]:
+              - heading "ChatGPT said:" [level=6] [ref=e580]
+              - generic [ref=e582]:
+                - generic [ref=e583]:
+                  - button "Thought for 46s" [ref=e588] [cursor=pointer]:
+                    - generic [ref=e590]:
+                      - generic [ref=e592]: Thought for 46s
+                      - img [ref=e593]
+                  - generic [ref=e597]:
+                    - paragraph [ref=e598]:
+                      - text: "Here’s the straight assessment:"
+                      - strong [ref=e599]: Option B (storage-state + isolated) is the right architecture
+                      - text: "for “4–8 concurrent agents” with “no profile locking” and “no re-login per pane.” It matches exactly what Playwright MCP is designed to do: load cookies/localStorage from a file into an otherwise isolated (incognito-like) context."
+                      - link "GitHub" [ref=e602] [cursor=pointer]:
+                        - /url: https://github.com/microsoft/playwright-mcp
+                        - generic [ref=e605]: GitHub
+                    - separator [ref=e606]
+                    - heading "1) Validate + improve the plan" [level=2] [ref=e607]
+                    - heading "✅ What you have right" [level=3] [ref=e608]
+                    - list [ref=e609]:
+                      - listitem [ref=e610]:
+                        - paragraph [ref=e611]:
+                          - strong [ref=e612]:
+                            - text: Keep
+                            - code [ref=e613]: "--isolated"
+                          - text: to avoid Chrome profile lock contention across concurrent MCP servers.
+                      - listitem [ref=e614]:
+                        - paragraph [ref=e615]:
+                          - strong [ref=e616]:
+                            - text: Use
+                            - code [ref=e617]: "--storage-state <path>"
+                          - text: to “pre-auth” each isolated context from the same exported state file.
+                          - link "GitHub" [ref=e620] [cursor=pointer]:
+                            - /url: https://github.com/microsoft/playwright-mcp
+                            - generic [ref=e623]: GitHub
+                    - heading "Improvements I’d make" [level=3] [ref=e624]
+                    - list [ref=e625]:
+                      - listitem [ref=e626]:
+                        - paragraph [ref=e627]:
+                          - strong [ref=e628]:
+                            - text: Treat
+                            - code [ref=e629]: chatgpt-state.json
+                            - text: as a secret
+                        - list [ref=e630]:
+                          - listitem [ref=e631]:
+                            - paragraph [ref=e632]: It will contain auth cookies and localStorage tokens.
+                          - listitem [ref=e633]:
+                            - paragraph [ref=e634]:
+                              - text: Put it in
+                              - code [ref=e635]: .gitignore
+                              - text: (you already planned that) and also
+                              - code [ref=e636]: chmod 600
+                              - text: it.
+                      - listitem [ref=e637]:
+                        - paragraph [ref=e638]:
+                          - strong [ref=e639]: Add a “refresh state” path
+                        - list [ref=e640]:
+                          - listitem [ref=e641]:
+                            - paragraph [ref=e642]: ChatGPT sessions can expire/rotate. When that happens, every agent will start “logged out” until you regenerate state.
+                          - listitem [ref=e643]:
+                            - paragraph [ref=e644]:
+                              - text: "Make regeneration a first-class bead:"
+                              - code [ref=e645]: bead-auth-refresh
+                              - text: that reruns the init script.
+                      - listitem [ref=e646]:
+                        - paragraph [ref=e647]:
+                          - strong [ref=e648]: Consider the Playwright MCP Chrome Extension as your fallback
+                        - list [ref=e649]:
+                          - listitem [ref=e650]:
+                            - paragraph [ref=e651]:
+                              - text: The official MCP server supports a Chrome extension that can attach to an existing (already logged-in) browser/tab/session. This is often the cleanest workaround when anti-bot friction spikes.
+                              - link "GitHub" [ref=e654] [cursor=pointer]:
+                                - /url: https://github.com/microsoft/playwright-mcp
+                                - generic [ref=e657]: GitHub
+                    - separator [ref=e658]
+                    - heading "2) One-time init script (manual login, export storage state)" [level=2] [ref=e659]
+                    - paragraph [ref=e660]:
+                      - text: Below is a
+                      - strong [ref=e661]: drop-in Node script
+                      - text: "that:"
+                    - list [ref=e662]:
+                      - listitem [ref=e663]:
+                        - paragraph [ref=e664]:
+                          - text: launches
+                          - strong [ref=e665]: headed Chromium
+                      - listitem [ref=e666]:
+                        - paragraph [ref=e667]: navigates to ChatGPT
+                      - listitem [ref=e668]:
+                        - paragraph [ref=e669]: waits until you’re logged in (you confirm by pressing Enter)
+                      - listitem [ref=e670]:
+                        - paragraph [ref=e671]:
+                          - text: writes
+                          - code [ref=e672]: .browser-profiles/chatgpt-state.json
+                    - 'heading "Create: scripts/init-chatgpt-storage-state.mjs" [level=3] [ref=e673]':
+                      - text: "Create:"
+                      - code [ref=e674]: scripts/init-chatgpt-storage-state.mjs
+                    - generic [ref=e676]:
+                      - generic [ref=e677]: js
+                      - button "Copy" [ref=e680] [cursor=pointer]:
+                        - img [ref=e681]
+                        - text: Copy code
+                      - code [ref=e684]:
+                        - generic [ref=e685]:
+                          - generic [ref=e686]: "#!/usr/bin/env node"
+                          - generic [ref=e687]: import
+                          - text: fs
+                          - generic [ref=e688]: from
+                          - generic [ref=e689]: "\"node:fs\""
+                          - text: ;
+                          - generic [ref=e690]: import
+                          - text: path
+                          - generic [ref=e691]: from
+                          - generic [ref=e692]: "\"node:path\""
+                          - text: ;
+                          - generic [ref=e693]: import
+                          - text: readline
+                          - generic [ref=e694]: from
+                          - generic [ref=e695]: "\"node:readline\""
+                          - text: ;
+                          - generic [ref=e696]: import
+                          - text: "{ chromium }"
+                          - generic [ref=e697]: from
+                          - generic [ref=e698]: "\"playwright\""
+                          - text: ;
+                          - generic [ref=e699]: const
+                          - generic [ref=e700]: PROJECT_ROOT
+                          - text: = process.
+                          - generic [ref=e701]: cwd
+                          - text: ();
+                          - generic [ref=e702]: const
+                          - generic [ref=e703]: PROFILE_DIR
+                          - text: = path.
+                          - generic [ref=e704]: join
+                          - text: (
+                          - generic [ref=e705]: PROJECT_ROOT
+                          - text: ","
+                          - generic [ref=e706]: "\".browser-profiles\""
+                          - text: );
+                          - generic [ref=e707]: const
+                          - generic [ref=e708]: STATE_PATH
+                          - text: = path.
+                          - generic [ref=e709]: join
+                          - text: (
+                          - generic [ref=e710]: PROFILE_DIR
+                          - text: ","
+                          - generic [ref=e711]: "\"chatgpt-state.json\""
+                          - text: );
+                          - generic [ref=e712]: // Prefer chatgpt.com, but chat.openai.com still works in some environments.
+                          - generic [ref=e713]: // Use whichever your org/account actually uses.
+                          - generic [ref=e714]: const
+                          - generic [ref=e715]: CHATGPT_URL
+                          - text: =
+                          - generic [ref=e716]: "\"https://chatgpt.com/\""
+                          - text: ;
+                          - generic [ref=e717]: function
+                          - generic [ref=e718]: waitForEnter
+                          - text: (
+                          - generic [ref=e719]: prompt
+                          - text: ") {"
+                          - generic [ref=e720]: return
+                          - generic [ref=e721]: new
+                          - generic [ref=e722]: Promise
+                          - text: (
+                          - generic [ref=e724]: (resolve
+                          - text: ") => {"
+                          - generic [ref=e725]: const
+                          - text: rl = readline.
+                          - generic [ref=e726]: createInterface
+                          - text: "({"
+                          - generic [ref=e727]: input
+                          - text: ": process."
+                          - generic [ref=e728]: stdin
+                          - text: ","
+                          - generic [ref=e729]: output
+                          - text: ": process."
+                          - generic [ref=e730]: stdout
+                          - text: "}); rl."
+                          - generic [ref=e731]: question
+                          - text: (prompt,
+                          - generic [ref=e732]: () =>
+                          - text: "{ rl."
+                          - generic [ref=e733]: close
+                          - text: ();
+                          - generic [ref=e734]: resolve
+                          - text: "(); }); }); } ("
+                          - generic [ref=e735]: async
+                          - text: "() => { fs."
+                          - generic [ref=e736]: mkdirSync
+                          - text: (
+                          - generic [ref=e737]: PROFILE_DIR
+                          - text: ", {"
+                          - generic [ref=e738]: recursive
+                          - text: ":"
+                          - generic [ref=e739]: "true"
+                          - text: "});"
+                          - generic [ref=e740]: console
+                          - text: .
+                          - generic [ref=e741]: log
+                          - text: (
+                          - generic [ref=e742]: "\"Launching headed Chromium for one-time ChatGPT login...\""
+                          - text: );
+                          - generic [ref=e743]: const
+                          - text: browser =
+                          - generic [ref=e744]: await
+                          - text: chromium.
+                          - generic [ref=e745]: launch
+                          - text: "({"
+                          - generic [ref=e746]: headless
+                          - text: ":"
+                          - generic [ref=e747]: "false"
+                          - text: ","
+                          - generic [ref=e748]: args
+                          - text: ": ["
+                          - generic [ref=e749]: "\"--disable-blink-features=AutomationControlled\""
+                          - text: ", ], });"
+                          - generic [ref=e750]: const
+                          - text: context =
+                          - generic [ref=e751]: await
+                          - text: browser.
+                          - generic [ref=e752]: newContext
+                          - text: "({"
+                          - generic [ref=e753]: viewport
+                          - text: ": {"
+                          - generic [ref=e754]: width
+                          - text: ":"
+                          - generic [ref=e755]: "1280"
+                          - text: ","
+                          - generic [ref=e756]: height
+                          - text: ":"
+                          - generic [ref=e757]: "800"
+                          - text: "}, });"
+                          - generic [ref=e758]: const
+                          - text: page =
+                          - generic [ref=e759]: await
+                          - text: context.
+                          - generic [ref=e760]: newPage
+                          - text: ();
+                          - generic [ref=e761]: await
+                          - text: page.
+                          - generic [ref=e762]: goto
+                          - text: (
+                          - generic [ref=e763]: CHATGPT_URL
+                          - text: ", {"
+                          - generic [ref=e764]: waitUntil
+                          - text: ":"
+                          - generic [ref=e765]: "\"domcontentloaded\""
+                          - text: "});"
+                          - generic [ref=e766]: console
+                          - text: .
+                          - generic [ref=e767]: log
+                          - text: (
+                          - generic [ref=e768]: "\"\\n1) Log in manually in the opened browser window.\""
+                          - text: );
+                          - generic [ref=e769]: console
+                          - text: .
+                          - generic [ref=e770]: log
+                          - text: (
+                          - generic [ref=e771]: "\"2) Once you see your chat UI (prompt box visible), come back here.\""
+                          - text: );
+                          - generic [ref=e772]: await
+                          - generic [ref=e773]: waitForEnter
+                          - text: (
+                          - generic [ref=e774]: "\"Press ENTER to export storage state... \""
+                          - text: );
+                          - generic [ref=e775]: "// Basic sanity: ensure we're not on a login page anymore."
+                          - generic [ref=e776]: const
+                          - text: url = page.
+                          - generic [ref=e777]: url
+                          - text: ();
+                          - generic [ref=e778]: if
+                          - text: (url.
+                          - generic [ref=e779]: includes
+                          - text: (
+                          - generic [ref=e780]: "\"login\""
+                          - text: ) || url.
+                          - generic [ref=e781]: includes
+                          - text: (
+                          - generic [ref=e782]: "\"auth\""
+                          - text: ")) {"
+                          - generic [ref=e783]: console
+                          - text: .
+                          - generic [ref=e784]: warn
+                          - text: (
+                          - generic [ref=e786]: "`Still looks like an auth page: ${url}"
+                          - text: "`);"
+                          - generic [ref=e787]: console
+                          - text: .
+                          - generic [ref=e788]: warn
+                          - text: (
+                          - generic [ref=e789]: "\"If you're not fully logged in, the exported state may be useless.\""
+                          - text: "); }"
+                          - generic [ref=e790]: await
+                          - text: context.
+                          - generic [ref=e791]: storageState
+                          - text: "({"
+                          - generic [ref=e792]: path
+                          - text: ":"
+                          - generic [ref=e793]: STATE_PATH
+                          - text: "});"
+                          - generic [ref=e794]: console
+                          - text: .
+                          - generic [ref=e795]: log
+                          - text: (
+                          - generic [ref=e797]: "`\\n✅ Storage state saved to:\\n${STATE_PATH}"
+                          - text: "`);"
+                          - generic [ref=e798]: await
+                          - text: browser.
+                          - generic [ref=e799]: close
+                          - text: ();
+                          - generic [ref=e800]: // Lock down permissions (best effort on macOS/Linux).
+                          - generic [ref=e801]: try
+                          - text: "{ fs."
+                          - generic [ref=e802]: chmodSync
+                          - text: (
+                          - generic [ref=e803]: STATE_PATH
+                          - text: ","
+                          - generic [ref=e804]: "0o600"
+                          - text: );
+                          - generic [ref=e805]: console
+                          - text: .
+                          - generic [ref=e806]: log
+                          - text: (
+                          - generic [ref=e807]: "\"🔒 Permissions set to 600\""
+                          - text: "); }"
+                          - generic [ref=e808]: catch
+                          - text: "{"
+                          - generic [ref=e809]: // ignore
+                          - text: "} })()."
+                          - generic [ref=e810]: catch
+                          - text: (
+                          - generic [ref=e812]: (err
+                          - text: ") => {"
+                          - generic [ref=e813]: console
+                          - text: .
+                          - generic [ref=e814]: error
+                          - text: (err); process.
+                          - generic [ref=e815]: exit
+                          - text: (
+                          - generic [ref=e816]: "1"
+                          - text: "); });"
+                    - heading "Run it" [level=3] [ref=e817]
+                    - generic [ref=e819]:
+                      - generic [ref=e820]: bash
+                      - button "Copy" [ref=e823] [cursor=pointer]:
+                        - img [ref=e824]
+                        - text: Copy code
+                      - code [ref=e827]:
+                        - generic [ref=e828]:
+                          - generic [ref=e829]: cd
+                          - text: /Users/james/Projects/agent-flywheel-integration npm i -D playwright npx playwright install chromium node scripts/init-chatgpt-storage-state.mjs
+                    - heading "Add to .gitignore" [level=3] [ref=e830]:
+                      - text: Add to
+                      - code [ref=e831]: .gitignore
+                    - generic [ref=e833]:
+                      - generic [ref=e834]: gitignore
+                      - button "Copy" [ref=e837] [cursor=pointer]:
+                        - img [ref=e838]
+                        - text: Copy code
+                      - code [ref=e841]: .browser-profiles/
+                    - separator [ref=e842]
+                    - heading "3) Reconfigure Claude Code Playwright MCP to use --storage-state" [level=2] [ref=e843]:
+                      - text: 3) Reconfigure Claude Code Playwright MCP to use
+                      - code [ref=e844]: "--storage-state"
+                    - heading "Key constraint" [level=3] [ref=e845]
+                    - paragraph [ref=e846]: "If the built-in plugin hardcodes:"
+                    - generic [ref=e848]:
+                      - generic [ref=e849]: sql
+                      - button "Copy" [ref=e852] [cursor=pointer]:
+                        - img [ref=e853]
+                        - text: Copy code
+                      - code [ref=e856]:
+                        - generic [ref=e857]:
+                          - text: npx
+                          - generic [ref=e858]: "@playwright"
+                          - generic [ref=e859]: /
+                          - text: mcp
+                          - generic [ref=e860]: "@latest"
+                          - generic [ref=e861]: "--isolated"
+                    - paragraph [ref=e862]:
+                      - text: …then you
+                      - strong [ref=e863]: can’t “tack on flags” unless the plugin exposes config
+                      - text: . Claude Code’s docs make it clear plugin-provided MCP servers are managed by the plugin (not by
+                      - code [ref=e864]: /mcp
+                      - text: commands).
+                      - link "Claude Code" [ref=e867] [cursor=pointer]:
+                        - /url: https://code.claude.com/docs/en/mcp
+                        - generic [ref=e870]: Claude Code
+                    - heading "Practical approach (what I’d do)" [level=3] [ref=e871]
+                    - paragraph [ref=e872]:
+                      - strong [ref=e873]: Disable the built-in Playwright plugin
+                      - text: (for this project), then add your own MCP server definition that includes the flags you need.
+                    - paragraph [ref=e874]:
+                      - text: Claude Code supports configuring MCP servers and distinguishes plugin-provided servers vs user-configured ones.
+                      - link "Claude Code +1" [ref=e877] [cursor=pointer]:
+                        - /url: https://code.claude.com/docs/en/mcp
+                        - generic [ref=e879]:
+                          - generic [ref=e880]: Claude Code
+                          - generic [ref=e881]: "+1"
+                    - 'heading "Option 1: Add a project-scoped MCP server via CLI" [level=4] [ref=e882]'
+                    - paragraph [ref=e883]:
+                      - text: Use
+                      - code [ref=e884]: claude mcp add
+                      - text: (project directory matters—config is tied to the repo path).
+                      - link "TIL +1" [ref=e887] [cursor=pointer]:
+                        - /url: https://til.simonwillison.net/claude-code/playwright-mcp-claude-code
+                        - generic [ref=e889]:
+                          - generic [ref=e890]: TIL
+                          - generic [ref=e891]: "+1"
+                    - paragraph [ref=e892]: "Example (shape):"
+                    - generic [ref=e894]:
+                      - generic [ref=e895]: bash
+                      - button "Copy" [ref=e898] [cursor=pointer]:
+                        - img [ref=e899]
+                        - text: Copy code
+                      - code [ref=e902]:
+                        - generic [ref=e903]:
+                          - generic [ref=e904]: "# From inside /Users/james/Projects/agent-flywheel-integration"
+                          - text: claude mcp add --transport stdio playwright -- \ npx -y @playwright/mcp@latest \ --isolated \ --storage-state=.browser-profiles/chatgpt-state.json
+                    - paragraph [ref=e905]: "Notes:"
+                    - list [ref=e906]:
+                      - listitem [ref=e907]:
+                        - paragraph [ref=e908]:
+                          - text: The
+                          - code [ref=e909]: "--"
+                          - text: separator is used in Claude Code examples to pass through command args cleanly.
+                          - link "Claude Code" [ref=e912] [cursor=pointer]:
+                            - /url: https://code.claude.com/docs/en/mcp
+                            - generic [ref=e915]: Claude Code
+                      - listitem [ref=e916]:
+                        - paragraph [ref=e917]:
+                          - text: After changes, you generally need to restart Claude Code for MCP lifecycle changes to apply (plugins in particular).
+                          - link "Claude Code" [ref=e920] [cursor=pointer]:
+                            - /url: https://code.claude.com/docs/en/mcp
+                            - generic [ref=e923]: Claude Code
+                    - 'heading "Option 2: Define it in a project .claude/ config file" [level=4] [ref=e924]':
+                      - text: "Option 2: Define it in a project"
+                      - code [ref=e925]: .claude/
+                      - text: config file
+                    - paragraph [ref=e926]:
+                      - text: If you prefer config-as-code, you can keep MCP server config at project scope (committed) or local scope (gitignored). Claude Code documents these scopes explicitly.
+                      - link "Claude Code +1" [ref=e929] [cursor=pointer]:
+                        - /url: https://code.claude.com/docs/en/settings
+                        - generic [ref=e931]:
+                          - generic [ref=e932]: Claude Code
+                          - generic [ref=e933]: "+1"
+                    - paragraph [ref=e934]:
+                      - text: (Exact filenames differ by Claude Code version/settings layout, so I’m not going to lie and give you a fake path—use
+                      - code [ref=e935]: /mcp
+                      - text: inside Claude Code to see where it’s loading from, and mirror that structure.)
+                    - paragraph [ref=e936]:
+                      - strong [ref=e937]: "Decision rule:"
+                    - list [ref=e938]:
+                      - listitem [ref=e939]:
+                        - paragraph [ref=e940]:
+                          - text: "If you want every tmux agent (same repo) to behave identically:"
+                          - strong [ref=e941]: project scope
+                          - text: .
+                      - listitem [ref=e942]:
+                        - paragraph [ref=e943]:
+                          - text: If you want it only on
+                          - emphasis [ref=e944]: your
+                          - text: "machine:"
+                          - strong [ref=e945]: local scope
+                          - text: (gitignored).
+                    - separator [ref=e946]
+                    - 'heading "4) Gotchas: expiry, Cloudflare challenges, cookie rotation" [level=2] [ref=e947]'
+                    - heading "Session expiry / rotation" [level=3] [ref=e948]
+                    - list [ref=e949]:
+                      - listitem [ref=e950]:
+                        - paragraph [ref=e951]:
+                          - text: Expect this occasionally. Storage state is not magic—it’s just persisted cookies + localStorage. Playwright explicitly frames this as “reusing authenticated state,” which still depends on the site’s auth lifetime.
+                          - link "Playwright +1" [ref=e954] [cursor=pointer]:
+                            - /url: https://playwright.dev/docs/auth?utm_source=chatgpt.com
+                            - generic [ref=e956]:
+                              - generic [ref=e957]: Playwright
+                              - generic [ref=e958]: "+1"
+                      - listitem [ref=e959]:
+                        - paragraph [ref=e960]:
+                          - text: Plan for a
+                          - strong [ref=e961]: repeatable refresh
+                          - text: ":"
+                        - list [ref=e962]:
+                          - listitem [ref=e963]:
+                            - paragraph [ref=e964]:
+                              - text: "When agents detect redirect to login, fail fast and mark a bead:"
+                              - code [ref=e965]: AUTH_REFRESH_REQUIRED
+                              - text: .
+                          - listitem [ref=e966]:
+                            - paragraph [ref=e967]: You rerun the init script and overwrite the JSON.
+                    - heading "Cloudflare / bot challenges" [level=3] [ref=e968]
+                    - list [ref=e969]:
+                      - listitem [ref=e970]:
+                        - paragraph [ref=e971]: Automating ChatGPT via browser can trigger challenges (especially headless). You’re already using headed via MCP most of the time, which helps.
+                      - listitem [ref=e972]:
+                        - paragraph [ref=e973]:
+                          - text: If you get stuck in a challenge loop, the
+                          - strong [ref=e974]: MCP Chrome Extension
+                          - text: path (attach to your real daily browser session) is the least painful fallback.
+                          - link "GitHub" [ref=e977] [cursor=pointer]:
+                            - /url: https://github.com/microsoft/playwright-mcp
+                            - generic [ref=e980]: GitHub
+                    - heading "Multi-agent concurrency" [level=3] [ref=e981]
+                    - list [ref=e982]:
+                      - listitem [ref=e983]:
+                        - paragraph [ref=e984]: Many agents reading the same storage-state file is fine.
+                      - listitem [ref=e985]:
+                        - paragraph [ref=e986]:
+                          - text: Don’t have multiple agents
+                          - emphasis [ref=e987]: rewriting
+                          - text: it. Make refresh a single “owner” action (your manual run).
+                    - heading "Operational hygiene" [level=3] [ref=e988]
+                    - list [ref=e989]:
+                      - listitem [ref=e990]:
+                        - paragraph [ref=e991]:
+                          - code [ref=e992]: .browser-profiles/chatgpt-state.json
+                          - text: "should be:"
+                        - list [ref=e993]:
+                          - listitem [ref=e994]:
+                            - paragraph [ref=e995]: excluded from git
+                          - listitem [ref=e996]:
+                            - paragraph [ref=e997]: treated like an API key
+                          - listitem [ref=e998]:
+                            - paragraph [ref=e999]:
+                              - text: readable only by you (
+                              - code [ref=e1000]: chmod 600
+                              - text: )
+                    - separator [ref=e1001]
+                    - paragraph [ref=e1002]:
+                      - text: If you want, I can also give you a tiny “health-check” snippet your agents can run after
+                      - code [ref=e1003]: browser_navigate
+                      - text: that decides
+                      - strong [ref=e1004]: (a)
+                      - text: “we’re logged in and can see prompt box” vs
+                      - strong [ref=e1005]: (b)
+                      - text: “we got bounced to auth/challenge” and then emits a bead into agent-mail.
+                - generic [ref=e1006]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+                    - button "Sources":
+                      - generic:
+                        - generic:
+                          - img
+                      - generic: Sources
+            - article [ref=e1007]:
+              - heading "You said:" [level=5] [ref=e1008]
+              - generic [ref=e1010]:
+                - generic [ref=e1015]: "ChatGPT's Response: Solid Overall ChatGPT nailed the important parts: - Init script: Clean, correct, handles the storageState() export properly - Security advice: chmod 600, treat as secret — good - Gotchas: Session expiry, Cloudflare, multi-agent read-only on the state file — all accurate - Auth refresh as a bead: Smart operational pattern - Health-check snippet: Yes, ask for that — it's a good idea One Thing ChatGPT Got Right That I Can Now Confirm The built-in plugin is literally just this .mcp.json: { \"playwright\": { \"command\": \"npx\", \"args\": [\"@playwright/mcp@latest\", \"--isolated\"] } } So the exact approach is: 1. Disable playwright@claude-plugins-official in ~/.claude/settings.json 2. Add a custom MCP server via: claude mcp add --scope local playwright -- \\ npx @playwright/mcp@latest \\ --isolated \\ --storage-state /Users/james/Projects/agent-flywheel-integration/.browser-profiles/chatgpt-state.json 2. (Use absolute path — the MCP server's CWD may not be the project root. --scope local keeps it per-machine/gitignored.) Follow-Up Questions for ChatGPT 1. Ask for the health-check snippet — yes, get that. Agents should detect \"bounced to login\" and emit an alert via agent-mail. 2. Cookie lifetime — ChatGPT auth tokens typically last how long? Days? Weeks? This determines how often you'd need to rerun the init script. 3. chatgpt.com vs chat.openai.com — the script defaults to chatgpt.com. Which domain actually holds the session cookies? Should we navigate to both?"
+                - generic [ref=e1016]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e1017]:
+              - heading "ChatGPT said:" [level=6] [ref=e1018]
+              - generic [ref=e1020]:
+                - generic [ref=e1021]:
+                  - button "Thought for 28s" [ref=e1026] [cursor=pointer]:
+                    - generic [ref=e1028]:
+                      - generic [ref=e1030]: Thought for 28s
+                      - img [ref=e1031]
+                  - generic [ref=e1035]:
+                    - heading "1) Health-check snippet (detect “logged in” vs “bounced to auth/challenge”)" [level=2] [ref=e1036]
+                    - paragraph [ref=e1037]:
+                      - text: This is designed to run via
+                      - code [ref=e1038]: browser_evaluate
+                      - text: and return a small JSON payload your agent can map to a bead / agent-mail alert.
+                    - heading "browser_evaluate payload" [level=3] [ref=e1039]:
+                      - code [ref=e1040]: browser_evaluate
+                      - text: payload
+                    - generic [ref=e1042]:
+                      - generic [ref=e1043]: js
+                      - button "Copy" [ref=e1046] [cursor=pointer]:
+                        - img [ref=e1047]
+                        - text: Copy code
+                      - code [ref=e1050]:
+                        - generic [ref=e1051]:
+                          - text: (
+                          - generic [ref=e1052]: () =>
+                          - text: "{"
+                          - generic [ref=e1053]: const
+                          - text: href = location.
+                          - generic [ref=e1054]: href
+                          - text: ;
+                          - generic [ref=e1055]: // Common “not in the app” signals
+                          - generic [ref=e1056]: const
+                          - text: onAuth =
+                          - generic [ref=e1057]: /\/auth\/|\/login|\/account\/login|auth\.openai\.com/i
+                          - text: .
+                          - generic [ref=e1058]: test
+                          - text: (href);
+                          - generic [ref=e1059]: // Cloudflare / bot checks often show these patterns
+                          - generic [ref=e1060]: const
+                          - text: onChallenge =
+                          - generic [ref=e1061]: /challenges\.cloudflare\.com|cf-chl|__cf_chl/i
+                          - text: .
+                          - generic [ref=e1062]: test
+                          - text: (href) || !!
+                          - generic [ref=e1063]: document
+                          - text: .
+                          - generic [ref=e1064]: querySelector
+                          - text: (
+                          - generic [ref=e1065]: "'input[name=\"cf-turnstile-response\"], iframe[src*=\"challenges.cloudflare.com\"]'"
+                          - text: );
+                          - generic [ref=e1066]: // Heuristics for “Chat UI is present”
+                          - generic [ref=e1067]: const
+                          - text: promptBox =
+                          - generic [ref=e1068]: document
+                          - text: .
+                          - generic [ref=e1069]: querySelector
+                          - text: (
+                          - generic [ref=e1070]: "'textarea, [contenteditable=\"true\"][role=\"textbox\"]'"
+                          - text: );
+                          - generic [ref=e1071]: // Heuristics for “logged out” landing pages
+                          - generic [ref=e1072]: const
+                          - text: loginLinkOrButton =
+                          - generic [ref=e1073]: Array
+                          - text: .
+                          - generic [ref=e1074]: from
+                          - text: (
+                          - generic [ref=e1075]: document
+                          - text: .
+                          - generic [ref=e1076]: querySelectorAll
+                          - text: (
+                          - generic [ref=e1077]: "'a,button'"
+                          - text: )).
+                          - generic [ref=e1078]: some
+                          - text: (
+                          - generic [ref=e1080]: el
+                          - text: =>
+                          - generic [ref=e1081]: /log in|sign in/i
+                          - text: .
+                          - generic [ref=e1082]: test
+                          - text: ((el.
+                          - generic [ref=e1083]: textContent
+                          - text: "||"
+                          - generic [ref=e1084]: "\"\""
+                          - text: ).
+                          - generic [ref=e1085]: trim
+                          - text: ()) );
+                          - generic [ref=e1086]: let
+                          - text: status =
+                          - generic [ref=e1087]: "\"unknown\""
+                          - text: ;
+                          - generic [ref=e1088]: if
+                          - text: (onChallenge) status =
+                          - generic [ref=e1089]: "\"challenge\""
+                          - text: ;
+                          - generic [ref=e1090]: else
+                          - generic [ref=e1091]: if
+                          - text: (onAuth) status =
+                          - generic [ref=e1092]: "\"auth\""
+                          - text: ;
+                          - generic [ref=e1093]: else
+                          - generic [ref=e1094]: if
+                          - text: (promptBox) status =
+                          - generic [ref=e1095]: "\"ok\""
+                          - text: ;
+                          - generic [ref=e1096]: else
+                          - generic [ref=e1097]: if
+                          - text: (loginLinkOrButton) status =
+                          - generic [ref=e1098]: "\"logged_out\""
+                          - text: ;
+                          - generic [ref=e1099]: else
+                          - text: status =
+                          - generic [ref=e1100]: "\"unknown\""
+                          - text: ;
+                          - generic [ref=e1101]: return
+                          - text: "{ status, href,"
+                          - generic [ref=e1102]: hasPromptBox
+                          - text: ": !!promptBox,"
+                          - generic [ref=e1103]: sawLoginCta
+                          - text: ": !!loginLinkOrButton,"
+                          - generic [ref=e1104]: sawChallenge
+                          - text: ": !!onChallenge }; })()"
+                    - heading "Suggested agent behavior" [level=3] [ref=e1105]
+                    - list [ref=e1106]:
+                      - listitem [ref=e1107]:
+                        - paragraph [ref=e1108]:
+                          - text: If
+                          - code [ref=e1109]: status === "ok"
+                          - text: → proceed.
+                      - listitem [ref=e1110]:
+                        - paragraph [ref=e1111]:
+                          - text: If
+                          - code [ref=e1112]: status
+                          - text: is
+                          - code [ref=e1113]: auth|logged_out|challenge
+                          - text: →
+                          - strong [ref=e1114]: emit agent-mail alert
+                          - text: "like:"
+                        - list [ref=e1115]:
+                          - listitem [ref=e1116]:
+                            - paragraph [ref=e1117]:
+                              - code [ref=e1118]: AUTH_REFRESH_REQUIRED
+                              - text: (auth/logged_out)
+                          - listitem [ref=e1119]:
+                            - paragraph [ref=e1120]:
+                              - code [ref=e1121]: CLOUDFLARE_CHALLENGE
+                              - text: (challenge)
+                    - paragraph [ref=e1122]: (If you want, I can format the exact agent-mail JSON message shape to match your queue schema.)
+                    - separator [ref=e1123]
+                    - 'heading "2) Cookie / token lifetime: how often will you need to refresh?" [level=2] [ref=e1124]'
+                    - paragraph [ref=e1125]:
+                      - text: There isn’t a single “ChatGPT auth lasts X days” public SLA. Practically,
+                      - strong [ref=e1126]: expect variability
+                      - text: (account security posture, IP/VPN changes, unusual activity flags, etc.).
+                    - paragraph [ref=e1127]:
+                      - text: What we
+                      - emphasis [ref=e1128]: can
+                      - text: "ground in official docs: OpenAI’s cookie policy lists several"
+                      - strong [ref=e1129]: chatgpt.com
+                      - text: cookies and their durations, which range from
+                      - strong [ref=e1130]: Session
+                      - text: to
+                      - strong [ref=e1131]: hours
+                      - text: ","
+                      - strong [ref=e1132]: days
+                      - text: ", and up to"
+                      - strong [ref=e1133]: 1 year
+                      - text: . Notably, it includes entries like
+                      - code [ref=e1134]: _puid
+                      - text: (7 days),
+                      - code [ref=e1135]: _uasid
+                      - text: (1 day),
+                      - code [ref=e1136]: _account
+                      - text: (Session), and others (e.g.,
+                      - code [ref=e1137]: oai-sc
+                      - text: 1 year).
+                      - link "OpenAI" [ref=e1140] [cursor=pointer]:
+                        - /url: https://openai.com/policies/cookie-policy/
+                        - generic [ref=e1143]: OpenAI
+                    - paragraph [ref=e1144]: "What that means for your storage-state approach:"
+                    - list [ref=e1145]:
+                      - listitem [ref=e1146]:
+                        - paragraph [ref=e1147]:
+                          - text: Your exported state may stay valid
+                          - strong [ref=e1148]: for days to weeks
+                          - text: in the common case, but it can also break sooner (session cookies, risk signals, IP change).
+                      - listitem [ref=e1149]:
+                        - paragraph [ref=e1150]:
+                          - text: "Operationally: your “auth refresh bead” pattern is the right answer. Treat refresh as"
+                          - strong [ref=e1151]: on-demand
+                          - text: ", not time-based."
+                      - listitem [ref=e1152]:
+                        - paragraph [ref=e1153]:
+                          - text: "If you still want a schedule:"
+                          - strong [ref=e1154]: weekly refresh
+                          - text: is a reasonable maintenance cadence, but don’t be surprised if you go longer—or if you need a refresh sooner after network changes.
+                    - separator [ref=e1155]
+                    - 'heading "3) chatgpt.com vs chat.openai.com: which domain holds session cookies?" [level=2] [ref=e1156]'
+                    - paragraph [ref=e1157]:
+                      - text: From OpenAI’s cookie policy, the key “service functionality / security” cookies relevant to ChatGPT are explicitly listed under the
+                      - strong [ref=e1158]:
+                        - code [ref=e1159]: chatgpt.com
+                        - text: domain
+                      - text: .
+                      - link "OpenAI" [ref=e1162] [cursor=pointer]:
+                        - /url: https://openai.com/policies/cookie-policy/
+                        - generic [ref=e1165]: OpenAI
+                    - paragraph [ref=e1166]:
+                      - text: However, OpenAI’s network allowlist guidance still includes
+                      - strong [ref=e1167]: both
+                      - code [ref=e1168]: "*.chatgpt.com"
+                      - text: and
+                      - code [ref=e1169]: chat.openai.com
+                      - text: (legacy / redirects / some clients), plus auth and Cloudflare challenge domains.
+                      - link "OpenAI Help Center" [ref=e1172] [cursor=pointer]:
+                        - /url: https://help.openai.com/en/articles/9247338-network-recommendations-for-chatgpt-errors-on-web-and-apps
+                        - generic [ref=e1175]: OpenAI Help Center
+                    - heading "What I recommend" [level=3] [ref=e1176]
+                    - list [ref=e1177]:
+                      - listitem [ref=e1178]:
+                        - paragraph [ref=e1179]:
+                          - strong [ref=e1180]:
+                            - text: Normalize all automation targets to
+                            - code [ref=e1181]: https://chatgpt.com/...
+                          - text: (conversation URLs included). That keeps your cookies and origin consistent.
+                      - listitem [ref=e1182]:
+                        - paragraph [ref=e1183]: "In your init script, it doesn’t hurt to “touch” the legacy domain once:"
+                        - list [ref=e1184]:
+                          - listitem [ref=e1185]:
+                            - paragraph [ref=e1186]:
+                              - code [ref=e1187]: page.goto("https://chat.openai.com/")
+                              - text: (let it redirect)
+                          - listitem [ref=e1188]:
+                            - paragraph [ref=e1189]:
+                              - code [ref=e1190]: page.goto("https://chatgpt.com/")
+                          - listitem [ref=e1191]:
+                            - paragraph [ref=e1192]:
+                              - text: then export
+                              - code [ref=e1193]: storageState
+                    - paragraph [ref=e1194]: This way, if anything still sets/reads cookies during the redirect chain, your exported state captures it.
+                    - separator [ref=e1195]
+                    - paragraph [ref=e1196]:
+                      - text: If you paste your agent-mail JSON schema (even just one example message), I’ll wire the health-check result into a
+                      - strong [ref=e1197]: copy/paste emitter
+                      - text: that your agents can drop into their “preflight” step.
+                - generic [ref=e1198]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+                    - button "Sources":
+                      - generic: Sources
+            - article [ref=e1199]:
+              - heading "You said:" [level=5] [ref=e1200]
+              - generic [ref=e1202]:
+                - generic [ref=e1207]:
+                  - text: "My Assessment of ChatGPT's Response All three sections are solid: 1. Health-check snippet — Good heuristics. The selectors for prompt box (textarea, [contenteditable=\"true\"][role=\"textbox\"]) and login CTA detection are reasonable. One minor note: our browser_evaluate tool takes a function parameter as a string, so the IIFE format works directly. 2. Cookie lifetime — Practical answer. \"Days to weeks, plan for on-demand refresh\" is the right operational stance. Weekly maintenance cadence as a default is reasonable. 3. Domain guidance — Correct. Normalize to chatgpt.com, touch chat.openai.com during init to capture redirect cookies. Smart. What to Paste Back to ChatGPT Here's the agent-mail schema it asked for, plus a follow-up: --- Agent-mail schema for the health-check emitter: Messages are sent via shell command: ./scripts/agent-mail-helper.sh send \"<to_agents>\" \"<subject>\" \"<body>\" [importance] - to_agents: comma-separated agent names (e.g. \"james\" or \"NavyBrook,WindyOtter\") — for auth alerts, send to the human operator - subject: string (convention: [bd-xxx] Topic where bd-xxx is the bead ID) - body: markdown string - importance: optional — normal (default), high, urgent The underlying JSON-RPC payload looks like: { \"sender_name\": \"QuietDune\", \"to\": [\"james\"], \"subject\": \"[bd-xxx] AUTH_REFRESH_REQUIRED\", \"body_md\": \"ChatGPT session expired. Agent detected redirect to login page.\\n\\nURL: https://chatgpt.com/auth/login\\nStatus: auth\\n\\nAction: Rerun"
+                  - code [ref=e1208]: node
+                  - text: scripts/init-chatgpt-storage-state.mjs
+                  - code [ref=e1209]: to refresh cookies.",
+                  - text: "\"importance\": \"urgent\" } So the agent preflight flow would be: 1. browser_navigate to the ChatGPT conversation URL 2. browser_evaluate the health-check function 3. If status !== \"ok\", run the shell command: ./scripts/agent-mail-helper.sh send \"james\" \"[bd-xxx] AUTH_REFRESH_REQUIRED\" \"ChatGPT session expired at URL: <href>. Status: <status>. Rerun init script.\" \"urgent\" 4. Abort the ChatGPT interaction (don't try to type into a login page) Please wire the health-check result into an exact shell command the agent can execute via Bash tool, including proper escaping. Also, please give us the full implementation plan as a numbered checklist we can execute step-by-step, incorporating everything we've discussed (directory setup, gitignore, init script, MCP reconfiguration, health-check preflight). --- That should get us the final implementation plan from ChatGPT. ✻ Crunched for 43s ❯ i am wondering if we are getting too sophisticated...and over engineering this ⏺ Honestly, yes. Let me step back. What you actually need: 1. An agent navigates to a ChatGPT conversation URL 2. It can read messages and post replies 3. It stays logged in across sessions What we've been designing: - Health-check evaluators with Cloudflare detection heuristics - Agent-mail alert pipelines for auth refresh - Custom MCP server reconfiguration - Domain redirect cookie capture chains - Bead-tracked auth refresh workflows That's a lot of machinery for \"browser remembers my cookies.\" What I'd actually do: 1. mkdir .browser-profiles + .gitignore it 2. Run one script to log in and save cookies 3. claude mcp add with --storage-state pointing to the file 4. Try it. See if it works. If cookies expire, you'll notice because the agent will snapshot a login page instead of a chat. You log in again. That's it. No alert system needed — you'll see it fail in the pane. The health check, the agent-mail integration, the refresh beads — those are optimizations for a problem we haven't even confirmed exists yet. We don't know how often cookies expire. We don't know if Cloudflare will be an issue. We're solving hypothetical problems. Want me to just build the minimal version and we see what happens?"
+                - generic [ref=e1210]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e1211]:
+              - heading "ChatGPT said:" [level=6] [ref=e1212]
+              - generic [ref=e1214]:
+                - generic [ref=e1218]:
+                  - paragraph [ref=e1219]:
+                    - text: You’re not over-engineering
+                    - strong [ref=e1220]: the core
+                    - text: (storage-state + isolated + custom MCP). That’s the minimal
+                    - emphasis [ref=e1221]: reliable
+                    - text: way to keep 4–8 concurrent agents logged in without Chrome profile locks.
+                  - paragraph [ref=e1222]:
+                    - text: You
+                    - emphasis [ref=e1223]: are
+                    - text: in danger of over-engineering
+                    - strong [ref=e1224]: the ops layer
+                    - text: (Cloudflare heuristics + agent-mail + beads)
+                    - emphasis [ref=e1225]: before you’ve observed failure modes
+                    - text: .
+                  - paragraph [ref=e1226]:
+                    - text: "So: ship"
+                    - strong [ref=e1227]: MVP auth persistence
+                    - text: first, then add alerts only if reality demands it.
+                  - separator [ref=e1228]
+                  - heading "Minimal version (do this first)" [level=2] [ref=e1229]
+                  - heading "0) Directory + gitignore" [level=3] [ref=e1230]
+                  - generic [ref=e1232]:
+                    - generic [ref=e1233]: bash
+                    - button "Copy" [ref=e1236] [cursor=pointer]:
+                      - img [ref=e1237]
+                      - text: Copy code
+                    - code [ref=e1240]:
+                      - generic [ref=e1241]:
+                        - generic [ref=e1242]: cd
+                        - text: /Users/james/Projects/agent-flywheel-integration
+                        - generic [ref=e1243]: mkdir
+                        - text: "-p .browser-profiles scripts"
+                        - generic [ref=e1244]: printf
+                        - generic [ref=e1245]: "\".browser-profiles/\\n\""
+                        - text: ">> .gitignore"
+                  - heading "1) Init script (manual login → export storage state)" [level=3] [ref=e1246]
+                  - paragraph [ref=e1247]:
+                    - text: Create
+                    - code [ref=e1248]: scripts/init-chatgpt-storage-state.mjs
+                    - text: with the script you already have.
+                  - paragraph [ref=e1249]: "Run:"
+                  - generic [ref=e1251]:
+                    - generic [ref=e1252]: bash
+                    - button "Copy" [ref=e1255] [cursor=pointer]:
+                      - img [ref=e1256]
+                      - text: Copy code
+                    - code [ref=e1259]:
+                      - generic [ref=e1260]: npm i -D playwright npx playwright install chromium node scripts/init-chatgpt-storage-state.mjs
+                  - heading "2) Disable built-in plugin" [level=3] [ref=e1261]
+                  - paragraph [ref=e1262]:
+                    - text: Edit
+                    - code [ref=e1263]: ~/.claude/settings.json
+                    - text: and disable
+                    - code [ref=e1264]: playwright@claude-plugins-official
+                    - text: (as you described).
+                  - heading "3) Add custom MCP server (local scope, absolute path)" [level=3] [ref=e1265]
+                  - generic [ref=e1267]:
+                    - generic [ref=e1268]: bash
+                    - button "Copy" [ref=e1271] [cursor=pointer]:
+                      - img [ref=e1272]
+                      - text: Copy code
+                    - code [ref=e1275]:
+                      - generic [ref=e1276]:
+                        - text: claude mcp add --scope
+                        - generic [ref=e1277]: local
+                        - text: playwright -- \ npx -y @playwright/mcp@latest \ --isolated \ --storage-state /Users/james/Projects/agent-flywheel-integration/.browser-profiles/chatgpt-state.json
+                  - paragraph [ref=e1278]: Restart Claude Code / your agents.
+                  - heading "4) Smoke test" [level=3] [ref=e1279]
+                  - paragraph [ref=e1280]: "Have one agent:"
+                  - list [ref=e1281]:
+                    - listitem [ref=e1282]:
+                      - paragraph [ref=e1283]:
+                        - code [ref=e1284]: browser_navigate
+                        - text: to a ChatGPT conversation URL on
+                        - code [ref=e1285]: https://chatgpt.com/...
+                    - listitem [ref=e1286]:
+                      - paragraph [ref=e1287]:
+                        - code [ref=e1288]: browser_snapshot
+                        - text: If it’s logged in, you’re done.
+                  - paragraph [ref=e1289]:
+                    - text: That’s the
+                    - emphasis [ref=e1290]: minimum viable
+                    - text: path.
+                  - separator [ref=e1291]
+                  - heading "Add the preflight + agent-mail only if you want it now" [level=2] [ref=e1292]
+                  - paragraph [ref=e1293]: If you do want it now (it’s not crazy—just extra), here’s the exact “wire it in” you asked for.
+                  - heading "A) Health-check evaluate function (IIFE string)" [level=3] [ref=e1294]
+                  - paragraph [ref=e1295]:
+                    - text: Use exactly this as the
+                    - code [ref=e1296]: browser_evaluate
+                    - text: "string:"
+                  - generic [ref=e1298]:
+                    - generic [ref=e1299]: js
+                    - button "Copy" [ref=e1302] [cursor=pointer]:
+                      - img [ref=e1303]
+                      - text: Copy code
+                    - code [ref=e1306]:
+                      - generic [ref=e1307]:
+                        - text: (
+                        - generic [ref=e1308]: () =>
+                        - text: "{"
+                        - generic [ref=e1309]: const
+                        - text: href = location.
+                        - generic [ref=e1310]: href
+                        - text: ;
+                        - generic [ref=e1311]: const
+                        - text: onAuth =
+                        - generic [ref=e1312]: /\/auth\/|\/login|\/account\/login|auth\.openai\.com/i
+                        - text: .
+                        - generic [ref=e1313]: test
+                        - text: (href);
+                        - generic [ref=e1314]: const
+                        - text: onChallenge =
+                        - generic [ref=e1315]: /challenges\.cloudflare\.com|cf-chl|__cf_chl/i
+                        - text: .
+                        - generic [ref=e1316]: test
+                        - text: (href) || !!
+                        - generic [ref=e1317]: document
+                        - text: .
+                        - generic [ref=e1318]: querySelector
+                        - text: (
+                        - generic [ref=e1319]: "'input[name=\"cf-turnstile-response\"], iframe[src*=\"challenges.cloudflare.com\"]'"
+                        - text: );
+                        - generic [ref=e1320]: const
+                        - text: promptBox =
+                        - generic [ref=e1321]: document
+                        - text: .
+                        - generic [ref=e1322]: querySelector
+                        - text: (
+                        - generic [ref=e1323]: "'textarea, [contenteditable=\"true\"][role=\"textbox\"]'"
+                        - text: );
+                        - generic [ref=e1324]: const
+                        - text: loginLinkOrButton =
+                        - generic [ref=e1325]: Array
+                        - text: .
+                        - generic [ref=e1326]: from
+                        - text: (
+                        - generic [ref=e1327]: document
+                        - text: .
+                        - generic [ref=e1328]: querySelectorAll
+                        - text: (
+                        - generic [ref=e1329]: "'a,button'"
+                        - text: )).
+                        - generic [ref=e1330]: some
+                        - text: (
+                        - generic [ref=e1332]: el
+                        - text: =>
+                        - generic [ref=e1333]: /log in|sign in/i
+                        - text: .
+                        - generic [ref=e1334]: test
+                        - text: ((el.
+                        - generic [ref=e1335]: textContent
+                        - text: "||"
+                        - generic [ref=e1336]: "\"\""
+                        - text: ).
+                        - generic [ref=e1337]: trim
+                        - text: ()) );
+                        - generic [ref=e1338]: let
+                        - text: status =
+                        - generic [ref=e1339]: "\"unknown\""
+                        - text: ;
+                        - generic [ref=e1340]: if
+                        - text: (onChallenge) status =
+                        - generic [ref=e1341]: "\"challenge\""
+                        - text: ;
+                        - generic [ref=e1342]: else
+                        - generic [ref=e1343]: if
+                        - text: (onAuth) status =
+                        - generic [ref=e1344]: "\"auth\""
+                        - text: ;
+                        - generic [ref=e1345]: else
+                        - generic [ref=e1346]: if
+                        - text: (promptBox) status =
+                        - generic [ref=e1347]: "\"ok\""
+                        - text: ;
+                        - generic [ref=e1348]: else
+                        - generic [ref=e1349]: if
+                        - text: (loginLinkOrButton) status =
+                        - generic [ref=e1350]: "\"logged_out\""
+                        - text: ;
+                        - generic [ref=e1351]: else
+                        - text: status =
+                        - generic [ref=e1352]: "\"unknown\""
+                        - text: ;
+                        - generic [ref=e1353]: return
+                        - text: "{ status, href,"
+                        - generic [ref=e1354]: hasPromptBox
+                        - text: ": !!promptBox,"
+                        - generic [ref=e1355]: sawLoginCta
+                        - text: ": !!loginLinkOrButton,"
+                        - generic [ref=e1356]: sawChallenge
+                        - text: ": !!onChallenge }; })()"
+                  - heading "B) Exact shell command emitter with safe escaping (Bash)" [level=3] [ref=e1357]
+                  - paragraph [ref=e1358]: "Assuming your Bash tool can run a small inline script, this is the cleanest way: pass values via env vars and avoid quote hell."
+                  - generic [ref=e1360]:
+                    - generic [ref=e1361]: bash
+                    - button "Copy" [ref=e1364] [cursor=pointer]:
+                      - img [ref=e1365]
+                      - text: Copy code
+                    - code [ref=e1368]:
+                      - generic [ref=e1369]:
+                        - text: BD_ID=
+                        - generic [ref=e1370]: "\"bd-xxx\""
+                        - text: STATUS=
+                        - generic [ref=e1371]: "\"auth\""
+                        - text: HREF=
+                        - generic [ref=e1372]: "\"https://chatgpt.com/auth/login\""
+                        - text: SUBJECT=
+                        - generic [ref=e1374]: "\"[$BD_ID"
+                        - text: "] AUTH_REFRESH_REQUIRED\" BODY_MD=$("
+                        - generic [ref=e1375]: cat
+                        - generic [ref=e1376]: "<<EOF ChatGPT session expired or not authenticated. URL: $HREF Status: $STATUS Action: Rerun: node scripts/init-chatgpt-storage-state.mjs EOF ) ./scripts/agent-mail-helper.sh send"
+                        - generic [ref=e1377]: "\"james\""
+                        - generic [ref=e1379]: "\"$SUBJECT"
+                        - text: "\""
+                        - generic [ref=e1381]: "\"$BODY_MD"
+                        - text: "\""
+                        - generic [ref=e1382]: "\"urgent\""
+                  - paragraph [ref=e1383]:
+                    - strong [ref=e1384]: "How the agent uses it:"
+                  - list [ref=e1385]:
+                    - listitem [ref=e1386]:
+                      - paragraph [ref=e1387]:
+                        - text: Run
+                        - code [ref=e1388]: browser_evaluate
+                        - text: → capture
+                        - code [ref=e1389]: "{status, href}"
+                    - listitem [ref=e1390]:
+                      - paragraph [ref=e1391]:
+                        - text: If
+                        - code [ref=e1392]: status != ok
+                        - text: ", set"
+                        - code [ref=e1393]: STATUS
+                        - text: and
+                        - code [ref=e1394]: HREF
+                        - text: accordingly, then run the block above, then abort.
+                  - paragraph [ref=e1395]: If you want a single-line command instead (less readable), you’ll fight escaping; the heredoc is the robust approach.
+                  - separator [ref=e1396]
+                  - heading "Full implementation checklist (step-by-step)" [level=2] [ref=e1397]
+                  - list [ref=e1398]:
+                    - listitem [ref=e1399]:
+                      - paragraph [ref=e1400]:
+                        - strong [ref=e1401]: Create local profile directory
+                      - list [ref=e1402]:
+                        - listitem [ref=e1403]:
+                          - paragraph [ref=e1404]:
+                            - code [ref=e1405]: mkdir -p .browser-profiles
+                        - listitem [ref=e1406]:
+                          - paragraph [ref=e1407]:
+                            - text: Add
+                            - code [ref=e1408]: .browser-profiles/
+                            - text: to
+                            - code [ref=e1409]: .gitignore
+                    - listitem [ref=e1410]:
+                      - paragraph [ref=e1411]:
+                        - strong [ref=e1412]: Add init script
+                      - list [ref=e1413]:
+                        - listitem [ref=e1414]:
+                          - paragraph [ref=e1415]:
+                            - text: Create
+                            - code [ref=e1416]: scripts/init-chatgpt-storage-state.mjs
+                        - listitem [ref=e1417]:
+                          - paragraph [ref=e1418]:
+                            - code [ref=e1419]: npm i -D playwright
+                        - listitem [ref=e1420]:
+                          - paragraph [ref=e1421]:
+                            - code [ref=e1422]: npx playwright install chromium
+                    - listitem [ref=e1423]:
+                      - paragraph [ref=e1424]:
+                        - strong [ref=e1425]: Generate storage state
+                      - list [ref=e1426]:
+                        - listitem [ref=e1427]:
+                          - paragraph [ref=e1428]:
+                            - code [ref=e1429]: node scripts/init-chatgpt-storage-state.mjs
+                        - listitem [ref=e1430]:
+                          - paragraph [ref=e1431]:
+                            - text: Confirm
+                            - code [ref=e1432]: .browser-profiles/chatgpt-state.json
+                            - text: exists
+                        - listitem [ref=e1433]:
+                          - paragraph [ref=e1434]:
+                            - text: (Optional)
+                            - code [ref=e1435]: chmod 600 .browser-profiles/chatgpt-state.json
+                    - listitem [ref=e1436]:
+                      - paragraph [ref=e1437]:
+                        - strong [ref=e1438]: Disable built-in Playwright plugin
+                      - list [ref=e1439]:
+                        - listitem [ref=e1440]:
+                          - paragraph [ref=e1441]:
+                            - text: In
+                            - code [ref=e1442]: ~/.claude/settings.json
+                            - text: ", disable"
+                            - code [ref=e1443]: playwright@claude-plugins-official
+                    - listitem [ref=e1444]:
+                      - paragraph [ref=e1445]:
+                        - strong [ref=e1446]: Register custom MCP server (local scope)
+                      - list [ref=e1447]:
+                        - listitem [ref=e1448]:
+                          - paragraph [ref=e1449]:
+                            - code [ref=e1450]: claude mcp add --scope local playwright -- npx -y @playwright/mcp@latest --isolated --storage-state <ABS_PATH>
+                        - listitem [ref=e1451]:
+                          - paragraph [ref=e1452]: Restart Claude Code / restart tmux agents
+                    - listitem [ref=e1453]:
+                      - paragraph [ref=e1454]:
+                        - strong [ref=e1455]: Smoke test
+                      - list [ref=e1456]:
+                        - listitem [ref=e1457]:
+                          - paragraph [ref=e1458]:
+                            - code [ref=e1459]: browser_navigate
+                            - text: to
+                            - code [ref=e1460]: https://chatgpt.com/c/<conversation-id>
+                        - listitem [ref=e1461]:
+                          - paragraph [ref=e1462]:
+                            - code [ref=e1463]: browser_snapshot
+                            - text: to confirm prompt UI visible
+                    - listitem [ref=e1464]:
+                      - paragraph [ref=e1465]:
+                        - strong [ref=e1466]: (Optional) Add preflight
+                      - list [ref=e1467]:
+                        - listitem [ref=e1468]:
+                          - paragraph [ref=e1469]: "Before any “type reply” action:"
+                          - list [ref=e1470]:
+                            - listitem [ref=e1471]:
+                              - paragraph [ref=e1472]:
+                                - code [ref=e1473]: browser_evaluate
+                                - text: health-check
+                            - listitem [ref=e1474]:
+                              - paragraph [ref=e1475]: if not ok → snapshot + agent-mail alert + abort
+                    - listitem [ref=e1476]:
+                      - paragraph [ref=e1477]:
+                        - strong [ref=e1478]: (Optional) Add “auth refresh” bead
+                      - list [ref=e1479]:
+                        - listitem [ref=e1480]:
+                          - paragraph [ref=e1481]: When you get an alert/failure, rerun init script and proceed.
+                  - separator [ref=e1482]
+                  - heading "The pragmatic call" [level=3] [ref=e1483]
+                  - paragraph [ref=e1484]:
+                    - text: Start with steps
+                    - strong [ref=e1485]: 1–6 only
+                    - text: . That’s not over-engineering; it’s the minimum to make concurrency work.
+                  - paragraph [ref=e1486]: "Then observe:"
+                  - list [ref=e1487]:
+                    - listitem [ref=e1488]:
+                      - paragraph [ref=e1489]: How often does state expire?
+                    - listitem [ref=e1490]:
+                      - paragraph [ref=e1491]: Do you ever hit challenges?
+                    - listitem [ref=e1492]:
+                      - paragraph [ref=e1493]: Do agents ever misfire on a login page?
+                  - paragraph [ref=e1494]: If the answer is “rare,” skip the ops layer. If it’s “annoying,” add the preflight + mail alert (which is small and clean).
+                - generic [ref=e1495]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e1496]:
+              - heading "You said:" [level=5] [ref=e1497]
+              - generic [ref=e1499]:
+                - generic [ref=e1504]: "ChatGPT and I are aligned. Steps 1-6 are the right scope. One flag: Disabling the plugin is global. Setting playwright@claude-plugins-official to false in ~/.claude/settings.json kills Playwright for ALL projects/sessions (including the other tmux agents and the besteman-land-cattle project). The custom MCP server you add with --scope local only applies to this one project. Two options: - Disable globally, add custom MCP per-project — cleanest, but you'd need to add a plain claude mcp add (without --storage-state) to any other project that needs browser tools - Keep plugin enabled, add custom server with a different name — e.g. claude mcp add --scope local playwright-chatgpt -- npx -y @playwright/mcp@latest --isolated --storage-state ... — gives you both: default browser tools everywhere + ChatGPT-authenticated browser as a second set of tools Other than that, the plan is ready to execute. Want to go?"
+                - generic [ref=e1505]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e1506]:
+              - heading "ChatGPT said:" [level=6] [ref=e1507]
+              - generic [ref=e1509]:
+                - generic [ref=e1513]:
+                  - paragraph [ref=e1514]: Go.
+                  - paragraph [ref=e1515]:
+                    - text: Keep the plugin enabled and add a
+                    - strong [ref=e1516]: second MCP server with a different name
+                    - text: . That gives you “browser tools everywhere” plus a dedicated “ChatGPT-authenticated browser” for this repo, with zero global blast radius.
+                  - heading "Execute steps 1–6 (with the naming tweak)" [level=2] [ref=e1517]
+                  - heading "1) Directory + gitignore" [level=3] [ref=e1518]
+                  - generic [ref=e1520]:
+                    - generic [ref=e1521]: bash
+                    - button "Copy" [ref=e1524] [cursor=pointer]:
+                      - img [ref=e1525]
+                      - text: Copy code
+                    - code [ref=e1528]:
+                      - generic [ref=e1529]:
+                        - generic [ref=e1530]: cd
+                        - text: /Users/james/Projects/agent-flywheel-integration
+                        - generic [ref=e1531]: mkdir
+                        - text: "-p .browser-profiles scripts"
+                        - generic [ref=e1532]: printf
+                        - generic [ref=e1533]: "\".browser-profiles/\\n\""
+                        - text: ">> .gitignore"
+                  - heading "2) Init script (manual login → export storage state)" [level=3] [ref=e1534]
+                  - paragraph [ref=e1535]:
+                    - text: Create
+                    - code [ref=e1536]: scripts/init-chatgpt-storage-state.mjs
+                    - text: (the one we already drafted).
+                  - paragraph [ref=e1537]: "Then:"
+                  - generic [ref=e1539]:
+                    - generic [ref=e1540]: bash
+                    - button "Copy" [ref=e1543] [cursor=pointer]:
+                      - img [ref=e1544]
+                      - text: Copy code
+                    - code [ref=e1547]:
+                      - generic [ref=e1548]:
+                        - text: npm i -D playwright npx playwright install chromium node scripts/init-chatgpt-storage-state.mjs
+                        - generic [ref=e1549]: chmod
+                        - text: 600 .browser-profiles/chatgpt-state.json
+                  - heading "3) Add a second MCP server (local scope, unique name)" [level=3] [ref=e1550]:
+                    - text: 3) Add a
+                    - emphasis [ref=e1551]: second
+                    - text: MCP server (local scope, unique name)
+                  - paragraph [ref=e1552]:
+                    - text: Do
+                    - strong [ref=e1553]: not
+                    - text: disable the plugin.
+                  - generic [ref=e1555]:
+                    - generic [ref=e1556]: bash
+                    - button "Copy" [ref=e1559] [cursor=pointer]:
+                      - img [ref=e1560]
+                      - text: Copy code
+                    - code [ref=e1563]:
+                      - generic [ref=e1564]:
+                        - text: claude mcp add --scope
+                        - generic [ref=e1565]: local
+                        - text: playwright-chatgpt -- \ npx -y @playwright/mcp@latest \ --isolated \ --storage-state /Users/james/Projects/agent-flywheel-integration/.browser-profiles/chatgpt-state.json
+                  - paragraph [ref=e1566]: Restart the Claude Code sessions for this repo (your tmux agents).
+                  - heading "4) Smoke test" [level=3] [ref=e1567]
+                  - paragraph [ref=e1568]:
+                    - text: In a Claude Code agent in this repo, use the tools for
+                    - strong [ref=e1569]:
+                      - code [ref=e1570]: playwright-chatgpt
+                    - text: "to:"
+                  - list [ref=e1571]:
+                    - listitem [ref=e1572]:
+                      - paragraph [ref=e1573]:
+                        - text: navigate to a
+                        - code [ref=e1574]: https://chatgpt.com/c/...
+                        - text: conversation URL
+                    - listitem [ref=e1575]:
+                      - paragraph [ref=e1576]: snapshot and confirm you see the prompt UI
+                  - heading "5) Operational rule" [level=3] [ref=e1577]
+                  - list [ref=e1578]:
+                    - listitem [ref=e1579]:
+                      - paragraph [ref=e1580]:
+                        - text: "If it ever lands on login: rerun"
+                        - code [ref=e1581]: node scripts/init-chatgpt-storage-state.mjs
+                        - text: and keep going.
+                  - paragraph [ref=e1582]: That’s it.
+                - generic [ref=e1583]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e1584]:
+              - heading "You said:" [level=5] [ref=e1585]
+              - generic [ref=e1587]:
+                - generic [ref=e1592]: "✅ Success! The playwright-chatgpt setup is working perfectly. I'm QuietDune, a Claude Code agent running in the agent-flywheel-integration project. I was able to: 1. Navigate to this ChatGPT conversation using the playwright-chatgpt MCP server 2. See that I'm logged in as james@7dmanufacturing.com 3. Read the entire conversation from the beginning 4. Interact with the page to post this reply The persistent browser session is working - no login required. All the browser tools (navigate, snapshot, click, type, evaluate) are functional. The integration is ready for multi-agent collaboration! 🎉"
+                - generic [ref=e1593]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e1594]:
+              - heading "ChatGPT said:" [level=6] [ref=e1595]
+              - generic [ref=e1597]:
+                - generic [ref=e1601]:
+                  - paragraph [ref=e1602]: Good. That’s the result you wanted.
+                  - paragraph [ref=e1603]: "You now have:"
+                  - list [ref=e1604]:
+                    - listitem [ref=e1605]:
+                      - paragraph [ref=e1606]: Default Playwright (plugin) for general browsing
+                    - listitem [ref=e1607]:
+                      - paragraph [ref=e1608]:
+                        - code [ref=e1609]: playwright-chatgpt
+                        - text: for authenticated ChatGPT sessions
+                    - listitem [ref=e1610]:
+                      - paragraph [ref=e1611]: Isolated contexts per agent
+                    - listitem [ref=e1612]:
+                      - paragraph [ref=e1613]: Shared storage-state file
+                    - listitem [ref=e1614]:
+                      - paragraph [ref=e1615]: No profile locking
+                    - listitem [ref=e1616]:
+                      - paragraph [ref=e1617]: No login churn
+                  - paragraph [ref=e1618]: That’s the correct architecture for multi-agent coordination.
+                  - separator [ref=e1619]
+                  - heading "What This Actually Unlocks" [level=2] [ref=e1620]
+                  - paragraph [ref=e1621]: "You now have a deterministic bridge between:"
+                  - list [ref=e1622]:
+                    - listitem [ref=e1623]:
+                      - paragraph [ref=e1624]: Agent Flywheel bead/task system
+                    - listitem [ref=e1625]:
+                      - paragraph [ref=e1626]: Live ChatGPT conversations
+                    - listitem [ref=e1627]:
+                      - paragraph [ref=e1628]: Multi-agent browser-driven collaboration
+                  - paragraph [ref=e1629]: "This means agents can:"
+                  - list [ref=e1630]:
+                    - listitem [ref=e1631]:
+                      - paragraph [ref=e1632]: Read upstream reasoning from ChatGPT threads
+                    - listitem [ref=e1633]:
+                      - paragraph [ref=e1634]: Post structured replies
+                    - listitem [ref=e1635]:
+                      - paragraph [ref=e1636]: Use ChatGPT as a shared reasoning surface
+                    - listitem [ref=e1637]:
+                      - paragraph [ref=e1638]: Coordinate across tmux panes via a single persistent session
+                  - paragraph [ref=e1639]: That’s powerful.
+                  - separator [ref=e1640]
+                  - heading "Important Guardrails (Minimal, Not Over-Engineered)" [level=2] [ref=e1641]
+                  - paragraph [ref=e1642]: "Now that it works, keep it stable:"
+                  - heading "1. Do not let multiple agents type simultaneously into the same ChatGPT thread" [level=3] [ref=e1643]:
+                    - text: 1. Do
+                    - strong [ref=e1644]: not
+                    - text: let multiple agents type simultaneously into the same ChatGPT thread
+                  - paragraph [ref=e1645]: Race conditions will happen.
+                  - paragraph [ref=e1646]: "Solution:"
+                  - list [ref=e1647]:
+                    - listitem [ref=e1648]:
+                      - paragraph [ref=e1649]: Assign one “ChatGPT writer agent”
+                    - listitem [ref=e1650]:
+                      - paragraph [ref=e1651]: Others can read via snapshot/evaluate
+                    - listitem [ref=e1652]:
+                      - paragraph [ref=e1653]: Writing goes through a queue/bead
+                  - paragraph [ref=e1654]: You already have the orchestration layer for that.
+                  - separator [ref=e1655]
+                  - heading "2. Treat .browser-profiles/chatgpt-state.json as a credential" [level=3] [ref=e1656]:
+                    - text: 2. Treat
+                    - code [ref=e1657]: .browser-profiles/chatgpt-state.json
+                    - text: as a credential
+                  - paragraph [ref=e1658]: "You already set:"
+                  - generic [ref=e1660]:
+                    - generic [ref=e1661]: bash
+                    - button "Copy" [ref=e1664] [cursor=pointer]:
+                      - img [ref=e1665]
+                      - text: Copy code
+                    - code [ref=e1668]:
+                      - generic [ref=e1669]:
+                        - generic [ref=e1670]: chmod
+                        - text: "600"
+                  - paragraph [ref=e1671]: "Do not:"
+                  - list [ref=e1672]:
+                    - listitem [ref=e1673]:
+                      - paragraph [ref=e1674]: Commit it
+                    - listitem [ref=e1675]:
+                      - paragraph [ref=e1676]: Sync it to cloud drives
+                    - listitem [ref=e1677]:
+                      - paragraph [ref=e1678]: Copy it between machines casually
+                  - paragraph [ref=e1679]: If compromised, regenerate.
+                  - separator [ref=e1680]
+                  - heading "3. Expect occasional session expiration" [level=3] [ref=e1681]
+                  - paragraph [ref=e1682]: "When it happens:"
+                  - list [ref=e1683]:
+                    - listitem [ref=e1684]:
+                      - paragraph [ref=e1685]: Page lands on login
+                    - listitem [ref=e1686]:
+                      - paragraph [ref=e1687]: You rerun init script
+                    - listitem [ref=e1688]:
+                      - paragraph [ref=e1689]: Everything resumes
+                  - paragraph [ref=e1690]: No need for automation until it becomes frequent.
+                  - separator [ref=e1691]
+                  - heading "Architectural Maturity Check" [level=2] [ref=e1692]
+                  - paragraph [ref=e1693]: This is not over-engineered.
+                  - paragraph [ref=e1694]: "You implemented:"
+                  - list [ref=e1695]:
+                    - listitem [ref=e1696]:
+                      - paragraph [ref=e1697]: Persistent auth
+                    - listitem [ref=e1698]:
+                      - paragraph [ref=e1699]: Concurrency-safe isolation
+                    - listitem [ref=e1700]:
+                      - paragraph [ref=e1701]: Local-only configuration
+                    - listitem [ref=e1702]:
+                      - paragraph [ref=e1703]: Project-scoped behavior
+                    - listitem [ref=e1704]:
+                      - paragraph [ref=e1705]: Zero global blast radius
+                  - paragraph [ref=e1706]: That’s clean engineering.
+                  - separator [ref=e1707]
+                  - paragraph [ref=e1708]: "If you want the next level, the real question becomes:"
+                  - paragraph [ref=e1709]:
+                    - text: Do you want agents merely
+                    - emphasis [ref=e1710]: posting
+                    - text: into ChatGPT…
+                  - paragraph [ref=e1711]: Or do you want a structured protocol where ChatGPT becomes a formal reasoning co-processor in the Flywheel system?
+                  - paragraph [ref=e1712]: That’s a different tier of sophistication.
+                  - paragraph [ref=e1713]: For now — ship it.
+                - generic [ref=e1714]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e1715]:
+              - heading "You said:" [level=5] [ref=e1716]
+              - generic [ref=e1718]:
+                - generic [ref=e1723]: How would that look? The structured protocol where ChatGPT becomes a formal reasoning co-processor in the Flywheel system? What would the architecture and workflow be? How would agents interact with you as a reasoning partner versus just posting messages?
+                - generic [ref=e1724]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e1725]:
+              - heading "ChatGPT said:" [level=6] [ref=e1726]
+              - generic [ref=e1728]:
+                - generic [ref=e1732]:
+                  - paragraph [ref=e1733]:
+                    - text: "Here’s what “ChatGPT as a formal reasoning co-processor” looks like in Flywheel terms:"
+                    - strong [ref=e1734]: ChatGPT becomes a stateful, shared “Reasoning Surface + Arbiter”
+                    - text: that agents consult through a
+                    - emphasis [ref=e1735]: protocol
+                    - text: ", not ad-hoc chat. You stop “posting messages” and start doing"
+                    - strong [ref=e1736]: request/response RPC over a conversation thread
+                    - text: ", with a predictable schema and lifecycle tied to beads."
+                  - heading "Core idea" [level=2] [ref=e1737]
+                  - list [ref=e1738]:
+                    - listitem [ref=e1739]:
+                      - paragraph [ref=e1740]:
+                        - strong [ref=e1741]: Flywheel is your execution fabric
+                        - text: (agents do work).
+                    - listitem [ref=e1742]:
+                      - paragraph [ref=e1743]:
+                        - strong [ref=e1744]: ChatGPT thread is your coordination brain
+                        - text: (decisions, synthesis, arbitration, acceptance).
+                    - listitem [ref=e1745]:
+                      - paragraph [ref=e1746]:
+                        - text: Agents interact with ChatGPT by posting
+                        - strong [ref=e1747]: structured packets
+                        - text: and reading
+                        - strong [ref=e1748]: structured replies
+                        - text: .
+                  - paragraph [ref=e1749]: "This gives you: reproducibility, traceability, gating, and fewer “lost in chat” decisions."
+                  - separator [ref=e1750]
+                  - heading "Architecture" [level=1] [ref=e1751]
+                  - heading "Components" [level=2] [ref=e1752]
+                  - list [ref=e1753]:
+                    - listitem [ref=e1754]:
+                      - paragraph [ref=e1755]:
+                        - strong [ref=e1756]: Beads (work units)
+                  - list [ref=e1757]:
+                    - listitem [ref=e1758]:
+                      - paragraph [ref=e1759]: Source of truth for what’s being attempted.
+                    - listitem [ref=e1760]:
+                      - paragraph [ref=e1761]: "Each bead has: goal, constraints, artifacts, owner, status, acceptance tests."
+                  - list [ref=e1762]:
+                    - listitem [ref=e1763]:
+                      - paragraph [ref=e1764]:
+                        - strong [ref=e1765]: Agent-mail queue
+                  - list [ref=e1766]:
+                    - listitem [ref=e1767]:
+                      - paragraph [ref=e1768]: Still the internal transport for execution coordination.
+                  - list [ref=e1769]:
+                    - listitem [ref=e1770]:
+                      - paragraph [ref=e1771]:
+                        - strong [ref=e1772]: ChatGPT Reasoning Thread (CRT)
+                  - list [ref=e1773]:
+                    - listitem [ref=e1774]:
+                      - paragraph [ref=e1775]: A dedicated conversation per “program” (or per major workstream).
+                    - listitem [ref=e1776]:
+                      - paragraph [ref=e1777]: "ChatGPT acts as:"
+                      - list [ref=e1778]:
+                        - listitem [ref=e1779]:
+                          - paragraph [ref=e1780]:
+                            - strong [ref=e1781]: Planner
+                            - text: (decompose bead → tasks)
+                        - listitem [ref=e1782]:
+                          - paragraph [ref=e1783]:
+                            - strong [ref=e1784]: Arbiter
+                            - text: (choose between conflicting agent outputs)
+                        - listitem [ref=e1785]:
+                          - paragraph [ref=e1786]:
+                            - strong [ref=e1787]: Sentry
+                            - text: (spot inconsistencies, missing constraints)
+                        - listitem [ref=e1788]:
+                          - paragraph [ref=e1789]:
+                            - strong [ref=e1790]: Integrator
+                            - text: (merge into a coherent patch plan / spec)
+                  - list [ref=e1791]:
+                    - listitem [ref=e1792]:
+                      - paragraph [ref=e1793]:
+                        - strong [ref=e1794]: Protocol Layer
+                  - list [ref=e1795]:
+                    - listitem [ref=e1796]:
+                      - paragraph [ref=e1797]: Defines message envelopes, required fields, expected response shapes.
+                    - listitem [ref=e1798]:
+                      - paragraph [ref=e1799]: Prevents free-form drift.
+                  - list [ref=e1800]:
+                    - listitem [ref=e1801]:
+                      - paragraph [ref=e1802]:
+                        - strong [ref=e1803]: ChatGPT Bridge Agent (Writer / Reader)
+                  - list [ref=e1804]:
+                    - listitem [ref=e1805]:
+                      - paragraph [ref=e1806]: One agent is the only writer to the CRT (prevents collisions).
+                    - listitem [ref=e1807]:
+                      - paragraph [ref=e1808]: "It:"
+                      - list [ref=e1809]:
+                        - listitem [ref=e1810]:
+                          - paragraph [ref=e1811]:
+                            - text: posts packets to ChatGPT via
+                            - code [ref=e1812]: playwright-chatgpt
+                        - listitem [ref=e1813]:
+                          - paragraph [ref=e1814]: reads replies
+                        - listitem [ref=e1815]:
+                          - paragraph [ref=e1816]: parses them
+                        - listitem [ref=e1817]:
+                          - paragraph [ref=e1818]: emits new bead updates / tasks via agent-mail
+                  - paragraph [ref=e1819]:
+                    - text: "This is the key move:"
+                    - strong [ref=e1820]: one I/O gateway agent
+                    - text: .
+                  - separator [ref=e1821]
+                  - heading "Workflow" [level=1] [ref=e1822]
+                  - heading "Roles" [level=2] [ref=e1823]
+                  - list [ref=e1824]:
+                    - listitem [ref=e1825]:
+                      - paragraph [ref=e1826]:
+                        - strong [ref=e1827]: Executor agents
+                        - text: ": do implementation, tests, research, diffs."
+                    - listitem [ref=e1828]:
+                      - paragraph [ref=e1829]:
+                        - strong [ref=e1830]: Bridge agent (QuietDune / dedicated)
+                        - text: ": talks to ChatGPT thread."
+                    - listitem [ref=e1831]:
+                      - paragraph [ref=e1832]:
+                        - strong [ref=e1833]: ChatGPT
+                        - text: ": responds with decisions and structured outputs."
+                  - heading "Bead lifecycle with ChatGPT co-processor" [level=2] [ref=e1834]
+                  - heading "Stage 0 — Bead intake" [level=3] [ref=e1835]
+                  - paragraph [ref=e1836]: "Bead created with:"
+                  - list [ref=e1837]:
+                    - listitem [ref=e1838]:
+                      - paragraph [ref=e1839]: objective, constraints, environment, “definition of done”
+                  - heading "Stage 1 — “Request for Plan” (RFP) packet to ChatGPT" [level=3] [ref=e1840]
+                  - paragraph [ref=e1841]: "Bridge posts a packet:"
+                  - list [ref=e1842]:
+                    - listitem [ref=e1843]:
+                      - paragraph [ref=e1844]: context summary (short)
+                    - listitem [ref=e1845]:
+                      - paragraph [ref=e1846]: constraints (hard)
+                    - listitem [ref=e1847]:
+                      - paragraph [ref=e1848]: requested output type (plan, arbitration, spec, test strategy)
+                    - listitem [ref=e1849]:
+                      - paragraph [ref=e1850]: artifacts available (links, diffs, logs)
+                  - paragraph [ref=e1851]: "ChatGPT returns:"
+                  - list [ref=e1852]:
+                    - listitem [ref=e1853]:
+                      - paragraph [ref=e1854]: task decomposition (with dependencies)
+                    - listitem [ref=e1855]:
+                      - paragraph [ref=e1856]: risks
+                    - listitem [ref=e1857]:
+                      - paragraph [ref=e1858]: acceptance tests
+                    - listitem [ref=e1859]:
+                      - paragraph [ref=e1860]: required evidence
+                  - paragraph [ref=e1861]: "Bridge converts that into:"
+                  - list [ref=e1862]:
+                    - listitem [ref=e1863]:
+                      - paragraph [ref=e1864]: agent-mail tasks to executor agents
+                    - listitem [ref=e1865]:
+                      - paragraph [ref=e1866]: updates bead state
+                  - heading "Stage 2 — Execution" [level=3] [ref=e1867]
+                  - paragraph [ref=e1868]: "Executor agents run tasks, produce artifacts:"
+                  - list [ref=e1869]:
+                    - listitem [ref=e1870]:
+                      - paragraph [ref=e1871]: patches, diffs, logs, benchmark results, screenshots, tables
+                  - paragraph [ref=e1872]: They post results back to agent-mail.
+                  - heading "Stage 3 — “Evidence bundle” packet to ChatGPT" [level=3] [ref=e1873]
+                  - paragraph [ref=e1874]: "Bridge posts:"
+                  - list [ref=e1875]:
+                    - listitem [ref=e1876]:
+                      - paragraph [ref=e1877]: the evidence bundle (structured)
+                    - listitem [ref=e1878]:
+                      - paragraph [ref=e1879]: "explicit question: “accept/reject? what’s missing? choose among options?”"
+                  - paragraph [ref=e1880]: "ChatGPT returns:"
+                  - list [ref=e1881]:
+                    - listitem [ref=e1882]:
+                      - paragraph [ref=e1883]: verdict (accept / revise / reject)
+                    - listitem [ref=e1884]:
+                      - paragraph [ref=e1885]: missing items
+                    - listitem [ref=e1886]:
+                      - paragraph [ref=e1887]: merge plan / patch strategy
+                    - listitem [ref=e1888]:
+                      - paragraph [ref=e1889]: priority ordering
+                  - paragraph [ref=e1890]: Bridge updates bead and dispatches follow-ups.
+                  - heading "Stage 4 — Final acceptance" [level=3] [ref=e1891]
+                  - paragraph [ref=e1892]: "Once ChatGPT says “accept,” bridge posts final summary to CRT:"
+                  - list [ref=e1893]:
+                    - listitem [ref=e1894]:
+                      - paragraph [ref=e1895]: what changed
+                    - listitem [ref=e1896]:
+                      - paragraph [ref=e1897]: evidence
+                    - listitem [ref=e1898]:
+                      - paragraph [ref=e1899]: what remains
+                  - paragraph [ref=e1900]: Bead closes.
+                  - separator [ref=e1901]
+                  - heading "The Protocol (concrete)" [level=1] [ref=e1902]
+                  - heading "Message Envelope (agent → ChatGPT)" [level=2] [ref=e1903]
+                  - paragraph [ref=e1904]: "Use a rigid wrapper so you can parse it reliably:"
+                  - generic [ref=e1906]:
+                    - generic [ref=e1907]: json
+                    - button "Copy" [ref=e1910] [cursor=pointer]:
+                      - img [ref=e1911]
+                      - text: Copy code
+                    - code [ref=e1914]:
+                      - generic [ref=e1915]:
+                        - generic [ref=e1916]: "{"
+                        - generic [ref=e1917]: "\"proto\""
+                        - generic [ref=e1918]: ":"
+                        - generic [ref=e1919]: "\"flywheel.chatgpt.v1\""
+                        - generic [ref=e1920]: ","
+                        - generic [ref=e1921]: "\"bead_id\""
+                        - generic [ref=e1922]: ":"
+                        - generic [ref=e1923]: "\"bd-1j5d\""
+                        - generic [ref=e1924]: ","
+                        - generic [ref=e1925]: "\"msg_type\""
+                        - generic [ref=e1926]: ":"
+                        - generic [ref=e1927]: "\"RFP_PLAN\""
+                        - generic [ref=e1928]: ","
+                        - generic [ref=e1929]: "\"sender\""
+                        - generic [ref=e1930]: ":"
+                        - generic [ref=e1931]: "\"QuietDune\""
+                        - generic [ref=e1932]: ","
+                        - generic [ref=e1933]: "\"ts\""
+                        - generic [ref=e1934]: ":"
+                        - generic [ref=e1935]: "\"2026-02-12T14:22:00-06:00\""
+                        - generic [ref=e1936]: ","
+                        - generic [ref=e1937]: "\"context\""
+                        - generic [ref=e1938]: ":"
+                        - generic [ref=e1939]: "{"
+                        - generic [ref=e1940]: "\"repo\""
+                        - generic [ref=e1941]: ":"
+                        - generic [ref=e1942]: "\"agent-flywheel-integration\""
+                        - generic [ref=e1943]: ","
+                        - generic [ref=e1944]: "\"branch\""
+                        - generic [ref=e1945]: ":"
+                        - generic [ref=e1946]: "\"main\""
+                        - generic [ref=e1947]: ","
+                        - generic [ref=e1948]: "\"goal\""
+                        - generic [ref=e1949]: ":"
+                        - generic [ref=e1950]: "\"Make ChatGPT persistent session available to multi-agent runtime\""
+                        - generic [ref=e1951]: ","
+                        - generic [ref=e1952]: "\"constraints\""
+                        - generic [ref=e1953]: ":"
+                        - generic [ref=e1954]: "["
+                        - generic [ref=e1955]: "\"isolated\""
+                        - generic [ref=e1956]: ","
+                        - generic [ref=e1957]: "\"no profile locks\""
+                        - generic [ref=e1958]: ","
+                        - generic [ref=e1959]: "\"local scope config\""
+                        - generic [ref=e1960]: "]"
+                        - generic [ref=e1961]: "}"
+                        - generic [ref=e1962]: ","
+                        - generic [ref=e1963]: "\"inputs\""
+                        - generic [ref=e1964]: ":"
+                        - generic [ref=e1965]: "{"
+                        - generic [ref=e1966]: "\"artifacts\""
+                        - generic [ref=e1967]: ":"
+                        - generic [ref=e1968]: "["
+                        - generic [ref=e1969]: "{"
+                        - generic [ref=e1970]: "\"type\""
+                        - generic [ref=e1971]: ":"
+                        - generic [ref=e1972]: "\"log\""
+                        - generic [ref=e1973]: ","
+                        - generic [ref=e1974]: "\"label\""
+                        - generic [ref=e1975]: ":"
+                        - generic [ref=e1976]: "\"mcp help output\""
+                        - generic [ref=e1977]: ","
+                        - generic [ref=e1978]: "\"content\""
+                        - generic [ref=e1979]: ":"
+                        - generic [ref=e1980]: "\"...\""
+                        - generic [ref=e1981]: "}"
+                        - generic [ref=e1982]: ","
+                        - generic [ref=e1983]: "{"
+                        - generic [ref=e1984]: "\"type\""
+                        - generic [ref=e1985]: ":"
+                        - generic [ref=e1986]: "\"config\""
+                        - generic [ref=e1987]: ","
+                        - generic [ref=e1988]: "\"label\""
+                        - generic [ref=e1989]: ":"
+                        - generic [ref=e1990]: "\".mcp.json\""
+                        - generic [ref=e1991]: ","
+                        - generic [ref=e1992]: "\"content\""
+                        - generic [ref=e1993]: ":"
+                        - generic [ref=e1994]: "\"{...}\""
+                        - generic [ref=e1995]: "}"
+                        - generic [ref=e1996]: "]"
+                        - generic [ref=e1997]: ","
+                        - generic [ref=e1998]: "\"questions\""
+                        - generic [ref=e1999]: ":"
+                        - generic [ref=e2000]: "["
+                        - generic [ref=e2001]: "\"Propose minimal architecture\""
+                        - generic [ref=e2002]: ","
+                        - generic [ref=e2003]: "\"Call out gotchas\""
+                        - generic [ref=e2004]: "]"
+                        - generic [ref=e2005]: "}"
+                        - generic [ref=e2006]: ","
+                        - generic [ref=e2007]: "\"requested_output\""
+                        - generic [ref=e2008]: ":"
+                        - generic [ref=e2009]: "{"
+                        - generic [ref=e2010]: "\"format\""
+                        - generic [ref=e2011]: ":"
+                        - generic [ref=e2012]: "\"json\""
+                        - generic [ref=e2013]: ","
+                        - generic [ref=e2014]: "\"fields\""
+                        - generic [ref=e2015]: ":"
+                        - generic [ref=e2016]: "["
+                        - generic [ref=e2017]: "\"plan\""
+                        - generic [ref=e2018]: ","
+                        - generic [ref=e2019]: "\"risks\""
+                        - generic [ref=e2020]: ","
+                        - generic [ref=e2021]: "\"acceptance_tests\""
+                        - generic [ref=e2022]: ","
+                        - generic [ref=e2023]: "\"next_actions\""
+                        - generic [ref=e2024]: "]"
+                        - generic [ref=e2025]: "}"
+                        - generic [ref=e2026]: "}"
+                  - heading "ChatGPT Response Envelope (ChatGPT → agent)" [level=3] [ref=e2027]
+                  - paragraph [ref=e2028]: "Ask ChatGPT to respond with a parseable structure:"
+                  - generic [ref=e2030]:
+                    - generic [ref=e2031]: json
+                    - button "Copy" [ref=e2034] [cursor=pointer]:
+                      - img [ref=e2035]
+                      - text: Copy code
+                    - code [ref=e2038]:
+                      - generic [ref=e2039]:
+                        - generic [ref=e2040]: "{"
+                        - generic [ref=e2041]: "\"proto\""
+                        - generic [ref=e2042]: ":"
+                        - generic [ref=e2043]: "\"flywheel.chatgpt.v1\""
+                        - generic [ref=e2044]: ","
+                        - generic [ref=e2045]: "\"bead_id\""
+                        - generic [ref=e2046]: ":"
+                        - generic [ref=e2047]: "\"bd-1j5d\""
+                        - generic [ref=e2048]: ","
+                        - generic [ref=e2049]: "\"msg_type\""
+                        - generic [ref=e2050]: ":"
+                        - generic [ref=e2051]: "\"RFP_PLAN_RESPONSE\""
+                        - generic [ref=e2052]: ","
+                        - generic [ref=e2053]: "\"verdict\""
+                        - generic [ref=e2054]: ":"
+                        - generic [ref=e2055]: "\"ok\""
+                        - generic [ref=e2056]: ","
+                        - generic [ref=e2057]: "\"plan\""
+                        - generic [ref=e2058]: ":"
+                        - generic [ref=e2059]: "["
+                        - generic [ref=e2060]: "{"
+                        - generic [ref=e2061]: "\"step\""
+                        - generic [ref=e2062]: ":"
+                        - generic [ref=e2063]: "1"
+                        - generic [ref=e2064]: ","
+                        - generic [ref=e2065]: "\"action\""
+                        - generic [ref=e2066]: ":"
+                        - generic [ref=e2067]: "\"...\""
+                        - generic [ref=e2068]: ","
+                        - generic [ref=e2069]: "\"owner\""
+                        - generic [ref=e2070]: ":"
+                        - generic [ref=e2071]: "\"Bridge\""
+                        - generic [ref=e2072]: ","
+                        - generic [ref=e2073]: "\"evidence\""
+                        - generic [ref=e2074]: ":"
+                        - generic [ref=e2075]: "\"...\""
+                        - generic [ref=e2076]: "}"
+                        - generic [ref=e2077]: ","
+                        - generic [ref=e2078]: "{"
+                        - generic [ref=e2079]: "\"step\""
+                        - generic [ref=e2080]: ":"
+                        - generic [ref=e2081]: "2"
+                        - generic [ref=e2082]: ","
+                        - generic [ref=e2083]: "\"action\""
+                        - generic [ref=e2084]: ":"
+                        - generic [ref=e2085]: "\"...\""
+                        - generic [ref=e2086]: ","
+                        - generic [ref=e2087]: "\"owner\""
+                        - generic [ref=e2088]: ":"
+                        - generic [ref=e2089]: "\"Executor\""
+                        - generic [ref=e2090]: ","
+                        - generic [ref=e2091]: "\"evidence\""
+                        - generic [ref=e2092]: ":"
+                        - generic [ref=e2093]: "\"...\""
+                        - generic [ref=e2094]: "}"
+                        - generic [ref=e2095]: "]"
+                        - generic [ref=e2096]: ","
+                        - generic [ref=e2097]: "\"risks\""
+                        - generic [ref=e2098]: ":"
+                        - generic [ref=e2099]: "["
+                        - generic [ref=e2100]: "{"
+                        - generic [ref=e2101]: "\"risk\""
+                        - generic [ref=e2102]: ":"
+                        - generic [ref=e2103]: "\"cookie expiry\""
+                        - generic [ref=e2104]: ","
+                        - generic [ref=e2105]: "\"mitigation\""
+                        - generic [ref=e2106]: ":"
+                        - generic [ref=e2107]: "\"rerun init script\""
+                        - generic [ref=e2108]: "}"
+                        - generic [ref=e2109]: "]"
+                        - generic [ref=e2110]: ","
+                        - generic [ref=e2111]: "\"acceptance_tests\""
+                        - generic [ref=e2112]: ":"
+                        - generic [ref=e2113]: "["
+                        - generic [ref=e2114]: "\"Agent can navigate to chatgpt.com/c/... and see prompt UI without login\""
+                        - generic [ref=e2115]: "]"
+                        - generic [ref=e2116]: ","
+                        - generic [ref=e2117]: "\"next_actions\""
+                        - generic [ref=e2118]: ":"
+                        - generic [ref=e2119]: "["
+                        - generic [ref=e2120]: "{"
+                        - generic [ref=e2121]: "\"task\""
+                        - generic [ref=e2122]: ":"
+                        - generic [ref=e2123]: "\"Implement init script\""
+                        - generic [ref=e2124]: ","
+                        - generic [ref=e2125]: "\"assign_to\""
+                        - generic [ref=e2126]: ":"
+                        - generic [ref=e2127]: "\"ExecutorA\""
+                        - generic [ref=e2128]: "}"
+                        - generic [ref=e2129]: "]"
+                        - generic [ref=e2130]: "}"
+                  - paragraph [ref=e2131]:
+                    - text: Bridge parses
+                    - code [ref=e2132]: next_actions
+                    - text: → creates bead tasks.
+                  - separator [ref=e2133]
+                  - heading "How agents interact with ChatGPT as a partner (not just posting)" [level=1] [ref=e2134]
+                  - heading "Interaction modes" [level=2] [ref=e2135]
+                  - heading "1) Planner mode" [level=3] [ref=e2136]
+                  - paragraph [ref=e2137]:
+                    - strong [ref=e2138]: "Input:"
+                    - text: “Here’s the bead + constraints.”
+                    - strong [ref=e2139]: "Output:"
+                    - text: task graph + acceptance tests.
+                  - heading "2) Arbiter mode (most valuable)" [level=3] [ref=e2140]
+                  - paragraph [ref=e2141]:
+                    - text: Agents disagree. You post two or three candidate solutions with evidence.
+                    - text: ChatGPT chooses and explains tradeoffs, and picks the “merge path.”
+                  - paragraph [ref=e2142]: This eliminates “loudest agent wins.”
+                  - heading "3) Spec lock mode" [level=3] [ref=e2143]
+                  - paragraph [ref=e2144]: "You ask ChatGPT to produce a “frozen contract”:"
+                  - list [ref=e2145]:
+                    - listitem [ref=e2146]:
+                      - paragraph [ref=e2147]:
+                        - text: schema, OpenAPI shape, event names, error codes
+                        - text: Then you enforce it in CI.
+                  - heading "4) Review / audit mode" [level=3] [ref=e2148]
+                  - paragraph [ref=e2149]:
+                    - text: You post diffs + tests + logs.
+                    - text: "ChatGPT returns:"
+                  - list [ref=e2150]:
+                    - listitem [ref=e2151]:
+                      - paragraph [ref=e2152]: red flags
+                    - listitem [ref=e2153]:
+                      - paragraph [ref=e2154]: missing cases
+                    - listitem [ref=e2155]:
+                      - paragraph [ref=e2156]: failure modes
+                    - listitem [ref=e2157]:
+                      - paragraph [ref=e2158]: “ship / don’t ship” call
+                  - heading "5) Memory / continuity mode" [level=3] [ref=e2159]
+                  - paragraph [ref=e2160]: "ChatGPT thread becomes the narrative continuity of a long multi-week effort:"
+                  - list [ref=e2161]:
+                    - listitem [ref=e2162]:
+                      - paragraph [ref=e2163]: why decisions were made
+                    - listitem [ref=e2164]:
+                      - paragraph [ref=e2165]: what constraints were binding
+                    - listitem [ref=e2166]:
+                      - paragraph [ref=e2167]: what was tried and rejected
+                  - paragraph [ref=e2168]: Flywheel retains the execution artifacts; ChatGPT retains the rationale.
+                  - separator [ref=e2169]
+                  - heading "Practical implementation (minimum to make this real)" [level=1] [ref=e2170]
+                  - heading "A) Create a “ChatGPT Bridge” bead type" [level=2] [ref=e2171]
+                  - list [ref=e2172]:
+                    - listitem [ref=e2173]:
+                      - paragraph [ref=e2174]: Only one writer agent per CRT
+                    - listitem [ref=e2175]:
+                      - paragraph [ref=e2176]: Others never type, only read or send structured packets to bridge via agent-mail
+                  - heading "B) Add a “packet builder”" [level=2] [ref=e2177]
+                  - paragraph [ref=e2178]: "A small helper script that:"
+                  - list [ref=e2179]:
+                    - listitem [ref=e2180]:
+                      - paragraph [ref=e2181]: takes bead info + artifacts
+                    - listitem [ref=e2182]:
+                      - paragraph [ref=e2183]: outputs the JSON envelope as a markdown code block
+                    - listitem [ref=e2184]:
+                      - paragraph [ref=e2185]: bridge pastes it into ChatGPT
+                  - heading "C) Add a “response parser”" [level=2] [ref=e2186]
+                  - paragraph [ref=e2187]:
+                    - text: Bridge reads ChatGPT response, extracts JSON, validates basic fields.
+                    - text: If invalid, bridge asks ChatGPT to re-emit strictly valid JSON.
+                  - heading "D) Add “decision gates”" [level=2] [ref=e2188]
+                  - paragraph [ref=e2189]: "Bead cannot move to DONE until ChatGPT replies with:"
+                  - list [ref=e2190]:
+                    - listitem [ref=e2191]:
+                      - paragraph [ref=e2192]:
+                        - code [ref=e2193]: "verdict: accept"
+                    - listitem [ref=e2194]:
+                      - paragraph [ref=e2195]: acceptance tests satisfied evidence attached
+                  - paragraph [ref=e2196]:
+                    - text: This turns ChatGPT into a
+                    - strong [ref=e2197]: formal gate
+                    - text: .
+                  - separator [ref=e2198]
+                  - heading "Failure modes and controls" [level=1] [ref=e2199]
+                  - heading "Concurrency" [level=2] [ref=e2200]
+                  - list [ref=e2201]:
+                    - listitem [ref=e2202]:
+                      - paragraph [ref=e2203]: One writer agent (non-negotiable)
+                    - listitem [ref=e2204]:
+                      - paragraph [ref=e2205]:
+                        - text: "Optional: a simple lock file in repo:"
+                        - code [ref=e2206]: .flywheel/locks/chatgpt_writer.lock
+                  - heading "Prompt drift" [level=2] [ref=e2207]
+                  - list [ref=e2208]:
+                    - listitem [ref=e2209]:
+                      - paragraph [ref=e2210]:
+                        - text: Always include
+                        - code [ref=e2211]: requested_output.format = json
+                    - listitem [ref=e2212]:
+                      - paragraph [ref=e2213]:
+                        - text: Always include
+                        - code [ref=e2214]: fields
+                        - text: list
+                    - listitem [ref=e2215]:
+                      - paragraph [ref=e2216]: "If response isn’t valid JSON, auto-reprompt: “Re-emit strictly valid JSON only.”"
+                  - heading "Hallucinated “facts”" [level=2] [ref=e2217]
+                  - list [ref=e2218]:
+                    - listitem [ref=e2219]:
+                      - paragraph [ref=e2220]: ChatGPT should only arbitrate based on supplied evidence
+                    - listitem [ref=e2221]:
+                      - paragraph [ref=e2222]: "Your protocol should include:"
+                      - list [ref=e2223]:
+                        - listitem [ref=e2224]:
+                          - paragraph [ref=e2225]:
+                            - code [ref=e2226]: assumptions[]
+                        - listitem [ref=e2227]:
+                          - paragraph [ref=e2228]:
+                            - code [ref=e2229]: evidence_required[]
+                        - listitem [ref=e2230]:
+                          - paragraph [ref=e2231]:
+                            - code [ref=e2232]: confidence
+                            - text: per claim
+                  - separator [ref=e2233]
+                  - heading "What it looks like day-to-day" [level=1] [ref=e2234]
+                  - list [ref=e2235]:
+                    - listitem [ref=e2236]:
+                      - paragraph [ref=e2237]: Bead created
+                    - listitem [ref=e2238]:
+                      - paragraph [ref=e2239]:
+                        - text: Bridge posts
+                        - code [ref=e2240]: RFP_PLAN
+                    - listitem [ref=e2241]:
+                      - paragraph [ref=e2242]: ChatGPT returns plan + tasks
+                    - listitem [ref=e2243]:
+                      - paragraph [ref=e2244]: Bridge dispatches tasks to executor agents
+                    - listitem [ref=e2245]:
+                      - paragraph [ref=e2246]: Executors return results
+                    - listitem [ref=e2247]:
+                      - paragraph [ref=e2248]:
+                        - text: Bridge posts
+                        - code [ref=e2249]: EVIDENCE_BUNDLE
+                    - listitem [ref=e2250]:
+                      - paragraph [ref=e2251]:
+                        - text: ChatGPT returns
+                        - code [ref=e2252]: ACCEPT/REVISE
+                        - text: + next actions
+                    - listitem [ref=e2253]:
+                      - paragraph [ref=e2254]: Loop until accept
+                    - listitem [ref=e2255]:
+                      - paragraph [ref=e2256]: Bead closes with ChatGPT “Decision Record” attached
+                  - separator [ref=e2257]
+                  - paragraph [ref=e2258]:
+                    - text: "If you want to actually operationalize this next, the fastest win is:"
+                    - strong [ref=e2259]: define 5 message types
+                    - text: "and enforce them:"
+                  - list [ref=e2260]:
+                    - listitem [ref=e2261]:
+                      - paragraph [ref=e2262]:
+                        - code [ref=e2263]: RFP_PLAN
+                    - listitem [ref=e2264]:
+                      - paragraph [ref=e2265]:
+                        - code [ref=e2266]: RFP_ARBITRATE
+                    - listitem [ref=e2267]:
+                      - paragraph [ref=e2268]:
+                        - code [ref=e2269]: EVIDENCE_BUNDLE
+                    - listitem [ref=e2270]:
+                      - paragraph [ref=e2271]:
+                        - code [ref=e2272]: SPEC_LOCK
+                    - listitem [ref=e2273]:
+                      - paragraph [ref=e2274]:
+                        - code [ref=e2275]: ACCEPTANCE_GATE
+                  - paragraph [ref=e2276]:
+                    - text: Say the word and I’ll write the exact JSON schemas for those packets + a tiny
+                    - code [ref=e2277]: packet-build.sh
+                    - text: helper that formats them for copy/paste into ChatGPT.
+                - generic [ref=e2278]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e2279]:
+              - heading "You said:" [level=5] [ref=e2280]
+              - generic [ref=e2282]:
+                - generic [ref=e2287]: "I want to implement this agent flywheel protocol. Can you help me create a detailed implementation plan? Consider: 1. Where should the packet schemas be defined? 2. How should the bridge component work? 3. What's the best way to integrate this with the existing AgentCore bead system? 4. Should we create the packet-build.sh helper first or the schemas? Current context: I'm on a fresh feature branch (feature/agent-flywheel-protocol) in the AgentCore project."
+                - generic [ref=e2288]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e2289]:
+              - heading "ChatGPT said:" [level=6] [ref=e2290]
+              - generic [ref=e2292]:
+                - generic [ref=e2296]:
+                  - paragraph [ref=e2297]:
+                    - text: "Yes. Below is a concrete implementation plan that fits your current reality:"
+                    - strong [ref=e2298]: AgentCore + beads + agent-mail + one Bridge agent
+                    - text: +
+                    - strong [ref=e2299]: ChatGPT thread as a protocol endpoint
+                    - text: .
+                  - paragraph [ref=e2300]: "I’m going to optimize for: (1) minimal moving parts, (2) strong determinism, (3) incremental adoption."
+                  - separator [ref=e2301]
+                  - heading "Architecture decisions up front" [level=2] [ref=e2302]
+                  - heading "Packet schemas location" [level=3] [ref=e2303]
+                  - paragraph [ref=e2304]:
+                    - text: Define schemas in
+                    - strong [ref=e2305]: AgentCore
+                    - text: ", not in"
+                    - code [ref=e2306]: agent-flywheel-integration
+                    - text: .
+                  - paragraph [ref=e2307]:
+                    - strong [ref=e2308]: "Why:"
+                    - text: "the protocol is a first-class contract for your orchestrator/runtime, not a local experiment. Keeping schemas in AgentCore lets you:"
+                  - list [ref=e2309]:
+                    - listitem [ref=e2310]:
+                      - paragraph [ref=e2311]: version the protocol
+                    - listitem [ref=e2312]:
+                      - paragraph [ref=e2313]: validate packets in CI
+                    - listitem [ref=e2314]:
+                      - paragraph [ref=e2315]: reuse across all projects that adopt Flywheel
+                  - paragraph [ref=e2316]:
+                    - strong [ref=e2317]: Recommended path in AgentCore
+                  - generic [ref=e2319]:
+                    - generic [ref=e2320]: pgsql
+                    - button "Copy" [ref=e2323] [cursor=pointer]:
+                      - img [ref=e2324]
+                      - text: Copy code
+                    - code [ref=e2327]:
+                      - generic [ref=e2328]:
+                        - text: AgentCore/
+                        - generic [ref=e2329]: schemas
+                        - text: / flywheel/ chatgpt/ v1/ envelope.
+                        - generic [ref=e2330]: schema
+                        - text: .json msg-rfp-plan.
+                        - generic [ref=e2331]: schema
+                        - text: .json msg-arbitrate.
+                        - generic [ref=e2332]: schema
+                        - text: .json msg-evidence-bundle.
+                        - generic [ref=e2333]: schema
+                        - text: .json msg-spec-
+                        - generic [ref=e2334]: lock
+                        - text: .
+                        - generic [ref=e2335]: schema
+                        - text: .json msg-acceptance-gate.
+                        - generic [ref=e2336]: schema
+                        - text: .json
+                  - heading "Bridge component concept" [level=3] [ref=e2337]
+                  - paragraph [ref=e2338]:
+                    - text: Treat Bridge as an
+                    - strong [ref=e2339]: I/O gateway
+                    - text: "with one job:"
+                  - list [ref=e2340]:
+                    - listitem [ref=e2341]:
+                      - paragraph [ref=e2342]:
+                        - strong [ref=e2343]: Read
+                        - text: ": accept “requests to consult ChatGPT” from bead workflow (agent-mail or bead record)"
+                    - listitem [ref=e2344]:
+                      - paragraph [ref=e2345]:
+                        - strong [ref=e2346]: Write
+                        - text: ": post packets into the ChatGPT Reasoning Thread (CRT)"
+                    - listitem [ref=e2347]:
+                      - paragraph [ref=e2348]:
+                        - strong [ref=e2349]: Read back
+                        - text: ": pull ChatGPT responses, parse JSON, validate against schemas"
+                    - listitem [ref=e2350]:
+                      - paragraph [ref=e2351]:
+                        - strong [ref=e2352]: Emit
+                        - text: ": convert response → bead updates + agent-mail tasks"
+                  - paragraph [ref=e2353]:
+                    - strong [ref=e2354]: "Hard rule:"
+                    - text: only one writer to a given CRT (per project/workstream).
+                  - heading "Integration with beads (AgentCore)" [level=3] [ref=e2355]
+                  - paragraph [ref=e2356]: "Integrate at the bead workflow layer by adding a new optional “gate” step:"
+                  - list [ref=e2357]:
+                    - listitem [ref=e2358]:
+                      - paragraph [ref=e2359]:
+                        - code [ref=e2360]: chatgpt_consult
+                        - text: (planning/arbitration/spec gate)
+                    - listitem [ref=e2361]:
+                      - paragraph [ref=e2362]:
+                        - code [ref=e2363]: chatgpt_acceptance
+                        - text: (final acceptance gate)
+                  - paragraph [ref=e2364]:
+                    - text: This should be
+                    - strong [ref=e2365]: non-invasive
+                    - text: ": beads that don’t opt in continue to work unchanged."
+                  - heading "Schemas vs helper first?" [level=3] [ref=e2366]
+                  - paragraph [ref=e2367]:
+                    - strong [ref=e2368]: Schemas first
+                    - text: ", then helper."
+                  - paragraph [ref=e2369]: "Reason: helpers should produce and validate against the schema you commit. If you write helper first, you’ll drift and “fix the schema later” never happens cleanly."
+                  - separator [ref=e2370]
+                  - heading "Implementation plan (feature/agent-flywheel-protocol)" [level=2] [ref=e2371]
+                  - heading "Phase 0 — Define the protocol surface (schemas + conventions)" [level=3] [ref=e2372]
+                  - list [ref=e2373]:
+                    - listitem [ref=e2374]:
+                      - paragraph [ref=e2375]:
+                        - strong [ref=e2376]: Create the schema directory structure
+                        - text: (paths above)
+                    - listitem [ref=e2377]:
+                      - paragraph [ref=e2378]:
+                        - strong [ref=e2379]: Define a shared envelope schema
+                        - text: "Fields I’d standardize across all packet types:"
+                  - list [ref=e2380]:
+                    - listitem [ref=e2381]:
+                      - paragraph [ref=e2382]:
+                        - code [ref=e2383]: proto
+                        - text: "(fixed string:"
+                        - code [ref=e2384]: flywheel.chatgpt.v1
+                        - text: )
+                    - listitem [ref=e2385]:
+                      - paragraph [ref=e2386]:
+                        - code [ref=e2387]: bead_id
+                    - listitem [ref=e2388]:
+                      - paragraph [ref=e2389]:
+                        - code [ref=e2390]: msg_type
+                        - text: (enum)
+                    - listitem [ref=e2391]:
+                      - paragraph [ref=e2392]:
+                        - code [ref=e2393]: sender
+                    - listitem [ref=e2394]:
+                      - paragraph [ref=e2395]:
+                        - code [ref=e2396]: ts
+                    - listitem [ref=e2397]:
+                      - paragraph [ref=e2398]:
+                        - code [ref=e2399]: context
+                        - text: (repo, branch, constraints)
+                    - listitem [ref=e2400]:
+                      - paragraph [ref=e2401]:
+                        - code [ref=e2402]: inputs
+                        - text: (artifacts, questions, options)
+                    - listitem [ref=e2403]:
+                      - paragraph [ref=e2404]:
+                        - code [ref=e2405]: requested_output
+                        - text: (format=json, required fields)
+                    - listitem [ref=e2406]:
+                      - paragraph [ref=e2407]:
+                        - code [ref=e2408]: idempotency_key
+                        - text: (optional but strongly recommended)
+                  - list [ref=e2409]:
+                    - listitem [ref=e2410]:
+                      - paragraph [ref=e2411]:
+                        - strong [ref=e2412]: Define 5 message-type schemas
+                        - text: "Start with exactly these (don’t add more yet):"
+                  - list [ref=e2413]:
+                    - listitem [ref=e2414]:
+                      - paragraph [ref=e2415]:
+                        - code [ref=e2416]: RFP_PLAN
+                    - listitem [ref=e2417]:
+                      - paragraph [ref=e2418]:
+                        - code [ref=e2419]: RFP_ARBITRATE
+                    - listitem [ref=e2420]:
+                      - paragraph [ref=e2421]:
+                        - code [ref=e2422]: EVIDENCE_BUNDLE
+                    - listitem [ref=e2423]:
+                      - paragraph [ref=e2424]:
+                        - code [ref=e2425]: SPEC_LOCK
+                    - listitem [ref=e2426]:
+                      - paragraph [ref=e2427]:
+                        - code [ref=e2428]: ACCEPTANCE_GATE
+                  - paragraph [ref=e2429]: "Each schema should:"
+                  - list [ref=e2430]:
+                    - listitem [ref=e2431]:
+                      - paragraph [ref=e2432]:
+                        - code [ref=e2433]: allOf
+                        - text: ": envelope + type-specific requirements"
+                    - listitem [ref=e2434]:
+                      - paragraph [ref=e2435]: lock down the expected output fields (so the response can be validated)
+                  - list [ref=e2436]:
+                    - listitem [ref=e2437]:
+                      - paragraph [ref=e2438]:
+                        - strong [ref=e2439]: Define a response schema per message type
+                        - text: Do not accept “freeform assistant replies” as protocol responses.
+                        - text: "Require:"
+                  - list [ref=e2440]:
+                    - listitem [ref=e2441]:
+                      - paragraph [ref=e2442]:
+                        - code [ref=e2443]: proto
+                        - text: ","
+                        - code [ref=e2444]: bead_id
+                        - text: ","
+                        - code [ref=e2445]: msg_type
+                        - text: ","
+                        - code [ref=e2446]: verdict
+                    - listitem [ref=e2447]:
+                      - paragraph [ref=e2448]: plus the type-specific payload
+                  - list [ref=e2449]:
+                    - listitem [ref=e2450]:
+                      - paragraph [ref=e2451]:
+                        - strong [ref=e2452]: Add a simple validator utility
+                        - text: "Pick one:"
+                  - list [ref=e2453]:
+                    - listitem [ref=e2454]:
+                      - paragraph [ref=e2455]:
+                        - text: "Node:"
+                        - code [ref=e2456]: ajv
+                    - listitem [ref=e2457]:
+                      - paragraph [ref=e2458]:
+                        - text: "Python:"
+                        - code [ref=e2459]: jsonschema
+                  - paragraph [ref=e2460]:
+                    - text: Given your environment is already heavy bash/Node in places,
+                    - strong [ref=e2461]: Node + ajv
+                    - text: is usually easiest for CLI tools.
+                  - paragraph [ref=e2462]:
+                    - text: "Deliverable:"
+                    - code [ref=e2463]: scripts/validate-packet.mjs
+                    - text: that validates either request or response.
+                  - separator [ref=e2464]
+                  - heading "Phase 1 — Add packet builder + parser tooling (CLI, local dev UX)" [level=3] [ref=e2465]
+                  - list [ref=e2466]:
+                    - listitem [ref=e2467]:
+                      - paragraph [ref=e2468]:
+                        - strong [ref=e2469]:
+                          - text: Implement
+                          - code [ref=e2470]: packet-build
+                          - text: helper (after schemas exist)
+                        - text: I’d do Node (more reliable JSON + templating), but if you insist on bash, keep it dumb.
+                  - paragraph [ref=e2471]: "Recommended:"
+                  - generic [ref=e2473]:
+                    - generic [ref=e2474]: pgsql
+                    - button "Copy" [ref=e2477] [cursor=pointer]:
+                      - img [ref=e2478]
+                      - text: Copy code
+                    - code [ref=e2481]:
+                      - generic [ref=e2482]:
+                        - text: scripts/chatgpt/ packet-build.mjs packet-
+                        - generic [ref=e2483]: validate
+                        - text: .mjs (thin
+                        - generic [ref=e2484]: wrapper
+                        - text: around
+                        - generic [ref=e2485]: validate
+                        - text: utility) packet-extract.mjs (extract
+                        - generic [ref=e2486]: JSON
+                        - generic [ref=e2487]: from
+                        - text: a ChatGPT reply
+                        - generic [ref=e2488]: text
+                        - text: )
+                  - paragraph [ref=e2489]: "Core behaviors:"
+                  - list [ref=e2490]:
+                    - listitem [ref=e2491]:
+                      - paragraph [ref=e2492]:
+                        - text: "takes:"
+                        - code [ref=e2493]: "--bead bd-xxx --type RFP_PLAN --context file.json --artifacts dir/"
+                    - listitem [ref=e2494]:
+                      - paragraph [ref=e2495]:
+                        - text: "outputs: a"
+                        - strong [ref=e2496]: single JSON object
+                        - text: (or markdown with fenced JSON if you prefer)
+                    - listitem [ref=e2497]:
+                      - paragraph [ref=e2498]: "optional: immediately validate output against schema"
+                  - list [ref=e2499]:
+                    - listitem [ref=e2500]:
+                      - paragraph [ref=e2501]:
+                        - strong [ref=e2502]: Implement response extraction
+                        - text: "ChatGPT replies may include commentary. Your protocol should demand “JSON only”, but in practice, you need a robust extractor:"
+                  - list [ref=e2503]:
+                    - listitem [ref=e2504]:
+                      - paragraph [ref=e2505]:
+                        - text: find first
+                        - code [ref=e2506]: "{"
+                        - text: and last
+                        - code [ref=e2507]: "}"
+                        - text: and parse
+                    - listitem [ref=e2508]:
+                      - paragraph [ref=e2509]: fail loudly if invalid JSON
+                    - listitem [ref=e2510]:
+                      - paragraph [ref=e2511]: optionally auto-generate a “re-emit JSON only” reprompt packet (nice-to-have)
+                  - separator [ref=e2512]
+                  - heading "Phase 2 — Bridge MVP (no fancy automation yet)" [level=3] [ref=e2513]
+                  - list [ref=e2514]:
+                    - listitem [ref=e2515]:
+                      - paragraph [ref=e2516]:
+                        - strong [ref=e2517]: Define a Bridge runtime contract
+                        - text: "Bridge needs a place to store thread configuration:"
+                  - list [ref=e2518]:
+                    - listitem [ref=e2519]:
+                      - paragraph [ref=e2520]: CRT URL for the project/workstream
+                    - listitem [ref=e2521]:
+                      - paragraph [ref=e2522]:
+                        - text: tool alias to use (
+                        - code [ref=e2523]: playwright-chatgpt
+                        - text: in your integration repo)
+                    - listitem [ref=e2524]:
+                      - paragraph [ref=e2525]: writer lock (to prevent two bridge processes)
+                  - paragraph [ref=e2526]:
+                    - text: Put this in a config file that’s
+                    - emphasis [ref=e2527]: project-specific
+                    - text: ", not global:"
+                  - generic [ref=e2529]:
+                    - generic [ref=e2530]: bash
+                    - button "Copy" [ref=e2533] [cursor=pointer]:
+                      - img [ref=e2534]
+                      - text: Copy code
+                    - code [ref=e2537]:
+                      - generic [ref=e2538]:
+                        - text: ".flywheel/chatgpt.json {"
+                        - generic [ref=e2539]: "\"crt_url\""
+                        - text: ":"
+                        - generic [ref=e2540]: "\"https://chatgpt.com/c/....\""
+                        - text: ","
+                        - generic [ref=e2541]: "\"mcp_server\""
+                        - text: ":"
+                        - generic [ref=e2542]: "\"playwright-chatgpt\""
+                        - text: ","
+                        - generic [ref=e2543]: "\"writer_agent\""
+                        - text: ":"
+                        - generic [ref=e2544]: "\"QuietDune\""
+                        - text: "}"
+                  - list [ref=e2545]:
+                    - listitem [ref=e2546]:
+                      - paragraph [ref=e2547]:
+                        - strong [ref=e2548]: Bridge as a CLI “agent role”
+                        - text: "Don’t build a daemon first. Build a command that runs one cycle:"
+                  - list [ref=e2549]:
+                    - listitem [ref=e2550]:
+                      - paragraph [ref=e2551]:
+                        - code [ref=e2552]: bridge pull
+                        - text: (check for new “consult ChatGPT” requests)
+                    - listitem [ref=e2553]:
+                      - paragraph [ref=e2554]:
+                        - code [ref=e2555]: bridge push
+                        - text: (post packet to CRT)
+                    - listitem [ref=e2556]:
+                      - paragraph [ref=e2557]:
+                        - code [ref=e2558]: bridge read
+                        - text: (read response + parse)
+                    - listitem [ref=e2559]:
+                      - paragraph [ref=e2560]:
+                        - code [ref=e2561]: bridge emit
+                        - text: (create tasks / update bead)
+                  - paragraph [ref=e2562]:
+                    - text: "MVP:"
+                    - code [ref=e2563]: bridge run-once --bead bd-xxx --packet path.json
+                  - list [ref=e2564]:
+                    - listitem [ref=e2565]:
+                      - paragraph [ref=e2566]:
+                        - strong [ref=e2567]: Bridge posting mechanism
+                        - text: "You have two viable routes:"
+                  - paragraph [ref=e2568]:
+                    - strong [ref=e2569]: "Route A (fastest): human-in-the-loop posting"
+                  - list [ref=e2570]:
+                    - listitem [ref=e2571]:
+                      - paragraph [ref=e2572]: Bridge generates packet and prints it
+                    - listitem [ref=e2573]:
+                      - paragraph [ref=e2574]: You paste into ChatGPT
+                    - listitem [ref=e2575]:
+                      - paragraph [ref=e2576]: Bridge then reads the response and parses it
+                  - paragraph [ref=e2577]:
+                    - strong [ref=e2578]: "Route B (what you can do now with playwright-chatgpt): automated posting"
+                  - list [ref=e2579]:
+                    - listitem [ref=e2580]:
+                      - paragraph [ref=e2581]:
+                        - text: Bridge uses
+                        - code [ref=e2582]: playwright-chatgpt
+                        - text: "to:"
+                      - list [ref=e2583]:
+                        - listitem [ref=e2584]:
+                          - paragraph [ref=e2585]: navigate to CRT URL
+                        - listitem [ref=e2586]:
+                          - paragraph [ref=e2587]: paste packet into composer
+                        - listitem [ref=e2588]:
+                          - paragraph [ref=e2589]: click send
+                        - listitem [ref=e2590]:
+                          - paragraph [ref=e2591]: wait for assistant response to complete
+                        - listitem [ref=e2592]:
+                          - paragraph [ref=e2593]: scrape the last assistant message text
+                  - paragraph [ref=e2594]:
+                    - text: "Given you already proved you can post/read with Playwright:"
+                    - strong [ref=e2595]: do Route B
+                    - text: .
+                  - list [ref=e2596]:
+                    - listitem [ref=e2597]:
+                      - paragraph [ref=e2598]:
+                        - strong [ref=e2599]: Bridge “read last response”
+                        - text: "Implement a deterministic selector strategy:"
+                  - list [ref=e2600]:
+                    - listitem [ref=e2601]:
+                      - paragraph [ref=e2602]: identify last assistant message node
+                    - listitem [ref=e2603]:
+                      - paragraph [ref=e2604]: extract text content
+                    - listitem [ref=e2605]:
+                      - paragraph [ref=e2606]:
+                        - text: run
+                        - code [ref=e2607]: packet-extract
+                        - text: → JSON
+                    - listitem [ref=e2608]:
+                      - paragraph [ref=e2609]: validate vs schema
+                  - list [ref=e2610]:
+                    - listitem [ref=e2611]:
+                      - paragraph [ref=e2612]:
+                        - strong [ref=e2613]: Bridge emits back to AgentCore
+                        - text: "Emit two things:"
+                  - list [ref=e2614]:
+                    - listitem [ref=e2615]:
+                      - paragraph [ref=e2616]: bead state update (phase/status)
+                    - listitem [ref=e2617]:
+                      - paragraph [ref=e2618]:
+                        - text: agent-mail dispatch for executor tasks (from
+                        - code [ref=e2619]: next_actions
+                        - text: )
+                  - paragraph [ref=e2620]: "Don’t overthink: MVP emission can be one shell call:"
+                  - list [ref=e2621]:
+                    - listitem [ref=e2622]:
+                      - paragraph [ref=e2623]:
+                        - code [ref=e2624]: ./scripts/agent-mail-helper.sh send ...
+                  - separator [ref=e2625]
+                  - heading "Phase 3 — Integrate with AgentCore bead lifecycle cleanly" [level=3] [ref=e2626]
+                  - list [ref=e2627]:
+                    - listitem [ref=e2628]:
+                      - paragraph [ref=e2629]:
+                        - strong [ref=e2630]: Extend bead schema with optional ChatGPT protocol metadata
+                        - text: "Add optional fields to bead record:"
+                  - list [ref=e2631]:
+                    - listitem [ref=e2632]:
+                      - paragraph [ref=e2633]:
+                        - code [ref=e2634]: "chatgpt.enabled: boolean"
+                    - listitem [ref=e2635]:
+                      - paragraph [ref=e2636]:
+                        - code [ref=e2637]: chatgpt.crt_url
+                    - listitem [ref=e2638]:
+                      - paragraph [ref=e2639]:
+                        - code [ref=e2640]: chatgpt.last_packet_id
+                    - listitem [ref=e2641]:
+                      - paragraph [ref=e2642]:
+                        - code [ref=e2643]: chatgpt.last_verdict
+                    - listitem [ref=e2644]:
+                      - paragraph [ref=e2645]:
+                        - code [ref=e2646]: "chatgpt.required_gate: [\"plan\",\"acceptance\"]"
+                        - text: etc.
+                  - paragraph [ref=e2647]: Keep it optional so existing beads are unaffected.
+                  - list [ref=e2648]:
+                    - listitem [ref=e2649]:
+                      - paragraph [ref=e2650]:
+                        - strong [ref=e2651]: Add bead workflow steps
+                        - text: "Add states like:"
+                  - list [ref=e2652]:
+                    - listitem [ref=e2653]:
+                      - paragraph [ref=e2654]:
+                        - code [ref=e2655]: NEEDS_CHATGPT_PLAN
+                    - listitem [ref=e2656]:
+                      - paragraph [ref=e2657]:
+                        - code [ref=e2658]: IN_EXECUTION
+                    - listitem [ref=e2659]:
+                      - paragraph [ref=e2660]:
+                        - code [ref=e2661]: NEEDS_CHATGPT_ACCEPTANCE
+                    - listitem [ref=e2662]:
+                      - paragraph [ref=e2663]:
+                        - code [ref=e2664]: DONE
+                  - paragraph [ref=e2665]: "Bridge transitions:"
+                  - list [ref=e2666]:
+                    - listitem [ref=e2667]:
+                      - paragraph [ref=e2668]:
+                        - code [ref=e2669]: NEEDS_CHATGPT_PLAN
+                        - text: →
+                        - code [ref=e2670]: IN_EXECUTION
+                    - listitem [ref=e2671]:
+                      - paragraph [ref=e2672]:
+                        - code [ref=e2673]: NEEDS_CHATGPT_ACCEPTANCE
+                        - text: →
+                        - code [ref=e2674]: DONE
+                        - text: if verdict accept
+                  - list [ref=e2675]:
+                    - listitem [ref=e2676]:
+                      - paragraph [ref=e2677]:
+                        - strong [ref=e2678]: Acceptance gating
+                        - text: Wire “close bead” logic so that if
+                        - code [ref=e2679]: chatgpt.required_gate
+                        - text: includes
+                        - code [ref=e2680]: acceptance
+                        - text: ", the bead cannot close without:"
+                  - list [ref=e2681]:
+                    - listitem [ref=e2682]:
+                      - paragraph [ref=e2683]:
+                        - text: valid
+                        - code [ref=e2684]: ACCEPTANCE_GATE_RESPONSE
+                    - listitem [ref=e2685]:
+                      - paragraph [ref=e2686]:
+                        - code [ref=e2687]: verdict=accept
+                  - separator [ref=e2688]
+                  - heading "Phase 4 — Minimal safety + concurrency controls (not over-engineered)" [level=3] [ref=e2689]
+                  - list [ref=e2690]:
+                    - listitem [ref=e2691]:
+                      - paragraph [ref=e2692]:
+                        - strong [ref=e2693]: Writer lock
+                        - text: "Create a simple lock file:"
+                  - list [ref=e2694]:
+                    - listitem [ref=e2695]:
+                      - paragraph [ref=e2696]:
+                        - code [ref=e2697]: .flywheel/locks/chatgpt_writer.lock
+                        - text: Write PID + timestamp. Bridge refuses to run if lock exists and process is alive.
+                  - list [ref=e2698]:
+                    - listitem [ref=e2699]:
+                      - paragraph [ref=e2700]:
+                        - strong [ref=e2701]: Idempotency
+                        - text: Add
+                        - code [ref=e2702]: idempotency_key
+                        - text: "to packets:"
+                  - list [ref=e2703]:
+                    - listitem [ref=e2704]:
+                      - paragraph [ref=e2705]:
+                        - text: e.g.
+                        - code [ref=e2706]: "${bead_id}:${msg_type}:${hash(inputs)}"
+                        - text: Bridge can store posted keys to avoid double-posts.
+                  - list [ref=e2707]:
+                    - listitem [ref=e2708]:
+                      - paragraph [ref=e2709]:
+                        - strong [ref=e2710]: Failure modes
+                        - text: "MVP behaviors:"
+                  - list [ref=e2711]:
+                    - listitem [ref=e2712]:
+                      - paragraph [ref=e2713]: "if response invalid JSON: emit an “operator attention” mail and stop"
+                    - listitem [ref=e2714]:
+                      - paragraph [ref=e2715]: "if bounced to login: stop with clear error (you already have the manual refresh script)"
+                  - separator [ref=e2716]
+                  - heading "What I’d build first (recommended order)" [level=2] [ref=e2717]
+                  - list [ref=e2718]:
+                    - listitem [ref=e2719]:
+                      - paragraph [ref=e2720]:
+                        - strong [ref=e2721]: Schemas (envelope + 5 msg types + 5 response types)
+                    - listitem [ref=e2722]:
+                      - paragraph [ref=e2723]:
+                        - strong [ref=e2724]: Validator tool
+                        - text: (ajv-based)
+                    - listitem [ref=e2725]:
+                      - paragraph [ref=e2726]:
+                        - strong [ref=e2727]: Packet builder
+                        - text: (generates valid JSON + validates)
+                    - listitem [ref=e2728]:
+                      - paragraph [ref=e2729]:
+                        - strong [ref=e2730]: Packet extractor
+                        - text: (parse JSON from reply)
+                    - listitem [ref=e2731]:
+                      - paragraph [ref=e2732]:
+                        - strong [ref=e2733]: Bridge run-once
+                        - text: (post + read + parse + validate)
+                    - listitem [ref=e2734]:
+                      - paragraph [ref=e2735]:
+                        - strong [ref=e2736]: Bead integration fields + workflow gates
+                  - paragraph [ref=e2737]: This order gives you a functioning vertical slice early.
+                  - separator [ref=e2738]
+                  - heading "Deliverables checklist for your branch" [level=2] [ref=e2739]
+                  - list [ref=e2740]:
+                    - listitem [ref=e2741]:
+                      - paragraph [ref=e2742]:
+                        - checkbox [disabled] [ref=e2743]
+                        - code [ref=e2744]: schemas/flywheel/chatgpt/v1/*.schema.json
+                    - listitem [ref=e2745]:
+                      - paragraph [ref=e2746]:
+                        - checkbox [disabled] [ref=e2747]
+                        - code [ref=e2748]: scripts/chatgpt/packet-build.mjs
+                    - listitem [ref=e2749]:
+                      - paragraph [ref=e2750]:
+                        - checkbox [disabled] [ref=e2751]
+                        - code [ref=e2752]: scripts/chatgpt/packet-validate.mjs
+                    - listitem [ref=e2753]:
+                      - paragraph [ref=e2754]:
+                        - checkbox [disabled] [ref=e2755]
+                        - code [ref=e2756]: scripts/chatgpt/packet-extract.mjs
+                    - listitem [ref=e2757]:
+                      - paragraph [ref=e2758]:
+                        - checkbox [disabled] [ref=e2759]
+                        - code [ref=e2760]: scripts/chatgpt/bridge-run-once.mjs
+                        - text: (or similar)
+                    - listitem [ref=e2761]:
+                      - paragraph [ref=e2762]:
+                        - checkbox [disabled] [ref=e2763]
+                        - text: Bead schema updated (optional ChatGPT fields)
+                    - listitem [ref=e2764]:
+                      - paragraph [ref=e2765]:
+                        - checkbox [disabled] [ref=e2766]
+                        - text: Bead workflow states updated (optional gating)
+                    - listitem [ref=e2767]:
+                      - paragraph [ref=e2768]:
+                        - checkbox [disabled] [ref=e2769]
+                        - text: "Minimal docs:"
+                        - code [ref=e2770]: docs/flywheel-chatgpt-protocol.md
+                  - separator [ref=e2771]
+                  - paragraph [ref=e2772]:
+                    - text: "If you want to move immediately: tell me what language AgentCore is primarily using for CLI/runtime (Node, Python, Go, Rust). I’ll then give you the"
+                    - strong [ref=e2773]: exact file tree + full contents
+                    - text: for the schema set and the first two tools (
+                    - code [ref=e2774]: packet-build
+                    - text: +
+                    - code [ref=e2775]: packet-validate
+                    - text: ) so you can drop them in on
+                    - code [ref=e2776]: feature/agent-flywheel-protocol
+                    - text: .
+                - generic [ref=e2777]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e2778]:
+              - heading "You said:" [level=5] [ref=e2779]
+              - generic [ref=e2781]:
+                - generic [ref=e2786]: "AgentCore is polyglot: - **Rust** for the core bead system (br CLI) - **Node.js** for integration tooling (already using it for ChatGPT scripts) - **Bash** for orchestration For the flywheel protocol packet schemas and tools, **Node.js** makes the most sense. Please give me the exact file tree + full contents for the schema set and the first two tools (packet-build + packet-validate)."
+                - generic [ref=e2787]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e2788]:
+              - heading "ChatGPT said:" [level=6] [ref=e2789]
+              - generic [ref=e2791]:
+                - generic [ref=e2792]:
+                  - button "Thought for 30s" [ref=e2797] [cursor=pointer]:
+                    - generic [ref=e2799]:
+                      - generic [ref=e2801]: Thought for 30s
+                      - img [ref=e2802]
+                  - generic [ref=e2806]:
+                    - paragraph [ref=e2807]:
+                      - text: Below is a
+                      - strong [ref=e2808]: drop-in
+                      - text: schema set + the first two Node tools (
+                      - strong [ref=e2809]: packet-build
+                      - text: and
+                      - strong [ref=e2810]: packet-validate
+                      - text: ) for your
+                      - code [ref=e2811]: feature/agent-flywheel-protocol
+                      - text: branch.
+                    - paragraph [ref=e2812]:
+                      - text: Everything is
+                      - strong [ref=e2813]: copy/paste ready
+                      - text: .
+                    - separator [ref=e2814]
+                    - heading "File tree to create" [level=2] [ref=e2815]
+                    - generic [ref=e2817]:
+                      - generic [ref=e2818]: pgsql
+                      - button "Copy" [ref=e2821] [cursor=pointer]:
+                        - img [ref=e2822]
+                        - text: Copy code
+                      - code [ref=e2825]:
+                        - generic [ref=e2826]:
+                          - text: AgentCore/
+                          - generic [ref=e2827]: schemas
+                          - text: / flywheel/ chatgpt/ v1/ envelope.
+                          - generic [ref=e2828]: schema
+                          - text: .json common.
+                          - generic [ref=e2829]: schema
+                          - text: .json msg-rfp-plan.
+                          - generic [ref=e2830]: schema
+                          - text: .json msg-rfp-arbitrate.
+                          - generic [ref=e2831]: schema
+                          - text: .json msg-evidence-bundle.
+                          - generic [ref=e2832]: schema
+                          - text: .json msg-spec-
+                          - generic [ref=e2833]: lock
+                          - text: .
+                          - generic [ref=e2834]: schema
+                          - text: .json msg-acceptance-gate.
+                          - generic [ref=e2835]: schema
+                          - text: .json resp-rfp-plan.
+                          - generic [ref=e2836]: schema
+                          - text: .json resp-rfp-arbitrate.
+                          - generic [ref=e2837]: schema
+                          - text: .json resp-evidence-bundle.
+                          - generic [ref=e2838]: schema
+                          - text: .json resp-spec-
+                          - generic [ref=e2839]: lock
+                          - text: .
+                          - generic [ref=e2840]: schema
+                          - text: .json resp-acceptance-gate.
+                          - generic [ref=e2841]: schema
+                          - text: .json scripts/ chatgpt/ packet-build.mjs packet-
+                          - generic [ref=e2842]: validate
+                          - text: .mjs
+                    - separator [ref=e2843]
+                    - heading "Dependencies (Node)" [level=2] [ref=e2844]
+                    - paragraph [ref=e2845]: "Add these to your Node tooling (wherever you keep integration deps in AgentCore):"
+                    - generic [ref=e2847]:
+                      - generic [ref=e2848]: bash
+                      - button "Copy" [ref=e2851] [cursor=pointer]:
+                        - img [ref=e2852]
+                        - text: Copy code
+                      - code [ref=e2855]:
+                        - generic [ref=e2856]: npm i -D ajv ajv-formats
+                    - blockquote [ref=e2857]:
+                      - paragraph [ref=e2858]:
+                        - text: If AgentCore has a separate
+                        - code [ref=e2859]: package.json
+                        - text: for tooling, run this in that directory.
+                    - separator [ref=e2860]
+                    - heading "SCHEMAS" [level=1] [ref=e2861]
+                    - heading "schemas/flywheel/chatgpt/v1/common.schema.json" [level=3] [ref=e2862]:
+                      - code [ref=e2863]: schemas/flywheel/chatgpt/v1/common.schema.json
+                    - generic [ref=e2865]:
+                      - generic [ref=e2866]: json
+                      - button "Copy" [ref=e2869] [cursor=pointer]:
+                        - img [ref=e2870]
+                        - text: Copy code
+                      - code [ref=e2873]:
+                        - generic [ref=e2874]:
+                          - generic [ref=e2875]: "{"
+                          - generic [ref=e2876]: "\"$schema\""
+                          - generic [ref=e2877]: ":"
+                          - generic [ref=e2878]: "\"https://json-schema.org/draft/2020-12/schema\""
+                          - generic [ref=e2879]: ","
+                          - generic [ref=e2880]: "\"$id\""
+                          - generic [ref=e2881]: ":"
+                          - generic [ref=e2882]: "\"flywheel.chatgpt.v1/common.schema.json\""
+                          - generic [ref=e2883]: ","
+                          - generic [ref=e2884]: "\"title\""
+                          - generic [ref=e2885]: ":"
+                          - generic [ref=e2886]: "\"Flywheel ChatGPT Protocol Common Types (v1)\""
+                          - generic [ref=e2887]: ","
+                          - generic [ref=e2888]: "\"type\""
+                          - generic [ref=e2889]: ":"
+                          - generic [ref=e2890]: "\"object\""
+                          - generic [ref=e2891]: ","
+                          - generic [ref=e2892]: "\"$defs\""
+                          - generic [ref=e2893]: ":"
+                          - generic [ref=e2894]: "{"
+                          - generic [ref=e2895]: "\"proto\""
+                          - generic [ref=e2896]: ":"
+                          - generic [ref=e2897]: "{"
+                          - generic [ref=e2898]: "\"type\""
+                          - generic [ref=e2899]: ":"
+                          - generic [ref=e2900]: "\"string\""
+                          - generic [ref=e2901]: ","
+                          - generic [ref=e2902]: "\"const\""
+                          - generic [ref=e2903]: ":"
+                          - generic [ref=e2904]: "\"flywheel.chatgpt.v1\""
+                          - generic [ref=e2905]: "}"
+                          - generic [ref=e2906]: ","
+                          - generic [ref=e2907]: "\"bead_id\""
+                          - generic [ref=e2908]: ":"
+                          - generic [ref=e2909]: "{"
+                          - generic [ref=e2910]: "\"type\""
+                          - generic [ref=e2911]: ":"
+                          - generic [ref=e2912]: "\"string\""
+                          - generic [ref=e2913]: ","
+                          - generic [ref=e2914]: "\"pattern\""
+                          - generic [ref=e2915]: ":"
+                          - generic [ref=e2916]: "\"^bd-[A-Za-z0-9][A-Za-z0-9_-]{1,63}$\""
+                          - generic [ref=e2917]: "}"
+                          - generic [ref=e2918]: ","
+                          - generic [ref=e2919]: "\"iso_datetime\""
+                          - generic [ref=e2920]: ":"
+                          - generic [ref=e2921]: "{"
+                          - generic [ref=e2922]: "\"type\""
+                          - generic [ref=e2923]: ":"
+                          - generic [ref=e2924]: "\"string\""
+                          - generic [ref=e2925]: ","
+                          - generic [ref=e2926]: "\"format\""
+                          - generic [ref=e2927]: ":"
+                          - generic [ref=e2928]: "\"date-time\""
+                          - generic [ref=e2929]: "}"
+                          - generic [ref=e2930]: ","
+                          - generic [ref=e2931]: "\"msg_type_request\""
+                          - generic [ref=e2932]: ":"
+                          - generic [ref=e2933]: "{"
+                          - generic [ref=e2934]: "\"type\""
+                          - generic [ref=e2935]: ":"
+                          - generic [ref=e2936]: "\"string\""
+                          - generic [ref=e2937]: ","
+                          - generic [ref=e2938]: "\"enum\""
+                          - generic [ref=e2939]: ":"
+                          - generic [ref=e2940]: "["
+                          - generic [ref=e2941]: "\"RFP_PLAN\""
+                          - generic [ref=e2942]: ","
+                          - generic [ref=e2943]: "\"RFP_ARBITRATE\""
+                          - generic [ref=e2944]: ","
+                          - generic [ref=e2945]: "\"EVIDENCE_BUNDLE\""
+                          - generic [ref=e2946]: ","
+                          - generic [ref=e2947]: "\"SPEC_LOCK\""
+                          - generic [ref=e2948]: ","
+                          - generic [ref=e2949]: "\"ACCEPTANCE_GATE\""
+                          - generic [ref=e2950]: "]"
+                          - generic [ref=e2951]: "}"
+                          - generic [ref=e2952]: ","
+                          - generic [ref=e2953]: "\"msg_type_response\""
+                          - generic [ref=e2954]: ":"
+                          - generic [ref=e2955]: "{"
+                          - generic [ref=e2956]: "\"type\""
+                          - generic [ref=e2957]: ":"
+                          - generic [ref=e2958]: "\"string\""
+                          - generic [ref=e2959]: ","
+                          - generic [ref=e2960]: "\"enum\""
+                          - generic [ref=e2961]: ":"
+                          - generic [ref=e2962]: "["
+                          - generic [ref=e2963]: "\"RFP_PLAN_RESPONSE\""
+                          - generic [ref=e2964]: ","
+                          - generic [ref=e2965]: "\"RFP_ARBITRATE_RESPONSE\""
+                          - generic [ref=e2966]: ","
+                          - generic [ref=e2967]: "\"EVIDENCE_BUNDLE_RESPONSE\""
+                          - generic [ref=e2968]: ","
+                          - generic [ref=e2969]: "\"SPEC_LOCK_RESPONSE\""
+                          - generic [ref=e2970]: ","
+                          - generic [ref=e2971]: "\"ACCEPTANCE_GATE_RESPONSE\""
+                          - generic [ref=e2972]: "]"
+                          - generic [ref=e2973]: "}"
+                          - generic [ref=e2974]: ","
+                          - generic [ref=e2975]: "\"verdict\""
+                          - generic [ref=e2976]: ":"
+                          - generic [ref=e2977]: "{"
+                          - generic [ref=e2978]: "\"type\""
+                          - generic [ref=e2979]: ":"
+                          - generic [ref=e2980]: "\"string\""
+                          - generic [ref=e2981]: ","
+                          - generic [ref=e2982]: "\"enum\""
+                          - generic [ref=e2983]: ":"
+                          - generic [ref=e2984]: "["
+                          - generic [ref=e2985]: "\"ok\""
+                          - generic [ref=e2986]: ","
+                          - generic [ref=e2987]: "\"revise\""
+                          - generic [ref=e2988]: ","
+                          - generic [ref=e2989]: "\"reject\""
+                          - generic [ref=e2990]: ","
+                          - generic [ref=e2991]: "\"error\""
+                          - generic [ref=e2992]: "]"
+                          - generic [ref=e2993]: "}"
+                          - generic [ref=e2994]: ","
+                          - generic [ref=e2995]: "\"artifact\""
+                          - generic [ref=e2996]: ":"
+                          - generic [ref=e2997]: "{"
+                          - generic [ref=e2998]: "\"type\""
+                          - generic [ref=e2999]: ":"
+                          - generic [ref=e3000]: "\"object\""
+                          - generic [ref=e3001]: ","
+                          - generic [ref=e3002]: "\"additionalProperties\""
+                          - generic [ref=e3003]: ":"
+                          - generic [ref=e3005]: "false"
+                          - generic [ref=e3006]: ","
+                          - generic [ref=e3007]: "\"required\""
+                          - generic [ref=e3008]: ":"
+                          - generic [ref=e3009]: "["
+                          - generic [ref=e3010]: "\"type\""
+                          - generic [ref=e3011]: ","
+                          - generic [ref=e3012]: "\"label\""
+                          - generic [ref=e3013]: ","
+                          - generic [ref=e3014]: "\"content\""
+                          - generic [ref=e3015]: "]"
+                          - generic [ref=e3016]: ","
+                          - generic [ref=e3017]: "\"properties\""
+                          - generic [ref=e3018]: ":"
+                          - generic [ref=e3019]: "{"
+                          - generic [ref=e3020]: "\"type\""
+                          - generic [ref=e3021]: ":"
+                          - generic [ref=e3022]: "{"
+                          - generic [ref=e3023]: "\"type\""
+                          - generic [ref=e3024]: ":"
+                          - generic [ref=e3025]: "\"string\""
+                          - generic [ref=e3026]: ","
+                          - generic [ref=e3027]: "\"minLength\""
+                          - generic [ref=e3028]: ":"
+                          - generic [ref=e3029]: "1"
+                          - generic [ref=e3030]: "}"
+                          - generic [ref=e3031]: ","
+                          - generic [ref=e3032]: "\"label\""
+                          - generic [ref=e3033]: ":"
+                          - generic [ref=e3034]: "{"
+                          - generic [ref=e3035]: "\"type\""
+                          - generic [ref=e3036]: ":"
+                          - generic [ref=e3037]: "\"string\""
+                          - generic [ref=e3038]: ","
+                          - generic [ref=e3039]: "\"minLength\""
+                          - generic [ref=e3040]: ":"
+                          - generic [ref=e3041]: "1"
+                          - generic [ref=e3042]: "}"
+                          - generic [ref=e3043]: ","
+                          - generic [ref=e3044]: "\"content\""
+                          - generic [ref=e3045]: ":"
+                          - generic [ref=e3046]: "{"
+                          - generic [ref=e3047]: "\"type\""
+                          - generic [ref=e3048]: ":"
+                          - generic [ref=e3049]: "\"string\""
+                          - generic [ref=e3050]: "}"
+                          - generic [ref=e3051]: "}"
+                          - generic [ref=e3052]: "}"
+                          - generic [ref=e3053]: ","
+                          - generic [ref=e3054]: "\"next_action\""
+                          - generic [ref=e3055]: ":"
+                          - generic [ref=e3056]: "{"
+                          - generic [ref=e3057]: "\"type\""
+                          - generic [ref=e3058]: ":"
+                          - generic [ref=e3059]: "\"object\""
+                          - generic [ref=e3060]: ","
+                          - generic [ref=e3061]: "\"additionalProperties\""
+                          - generic [ref=e3062]: ":"
+                          - generic [ref=e3064]: "false"
+                          - generic [ref=e3065]: ","
+                          - generic [ref=e3066]: "\"required\""
+                          - generic [ref=e3067]: ":"
+                          - generic [ref=e3068]: "["
+                          - generic [ref=e3069]: "\"task\""
+                          - generic [ref=e3070]: ","
+                          - generic [ref=e3071]: "\"assign_to\""
+                          - generic [ref=e3072]: "]"
+                          - generic [ref=e3073]: ","
+                          - generic [ref=e3074]: "\"properties\""
+                          - generic [ref=e3075]: ":"
+                          - generic [ref=e3076]: "{"
+                          - generic [ref=e3077]: "\"task\""
+                          - generic [ref=e3078]: ":"
+                          - generic [ref=e3079]: "{"
+                          - generic [ref=e3080]: "\"type\""
+                          - generic [ref=e3081]: ":"
+                          - generic [ref=e3082]: "\"string\""
+                          - generic [ref=e3083]: ","
+                          - generic [ref=e3084]: "\"minLength\""
+                          - generic [ref=e3085]: ":"
+                          - generic [ref=e3086]: "1"
+                          - generic [ref=e3087]: "}"
+                          - generic [ref=e3088]: ","
+                          - generic [ref=e3089]: "\"assign_to\""
+                          - generic [ref=e3090]: ":"
+                          - generic [ref=e3091]: "{"
+                          - generic [ref=e3092]: "\"type\""
+                          - generic [ref=e3093]: ":"
+                          - generic [ref=e3094]: "\"string\""
+                          - generic [ref=e3095]: ","
+                          - generic [ref=e3096]: "\"minLength\""
+                          - generic [ref=e3097]: ":"
+                          - generic [ref=e3098]: "1"
+                          - generic [ref=e3099]: "}"
+                          - generic [ref=e3100]: ","
+                          - generic [ref=e3101]: "\"priority\""
+                          - generic [ref=e3102]: ":"
+                          - generic [ref=e3103]: "{"
+                          - generic [ref=e3104]: "\"type\""
+                          - generic [ref=e3105]: ":"
+                          - generic [ref=e3106]: "\"string\""
+                          - generic [ref=e3107]: ","
+                          - generic [ref=e3108]: "\"enum\""
+                          - generic [ref=e3109]: ":"
+                          - generic [ref=e3110]: "["
+                          - generic [ref=e3111]: "\"P0\""
+                          - generic [ref=e3112]: ","
+                          - generic [ref=e3113]: "\"P1\""
+                          - generic [ref=e3114]: ","
+                          - generic [ref=e3115]: "\"P2\""
+                          - generic [ref=e3116]: ","
+                          - generic [ref=e3117]: "\"P3\""
+                          - generic [ref=e3118]: "]"
+                          - generic [ref=e3119]: ","
+                          - generic [ref=e3120]: "\"default\""
+                          - generic [ref=e3121]: ":"
+                          - generic [ref=e3122]: "\"P2\""
+                          - generic [ref=e3123]: "}"
+                          - generic [ref=e3124]: ","
+                          - generic [ref=e3125]: "\"blocking\""
+                          - generic [ref=e3126]: ":"
+                          - generic [ref=e3127]: "{"
+                          - generic [ref=e3128]: "\"type\""
+                          - generic [ref=e3129]: ":"
+                          - generic [ref=e3130]: "\"boolean\""
+                          - generic [ref=e3131]: ","
+                          - generic [ref=e3132]: "\"default\""
+                          - generic [ref=e3133]: ":"
+                          - generic [ref=e3135]: "false"
+                          - generic [ref=e3136]: "}"
+                          - generic [ref=e3137]: ","
+                          - generic [ref=e3138]: "\"notes\""
+                          - generic [ref=e3139]: ":"
+                          - generic [ref=e3140]: "{"
+                          - generic [ref=e3141]: "\"type\""
+                          - generic [ref=e3142]: ":"
+                          - generic [ref=e3143]: "\"string\""
+                          - generic [ref=e3144]: "}"
+                          - generic [ref=e3145]: "}"
+                          - generic [ref=e3146]: "}"
+                          - generic [ref=e3147]: ","
+                          - generic [ref=e3148]: "\"context\""
+                          - generic [ref=e3149]: ":"
+                          - generic [ref=e3150]: "{"
+                          - generic [ref=e3151]: "\"type\""
+                          - generic [ref=e3152]: ":"
+                          - generic [ref=e3153]: "\"object\""
+                          - generic [ref=e3154]: ","
+                          - generic [ref=e3155]: "\"additionalProperties\""
+                          - generic [ref=e3156]: ":"
+                          - generic [ref=e3158]: "false"
+                          - generic [ref=e3159]: ","
+                          - generic [ref=e3160]: "\"required\""
+                          - generic [ref=e3161]: ":"
+                          - generic [ref=e3162]: "["
+                          - generic [ref=e3163]: "\"repo\""
+                          - generic [ref=e3164]: ","
+                          - generic [ref=e3165]: "\"branch\""
+                          - generic [ref=e3166]: ","
+                          - generic [ref=e3167]: "\"goal\""
+                          - generic [ref=e3168]: ","
+                          - generic [ref=e3169]: "\"constraints\""
+                          - generic [ref=e3170]: "]"
+                          - generic [ref=e3171]: ","
+                          - generic [ref=e3172]: "\"properties\""
+                          - generic [ref=e3173]: ":"
+                          - generic [ref=e3174]: "{"
+                          - generic [ref=e3175]: "\"repo\""
+                          - generic [ref=e3176]: ":"
+                          - generic [ref=e3177]: "{"
+                          - generic [ref=e3178]: "\"type\""
+                          - generic [ref=e3179]: ":"
+                          - generic [ref=e3180]: "\"string\""
+                          - generic [ref=e3181]: ","
+                          - generic [ref=e3182]: "\"minLength\""
+                          - generic [ref=e3183]: ":"
+                          - generic [ref=e3184]: "1"
+                          - generic [ref=e3185]: "}"
+                          - generic [ref=e3186]: ","
+                          - generic [ref=e3187]: "\"branch\""
+                          - generic [ref=e3188]: ":"
+                          - generic [ref=e3189]: "{"
+                          - generic [ref=e3190]: "\"type\""
+                          - generic [ref=e3191]: ":"
+                          - generic [ref=e3192]: "\"string\""
+                          - generic [ref=e3193]: ","
+                          - generic [ref=e3194]: "\"minLength\""
+                          - generic [ref=e3195]: ":"
+                          - generic [ref=e3196]: "1"
+                          - generic [ref=e3197]: "}"
+                          - generic [ref=e3198]: ","
+                          - generic [ref=e3199]: "\"goal\""
+                          - generic [ref=e3200]: ":"
+                          - generic [ref=e3201]: "{"
+                          - generic [ref=e3202]: "\"type\""
+                          - generic [ref=e3203]: ":"
+                          - generic [ref=e3204]: "\"string\""
+                          - generic [ref=e3205]: ","
+                          - generic [ref=e3206]: "\"minLength\""
+                          - generic [ref=e3207]: ":"
+                          - generic [ref=e3208]: "1"
+                          - generic [ref=e3209]: "}"
+                          - generic [ref=e3210]: ","
+                          - generic [ref=e3211]: "\"constraints\""
+                          - generic [ref=e3212]: ":"
+                          - generic [ref=e3213]: "{"
+                          - generic [ref=e3214]: "\"type\""
+                          - generic [ref=e3215]: ":"
+                          - generic [ref=e3216]: "\"array\""
+                          - generic [ref=e3217]: ","
+                          - generic [ref=e3218]: "\"items\""
+                          - generic [ref=e3219]: ":"
+                          - generic [ref=e3220]: "{"
+                          - generic [ref=e3221]: "\"type\""
+                          - generic [ref=e3222]: ":"
+                          - generic [ref=e3223]: "\"string\""
+                          - generic [ref=e3224]: ","
+                          - generic [ref=e3225]: "\"minLength\""
+                          - generic [ref=e3226]: ":"
+                          - generic [ref=e3227]: "1"
+                          - generic [ref=e3228]: "}"
+                          - generic [ref=e3229]: ","
+                          - generic [ref=e3230]: "\"default\""
+                          - generic [ref=e3231]: ":"
+                          - generic [ref=e3232]: "["
+                          - generic [ref=e3233]: "]"
+                          - generic [ref=e3234]: "}"
+                          - generic [ref=e3235]: "}"
+                          - generic [ref=e3236]: "}"
+                          - generic [ref=e3237]: "}"
+                          - generic [ref=e3238]: "}"
+                    - separator [ref=e3239]
+                    - heading "schemas/flywheel/chatgpt/v1/envelope.schema.json" [level=3] [ref=e3240]:
+                      - code [ref=e3241]: schemas/flywheel/chatgpt/v1/envelope.schema.json
+                    - generic [ref=e3243]:
+                      - generic [ref=e3244]: json
+                      - button "Copy" [ref=e3247] [cursor=pointer]:
+                        - img [ref=e3248]
+                        - text: Copy code
+                      - code [ref=e3251]:
+                        - generic [ref=e3252]:
+                          - generic [ref=e3253]: "{"
+                          - generic [ref=e3254]: "\"$schema\""
+                          - generic [ref=e3255]: ":"
+                          - generic [ref=e3256]: "\"https://json-schema.org/draft/2020-12/schema\""
+                          - generic [ref=e3257]: ","
+                          - generic [ref=e3258]: "\"$id\""
+                          - generic [ref=e3259]: ":"
+                          - generic [ref=e3260]: "\"flywheel.chatgpt.v1/envelope.schema.json\""
+                          - generic [ref=e3261]: ","
+                          - generic [ref=e3262]: "\"title\""
+                          - generic [ref=e3263]: ":"
+                          - generic [ref=e3264]: "\"Flywheel ChatGPT Protocol Envelope (v1)\""
+                          - generic [ref=e3265]: ","
+                          - generic [ref=e3266]: "\"type\""
+                          - generic [ref=e3267]: ":"
+                          - generic [ref=e3268]: "\"object\""
+                          - generic [ref=e3269]: ","
+                          - generic [ref=e3270]: "\"additionalProperties\""
+                          - generic [ref=e3271]: ":"
+                          - generic [ref=e3273]: "false"
+                          - generic [ref=e3274]: ","
+                          - generic [ref=e3275]: "\"required\""
+                          - generic [ref=e3276]: ":"
+                          - generic [ref=e3277]: "["
+                          - generic [ref=e3278]: "\"proto\""
+                          - generic [ref=e3279]: ","
+                          - generic [ref=e3280]: "\"bead_id\""
+                          - generic [ref=e3281]: ","
+                          - generic [ref=e3282]: "\"msg_type\""
+                          - generic [ref=e3283]: ","
+                          - generic [ref=e3284]: "\"sender\""
+                          - generic [ref=e3285]: ","
+                          - generic [ref=e3286]: "\"ts\""
+                          - generic [ref=e3287]: ","
+                          - generic [ref=e3288]: "\"context\""
+                          - generic [ref=e3289]: ","
+                          - generic [ref=e3290]: "\"inputs\""
+                          - generic [ref=e3291]: ","
+                          - generic [ref=e3292]: "\"requested_output\""
+                          - generic [ref=e3293]: "]"
+                          - generic [ref=e3294]: ","
+                          - generic [ref=e3295]: "\"properties\""
+                          - generic [ref=e3296]: ":"
+                          - generic [ref=e3297]: "{"
+                          - generic [ref=e3298]: "\"proto\""
+                          - generic [ref=e3299]: ":"
+                          - generic [ref=e3300]: "{"
+                          - generic [ref=e3301]: "\"$ref\""
+                          - generic [ref=e3302]: ":"
+                          - generic [ref=e3303]: "\"common.schema.json#/$defs/proto\""
+                          - generic [ref=e3304]: "}"
+                          - generic [ref=e3305]: ","
+                          - generic [ref=e3306]: "\"bead_id\""
+                          - generic [ref=e3307]: ":"
+                          - generic [ref=e3308]: "{"
+                          - generic [ref=e3309]: "\"$ref\""
+                          - generic [ref=e3310]: ":"
+                          - generic [ref=e3311]: "\"common.schema.json#/$defs/bead_id\""
+                          - generic [ref=e3312]: "}"
+                          - generic [ref=e3313]: ","
+                          - generic [ref=e3314]: "\"msg_type\""
+                          - generic [ref=e3315]: ":"
+                          - generic [ref=e3316]: "{"
+                          - generic [ref=e3317]: "\"type\""
+                          - generic [ref=e3318]: ":"
+                          - generic [ref=e3319]: "\"string\""
+                          - generic [ref=e3320]: ","
+                          - generic [ref=e3321]: "\"minLength\""
+                          - generic [ref=e3322]: ":"
+                          - generic [ref=e3323]: "1"
+                          - generic [ref=e3324]: "}"
+                          - generic [ref=e3325]: ","
+                          - generic [ref=e3326]: "\"sender\""
+                          - generic [ref=e3327]: ":"
+                          - generic [ref=e3328]: "{"
+                          - generic [ref=e3329]: "\"type\""
+                          - generic [ref=e3330]: ":"
+                          - generic [ref=e3331]: "\"string\""
+                          - generic [ref=e3332]: ","
+                          - generic [ref=e3333]: "\"minLength\""
+                          - generic [ref=e3334]: ":"
+                          - generic [ref=e3335]: "1"
+                          - generic [ref=e3336]: "}"
+                          - generic [ref=e3337]: ","
+                          - generic [ref=e3338]: "\"ts\""
+                          - generic [ref=e3339]: ":"
+                          - generic [ref=e3340]: "{"
+                          - generic [ref=e3341]: "\"$ref\""
+                          - generic [ref=e3342]: ":"
+                          - generic [ref=e3343]: "\"common.schema.json#/$defs/iso_datetime\""
+                          - generic [ref=e3344]: "}"
+                          - generic [ref=e3345]: ","
+                          - generic [ref=e3346]: "\"idempotency_key\""
+                          - generic [ref=e3347]: ":"
+                          - generic [ref=e3348]: "{"
+                          - generic [ref=e3349]: "\"type\""
+                          - generic [ref=e3350]: ":"
+                          - generic [ref=e3351]: "\"string\""
+                          - generic [ref=e3352]: ","
+                          - generic [ref=e3353]: "\"minLength\""
+                          - generic [ref=e3354]: ":"
+                          - generic [ref=e3355]: "8"
+                          - generic [ref=e3356]: "}"
+                          - generic [ref=e3357]: ","
+                          - generic [ref=e3358]: "\"context\""
+                          - generic [ref=e3359]: ":"
+                          - generic [ref=e3360]: "{"
+                          - generic [ref=e3361]: "\"$ref\""
+                          - generic [ref=e3362]: ":"
+                          - generic [ref=e3363]: "\"common.schema.json#/$defs/context\""
+                          - generic [ref=e3364]: "}"
+                          - generic [ref=e3365]: ","
+                          - generic [ref=e3366]: "\"inputs\""
+                          - generic [ref=e3367]: ":"
+                          - generic [ref=e3368]: "{"
+                          - generic [ref=e3369]: "\"type\""
+                          - generic [ref=e3370]: ":"
+                          - generic [ref=e3371]: "\"object\""
+                          - generic [ref=e3372]: ","
+                          - generic [ref=e3373]: "\"additionalProperties\""
+                          - generic [ref=e3374]: ":"
+                          - generic [ref=e3376]: "false"
+                          - generic [ref=e3377]: ","
+                          - generic [ref=e3378]: "\"required\""
+                          - generic [ref=e3379]: ":"
+                          - generic [ref=e3380]: "["
+                          - generic [ref=e3381]: "\"artifacts\""
+                          - generic [ref=e3382]: ","
+                          - generic [ref=e3383]: "\"questions\""
+                          - generic [ref=e3384]: "]"
+                          - generic [ref=e3385]: ","
+                          - generic [ref=e3386]: "\"properties\""
+                          - generic [ref=e3387]: ":"
+                          - generic [ref=e3388]: "{"
+                          - generic [ref=e3389]: "\"artifacts\""
+                          - generic [ref=e3390]: ":"
+                          - generic [ref=e3391]: "{"
+                          - generic [ref=e3392]: "\"type\""
+                          - generic [ref=e3393]: ":"
+                          - generic [ref=e3394]: "\"array\""
+                          - generic [ref=e3395]: ","
+                          - generic [ref=e3396]: "\"items\""
+                          - generic [ref=e3397]: ":"
+                          - generic [ref=e3398]: "{"
+                          - generic [ref=e3399]: "\"$ref\""
+                          - generic [ref=e3400]: ":"
+                          - generic [ref=e3401]: "\"common.schema.json#/$defs/artifact\""
+                          - generic [ref=e3402]: "}"
+                          - generic [ref=e3403]: ","
+                          - generic [ref=e3404]: "\"default\""
+                          - generic [ref=e3405]: ":"
+                          - generic [ref=e3406]: "["
+                          - generic [ref=e3407]: "]"
+                          - generic [ref=e3408]: "}"
+                          - generic [ref=e3409]: ","
+                          - generic [ref=e3410]: "\"questions\""
+                          - generic [ref=e3411]: ":"
+                          - generic [ref=e3412]: "{"
+                          - generic [ref=e3413]: "\"type\""
+                          - generic [ref=e3414]: ":"
+                          - generic [ref=e3415]: "\"array\""
+                          - generic [ref=e3416]: ","
+                          - generic [ref=e3417]: "\"items\""
+                          - generic [ref=e3418]: ":"
+                          - generic [ref=e3419]: "{"
+                          - generic [ref=e3420]: "\"type\""
+                          - generic [ref=e3421]: ":"
+                          - generic [ref=e3422]: "\"string\""
+                          - generic [ref=e3423]: ","
+                          - generic [ref=e3424]: "\"minLength\""
+                          - generic [ref=e3425]: ":"
+                          - generic [ref=e3426]: "1"
+                          - generic [ref=e3427]: "}"
+                          - generic [ref=e3428]: ","
+                          - generic [ref=e3429]: "\"default\""
+                          - generic [ref=e3430]: ":"
+                          - generic [ref=e3431]: "["
+                          - generic [ref=e3432]: "]"
+                          - generic [ref=e3433]: "}"
+                          - generic [ref=e3434]: ","
+                          - generic [ref=e3435]: "\"options\""
+                          - generic [ref=e3436]: ":"
+                          - generic [ref=e3437]: "{"
+                          - generic [ref=e3438]: "\"type\""
+                          - generic [ref=e3439]: ":"
+                          - generic [ref=e3440]: "\"array\""
+                          - generic [ref=e3441]: ","
+                          - generic [ref=e3442]: "\"items\""
+                          - generic [ref=e3443]: ":"
+                          - generic [ref=e3444]: "{"
+                          - generic [ref=e3445]: "\"type\""
+                          - generic [ref=e3446]: ":"
+                          - generic [ref=e3447]: "\"object\""
+                          - generic [ref=e3448]: "}"
+                          - generic [ref=e3449]: ","
+                          - generic [ref=e3450]: "\"default\""
+                          - generic [ref=e3451]: ":"
+                          - generic [ref=e3452]: "["
+                          - generic [ref=e3453]: "]"
+                          - generic [ref=e3454]: "}"
+                          - generic [ref=e3455]: "}"
+                          - generic [ref=e3456]: "}"
+                          - generic [ref=e3457]: ","
+                          - generic [ref=e3458]: "\"requested_output\""
+                          - generic [ref=e3459]: ":"
+                          - generic [ref=e3460]: "{"
+                          - generic [ref=e3461]: "\"type\""
+                          - generic [ref=e3462]: ":"
+                          - generic [ref=e3463]: "\"object\""
+                          - generic [ref=e3464]: ","
+                          - generic [ref=e3465]: "\"additionalProperties\""
+                          - generic [ref=e3466]: ":"
+                          - generic [ref=e3468]: "false"
+                          - generic [ref=e3469]: ","
+                          - generic [ref=e3470]: "\"required\""
+                          - generic [ref=e3471]: ":"
+                          - generic [ref=e3472]: "["
+                          - generic [ref=e3473]: "\"format\""
+                          - generic [ref=e3474]: ","
+                          - generic [ref=e3475]: "\"fields\""
+                          - generic [ref=e3476]: "]"
+                          - generic [ref=e3477]: ","
+                          - generic [ref=e3478]: "\"properties\""
+                          - generic [ref=e3479]: ":"
+                          - generic [ref=e3480]: "{"
+                          - generic [ref=e3481]: "\"format\""
+                          - generic [ref=e3482]: ":"
+                          - generic [ref=e3483]: "{"
+                          - generic [ref=e3484]: "\"type\""
+                          - generic [ref=e3485]: ":"
+                          - generic [ref=e3486]: "\"string\""
+                          - generic [ref=e3487]: ","
+                          - generic [ref=e3488]: "\"const\""
+                          - generic [ref=e3489]: ":"
+                          - generic [ref=e3490]: "\"json\""
+                          - generic [ref=e3491]: "}"
+                          - generic [ref=e3492]: ","
+                          - generic [ref=e3493]: "\"fields\""
+                          - generic [ref=e3494]: ":"
+                          - generic [ref=e3495]: "{"
+                          - generic [ref=e3496]: "\"type\""
+                          - generic [ref=e3497]: ":"
+                          - generic [ref=e3498]: "\"array\""
+                          - generic [ref=e3499]: ","
+                          - generic [ref=e3500]: "\"items\""
+                          - generic [ref=e3501]: ":"
+                          - generic [ref=e3502]: "{"
+                          - generic [ref=e3503]: "\"type\""
+                          - generic [ref=e3504]: ":"
+                          - generic [ref=e3505]: "\"string\""
+                          - generic [ref=e3506]: ","
+                          - generic [ref=e3507]: "\"minLength\""
+                          - generic [ref=e3508]: ":"
+                          - generic [ref=e3509]: "1"
+                          - generic [ref=e3510]: "}"
+                          - generic [ref=e3511]: ","
+                          - generic [ref=e3512]: "\"minItems\""
+                          - generic [ref=e3513]: ":"
+                          - generic [ref=e3514]: "1"
+                          - generic [ref=e3515]: "}"
+                          - generic [ref=e3516]: ","
+                          - generic [ref=e3517]: "\"notes\""
+                          - generic [ref=e3518]: ":"
+                          - generic [ref=e3519]: "{"
+                          - generic [ref=e3520]: "\"type\""
+                          - generic [ref=e3521]: ":"
+                          - generic [ref=e3522]: "\"string\""
+                          - generic [ref=e3523]: "}"
+                          - generic [ref=e3524]: "}"
+                          - generic [ref=e3525]: "}"
+                          - generic [ref=e3526]: "}"
+                          - generic [ref=e3527]: "}"
+                    - separator [ref=e3528]
+                    - heading "Request message schemas" [level=2] [ref=e3529]
+                    - heading "schemas/flywheel/chatgpt/v1/msg-rfp-plan.schema.json" [level=3] [ref=e3530]:
+                      - code [ref=e3531]: schemas/flywheel/chatgpt/v1/msg-rfp-plan.schema.json
+                    - generic [ref=e3533]:
+                      - generic [ref=e3534]: json
+                      - button "Copy" [ref=e3537] [cursor=pointer]:
+                        - img [ref=e3538]
+                        - text: Copy code
+                      - code [ref=e3541]:
+                        - generic [ref=e3542]:
+                          - generic [ref=e3543]: "{"
+                          - generic [ref=e3544]: "\"$schema\""
+                          - generic [ref=e3545]: ":"
+                          - generic [ref=e3546]: "\"https://json-schema.org/draft/2020-12/schema\""
+                          - generic [ref=e3547]: ","
+                          - generic [ref=e3548]: "\"$id\""
+                          - generic [ref=e3549]: ":"
+                          - generic [ref=e3550]: "\"flywheel.chatgpt.v1/msg-rfp-plan.schema.json\""
+                          - generic [ref=e3551]: ","
+                          - generic [ref=e3552]: "\"title\""
+                          - generic [ref=e3553]: ":"
+                          - generic [ref=e3554]: "\"RFP_PLAN (v1)\""
+                          - generic [ref=e3555]: ","
+                          - generic [ref=e3556]: "\"allOf\""
+                          - generic [ref=e3557]: ":"
+                          - generic [ref=e3558]: "["
+                          - generic [ref=e3559]: "{"
+                          - generic [ref=e3560]: "\"$ref\""
+                          - generic [ref=e3561]: ":"
+                          - generic [ref=e3562]: "\"envelope.schema.json\""
+                          - generic [ref=e3563]: "}"
+                          - generic [ref=e3564]: ","
+                          - generic [ref=e3565]: "{"
+                          - generic [ref=e3566]: "\"type\""
+                          - generic [ref=e3567]: ":"
+                          - generic [ref=e3568]: "\"object\""
+                          - generic [ref=e3569]: ","
+                          - generic [ref=e3570]: "\"properties\""
+                          - generic [ref=e3571]: ":"
+                          - generic [ref=e3572]: "{"
+                          - generic [ref=e3573]: "\"msg_type\""
+                          - generic [ref=e3574]: ":"
+                          - generic [ref=e3575]: "{"
+                          - generic [ref=e3576]: "\"const\""
+                          - generic [ref=e3577]: ":"
+                          - generic [ref=e3578]: "\"RFP_PLAN\""
+                          - generic [ref=e3579]: "}"
+                          - generic [ref=e3580]: "}"
+                          - generic [ref=e3581]: "}"
+                          - generic [ref=e3582]: "]"
+                          - generic [ref=e3583]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/msg-rfp-arbitrate.schema.json" [level=3] [ref=e3584]:
+                      - code [ref=e3585]: schemas/flywheel/chatgpt/v1/msg-rfp-arbitrate.schema.json
+                    - generic [ref=e3587]:
+                      - generic [ref=e3588]: json
+                      - button "Copy" [ref=e3591] [cursor=pointer]:
+                        - img [ref=e3592]
+                        - text: Copy code
+                      - code [ref=e3595]:
+                        - generic [ref=e3596]:
+                          - generic [ref=e3597]: "{"
+                          - generic [ref=e3598]: "\"$schema\""
+                          - generic [ref=e3599]: ":"
+                          - generic [ref=e3600]: "\"https://json-schema.org/draft/2020-12/schema\""
+                          - generic [ref=e3601]: ","
+                          - generic [ref=e3602]: "\"$id\""
+                          - generic [ref=e3603]: ":"
+                          - generic [ref=e3604]: "\"flywheel.chatgpt.v1/msg-rfp-arbitrate.schema.json\""
+                          - generic [ref=e3605]: ","
+                          - generic [ref=e3606]: "\"title\""
+                          - generic [ref=e3607]: ":"
+                          - generic [ref=e3608]: "\"RFP_ARBITRATE (v1)\""
+                          - generic [ref=e3609]: ","
+                          - generic [ref=e3610]: "\"allOf\""
+                          - generic [ref=e3611]: ":"
+                          - generic [ref=e3612]: "["
+                          - generic [ref=e3613]: "{"
+                          - generic [ref=e3614]: "\"$ref\""
+                          - generic [ref=e3615]: ":"
+                          - generic [ref=e3616]: "\"envelope.schema.json\""
+                          - generic [ref=e3617]: "}"
+                          - generic [ref=e3618]: ","
+                          - generic [ref=e3619]: "{"
+                          - generic [ref=e3620]: "\"type\""
+                          - generic [ref=e3621]: ":"
+                          - generic [ref=e3622]: "\"object\""
+                          - generic [ref=e3623]: ","
+                          - generic [ref=e3624]: "\"properties\""
+                          - generic [ref=e3625]: ":"
+                          - generic [ref=e3626]: "{"
+                          - generic [ref=e3627]: "\"msg_type\""
+                          - generic [ref=e3628]: ":"
+                          - generic [ref=e3629]: "{"
+                          - generic [ref=e3630]: "\"const\""
+                          - generic [ref=e3631]: ":"
+                          - generic [ref=e3632]: "\"RFP_ARBITRATE\""
+                          - generic [ref=e3633]: "}"
+                          - generic [ref=e3634]: "}"
+                          - generic [ref=e3635]: "}"
+                          - generic [ref=e3636]: "]"
+                          - generic [ref=e3637]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/msg-evidence-bundle.schema.json" [level=3] [ref=e3638]:
+                      - code [ref=e3639]: schemas/flywheel/chatgpt/v1/msg-evidence-bundle.schema.json
+                    - generic [ref=e3641]:
+                      - generic [ref=e3642]: json
+                      - button "Copy" [ref=e3645] [cursor=pointer]:
+                        - img [ref=e3646]
+                        - text: Copy code
+                      - code [ref=e3649]:
+                        - generic [ref=e3650]:
+                          - generic [ref=e3651]: "{"
+                          - generic [ref=e3652]: "\"$schema\""
+                          - generic [ref=e3653]: ":"
+                          - generic [ref=e3654]: "\"https://json-schema.org/draft/2020-12/schema\""
+                          - generic [ref=e3655]: ","
+                          - generic [ref=e3656]: "\"$id\""
+                          - generic [ref=e3657]: ":"
+                          - generic [ref=e3658]: "\"flywheel.chatgpt.v1/msg-evidence-bundle.schema.json\""
+                          - generic [ref=e3659]: ","
+                          - generic [ref=e3660]: "\"title\""
+                          - generic [ref=e3661]: ":"
+                          - generic [ref=e3662]: "\"EVIDENCE_BUNDLE (v1)\""
+                          - generic [ref=e3663]: ","
+                          - generic [ref=e3664]: "\"allOf\""
+                          - generic [ref=e3665]: ":"
+                          - generic [ref=e3666]: "["
+                          - generic [ref=e3667]: "{"
+                          - generic [ref=e3668]: "\"$ref\""
+                          - generic [ref=e3669]: ":"
+                          - generic [ref=e3670]: "\"envelope.schema.json\""
+                          - generic [ref=e3671]: "}"
+                          - generic [ref=e3672]: ","
+                          - generic [ref=e3673]: "{"
+                          - generic [ref=e3674]: "\"type\""
+                          - generic [ref=e3675]: ":"
+                          - generic [ref=e3676]: "\"object\""
+                          - generic [ref=e3677]: ","
+                          - generic [ref=e3678]: "\"properties\""
+                          - generic [ref=e3679]: ":"
+                          - generic [ref=e3680]: "{"
+                          - generic [ref=e3681]: "\"msg_type\""
+                          - generic [ref=e3682]: ":"
+                          - generic [ref=e3683]: "{"
+                          - generic [ref=e3684]: "\"const\""
+                          - generic [ref=e3685]: ":"
+                          - generic [ref=e3686]: "\"EVIDENCE_BUNDLE\""
+                          - generic [ref=e3687]: "}"
+                          - generic [ref=e3688]: "}"
+                          - generic [ref=e3689]: "}"
+                          - generic [ref=e3690]: "]"
+                          - generic [ref=e3691]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/msg-spec-lock.schema.json" [level=3] [ref=e3692]:
+                      - code [ref=e3693]: schemas/flywheel/chatgpt/v1/msg-spec-lock.schema.json
+                    - generic [ref=e3695]:
+                      - generic [ref=e3696]: json
+                      - button "Copy" [ref=e3699] [cursor=pointer]:
+                        - img [ref=e3700]
+                        - text: Copy code
+                      - code [ref=e3703]:
+                        - generic [ref=e3704]:
+                          - generic [ref=e3705]: "{"
+                          - generic [ref=e3706]: "\"$schema\""
+                          - generic [ref=e3707]: ":"
+                          - generic [ref=e3708]: "\"https://json-schema.org/draft/2020-12/schema\""
+                          - generic [ref=e3709]: ","
+                          - generic [ref=e3710]: "\"$id\""
+                          - generic [ref=e3711]: ":"
+                          - generic [ref=e3712]: "\"flywheel.chatgpt.v1/msg-spec-lock.schema.json\""
+                          - generic [ref=e3713]: ","
+                          - generic [ref=e3714]: "\"title\""
+                          - generic [ref=e3715]: ":"
+                          - generic [ref=e3716]: "\"SPEC_LOCK (v1)\""
+                          - generic [ref=e3717]: ","
+                          - generic [ref=e3718]: "\"allOf\""
+                          - generic [ref=e3719]: ":"
+                          - generic [ref=e3720]: "["
+                          - generic [ref=e3721]: "{"
+                          - generic [ref=e3722]: "\"$ref\""
+                          - generic [ref=e3723]: ":"
+                          - generic [ref=e3724]: "\"envelope.schema.json\""
+                          - generic [ref=e3725]: "}"
+                          - generic [ref=e3726]: ","
+                          - generic [ref=e3727]: "{"
+                          - generic [ref=e3728]: "\"type\""
+                          - generic [ref=e3729]: ":"
+                          - generic [ref=e3730]: "\"object\""
+                          - generic [ref=e3731]: ","
+                          - generic [ref=e3732]: "\"properties\""
+                          - generic [ref=e3733]: ":"
+                          - generic [ref=e3734]: "{"
+                          - generic [ref=e3735]: "\"msg_type\""
+                          - generic [ref=e3736]: ":"
+                          - generic [ref=e3737]: "{"
+                          - generic [ref=e3738]: "\"const\""
+                          - generic [ref=e3739]: ":"
+                          - generic [ref=e3740]: "\"SPEC_LOCK\""
+                          - generic [ref=e3741]: "}"
+                          - generic [ref=e3742]: "}"
+                          - generic [ref=e3743]: "}"
+                          - generic [ref=e3744]: "]"
+                          - generic [ref=e3745]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/msg-acceptance-gate.schema.json" [level=3] [ref=e3746]:
+                      - code [ref=e3747]: schemas/flywheel/chatgpt/v1/msg-acceptance-gate.schema.json
+                    - generic [ref=e3749]:
+                      - generic [ref=e3750]: json
+                      - button "Copy" [ref=e3753] [cursor=pointer]:
+                        - img [ref=e3754]
+                        - text: Copy code
+                      - code [ref=e3757]:
+                        - generic [ref=e3758]:
+                          - generic [ref=e3759]: "{"
+                          - generic [ref=e3760]: "\"$schema\""
+                          - generic [ref=e3761]: ":"
+                          - generic [ref=e3762]: "\"https://json-schema.org/draft/2020-12/schema\""
+                          - generic [ref=e3763]: ","
+                          - generic [ref=e3764]: "\"$id\""
+                          - generic [ref=e3765]: ":"
+                          - generic [ref=e3766]: "\"flywheel.chatgpt.v1/msg-acceptance-gate.schema.json\""
+                          - generic [ref=e3767]: ","
+                          - generic [ref=e3768]: "\"title\""
+                          - generic [ref=e3769]: ":"
+                          - generic [ref=e3770]: "\"ACCEPTANCE_GATE (v1)\""
+                          - generic [ref=e3771]: ","
+                          - generic [ref=e3772]: "\"allOf\""
+                          - generic [ref=e3773]: ":"
+                          - generic [ref=e3774]: "["
+                          - generic [ref=e3775]: "{"
+                          - generic [ref=e3776]: "\"$ref\""
+                          - generic [ref=e3777]: ":"
+                          - generic [ref=e3778]: "\"envelope.schema.json\""
+                          - generic [ref=e3779]: "}"
+                          - generic [ref=e3780]: ","
+                          - generic [ref=e3781]: "{"
+                          - generic [ref=e3782]: "\"type\""
+                          - generic [ref=e3783]: ":"
+                          - generic [ref=e3784]: "\"object\""
+                          - generic [ref=e3785]: ","
+                          - generic [ref=e3786]: "\"properties\""
+                          - generic [ref=e3787]: ":"
+                          - generic [ref=e3788]: "{"
+                          - generic [ref=e3789]: "\"msg_type\""
+                          - generic [ref=e3790]: ":"
+                          - generic [ref=e3791]: "{"
+                          - generic [ref=e3792]: "\"const\""
+                          - generic [ref=e3793]: ":"
+                          - generic [ref=e3794]: "\"ACCEPTANCE_GATE\""
+                          - generic [ref=e3795]: "}"
+                          - generic [ref=e3796]: "}"
+                          - generic [ref=e3797]: "}"
+                          - generic [ref=e3798]: "]"
+                          - generic [ref=e3799]: "}"
+                    - separator [ref=e3800]
+                    - heading "Response message schemas" [level=2] [ref=e3801]
+                    - paragraph [ref=e3802]: These are what your Bridge will validate after scraping ChatGPT replies.
+                    - heading "schemas/flywheel/chatgpt/v1/resp-rfp-plan.schema.json" [level=3] [ref=e3803]:
+                      - code [ref=e3804]: schemas/flywheel/chatgpt/v1/resp-rfp-plan.schema.json
+                    - generic [ref=e3806]:
+                      - generic [ref=e3807]: json
+                      - button "Copy" [ref=e3810] [cursor=pointer]:
+                        - img [ref=e3811]
+                        - text: Copy code
+                      - code [ref=e3814]:
+                        - generic [ref=e3815]:
+                          - generic [ref=e3816]: "{"
+                          - generic [ref=e3817]: "\"$schema\""
+                          - generic [ref=e3818]: ":"
+                          - generic [ref=e3819]: "\"https://json-schema.org/draft/2020-12/schema\""
+                          - generic [ref=e3820]: ","
+                          - generic [ref=e3821]: "\"$id\""
+                          - generic [ref=e3822]: ":"
+                          - generic [ref=e3823]: "\"flywheel.chatgpt.v1/resp-rfp-plan.schema.json\""
+                          - generic [ref=e3824]: ","
+                          - generic [ref=e3825]: "\"title\""
+                          - generic [ref=e3826]: ":"
+                          - generic [ref=e3827]: "\"RFP_PLAN_RESPONSE (v1)\""
+                          - generic [ref=e3828]: ","
+                          - generic [ref=e3829]: "\"type\""
+                          - generic [ref=e3830]: ":"
+                          - generic [ref=e3831]: "\"object\""
+                          - generic [ref=e3832]: ","
+                          - generic [ref=e3833]: "\"additionalProperties\""
+                          - generic [ref=e3834]: ":"
+                          - generic [ref=e3836]: "false"
+                          - generic [ref=e3837]: ","
+                          - generic [ref=e3838]: "\"required\""
+                          - generic [ref=e3839]: ":"
+                          - generic [ref=e3840]: "["
+                          - generic [ref=e3841]: "\"proto\""
+                          - generic [ref=e3842]: ","
+                          - generic [ref=e3843]: "\"bead_id\""
+                          - generic [ref=e3844]: ","
+                          - generic [ref=e3845]: "\"msg_type\""
+                          - generic [ref=e3846]: ","
+                          - generic [ref=e3847]: "\"verdict\""
+                          - generic [ref=e3848]: ","
+                          - generic [ref=e3849]: "\"plan\""
+                          - generic [ref=e3850]: ","
+                          - generic [ref=e3851]: "\"risks\""
+                          - generic [ref=e3852]: ","
+                          - generic [ref=e3853]: "\"acceptance_tests\""
+                          - generic [ref=e3854]: ","
+                          - generic [ref=e3855]: "\"next_actions\""
+                          - generic [ref=e3856]: "]"
+                          - generic [ref=e3857]: ","
+                          - generic [ref=e3858]: "\"properties\""
+                          - generic [ref=e3859]: ":"
+                          - generic [ref=e3860]: "{"
+                          - generic [ref=e3861]: "\"proto\""
+                          - generic [ref=e3862]: ":"
+                          - generic [ref=e3863]: "{"
+                          - generic [ref=e3864]: "\"$ref\""
+                          - generic [ref=e3865]: ":"
+                          - generic [ref=e3866]: "\"common.schema.json#/$defs/proto\""
+                          - generic [ref=e3867]: "}"
+                          - generic [ref=e3868]: ","
+                          - generic [ref=e3869]: "\"bead_id\""
+                          - generic [ref=e3870]: ":"
+                          - generic [ref=e3871]: "{"
+                          - generic [ref=e3872]: "\"$ref\""
+                          - generic [ref=e3873]: ":"
+                          - generic [ref=e3874]: "\"common.schema.json#/$defs/bead_id\""
+                          - generic [ref=e3875]: "}"
+                          - generic [ref=e3876]: ","
+                          - generic [ref=e3877]: "\"msg_type\""
+                          - generic [ref=e3878]: ":"
+                          - generic [ref=e3879]: "{"
+                          - generic [ref=e3880]: "\"const\""
+                          - generic [ref=e3881]: ":"
+                          - generic [ref=e3882]: "\"RFP_PLAN_RESPONSE\""
+                          - generic [ref=e3883]: "}"
+                          - generic [ref=e3884]: ","
+                          - generic [ref=e3885]: "\"verdict\""
+                          - generic [ref=e3886]: ":"
+                          - generic [ref=e3887]: "{"
+                          - generic [ref=e3888]: "\"$ref\""
+                          - generic [ref=e3889]: ":"
+                          - generic [ref=e3890]: "\"common.schema.json#/$defs/verdict\""
+                          - generic [ref=e3891]: "}"
+                          - generic [ref=e3892]: ","
+                          - generic [ref=e3893]: "\"plan\""
+                          - generic [ref=e3894]: ":"
+                          - generic [ref=e3895]: "{"
+                          - generic [ref=e3896]: "\"type\""
+                          - generic [ref=e3897]: ":"
+                          - generic [ref=e3898]: "\"array\""
+                          - generic [ref=e3899]: ","
+                          - generic [ref=e3900]: "\"items\""
+                          - generic [ref=e3901]: ":"
+                          - generic [ref=e3902]: "{"
+                          - generic [ref=e3903]: "\"type\""
+                          - generic [ref=e3904]: ":"
+                          - generic [ref=e3905]: "\"object\""
+                          - generic [ref=e3906]: ","
+                          - generic [ref=e3907]: "\"additionalProperties\""
+                          - generic [ref=e3908]: ":"
+                          - generic [ref=e3910]: "false"
+                          - generic [ref=e3911]: ","
+                          - generic [ref=e3912]: "\"required\""
+                          - generic [ref=e3913]: ":"
+                          - generic [ref=e3914]: "["
+                          - generic [ref=e3915]: "\"step\""
+                          - generic [ref=e3916]: ","
+                          - generic [ref=e3917]: "\"action\""
+                          - generic [ref=e3918]: ","
+                          - generic [ref=e3919]: "\"owner\""
+                          - generic [ref=e3920]: "]"
+                          - generic [ref=e3921]: ","
+                          - generic [ref=e3922]: "\"properties\""
+                          - generic [ref=e3923]: ":"
+                          - generic [ref=e3924]: "{"
+                          - generic [ref=e3925]: "\"step\""
+                          - generic [ref=e3926]: ":"
+                          - generic [ref=e3927]: "{"
+                          - generic [ref=e3928]: "\"type\""
+                          - generic [ref=e3929]: ":"
+                          - generic [ref=e3930]: "\"integer\""
+                          - generic [ref=e3931]: ","
+                          - generic [ref=e3932]: "\"minimum\""
+                          - generic [ref=e3933]: ":"
+                          - generic [ref=e3934]: "1"
+                          - generic [ref=e3935]: "}"
+                          - generic [ref=e3936]: ","
+                          - generic [ref=e3937]: "\"action\""
+                          - generic [ref=e3938]: ":"
+                          - generic [ref=e3939]: "{"
+                          - generic [ref=e3940]: "\"type\""
+                          - generic [ref=e3941]: ":"
+                          - generic [ref=e3942]: "\"string\""
+                          - generic [ref=e3943]: ","
+                          - generic [ref=e3944]: "\"minLength\""
+                          - generic [ref=e3945]: ":"
+                          - generic [ref=e3946]: "1"
+                          - generic [ref=e3947]: "}"
+                          - generic [ref=e3948]: ","
+                          - generic [ref=e3949]: "\"owner\""
+                          - generic [ref=e3950]: ":"
+                          - generic [ref=e3951]: "{"
+                          - generic [ref=e3952]: "\"type\""
+                          - generic [ref=e3953]: ":"
+                          - generic [ref=e3954]: "\"string\""
+                          - generic [ref=e3955]: ","
+                          - generic [ref=e3956]: "\"minLength\""
+                          - generic [ref=e3957]: ":"
+                          - generic [ref=e3958]: "1"
+                          - generic [ref=e3959]: "}"
+                          - generic [ref=e3960]: ","
+                          - generic [ref=e3961]: "\"evidence\""
+                          - generic [ref=e3962]: ":"
+                          - generic [ref=e3963]: "{"
+                          - generic [ref=e3964]: "\"type\""
+                          - generic [ref=e3965]: ":"
+                          - generic [ref=e3966]: "\"string\""
+                          - generic [ref=e3967]: "}"
+                          - generic [ref=e3968]: "}"
+                          - generic [ref=e3969]: "}"
+                          - generic [ref=e3970]: "}"
+                          - generic [ref=e3971]: ","
+                          - generic [ref=e3972]: "\"risks\""
+                          - generic [ref=e3973]: ":"
+                          - generic [ref=e3974]: "{"
+                          - generic [ref=e3975]: "\"type\""
+                          - generic [ref=e3976]: ":"
+                          - generic [ref=e3977]: "\"array\""
+                          - generic [ref=e3978]: ","
+                          - generic [ref=e3979]: "\"items\""
+                          - generic [ref=e3980]: ":"
+                          - generic [ref=e3981]: "{"
+                          - generic [ref=e3982]: "\"type\""
+                          - generic [ref=e3983]: ":"
+                          - generic [ref=e3984]: "\"object\""
+                          - generic [ref=e3985]: ","
+                          - generic [ref=e3986]: "\"additionalProperties\""
+                          - generic [ref=e3987]: ":"
+                          - generic [ref=e3989]: "false"
+                          - generic [ref=e3990]: ","
+                          - generic [ref=e3991]: "\"required\""
+                          - generic [ref=e3992]: ":"
+                          - generic [ref=e3993]: "["
+                          - generic [ref=e3994]: "\"risk\""
+                          - generic [ref=e3995]: ","
+                          - generic [ref=e3996]: "\"mitigation\""
+                          - generic [ref=e3997]: "]"
+                          - generic [ref=e3998]: ","
+                          - generic [ref=e3999]: "\"properties\""
+                          - generic [ref=e4000]: ":"
+                          - generic [ref=e4001]: "{"
+                          - generic [ref=e4002]: "\"risk\""
+                          - generic [ref=e4003]: ":"
+                          - generic [ref=e4004]: "{"
+                          - generic [ref=e4005]: "\"type\""
+                          - generic [ref=e4006]: ":"
+                          - generic [ref=e4007]: "\"string\""
+                          - generic [ref=e4008]: ","
+                          - generic [ref=e4009]: "\"minLength\""
+                          - generic [ref=e4010]: ":"
+                          - generic [ref=e4011]: "1"
+                          - generic [ref=e4012]: "}"
+                          - generic [ref=e4013]: ","
+                          - generic [ref=e4014]: "\"mitigation\""
+                          - generic [ref=e4015]: ":"
+                          - generic [ref=e4016]: "{"
+                          - generic [ref=e4017]: "\"type\""
+                          - generic [ref=e4018]: ":"
+                          - generic [ref=e4019]: "\"string\""
+                          - generic [ref=e4020]: ","
+                          - generic [ref=e4021]: "\"minLength\""
+                          - generic [ref=e4022]: ":"
+                          - generic [ref=e4023]: "1"
+                          - generic [ref=e4024]: "}"
+                          - generic [ref=e4025]: "}"
+                          - generic [ref=e4026]: "}"
+                          - generic [ref=e4027]: ","
+                          - generic [ref=e4028]: "\"default\""
+                          - generic [ref=e4029]: ":"
+                          - generic [ref=e4030]: "["
+                          - generic [ref=e4031]: "]"
+                          - generic [ref=e4032]: "}"
+                          - generic [ref=e4033]: ","
+                          - generic [ref=e4034]: "\"acceptance_tests\""
+                          - generic [ref=e4035]: ":"
+                          - generic [ref=e4036]: "{"
+                          - generic [ref=e4037]: "\"type\""
+                          - generic [ref=e4038]: ":"
+                          - generic [ref=e4039]: "\"array\""
+                          - generic [ref=e4040]: ","
+                          - generic [ref=e4041]: "\"items\""
+                          - generic [ref=e4042]: ":"
+                          - generic [ref=e4043]: "{"
+                          - generic [ref=e4044]: "\"type\""
+                          - generic [ref=e4045]: ":"
+                          - generic [ref=e4046]: "\"string\""
+                          - generic [ref=e4047]: ","
+                          - generic [ref=e4048]: "\"minLength\""
+                          - generic [ref=e4049]: ":"
+                          - generic [ref=e4050]: "1"
+                          - generic [ref=e4051]: "}"
+                          - generic [ref=e4052]: ","
+                          - generic [ref=e4053]: "\"default\""
+                          - generic [ref=e4054]: ":"
+                          - generic [ref=e4055]: "["
+                          - generic [ref=e4056]: "]"
+                          - generic [ref=e4057]: "}"
+                          - generic [ref=e4058]: ","
+                          - generic [ref=e4059]: "\"next_actions\""
+                          - generic [ref=e4060]: ":"
+                          - generic [ref=e4061]: "{"
+                          - generic [ref=e4062]: "\"type\""
+                          - generic [ref=e4063]: ":"
+                          - generic [ref=e4064]: "\"array\""
+                          - generic [ref=e4065]: ","
+                          - generic [ref=e4066]: "\"items\""
+                          - generic [ref=e4067]: ":"
+                          - generic [ref=e4068]: "{"
+                          - generic [ref=e4069]: "\"$ref\""
+                          - generic [ref=e4070]: ":"
+                          - generic [ref=e4071]: "\"common.schema.json#/$defs/next_action\""
+                          - generic [ref=e4072]: "}"
+                          - generic [ref=e4073]: ","
+                          - generic [ref=e4074]: "\"default\""
+                          - generic [ref=e4075]: ":"
+                          - generic [ref=e4076]: "["
+                          - generic [ref=e4077]: "]"
+                          - generic [ref=e4078]: "}"
+                          - generic [ref=e4079]: ","
+                          - generic [ref=e4080]: "\"notes\""
+                          - generic [ref=e4081]: ":"
+                          - generic [ref=e4082]: "{"
+                          - generic [ref=e4083]: "\"type\""
+                          - generic [ref=e4084]: ":"
+                          - generic [ref=e4085]: "\"string\""
+                          - generic [ref=e4086]: "}"
+                          - generic [ref=e4087]: "}"
+                          - generic [ref=e4088]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/resp-rfp-arbitrate.schema.json" [level=3] [ref=e4089]:
+                      - code [ref=e4090]: schemas/flywheel/chatgpt/v1/resp-rfp-arbitrate.schema.json
+                    - generic [ref=e4092]:
+                      - generic [ref=e4093]: json
+                      - button "Copy" [ref=e4096] [cursor=pointer]:
+                        - img [ref=e4097]
+                        - text: Copy code
+                      - code [ref=e4100]:
+                        - generic [ref=e4101]:
+                          - generic [ref=e4102]: "{"
+                          - generic [ref=e4103]: "\"$schema\""
+                          - generic [ref=e4104]: ":"
+                          - generic [ref=e4105]: "\"https://json-schema.org/draft/2020-12/schema\""
+                          - generic [ref=e4106]: ","
+                          - generic [ref=e4107]: "\"$id\""
+                          - generic [ref=e4108]: ":"
+                          - generic [ref=e4109]: "\"flywheel.chatgpt.v1/resp-rfp-arbitrate.schema.json\""
+                          - generic [ref=e4110]: ","
+                          - generic [ref=e4111]: "\"title\""
+                          - generic [ref=e4112]: ":"
+                          - generic [ref=e4113]: "\"RFP_ARBITRATE_RESPONSE (v1)\""
+                          - generic [ref=e4114]: ","
+                          - generic [ref=e4115]: "\"type\""
+                          - generic [ref=e4116]: ":"
+                          - generic [ref=e4117]: "\"object\""
+                          - generic [ref=e4118]: ","
+                          - generic [ref=e4119]: "\"additionalProperties\""
+                          - generic [ref=e4120]: ":"
+                          - generic [ref=e4122]: "false"
+                          - generic [ref=e4123]: ","
+                          - generic [ref=e4124]: "\"required\""
+                          - generic [ref=e4125]: ":"
+                          - generic [ref=e4126]: "["
+                          - generic [ref=e4127]: "\"proto\""
+                          - generic [ref=e4128]: ","
+                          - generic [ref=e4129]: "\"bead_id\""
+                          - generic [ref=e4130]: ","
+                          - generic [ref=e4131]: "\"msg_type\""
+                          - generic [ref=e4132]: ","
+                          - generic [ref=e4133]: "\"verdict\""
+                          - generic [ref=e4134]: ","
+                          - generic [ref=e4135]: "\"decision\""
+                          - generic [ref=e4136]: ","
+                          - generic [ref=e4137]: "\"rationale\""
+                          - generic [ref=e4138]: ","
+                          - generic [ref=e4139]: "\"next_actions\""
+                          - generic [ref=e4140]: "]"
+                          - generic [ref=e4141]: ","
+                          - generic [ref=e4142]: "\"properties\""
+                          - generic [ref=e4143]: ":"
+                          - generic [ref=e4144]: "{"
+                          - generic [ref=e4145]: "\"proto\""
+                          - generic [ref=e4146]: ":"
+                          - generic [ref=e4147]: "{"
+                          - generic [ref=e4148]: "\"$ref\""
+                          - generic [ref=e4149]: ":"
+                          - generic [ref=e4150]: "\"common.schema.json#/$defs/proto\""
+                          - generic [ref=e4151]: "}"
+                          - generic [ref=e4152]: ","
+                          - generic [ref=e4153]: "\"bead_id\""
+                          - generic [ref=e4154]: ":"
+                          - generic [ref=e4155]: "{"
+                          - generic [ref=e4156]: "\"$ref\""
+                          - generic [ref=e4157]: ":"
+                          - generic [ref=e4158]: "\"common.schema.json#/$defs/bead_id\""
+                          - generic [ref=e4159]: "}"
+                          - generic [ref=e4160]: ","
+                          - generic [ref=e4161]: "\"msg_type\""
+                          - generic [ref=e4162]: ":"
+                          - generic [ref=e4163]: "{"
+                          - generic [ref=e4164]: "\"const\""
+                          - generic [ref=e4165]: ":"
+                          - generic [ref=e4166]: "\"RFP_ARBITRATE_RESPONSE\""
+                          - generic [ref=e4167]: "}"
+                          - generic [ref=e4168]: ","
+                          - generic [ref=e4169]: "\"verdict\""
+                          - generic [ref=e4170]: ":"
+                          - generic [ref=e4171]: "{"
+                          - generic [ref=e4172]: "\"$ref\""
+                          - generic [ref=e4173]: ":"
+                          - generic [ref=e4174]: "\"common.schema.json#/$defs/verdict\""
+                          - generic [ref=e4175]: "}"
+                          - generic [ref=e4176]: ","
+                          - generic [ref=e4177]: "\"decision\""
+                          - generic [ref=e4178]: ":"
+                          - generic [ref=e4179]: "{"
+                          - generic [ref=e4180]: "\"type\""
+                          - generic [ref=e4181]: ":"
+                          - generic [ref=e4182]: "\"string\""
+                          - generic [ref=e4183]: ","
+                          - generic [ref=e4184]: "\"minLength\""
+                          - generic [ref=e4185]: ":"
+                          - generic [ref=e4186]: "1"
+                          - generic [ref=e4187]: "}"
+                          - generic [ref=e4188]: ","
+                          - generic [ref=e4189]: "\"rationale\""
+                          - generic [ref=e4190]: ":"
+                          - generic [ref=e4191]: "{"
+                          - generic [ref=e4192]: "\"type\""
+                          - generic [ref=e4193]: ":"
+                          - generic [ref=e4194]: "\"string\""
+                          - generic [ref=e4195]: ","
+                          - generic [ref=e4196]: "\"minLength\""
+                          - generic [ref=e4197]: ":"
+                          - generic [ref=e4198]: "1"
+                          - generic [ref=e4199]: "}"
+                          - generic [ref=e4200]: ","
+                          - generic [ref=e4201]: "\"tradeoffs\""
+                          - generic [ref=e4202]: ":"
+                          - generic [ref=e4203]: "{"
+                          - generic [ref=e4204]: "\"type\""
+                          - generic [ref=e4205]: ":"
+                          - generic [ref=e4206]: "\"array\""
+                          - generic [ref=e4207]: ","
+                          - generic [ref=e4208]: "\"items\""
+                          - generic [ref=e4209]: ":"
+                          - generic [ref=e4210]: "{"
+                          - generic [ref=e4211]: "\"type\""
+                          - generic [ref=e4212]: ":"
+                          - generic [ref=e4213]: "\"string\""
+                          - generic [ref=e4214]: ","
+                          - generic [ref=e4215]: "\"minLength\""
+                          - generic [ref=e4216]: ":"
+                          - generic [ref=e4217]: "1"
+                          - generic [ref=e4218]: "}"
+                          - generic [ref=e4219]: ","
+                          - generic [ref=e4220]: "\"default\""
+                          - generic [ref=e4221]: ":"
+                          - generic [ref=e4222]: "["
+                          - generic [ref=e4223]: "]"
+                          - generic [ref=e4224]: "}"
+                          - generic [ref=e4225]: ","
+                          - generic [ref=e4226]: "\"next_actions\""
+                          - generic [ref=e4227]: ":"
+                          - generic [ref=e4228]: "{"
+                          - generic [ref=e4229]: "\"type\""
+                          - generic [ref=e4230]: ":"
+                          - generic [ref=e4231]: "\"array\""
+                          - generic [ref=e4232]: ","
+                          - generic [ref=e4233]: "\"items\""
+                          - generic [ref=e4234]: ":"
+                          - generic [ref=e4235]: "{"
+                          - generic [ref=e4236]: "\"$ref\""
+                          - generic [ref=e4237]: ":"
+                          - generic [ref=e4238]: "\"common.schema.json#/$defs/next_action\""
+                          - generic [ref=e4239]: "}"
+                          - generic [ref=e4240]: ","
+                          - generic [ref=e4241]: "\"default\""
+                          - generic [ref=e4242]: ":"
+                          - generic [ref=e4243]: "["
+                          - generic [ref=e4244]: "]"
+                          - generic [ref=e4245]: "}"
+                          - generic [ref=e4246]: ","
+                          - generic [ref=e4247]: "\"notes\""
+                          - generic [ref=e4248]: ":"
+                          - generic [ref=e4249]: "{"
+                          - generic [ref=e4250]: "\"type\""
+                          - generic [ref=e4251]: ":"
+                          - generic [ref=e4252]: "\"string\""
+                          - generic [ref=e4253]: "}"
+                          - generic [ref=e4254]: "}"
+                          - generic [ref=e4255]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/resp-evidence-bundle.schema.json" [level=3] [ref=e4256]:
+                      - code [ref=e4257]: schemas/flywheel/chatgpt/v1/resp-evidence-bundle.schema.json
+                    - generic [ref=e4259]:
+                      - generic [ref=e4260]: json
+                      - button "Copy" [ref=e4263] [cursor=pointer]:
+                        - img [ref=e4264]
+                        - text: Copy code
+                      - code [ref=e4267]:
+                        - generic [ref=e4268]:
+                          - generic [ref=e4269]: "{"
+                          - generic [ref=e4270]: "\"$schema\""
+                          - generic [ref=e4271]: ":"
+                          - generic [ref=e4272]: "\"https://json-schema.org/draft/2020-12/schema\""
+                          - generic [ref=e4273]: ","
+                          - generic [ref=e4274]: "\"$id\""
+                          - generic [ref=e4275]: ":"
+                          - generic [ref=e4276]: "\"flywheel.chatgpt.v1/resp-evidence-bundle.schema.json\""
+                          - generic [ref=e4277]: ","
+                          - generic [ref=e4278]: "\"title\""
+                          - generic [ref=e4279]: ":"
+                          - generic [ref=e4280]: "\"EVIDENCE_BUNDLE_RESPONSE (v1)\""
+                          - generic [ref=e4281]: ","
+                          - generic [ref=e4282]: "\"type\""
+                          - generic [ref=e4283]: ":"
+                          - generic [ref=e4284]: "\"object\""
+                          - generic [ref=e4285]: ","
+                          - generic [ref=e4286]: "\"additionalProperties\""
+                          - generic [ref=e4287]: ":"
+                          - generic [ref=e4289]: "false"
+                          - generic [ref=e4290]: ","
+                          - generic [ref=e4291]: "\"required\""
+                          - generic [ref=e4292]: ":"
+                          - generic [ref=e4293]: "["
+                          - generic [ref=e4294]: "\"proto\""
+                          - generic [ref=e4295]: ","
+                          - generic [ref=e4296]: "\"bead_id\""
+                          - generic [ref=e4297]: ","
+                          - generic [ref=e4298]: "\"msg_type\""
+                          - generic [ref=e4299]: ","
+                          - generic [ref=e4300]: "\"verdict\""
+                          - generic [ref=e4301]: ","
+                          - generic [ref=e4302]: "\"findings\""
+                          - generic [ref=e4303]: ","
+                          - generic [ref=e4304]: "\"missing\""
+                          - generic [ref=e4305]: ","
+                          - generic [ref=e4306]: "\"next_actions\""
+                          - generic [ref=e4307]: "]"
+                          - generic [ref=e4308]: ","
+                          - generic [ref=e4309]: "\"properties\""
+                          - generic [ref=e4310]: ":"
+                          - generic [ref=e4311]: "{"
+                          - generic [ref=e4312]: "\"proto\""
+                          - generic [ref=e4313]: ":"
+                          - generic [ref=e4314]: "{"
+                          - generic [ref=e4315]: "\"$ref\""
+                          - generic [ref=e4316]: ":"
+                          - generic [ref=e4317]: "\"common.schema.json#/$defs/proto\""
+                          - generic [ref=e4318]: "}"
+                          - generic [ref=e4319]: ","
+                          - generic [ref=e4320]: "\"bead_id\""
+                          - generic [ref=e4321]: ":"
+                          - generic [ref=e4322]: "{"
+                          - generic [ref=e4323]: "\"$ref\""
+                          - generic [ref=e4324]: ":"
+                          - generic [ref=e4325]: "\"common.schema.json#/$defs/bead_id\""
+                          - generic [ref=e4326]: "}"
+                          - generic [ref=e4327]: ","
+                          - generic [ref=e4328]: "\"msg_type\""
+                          - generic [ref=e4329]: ":"
+                          - generic [ref=e4330]: "{"
+                          - generic [ref=e4331]: "\"const\""
+                          - generic [ref=e4332]: ":"
+                          - generic [ref=e4333]: "\"EVIDENCE_BUNDLE_RESPONSE\""
+                          - generic [ref=e4334]: "}"
+                          - generic [ref=e4335]: ","
+                          - generic [ref=e4336]: "\"verdict\""
+                          - generic [ref=e4337]: ":"
+                          - generic [ref=e4338]: "{"
+                          - generic [ref=e4339]: "\"$ref\""
+                          - generic [ref=e4340]: ":"
+                          - generic [ref=e4341]: "\"common.schema.json#/$defs/verdict\""
+                          - generic [ref=e4342]: "}"
+                          - generic [ref=e4343]: ","
+                          - generic [ref=e4344]: "\"findings\""
+                          - generic [ref=e4345]: ":"
+                          - generic [ref=e4346]: "{"
+                          - generic [ref=e4347]: "\"type\""
+                          - generic [ref=e4348]: ":"
+                          - generic [ref=e4349]: "\"array\""
+                          - generic [ref=e4350]: ","
+                          - generic [ref=e4351]: "\"items\""
+                          - generic [ref=e4352]: ":"
+                          - generic [ref=e4353]: "{"
+                          - generic [ref=e4354]: "\"type\""
+                          - generic [ref=e4355]: ":"
+                          - generic [ref=e4356]: "\"string\""
+                          - generic [ref=e4357]: ","
+                          - generic [ref=e4358]: "\"minLength\""
+                          - generic [ref=e4359]: ":"
+                          - generic [ref=e4360]: "1"
+                          - generic [ref=e4361]: "}"
+                          - generic [ref=e4362]: ","
+                          - generic [ref=e4363]: "\"default\""
+                          - generic [ref=e4364]: ":"
+                          - generic [ref=e4365]: "["
+                          - generic [ref=e4366]: "]"
+                          - generic [ref=e4367]: "}"
+                          - generic [ref=e4368]: ","
+                          - generic [ref=e4369]: "\"missing\""
+                          - generic [ref=e4370]: ":"
+                          - generic [ref=e4371]: "{"
+                          - generic [ref=e4372]: "\"type\""
+                          - generic [ref=e4373]: ":"
+                          - generic [ref=e4374]: "\"array\""
+                          - generic [ref=e4375]: ","
+                          - generic [ref=e4376]: "\"items\""
+                          - generic [ref=e4377]: ":"
+                          - generic [ref=e4378]: "{"
+                          - generic [ref=e4379]: "\"type\""
+                          - generic [ref=e4380]: ":"
+                          - generic [ref=e4381]: "\"string\""
+                          - generic [ref=e4382]: ","
+                          - generic [ref=e4383]: "\"minLength\""
+                          - generic [ref=e4384]: ":"
+                          - generic [ref=e4385]: "1"
+                          - generic [ref=e4386]: "}"
+                          - generic [ref=e4387]: ","
+                          - generic [ref=e4388]: "\"default\""
+                          - generic [ref=e4389]: ":"
+                          - generic [ref=e4390]: "["
+                          - generic [ref=e4391]: "]"
+                          - generic [ref=e4392]: "}"
+                          - generic [ref=e4393]: ","
+                          - generic [ref=e4394]: "\"next_actions\""
+                          - generic [ref=e4395]: ":"
+                          - generic [ref=e4396]: "{"
+                          - generic [ref=e4397]: "\"type\""
+                          - generic [ref=e4398]: ":"
+                          - generic [ref=e4399]: "\"array\""
+                          - generic [ref=e4400]: ","
+                          - generic [ref=e4401]: "\"items\""
+                          - generic [ref=e4402]: ":"
+                          - generic [ref=e4403]: "{"
+                          - generic [ref=e4404]: "\"$ref\""
+                          - generic [ref=e4405]: ":"
+                          - generic [ref=e4406]: "\"common.schema.json#/$defs/next_action\""
+                          - generic [ref=e4407]: "}"
+                          - generic [ref=e4408]: ","
+                          - generic [ref=e4409]: "\"default\""
+                          - generic [ref=e4410]: ":"
+                          - generic [ref=e4411]: "["
+                          - generic [ref=e4412]: "]"
+                          - generic [ref=e4413]: "}"
+                          - generic [ref=e4414]: ","
+                          - generic [ref=e4415]: "\"notes\""
+                          - generic [ref=e4416]: ":"
+                          - generic [ref=e4417]: "{"
+                          - generic [ref=e4418]: "\"type\""
+                          - generic [ref=e4419]: ":"
+                          - generic [ref=e4420]: "\"string\""
+                          - generic [ref=e4421]: "}"
+                          - generic [ref=e4422]: "}"
+                          - generic [ref=e4423]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/resp-spec-lock.schema.json" [level=3] [ref=e4424]:
+                      - code [ref=e4425]: schemas/flywheel/chatgpt/v1/resp-spec-lock.schema.json
+                    - generic [ref=e4427]:
+                      - generic [ref=e4428]: json
+                      - button "Copy" [ref=e4431] [cursor=pointer]:
+                        - img [ref=e4432]
+                        - text: Copy code
+                      - code [ref=e4435]:
+                        - generic [ref=e4436]:
+                          - generic [ref=e4437]: "{"
+                          - generic [ref=e4438]: "\"$schema\""
+                          - generic [ref=e4439]: ":"
+                          - generic [ref=e4440]: "\"https://json-schema.org/draft/2020-12/schema\""
+                          - generic [ref=e4441]: ","
+                          - generic [ref=e4442]: "\"$id\""
+                          - generic [ref=e4443]: ":"
+                          - generic [ref=e4444]: "\"flywheel.chatgpt.v1/resp-spec-lock.schema.json\""
+                          - generic [ref=e4445]: ","
+                          - generic [ref=e4446]: "\"title\""
+                          - generic [ref=e4447]: ":"
+                          - generic [ref=e4448]: "\"SPEC_LOCK_RESPONSE (v1)\""
+                          - generic [ref=e4449]: ","
+                          - generic [ref=e4450]: "\"type\""
+                          - generic [ref=e4451]: ":"
+                          - generic [ref=e4452]: "\"object\""
+                          - generic [ref=e4453]: ","
+                          - generic [ref=e4454]: "\"additionalProperties\""
+                          - generic [ref=e4455]: ":"
+                          - generic [ref=e4457]: "false"
+                          - generic [ref=e4458]: ","
+                          - generic [ref=e4459]: "\"required\""
+                          - generic [ref=e4460]: ":"
+                          - generic [ref=e4461]: "["
+                          - generic [ref=e4462]: "\"proto\""
+                          - generic [ref=e4463]: ","
+                          - generic [ref=e4464]: "\"bead_id\""
+                          - generic [ref=e4465]: ","
+                          - generic [ref=e4466]: "\"msg_type\""
+                          - generic [ref=e4467]: ","
+                          - generic [ref=e4468]: "\"verdict\""
+                          - generic [ref=e4469]: ","
+                          - generic [ref=e4470]: "\"spec\""
+                          - generic [ref=e4471]: ","
+                          - generic [ref=e4472]: "\"next_actions\""
+                          - generic [ref=e4473]: "]"
+                          - generic [ref=e4474]: ","
+                          - generic [ref=e4475]: "\"properties\""
+                          - generic [ref=e4476]: ":"
+                          - generic [ref=e4477]: "{"
+                          - generic [ref=e4478]: "\"proto\""
+                          - generic [ref=e4479]: ":"
+                          - generic [ref=e4480]: "{"
+                          - generic [ref=e4481]: "\"$ref\""
+                          - generic [ref=e4482]: ":"
+                          - generic [ref=e4483]: "\"common.schema.json#/$defs/proto\""
+                          - generic [ref=e4484]: "}"
+                          - generic [ref=e4485]: ","
+                          - generic [ref=e4486]: "\"bead_id\""
+                          - generic [ref=e4487]: ":"
+                          - generic [ref=e4488]: "{"
+                          - generic [ref=e4489]: "\"$ref\""
+                          - generic [ref=e4490]: ":"
+                          - generic [ref=e4491]: "\"common.schema.json#/$defs/bead_id\""
+                          - generic [ref=e4492]: "}"
+                          - generic [ref=e4493]: ","
+                          - generic [ref=e4494]: "\"msg_type\""
+                          - generic [ref=e4495]: ":"
+                          - generic [ref=e4496]: "{"
+                          - generic [ref=e4497]: "\"const\""
+                          - generic [ref=e4498]: ":"
+                          - generic [ref=e4499]: "\"SPEC_LOCK_RESPONSE\""
+                          - generic [ref=e4500]: "}"
+                          - generic [ref=e4501]: ","
+                          - generic [ref=e4502]: "\"verdict\""
+                          - generic [ref=e4503]: ":"
+                          - generic [ref=e4504]: "{"
+                          - generic [ref=e4505]: "\"$ref\""
+                          - generic [ref=e4506]: ":"
+                          - generic [ref=e4507]: "\"common.schema.json#/$defs/verdict\""
+                          - generic [ref=e4508]: "}"
+                          - generic [ref=e4509]: ","
+                          - generic [ref=e4510]: "\"spec\""
+                          - generic [ref=e4511]: ":"
+                          - generic [ref=e4512]: "{"
+                          - generic [ref=e4513]: "\"type\""
+                          - generic [ref=e4514]: ":"
+                          - generic [ref=e4515]: "\"object\""
+                          - generic [ref=e4516]: ","
+                          - generic [ref=e4517]: "\"description\""
+                          - generic [ref=e4518]: ":"
+                          - generic [ref=e4519]: "\"Arbitrary locked spec payload (schema, API, event names, constraints).\""
+                          - generic [ref=e4520]: ","
+                          - generic [ref=e4521]: "\"additionalProperties\""
+                          - generic [ref=e4522]: ":"
+                          - generic [ref=e4524]: "true"
+                          - generic [ref=e4525]: "}"
+                          - generic [ref=e4526]: ","
+                          - generic [ref=e4527]: "\"next_actions\""
+                          - generic [ref=e4528]: ":"
+                          - generic [ref=e4529]: "{"
+                          - generic [ref=e4530]: "\"type\""
+                          - generic [ref=e4531]: ":"
+                          - generic [ref=e4532]: "\"array\""
+                          - generic [ref=e4533]: ","
+                          - generic [ref=e4534]: "\"items\""
+                          - generic [ref=e4535]: ":"
+                          - generic [ref=e4536]: "{"
+                          - generic [ref=e4537]: "\"$ref\""
+                          - generic [ref=e4538]: ":"
+                          - generic [ref=e4539]: "\"common.schema.json#/$defs/next_action\""
+                          - generic [ref=e4540]: "}"
+                          - generic [ref=e4541]: ","
+                          - generic [ref=e4542]: "\"default\""
+                          - generic [ref=e4543]: ":"
+                          - generic [ref=e4544]: "["
+                          - generic [ref=e4545]: "]"
+                          - generic [ref=e4546]: "}"
+                          - generic [ref=e4547]: ","
+                          - generic [ref=e4548]: "\"notes\""
+                          - generic [ref=e4549]: ":"
+                          - generic [ref=e4550]: "{"
+                          - generic [ref=e4551]: "\"type\""
+                          - generic [ref=e4552]: ":"
+                          - generic [ref=e4553]: "\"string\""
+                          - generic [ref=e4554]: "}"
+                          - generic [ref=e4555]: "}"
+                          - generic [ref=e4556]: "}"
+                    - heading "schemas/flywheel/chatgpt/v1/resp-acceptance-gate.schema.json" [level=3] [ref=e4557]:
+                      - code [ref=e4558]: schemas/flywheel/chatgpt/v1/resp-acceptance-gate.schema.json
+                    - generic [ref=e4560]:
+                      - generic [ref=e4561]: json
+                      - button "Copy" [ref=e4564] [cursor=pointer]:
+                        - img [ref=e4565]
+                        - text: Copy code
+                      - code [ref=e4568]:
+                        - generic [ref=e4569]:
+                          - generic [ref=e4570]: "{"
+                          - generic [ref=e4571]: "\"$schema\""
+                          - generic [ref=e4572]: ":"
+                          - generic [ref=e4573]: "\"https://json-schema.org/draft/2020-12/schema\""
+                          - generic [ref=e4574]: ","
+                          - generic [ref=e4575]: "\"$id\""
+                          - generic [ref=e4576]: ":"
+                          - generic [ref=e4577]: "\"flywheel.chatgpt.v1/resp-acceptance-gate.schema.json\""
+                          - generic [ref=e4578]: ","
+                          - generic [ref=e4579]: "\"title\""
+                          - generic [ref=e4580]: ":"
+                          - generic [ref=e4581]: "\"ACCEPTANCE_GATE_RESPONSE (v1)\""
+                          - generic [ref=e4582]: ","
+                          - generic [ref=e4583]: "\"type\""
+                          - generic [ref=e4584]: ":"
+                          - generic [ref=e4585]: "\"object\""
+                          - generic [ref=e4586]: ","
+                          - generic [ref=e4587]: "\"additionalProperties\""
+                          - generic [ref=e4588]: ":"
+                          - generic [ref=e4590]: "false"
+                          - generic [ref=e4591]: ","
+                          - generic [ref=e4592]: "\"required\""
+                          - generic [ref=e4593]: ":"
+                          - generic [ref=e4594]: "["
+                          - generic [ref=e4595]: "\"proto\""
+                          - generic [ref=e4596]: ","
+                          - generic [ref=e4597]: "\"bead_id\""
+                          - generic [ref=e4598]: ","
+                          - generic [ref=e4599]: "\"msg_type\""
+                          - generic [ref=e4600]: ","
+                          - generic [ref=e4601]: "\"verdict\""
+                          - generic [ref=e4602]: ","
+                          - generic [ref=e4603]: "\"acceptance\""
+                          - generic [ref=e4604]: ","
+                          - generic [ref=e4605]: "\"next_actions\""
+                          - generic [ref=e4606]: "]"
+                          - generic [ref=e4607]: ","
+                          - generic [ref=e4608]: "\"properties\""
+                          - generic [ref=e4609]: ":"
+                          - generic [ref=e4610]: "{"
+                          - generic [ref=e4611]: "\"proto\""
+                          - generic [ref=e4612]: ":"
+                          - generic [ref=e4613]: "{"
+                          - generic [ref=e4614]: "\"$ref\""
+                          - generic [ref=e4615]: ":"
+                          - generic [ref=e4616]: "\"common.schema.json#/$defs/proto\""
+                          - generic [ref=e4617]: "}"
+                          - generic [ref=e4618]: ","
+                          - generic [ref=e4619]: "\"bead_id\""
+                          - generic [ref=e4620]: ":"
+                          - generic [ref=e4621]: "{"
+                          - generic [ref=e4622]: "\"$ref\""
+                          - generic [ref=e4623]: ":"
+                          - generic [ref=e4624]: "\"common.schema.json#/$defs/bead_id\""
+                          - generic [ref=e4625]: "}"
+                          - generic [ref=e4626]: ","
+                          - generic [ref=e4627]: "\"msg_type\""
+                          - generic [ref=e4628]: ":"
+                          - generic [ref=e4629]: "{"
+                          - generic [ref=e4630]: "\"const\""
+                          - generic [ref=e4631]: ":"
+                          - generic [ref=e4632]: "\"ACCEPTANCE_GATE_RESPONSE\""
+                          - generic [ref=e4633]: "}"
+                          - generic [ref=e4634]: ","
+                          - generic [ref=e4635]: "\"verdict\""
+                          - generic [ref=e4636]: ":"
+                          - generic [ref=e4637]: "{"
+                          - generic [ref=e4638]: "\"$ref\""
+                          - generic [ref=e4639]: ":"
+                          - generic [ref=e4640]: "\"common.schema.json#/$defs/verdict\""
+                          - generic [ref=e4641]: "}"
+                          - generic [ref=e4642]: ","
+                          - generic [ref=e4643]: "\"acceptance\""
+                          - generic [ref=e4644]: ":"
+                          - generic [ref=e4645]: "{"
+                          - generic [ref=e4646]: "\"type\""
+                          - generic [ref=e4647]: ":"
+                          - generic [ref=e4648]: "\"object\""
+                          - generic [ref=e4649]: ","
+                          - generic [ref=e4650]: "\"additionalProperties\""
+                          - generic [ref=e4651]: ":"
+                          - generic [ref=e4653]: "false"
+                          - generic [ref=e4654]: ","
+                          - generic [ref=e4655]: "\"required\""
+                          - generic [ref=e4656]: ":"
+                          - generic [ref=e4657]: "["
+                          - generic [ref=e4658]: "\"passed\""
+                          - generic [ref=e4659]: ","
+                          - generic [ref=e4660]: "\"evidence\""
+                          - generic [ref=e4661]: "]"
+                          - generic [ref=e4662]: ","
+                          - generic [ref=e4663]: "\"properties\""
+                          - generic [ref=e4664]: ":"
+                          - generic [ref=e4665]: "{"
+                          - generic [ref=e4666]: "\"passed\""
+                          - generic [ref=e4667]: ":"
+                          - generic [ref=e4668]: "{"
+                          - generic [ref=e4669]: "\"type\""
+                          - generic [ref=e4670]: ":"
+                          - generic [ref=e4671]: "\"boolean\""
+                          - generic [ref=e4672]: "}"
+                          - generic [ref=e4673]: ","
+                          - generic [ref=e4674]: "\"evidence\""
+                          - generic [ref=e4675]: ":"
+                          - generic [ref=e4676]: "{"
+                          - generic [ref=e4677]: "\"type\""
+                          - generic [ref=e4678]: ":"
+                          - generic [ref=e4679]: "\"array\""
+                          - generic [ref=e4680]: ","
+                          - generic [ref=e4681]: "\"items\""
+                          - generic [ref=e4682]: ":"
+                          - generic [ref=e4683]: "{"
+                          - generic [ref=e4684]: "\"type\""
+                          - generic [ref=e4685]: ":"
+                          - generic [ref=e4686]: "\"string\""
+                          - generic [ref=e4687]: ","
+                          - generic [ref=e4688]: "\"minLength\""
+                          - generic [ref=e4689]: ":"
+                          - generic [ref=e4690]: "1"
+                          - generic [ref=e4691]: "}"
+                          - generic [ref=e4692]: ","
+                          - generic [ref=e4693]: "\"default\""
+                          - generic [ref=e4694]: ":"
+                          - generic [ref=e4695]: "["
+                          - generic [ref=e4696]: "]"
+                          - generic [ref=e4697]: "}"
+                          - generic [ref=e4698]: ","
+                          - generic [ref=e4699]: "\"failed_reasons\""
+                          - generic [ref=e4700]: ":"
+                          - generic [ref=e4701]: "{"
+                          - generic [ref=e4702]: "\"type\""
+                          - generic [ref=e4703]: ":"
+                          - generic [ref=e4704]: "\"array\""
+                          - generic [ref=e4705]: ","
+                          - generic [ref=e4706]: "\"items\""
+                          - generic [ref=e4707]: ":"
+                          - generic [ref=e4708]: "{"
+                          - generic [ref=e4709]: "\"type\""
+                          - generic [ref=e4710]: ":"
+                          - generic [ref=e4711]: "\"string\""
+                          - generic [ref=e4712]: ","
+                          - generic [ref=e4713]: "\"minLength\""
+                          - generic [ref=e4714]: ":"
+                          - generic [ref=e4715]: "1"
+                          - generic [ref=e4716]: "}"
+                          - generic [ref=e4717]: ","
+                          - generic [ref=e4718]: "\"default\""
+                          - generic [ref=e4719]: ":"
+                          - generic [ref=e4720]: "["
+                          - generic [ref=e4721]: "]"
+                          - generic [ref=e4722]: "}"
+                          - generic [ref=e4723]: "}"
+                          - generic [ref=e4724]: "}"
+                          - generic [ref=e4725]: ","
+                          - generic [ref=e4726]: "\"next_actions\""
+                          - generic [ref=e4727]: ":"
+                          - generic [ref=e4728]: "{"
+                          - generic [ref=e4729]: "\"type\""
+                          - generic [ref=e4730]: ":"
+                          - generic [ref=e4731]: "\"array\""
+                          - generic [ref=e4732]: ","
+                          - generic [ref=e4733]: "\"items\""
+                          - generic [ref=e4734]: ":"
+                          - generic [ref=e4735]: "{"
+                          - generic [ref=e4736]: "\"$ref\""
+                          - generic [ref=e4737]: ":"
+                          - generic [ref=e4738]: "\"common.schema.json#/$defs/next_action\""
+                          - generic [ref=e4739]: "}"
+                          - generic [ref=e4740]: ","
+                          - generic [ref=e4741]: "\"default\""
+                          - generic [ref=e4742]: ":"
+                          - generic [ref=e4743]: "["
+                          - generic [ref=e4744]: "]"
+                          - generic [ref=e4745]: "}"
+                          - generic [ref=e4746]: ","
+                          - generic [ref=e4747]: "\"notes\""
+                          - generic [ref=e4748]: ":"
+                          - generic [ref=e4749]: "{"
+                          - generic [ref=e4750]: "\"type\""
+                          - generic [ref=e4751]: ":"
+                          - generic [ref=e4752]: "\"string\""
+                          - generic [ref=e4753]: "}"
+                          - generic [ref=e4754]: "}"
+                          - generic [ref=e4755]: "}"
+                    - separator [ref=e4756]
+                    - heading "TOOLS" [level=1] [ref=e4757]
+                    - heading "1) Packet builder" [level=2] [ref=e4758]
+                    - heading "scripts/chatgpt/packet-build.mjs" [level=3] [ref=e4759]:
+                      - code [ref=e4760]: scripts/chatgpt/packet-build.mjs
+                    - generic [ref=e4762]:
+                      - generic [ref=e4763]: js
+                      - button "Copy" [ref=e4766] [cursor=pointer]:
+                        - img [ref=e4767]
+                        - text: Copy code
+                      - code [ref=e4770]:
+                        - generic [ref=e4771]:
+                          - generic [ref=e4772]: "#!/usr/bin/env node"
+                          - generic [ref=e4773]: import
+                          - text: fs
+                          - generic [ref=e4774]: from
+                          - generic [ref=e4775]: "\"node:fs\""
+                          - text: ;
+                          - generic [ref=e4776]: import
+                          - text: path
+                          - generic [ref=e4777]: from
+                          - generic [ref=e4778]: "\"node:path\""
+                          - text: ;
+                          - generic [ref=e4779]: function
+                          - generic [ref=e4780]: usage
+                          - text: (
+                          - generic [ref=e4782]: exitCode = 1
+                          - text: ") {"
+                          - generic [ref=e4783]: console
+                          - text: .
+                          - generic [ref=e4784]: error
+                          - generic [ref=e4785]: "(` packet-build.mjs Build a Flywheel ChatGPT protocol request packet (v1). Usage: node scripts/chatgpt/packet-build.mjs \\\\ --type RFP_PLAN \\\\ --bead bd-xxxx \\\\ --sender QuietDune \\\\ --context path/to/context.json \\\\ --question \"What should we do next?\" \\\\ [--question \"Second question...\"] \\\\ [--artifact path/to/artifact.json] \\\\ [--idempotency-key \"bd-xxxx:RFP_PLAN:...\"] \\\\ [--out path/to/packet.json] Notes: - --context must be a JSON file matching: { repo, branch, goal, constraints[] } - --artifact files must be JSON matching: { type, label, content } (content is a string) `); process."
+                          - generic [ref=e4786]: exit
+                          - text: "(exitCode); }"
+                          - generic [ref=e4787]: function
+                          - generic [ref=e4788]: parseArgs
+                          - text: (
+                          - generic [ref=e4789]: argv
+                          - text: ") {"
+                          - generic [ref=e4790]: const
+                          - text: "args = {};"
+                          - generic [ref=e4791]: const
+                          - text: rest = [];
+                          - generic [ref=e4792]: for
+                          - text: (
+                          - generic [ref=e4793]: let
+                          - text: i =
+                          - generic [ref=e4794]: "2"
+                          - text: ; i < argv.
+                          - generic [ref=e4795]: length
+                          - text: "; i++) {"
+                          - generic [ref=e4796]: const
+                          - text: a = argv[i];
+                          - generic [ref=e4797]: if
+                          - text: (a.
+                          - generic [ref=e4798]: startsWith
+                          - text: (
+                          - generic [ref=e4799]: "\"--\""
+                          - text: ")) {"
+                          - generic [ref=e4800]: const
+                          - text: key = a.
+                          - generic [ref=e4801]: slice
+                          - text: (
+                          - generic [ref=e4802]: "2"
+                          - text: );
+                          - generic [ref=e4803]: const
+                          - text: next = argv[i +
+                          - generic [ref=e4804]: "1"
+                          - text: "];"
+                          - generic [ref=e4805]: if
+                          - text: (!next || next.
+                          - generic [ref=e4806]: startsWith
+                          - text: (
+                          - generic [ref=e4807]: "\"--\""
+                          - text: ")) { args[key] ="
+                          - generic [ref=e4808]: "true"
+                          - text: "; }"
+                          - generic [ref=e4809]: else
+                          - text: "{"
+                          - generic [ref=e4810]: if
+                          - text: (args[key] ===
+                          - generic [ref=e4811]: undefined
+                          - text: ) args[key] = next;
+                          - generic [ref=e4812]: else
+                          - generic [ref=e4813]: if
+                          - text: (
+                          - generic [ref=e4814]: Array
+                          - text: .
+                          - generic [ref=e4815]: isArray
+                          - text: (args[key])) args[key].
+                          - generic [ref=e4816]: push
+                          - text: (next);
+                          - generic [ref=e4817]: else
+                          - text: "args[key] = [args[key], next]; i++; } }"
+                          - generic [ref=e4818]: else
+                          - text: "{ rest."
+                          - generic [ref=e4819]: push
+                          - text: "(a); } } args."
+                          - generic [ref=e4820]: _
+                          - text: = rest;
+                          - generic [ref=e4821]: return
+                          - text: "args; }"
+                          - generic [ref=e4822]: function
+                          - generic [ref=e4823]: readJsonFile
+                          - text: (
+                          - generic [ref=e4824]: p
+                          - text: ") {"
+                          - generic [ref=e4825]: const
+                          - text: raw = fs.
+                          - generic [ref=e4826]: readFileSync
+                          - text: (p,
+                          - generic [ref=e4827]: "\"utf8\""
+                          - text: );
+                          - generic [ref=e4828]: try
+                          - text: "{"
+                          - generic [ref=e4829]: return
+                          - generic [ref=e4830]: JSON
+                          - text: .
+                          - generic [ref=e4831]: parse
+                          - text: "(raw); }"
+                          - generic [ref=e4832]: catch
+                          - text: "(e) {"
+                          - generic [ref=e4833]: throw
+                          - generic [ref=e4834]: new
+                          - generic [ref=e4835]: Error
+                          - text: (
+                          - generic [ref=e4837]: "`Invalid JSON in ${p}"
+                          - text: ":"
+                          - generic [ref=e4838]: "${e.message}"
+                          - text: "`); } }"
+                          - generic [ref=e4839]: function
+                          - generic [ref=e4840]: nowIso
+                          - text: (
+                          - text: ") {"
+                          - generic [ref=e4841]: return
+                          - generic [ref=e4842]: new
+                          - generic [ref=e4843]: Date
+                          - text: ().
+                          - generic [ref=e4844]: toISOString
+                          - text: "(); }"
+                          - generic [ref=e4845]: const
+                          - generic [ref=e4846]: DEFAULT_FIELDS_BY_TYPE
+                          - text: "= {"
+                          - generic [ref=e4847]: RFP_PLAN
+                          - text: ": ["
+                          - generic [ref=e4848]: "\"plan\""
+                          - text: ","
+                          - generic [ref=e4849]: "\"risks\""
+                          - text: ","
+                          - generic [ref=e4850]: "\"acceptance_tests\""
+                          - text: ","
+                          - generic [ref=e4851]: "\"next_actions\""
+                          - text: "],"
+                          - generic [ref=e4852]: RFP_ARBITRATE
+                          - text: ": ["
+                          - generic [ref=e4853]: "\"decision\""
+                          - text: ","
+                          - generic [ref=e4854]: "\"rationale\""
+                          - text: ","
+                          - generic [ref=e4855]: "\"tradeoffs\""
+                          - text: ","
+                          - generic [ref=e4856]: "\"next_actions\""
+                          - text: "],"
+                          - generic [ref=e4857]: EVIDENCE_BUNDLE
+                          - text: ": ["
+                          - generic [ref=e4858]: "\"findings\""
+                          - text: ","
+                          - generic [ref=e4859]: "\"missing\""
+                          - text: ","
+                          - generic [ref=e4860]: "\"next_actions\""
+                          - text: "],"
+                          - generic [ref=e4861]: SPEC_LOCK
+                          - text: ": ["
+                          - generic [ref=e4862]: "\"spec\""
+                          - text: ","
+                          - generic [ref=e4863]: "\"next_actions\""
+                          - text: "],"
+                          - generic [ref=e4864]: ACCEPTANCE_GATE
+                          - text: ": ["
+                          - generic [ref=e4865]: "\"acceptance\""
+                          - text: ","
+                          - generic [ref=e4866]: "\"next_actions\""
+                          - text: "] };"
+                          - generic [ref=e4867]: const
+                          - generic [ref=e4868]: VALID_TYPES
+                          - text: =
+                          - generic [ref=e4869]: Object
+                          - text: .
+                          - generic [ref=e4870]: keys
+                          - text: (
+                          - generic [ref=e4871]: DEFAULT_FIELDS_BY_TYPE
+                          - text: ); (
+                          - generic [ref=e4872]: async
+                          - generic [ref=e4873]: function
+                          - generic [ref=e4874]: main
+                          - text: (
+                          - text: ") {"
+                          - generic [ref=e4875]: const
+                          - text: args =
+                          - generic [ref=e4876]: parseArgs
+                          - text: (process.
+                          - generic [ref=e4877]: argv
+                          - text: );
+                          - generic [ref=e4878]: if
+                          - text: (args.
+                          - generic [ref=e4879]: help
+                          - text: "|| args."
+                          - generic [ref=e4880]: h
+                          - text: )
+                          - generic [ref=e4881]: usage
+                          - text: (
+                          - generic [ref=e4882]: "0"
+                          - text: );
+                          - generic [ref=e4883]: const
+                          - text: type = args.
+                          - generic [ref=e4884]: type
+                          - text: ;
+                          - generic [ref=e4885]: const
+                          - text: bead = args.
+                          - generic [ref=e4886]: bead
+                          - text: ;
+                          - generic [ref=e4887]: const
+                          - text: sender = args.
+                          - generic [ref=e4888]: sender
+                          - text: ;
+                          - generic [ref=e4889]: const
+                          - text: contextPath = args.
+                          - generic [ref=e4890]: context
+                          - text: ;
+                          - generic [ref=e4891]: const
+                          - text: outPath = args.
+                          - generic [ref=e4892]: out
+                          - text: ;
+                          - generic [ref=e4893]: if
+                          - text: "(!type || !bead || !sender || !contextPath) {"
+                          - generic [ref=e4894]: console
+                          - text: .
+                          - generic [ref=e4895]: error
+                          - text: (
+                          - generic [ref=e4896]: "\"Missing required args.\""
+                          - text: );
+                          - generic [ref=e4897]: usage
+                          - text: (
+                          - generic [ref=e4898]: "1"
+                          - text: "); }"
+                          - generic [ref=e4899]: if
+                          - text: (!
+                          - generic [ref=e4900]: VALID_TYPES
+                          - text: .
+                          - generic [ref=e4901]: includes
+                          - text: "(type)) {"
+                          - generic [ref=e4902]: console
+                          - text: .
+                          - generic [ref=e4903]: error
+                          - text: (
+                          - generic [ref=e4905]: "`Invalid --type \"${type}"
+                          - text: "\". Valid:"
+                          - generic [ref=e4907]: "${VALID_TYPES.join(\", \""
+                          - text: ")}`); process."
+                          - generic [ref=e4908]: exit
+                          - text: (
+                          - generic [ref=e4909]: "2"
+                          - text: "); }"
+                          - generic [ref=e4910]: const
+                          - text: context =
+                          - generic [ref=e4911]: readJsonFile
+                          - text: (contextPath);
+                          - generic [ref=e4912]: if
+                          - text: (!context ||
+                          - generic [ref=e4913]: typeof
+                          - text: context !==
+                          - generic [ref=e4914]: "\"object\""
+                          - text: )
+                          - generic [ref=e4915]: throw
+                          - generic [ref=e4916]: new
+                          - generic [ref=e4917]: Error
+                          - text: (
+                          - generic [ref=e4918]: "\"Context must be an object JSON.\""
+                          - text: );
+                          - generic [ref=e4919]: const
+                          - text: requiredContextKeys = [
+                          - generic [ref=e4920]: "\"repo\""
+                          - text: ","
+                          - generic [ref=e4921]: "\"branch\""
+                          - text: ","
+                          - generic [ref=e4922]: "\"goal\""
+                          - text: ","
+                          - generic [ref=e4923]: "\"constraints\""
+                          - text: "];"
+                          - generic [ref=e4924]: for
+                          - text: (
+                          - generic [ref=e4925]: const
+                          - text: k
+                          - generic [ref=e4926]: of
+                          - text: "requiredContextKeys) {"
+                          - generic [ref=e4927]: if
+                          - text: (!(k
+                          - generic [ref=e4928]: in
+                          - text: context))
+                          - generic [ref=e4929]: throw
+                          - generic [ref=e4930]: new
+                          - generic [ref=e4931]: Error
+                          - text: (
+                          - generic [ref=e4933]: "`Context missing required key: ${k}"
+                          - text: "`); }"
+                          - generic [ref=e4934]: if
+                          - text: (!
+                          - generic [ref=e4935]: Array
+                          - text: .
+                          - generic [ref=e4936]: isArray
+                          - text: (context.
+                          - generic [ref=e4937]: constraints
+                          - text: ))
+                          - generic [ref=e4938]: throw
+                          - generic [ref=e4939]: new
+                          - generic [ref=e4940]: Error
+                          - text: (
+                          - generic [ref=e4941]: "\"Context.constraints must be an array.\""
+                          - text: );
+                          - generic [ref=e4942]: const
+                          - text: questions = [];
+                          - generic [ref=e4943]: if
+                          - text: (args.
+                          - generic [ref=e4944]: question
+                          - text: ") {"
+                          - generic [ref=e4945]: if
+                          - text: (
+                          - generic [ref=e4946]: Array
+                          - text: .
+                          - generic [ref=e4947]: isArray
+                          - text: (args.
+                          - generic [ref=e4948]: question
+                          - text: )) questions.
+                          - generic [ref=e4949]: push
+                          - text: (...args.
+                          - generic [ref=e4950]: question
+                          - text: );
+                          - generic [ref=e4951]: else
+                          - text: questions.
+                          - generic [ref=e4952]: push
+                          - text: (args.
+                          - generic [ref=e4953]: question
+                          - text: "); }"
+                          - generic [ref=e4954]: const
+                          - text: artifacts = [];
+                          - generic [ref=e4955]: if
+                          - text: (args.
+                          - generic [ref=e4956]: artifact
+                          - text: ") {"
+                          - generic [ref=e4957]: const
+                          - text: artifactPaths =
+                          - generic [ref=e4958]: Array
+                          - text: .
+                          - generic [ref=e4959]: isArray
+                          - text: (args.
+                          - generic [ref=e4960]: artifact
+                          - text: ) ? args.
+                          - generic [ref=e4961]: artifact
+                          - text: ": [args."
+                          - generic [ref=e4962]: artifact
+                          - text: "];"
+                          - generic [ref=e4963]: for
+                          - text: (
+                          - generic [ref=e4964]: const
+                          - text: ap
+                          - generic [ref=e4965]: of
+                          - text: "artifactPaths) {"
+                          - generic [ref=e4966]: const
+                          - text: art =
+                          - generic [ref=e4967]: readJsonFile
+                          - text: (ap); artifacts.
+                          - generic [ref=e4968]: push
+                          - text: "(art); } }"
+                          - generic [ref=e4969]: const
+                          - text: "packet = {"
+                          - generic [ref=e4970]: proto
+                          - text: ":"
+                          - generic [ref=e4971]: "\"flywheel.chatgpt.v1\""
+                          - text: ","
+                          - generic [ref=e4972]: bead_id
+                          - text: ": bead,"
+                          - generic [ref=e4973]: msg_type
+                          - text: ": type, sender,"
+                          - generic [ref=e4974]: ts
+                          - text: ":"
+                          - generic [ref=e4975]: nowIso
+                          - text: (), context,
+                          - generic [ref=e4976]: inputs
+                          - text: ": { artifacts, questions },"
+                          - generic [ref=e4977]: requested_output
+                          - text: ": {"
+                          - generic [ref=e4978]: format
+                          - text: ":"
+                          - generic [ref=e4979]: "\"json\""
+                          - text: ","
+                          - generic [ref=e4980]: fields
+                          - text: ":"
+                          - generic [ref=e4981]: DEFAULT_FIELDS_BY_TYPE
+                          - text: "[type] } };"
+                          - generic [ref=e4982]: if
+                          - text: (args[
+                          - generic [ref=e4983]: "\"idempotency-key\""
+                          - text: "] &&"
+                          - generic [ref=e4984]: typeof
+                          - text: args[
+                          - generic [ref=e4985]: "\"idempotency-key\""
+                          - text: "] ==="
+                          - generic [ref=e4986]: "\"string\""
+                          - text: ") { packet."
+                          - generic [ref=e4987]: idempotency_key
+                          - text: = args[
+                          - generic [ref=e4988]: "\"idempotency-key\""
+                          - text: "]; }"
+                          - generic [ref=e4989]: const
+                          - text: json =
+                          - generic [ref=e4990]: JSON
+                          - text: .
+                          - generic [ref=e4991]: stringify
+                          - text: (packet,
+                          - generic [ref=e4992]: "null"
+                          - text: ","
+                          - generic [ref=e4993]: "2"
+                          - text: );
+                          - generic [ref=e4994]: if
+                          - text: "(outPath) {"
+                          - generic [ref=e4995]: const
+                          - text: abs = path.
+                          - generic [ref=e4996]: isAbsolute
+                          - text: "(outPath) ? outPath : path."
+                          - generic [ref=e4997]: join
+                          - text: (process.
+                          - generic [ref=e4998]: cwd
+                          - text: (), outPath); fs.
+                          - generic [ref=e4999]: mkdirSync
+                          - text: (path.
+                          - generic [ref=e5000]: dirname
+                          - text: "(abs), {"
+                          - generic [ref=e5001]: recursive
+                          - text: ":"
+                          - generic [ref=e5002]: "true"
+                          - text: "}); fs."
+                          - generic [ref=e5003]: writeFileSync
+                          - text: (abs, json +
+                          - generic [ref=e5004]: "\"\\n\""
+                          - text: ","
+                          - generic [ref=e5005]: "\"utf8\""
+                          - text: "); }"
+                          - generic [ref=e5006]: else
+                          - text: "{ process."
+                          - generic [ref=e5007]: stdout
+                          - text: .
+                          - generic [ref=e5008]: write
+                          - text: (json +
+                          - generic [ref=e5009]: "\"\\n\""
+                          - text: "); } })()."
+                          - generic [ref=e5010]: catch
+                          - text: (
+                          - generic [ref=e5012]: (err
+                          - text: ") => {"
+                          - generic [ref=e5013]: console
+                          - text: .
+                          - generic [ref=e5014]: error
+                          - text: (
+                          - generic [ref=e5016]: "`packet-build error: ${err.message}"
+                          - text: "`); process."
+                          - generic [ref=e5017]: exit
+                          - text: (
+                          - generic [ref=e5018]: "1"
+                          - text: "); });"
+                    - separator [ref=e5019]
+                    - heading "2) Packet validator" [level=2] [ref=e5020]
+                    - heading "scripts/chatgpt/packet-validate.mjs" [level=3] [ref=e5021]:
+                      - code [ref=e5022]: scripts/chatgpt/packet-validate.mjs
+                    - generic [ref=e5024]:
+                      - generic [ref=e5025]: js
+                      - button "Copy" [ref=e5028] [cursor=pointer]:
+                        - img [ref=e5029]
+                        - text: Copy code
+                      - code [ref=e5032]:
+                        - generic [ref=e5033]:
+                          - generic [ref=e5034]: "#!/usr/bin/env node"
+                          - generic [ref=e5035]: import
+                          - text: fs
+                          - generic [ref=e5036]: from
+                          - generic [ref=e5037]: "\"node:fs\""
+                          - text: ;
+                          - generic [ref=e5038]: import
+                          - text: path
+                          - generic [ref=e5039]: from
+                          - generic [ref=e5040]: "\"node:path\""
+                          - text: ;
+                          - generic [ref=e5041]: import
+                          - text: process
+                          - generic [ref=e5042]: from
+                          - generic [ref=e5043]: "\"node:process\""
+                          - text: ;
+                          - generic [ref=e5044]: import
+                          - generic [ref=e5045]: Ajv
+                          - generic [ref=e5046]: from
+                          - generic [ref=e5047]: "\"ajv\""
+                          - text: ;
+                          - generic [ref=e5048]: import
+                          - text: addFormats
+                          - generic [ref=e5049]: from
+                          - generic [ref=e5050]: "\"ajv-formats\""
+                          - text: ;
+                          - generic [ref=e5051]: function
+                          - generic [ref=e5052]: usage
+                          - text: (
+                          - generic [ref=e5054]: exitCode = 1
+                          - text: ") {"
+                          - generic [ref=e5055]: console
+                          - text: .
+                          - generic [ref=e5056]: error
+                          - generic [ref=e5057]: "(` packet-validate.mjs Validate a Flywheel ChatGPT protocol packet (request or response) against local schemas. Usage: node scripts/chatgpt/packet-validate.mjs --file path/to/packet.json cat packet.json | node scripts/chatgpt/packet-validate.mjs --stdin Exit codes: 0 = valid 2 = invalid (schema errors) 1 = tool error `); process."
+                          - generic [ref=e5058]: exit
+                          - text: "(exitCode); }"
+                          - generic [ref=e5059]: function
+                          - generic [ref=e5060]: parseArgs
+                          - text: (
+                          - generic [ref=e5061]: argv
+                          - text: ") {"
+                          - generic [ref=e5062]: const
+                          - text: "args = {};"
+                          - generic [ref=e5063]: for
+                          - text: (
+                          - generic [ref=e5064]: let
+                          - text: i =
+                          - generic [ref=e5065]: "2"
+                          - text: ; i < argv.
+                          - generic [ref=e5066]: length
+                          - text: "; i++) {"
+                          - generic [ref=e5067]: const
+                          - text: a = argv[i];
+                          - generic [ref=e5068]: if
+                          - text: (a.
+                          - generic [ref=e5069]: startsWith
+                          - text: (
+                          - generic [ref=e5070]: "\"--\""
+                          - text: ")) {"
+                          - generic [ref=e5071]: const
+                          - text: key = a.
+                          - generic [ref=e5072]: slice
+                          - text: (
+                          - generic [ref=e5073]: "2"
+                          - text: );
+                          - generic [ref=e5074]: const
+                          - text: next = argv[i +
+                          - generic [ref=e5075]: "1"
+                          - text: "];"
+                          - generic [ref=e5076]: if
+                          - text: (!next || next.
+                          - generic [ref=e5077]: startsWith
+                          - text: (
+                          - generic [ref=e5078]: "\"--\""
+                          - text: ")) { args[key] ="
+                          - generic [ref=e5079]: "true"
+                          - text: "; }"
+                          - generic [ref=e5080]: else
+                          - text: "{ args[key] = next; i++; } } }"
+                          - generic [ref=e5081]: return
+                          - text: "args; }"
+                          - generic [ref=e5082]: function
+                          - generic [ref=e5083]: readAllStdin
+                          - text: (
+                          - text: ") {"
+                          - generic [ref=e5084]: return
+                          - generic [ref=e5085]: new
+                          - generic [ref=e5086]: Promise
+                          - text: (
+                          - generic [ref=e5088]: (resolve, reject
+                          - text: ") => {"
+                          - generic [ref=e5089]: let
+                          - text: data =
+                          - generic [ref=e5090]: "\"\""
+                          - text: ; process.
+                          - generic [ref=e5091]: stdin
+                          - text: .
+                          - generic [ref=e5092]: setEncoding
+                          - text: (
+                          - generic [ref=e5093]: "\"utf8\""
+                          - text: ); process.
+                          - generic [ref=e5094]: stdin
+                          - text: .
+                          - generic [ref=e5095]: "on"
+                          - text: (
+                          - generic [ref=e5096]: "\"data\""
+                          - text: ","
+                          - generic [ref=e5098]: (chunk
+                          - text: ) => (data += chunk)); process.
+                          - generic [ref=e5099]: stdin
+                          - text: .
+                          - generic [ref=e5100]: "on"
+                          - text: (
+                          - generic [ref=e5101]: "\"end\""
+                          - text: ","
+                          - generic [ref=e5102]: () =>
+                          - generic [ref=e5103]: resolve
+                          - text: (data)); process.
+                          - generic [ref=e5104]: stdin
+                          - text: .
+                          - generic [ref=e5105]: "on"
+                          - text: (
+                          - generic [ref=e5106]: "\"error\""
+                          - text: ", reject); }); }"
+                          - generic [ref=e5107]: function
+                          - generic [ref=e5108]: readJson
+                          - text: (
+                          - generic [ref=e5110]: raw, label = "input"
+                          - text: ") {"
+                          - generic [ref=e5111]: try
+                          - text: "{"
+                          - generic [ref=e5112]: return
+                          - generic [ref=e5113]: JSON
+                          - text: .
+                          - generic [ref=e5114]: parse
+                          - text: "(raw); }"
+                          - generic [ref=e5115]: catch
+                          - text: "(e) {"
+                          - generic [ref=e5116]: throw
+                          - generic [ref=e5117]: new
+                          - generic [ref=e5118]: Error
+                          - text: (
+                          - generic [ref=e5120]: "`Invalid JSON in ${label}"
+                          - text: ":"
+                          - generic [ref=e5121]: "${e.message}"
+                          - text: "`); } }"
+                          - generic [ref=e5122]: function
+                          - generic [ref=e5123]: schemaDirFromThisScript
+                          - text: (
+                          - text: ") {"
+                          - generic [ref=e5124]: const
+                          - text: __filename =
+                          - generic [ref=e5125]: new
+                          - generic [ref=e5126]: URL
+                          - text: (
+                          - generic [ref=e5127]: import
+                          - text: .
+                          - generic [ref=e5128]: meta
+                          - text: .
+                          - generic [ref=e5129]: url
+                          - text: ).
+                          - generic [ref=e5130]: pathname
+                          - text: ;
+                          - generic [ref=e5131]: const
+                          - text: __dirname = path.
+                          - generic [ref=e5132]: dirname
+                          - text: (__filename);
+                          - generic [ref=e5133]: // scripts/chatgpt -> project root -> schemas/...
+                          - generic [ref=e5134]: return
+                          - text: path.
+                          - generic [ref=e5135]: resolve
+                          - text: (__dirname,
+                          - generic [ref=e5136]: "\"..\""
+                          - text: ","
+                          - generic [ref=e5137]: "\"..\""
+                          - text: ","
+                          - generic [ref=e5138]: "\"schemas\""
+                          - text: ","
+                          - generic [ref=e5139]: "\"flywheel\""
+                          - text: ","
+                          - generic [ref=e5140]: "\"chatgpt\""
+                          - text: ","
+                          - generic [ref=e5141]: "\"v1\""
+                          - text: "); }"
+                          - generic [ref=e5142]: function
+                          - generic [ref=e5143]: loadSchemas
+                          - text: (
+                          - generic [ref=e5144]: ajv, dir
+                          - text: ") {"
+                          - generic [ref=e5145]: const
+                          - text: files = fs.
+                          - generic [ref=e5146]: readdirSync
+                          - text: (dir).
+                          - generic [ref=e5147]: filter
+                          - text: (
+                          - generic [ref=e5149]: (f
+                          - text: ) => f.
+                          - generic [ref=e5150]: endsWith
+                          - text: (
+                          - generic [ref=e5151]: "\".schema.json\""
+                          - text: ));
+                          - generic [ref=e5152]: for
+                          - text: (
+                          - generic [ref=e5153]: const
+                          - text: f
+                          - generic [ref=e5154]: of
+                          - text: "files) {"
+                          - generic [ref=e5155]: const
+                          - text: p = path.
+                          - generic [ref=e5156]: join
+                          - text: (dir, f);
+                          - generic [ref=e5157]: const
+                          - text: raw = fs.
+                          - generic [ref=e5158]: readFileSync
+                          - text: (p,
+                          - generic [ref=e5159]: "\"utf8\""
+                          - text: );
+                          - generic [ref=e5160]: const
+                          - text: schema =
+                          - generic [ref=e5161]: readJson
+                          - text: (raw, p);
+                          - generic [ref=e5162]: // Ensure schemas are resolvable by $id and by filename ref.
+                          - text: ajv.
+                          - generic [ref=e5163]: addSchema
+                          - text: (schema, schema.
+                          - generic [ref=e5164]: $id
+                          - text: "|| f); } }"
+                          - generic [ref=e5165]: function
+                          - generic [ref=e5166]: schemaIdForMsgType
+                          - text: (
+                          - generic [ref=e5167]: msgType
+                          - text: ") {"
+                          - generic [ref=e5168]: const
+                          - text: "map = {"
+                          - generic [ref=e5169]: // Requests
+                          - generic [ref=e5170]: RFP_PLAN
+                          - text: ":"
+                          - generic [ref=e5171]: "\"flywheel.chatgpt.v1/msg-rfp-plan.schema.json\""
+                          - text: ","
+                          - generic [ref=e5172]: RFP_ARBITRATE
+                          - text: ":"
+                          - generic [ref=e5173]: "\"flywheel.chatgpt.v1/msg-rfp-arbitrate.schema.json\""
+                          - text: ","
+                          - generic [ref=e5174]: EVIDENCE_BUNDLE
+                          - text: ":"
+                          - generic [ref=e5175]: "\"flywheel.chatgpt.v1/msg-evidence-bundle.schema.json\""
+                          - text: ","
+                          - generic [ref=e5176]: SPEC_LOCK
+                          - text: ":"
+                          - generic [ref=e5177]: "\"flywheel.chatgpt.v1/msg-spec-lock.schema.json\""
+                          - text: ","
+                          - generic [ref=e5178]: ACCEPTANCE_GATE
+                          - text: ":"
+                          - generic [ref=e5179]: "\"flywheel.chatgpt.v1/msg-acceptance-gate.schema.json\""
+                          - text: ","
+                          - generic [ref=e5180]: // Responses
+                          - generic [ref=e5181]: RFP_PLAN_RESPONSE
+                          - text: ":"
+                          - generic [ref=e5182]: "\"flywheel.chatgpt.v1/resp-rfp-plan.schema.json\""
+                          - text: ","
+                          - generic [ref=e5183]: RFP_ARBITRATE_RESPONSE
+                          - text: ":"
+                          - generic [ref=e5184]: "\"flywheel.chatgpt.v1/resp-rfp-arbitrate.schema.json\""
+                          - text: ","
+                          - generic [ref=e5185]: EVIDENCE_BUNDLE_RESPONSE
+                          - text: ":"
+                          - generic [ref=e5186]: "\"flywheel.chatgpt.v1/resp-evidence-bundle.schema.json\""
+                          - text: ","
+                          - generic [ref=e5187]: SPEC_LOCK_RESPONSE
+                          - text: ":"
+                          - generic [ref=e5188]: "\"flywheel.chatgpt.v1/resp-spec-lock.schema.json\""
+                          - text: ","
+                          - generic [ref=e5189]: ACCEPTANCE_GATE_RESPONSE
+                          - text: ":"
+                          - generic [ref=e5190]: "\"flywheel.chatgpt.v1/resp-acceptance-gate.schema.json\""
+                          - text: "};"
+                          - generic [ref=e5191]: return
+                          - text: map[msgType] ||
+                          - generic [ref=e5192]: "null"
+                          - text: "; }"
+                          - generic [ref=e5193]: function
+                          - generic [ref=e5194]: formatErrors
+                          - text: (
+                          - generic [ref=e5195]: errors
+                          - text: ") {"
+                          - generic [ref=e5196]: return
+                          - text: (errors || []) .
+                          - generic [ref=e5197]: map
+                          - text: (
+                          - generic [ref=e5199]: (e
+                          - text: ") => {"
+                          - generic [ref=e5200]: const
+                          - text: inst = e.
+                          - generic [ref=e5201]: instancePath
+                          - text: "||"
+                          - generic [ref=e5202]: "\"(root)\""
+                          - text: ;
+                          - generic [ref=e5203]: const
+                          - text: msg = e.
+                          - generic [ref=e5204]: message
+                          - text: "||"
+                          - generic [ref=e5205]: "\"schema error\""
+                          - text: ;
+                          - generic [ref=e5206]: const
+                          - text: extra = e.
+                          - generic [ref=e5207]: params
+                          - text: "?"
+                          - generic [ref=e5209]:
+                            - text: "` params="
+                            - generic [ref=e5210]: "${JSON"
+                          - text: ".stringify(e.params)}` :"
+                          - generic [ref=e5211]: "\"\""
+                          - text: ;
+                          - generic [ref=e5212]: return
+                          - generic [ref=e5214]: "`- ${inst}"
+                          - text: ":"
+                          - generic [ref=e5215]: "${msg}"
+                          - generic [ref=e5216]: "${extra}"
+                          - text: "`; }) ."
+                          - generic [ref=e5217]: join
+                          - text: (
+                          - generic [ref=e5218]: "\"\\n\""
+                          - text: "); } ("
+                          - generic [ref=e5219]: async
+                          - generic [ref=e5220]: function
+                          - generic [ref=e5221]: main
+                          - text: (
+                          - text: ") {"
+                          - generic [ref=e5222]: const
+                          - text: args =
+                          - generic [ref=e5223]: parseArgs
+                          - text: (process.
+                          - generic [ref=e5224]: argv
+                          - text: );
+                          - generic [ref=e5225]: if
+                          - text: (args.
+                          - generic [ref=e5226]: help
+                          - text: "|| args."
+                          - generic [ref=e5227]: h
+                          - text: )
+                          - generic [ref=e5228]: usage
+                          - text: (
+                          - generic [ref=e5229]: "0"
+                          - text: );
+                          - generic [ref=e5230]: const
+                          - text: fromStdin = !!args.
+                          - generic [ref=e5231]: stdin
+                          - text: ;
+                          - generic [ref=e5232]: const
+                          - text: filePath = args.
+                          - generic [ref=e5233]: file
+                          - text: ;
+                          - generic [ref=e5234]: if
+                          - text: "(!fromStdin && !filePath) {"
+                          - generic [ref=e5235]: console
+                          - text: .
+                          - generic [ref=e5236]: error
+                          - text: (
+                          - generic [ref=e5237]: "\"Provide --file or --stdin.\""
+                          - text: );
+                          - generic [ref=e5238]: usage
+                          - text: (
+                          - generic [ref=e5239]: "1"
+                          - text: "); }"
+                          - generic [ref=e5240]: if
+                          - text: "(fromStdin && filePath) {"
+                          - generic [ref=e5241]: console
+                          - text: .
+                          - generic [ref=e5242]: error
+                          - text: (
+                          - generic [ref=e5243]: "\"Use only one of --file or --stdin.\""
+                          - text: );
+                          - generic [ref=e5244]: usage
+                          - text: (
+                          - generic [ref=e5245]: "1"
+                          - text: "); }"
+                          - generic [ref=e5246]: let
+                          - text: raw;
+                          - generic [ref=e5247]: let
+                          - text: label;
+                          - generic [ref=e5248]: if
+                          - text: "(fromStdin) { raw ="
+                          - generic [ref=e5249]: await
+                          - generic [ref=e5250]: readAllStdin
+                          - text: (); label =
+                          - generic [ref=e5251]: "\"stdin\""
+                          - text: "; }"
+                          - generic [ref=e5252]: else
+                          - text: "{"
+                          - generic [ref=e5253]: const
+                          - text: abs = path.
+                          - generic [ref=e5254]: isAbsolute
+                          - text: "(filePath) ? filePath : path."
+                          - generic [ref=e5255]: join
+                          - text: (process.
+                          - generic [ref=e5256]: cwd
+                          - text: (), filePath); raw = fs.
+                          - generic [ref=e5257]: readFileSync
+                          - text: (abs,
+                          - generic [ref=e5258]: "\"utf8\""
+                          - text: "); label = abs; }"
+                          - generic [ref=e5259]: const
+                          - text: packet =
+                          - generic [ref=e5260]: readJson
+                          - text: (raw, label);
+                          - generic [ref=e5261]: if
+                          - text: (!packet ||
+                          - generic [ref=e5262]: typeof
+                          - text: packet !==
+                          - generic [ref=e5263]: "\"object\""
+                          - text: )
+                          - generic [ref=e5264]: throw
+                          - generic [ref=e5265]: new
+                          - generic [ref=e5266]: Error
+                          - text: (
+                          - generic [ref=e5267]: "\"Packet must be a JSON object.\""
+                          - text: );
+                          - generic [ref=e5268]: const
+                          - text: msgType = packet.
+                          - generic [ref=e5269]: msg_type
+                          - text: ;
+                          - generic [ref=e5270]: if
+                          - text: (!msgType ||
+                          - generic [ref=e5271]: typeof
+                          - text: msgType !==
+                          - generic [ref=e5272]: "\"string\""
+                          - text: ") {"
+                          - generic [ref=e5273]: console
+                          - text: .
+                          - generic [ref=e5274]: error
+                          - text: (
+                          - generic [ref=e5275]: "\"Invalid packet: missing string field msg_type.\""
+                          - text: ); process.
+                          - generic [ref=e5276]: exit
+                          - text: (
+                          - generic [ref=e5277]: "2"
+                          - text: "); }"
+                          - generic [ref=e5278]: const
+                          - text: schemaId =
+                          - generic [ref=e5279]: schemaIdForMsgType
+                          - text: (msgType);
+                          - generic [ref=e5280]: if
+                          - text: "(!schemaId) {"
+                          - generic [ref=e5281]: console
+                          - text: .
+                          - generic [ref=e5282]: error
+                          - text: (
+                          - generic [ref=e5284]: "`Unknown msg_type \"${msgType}"
+                          - text: "\". No schema mapping exists.`); process."
+                          - generic [ref=e5285]: exit
+                          - text: (
+                          - generic [ref=e5286]: "2"
+                          - text: "); }"
+                          - generic [ref=e5287]: const
+                          - text: ajv =
+                          - generic [ref=e5288]: new
+                          - generic [ref=e5289]: Ajv
+                          - text: "({"
+                          - generic [ref=e5290]: strict
+                          - text: ":"
+                          - generic [ref=e5291]: "true"
+                          - text: ","
+                          - generic [ref=e5292]: allErrors
+                          - text: ":"
+                          - generic [ref=e5293]: "true"
+                          - text: ","
+                          - generic [ref=e5294]: allowUnionTypes
+                          - text: ":"
+                          - generic [ref=e5295]: "true"
+                          - text: "});"
+                          - generic [ref=e5296]: addFormats
+                          - text: (ajv);
+                          - generic [ref=e5297]: const
+                          - text: dir =
+                          - generic [ref=e5298]: schemaDirFromThisScript
+                          - text: ();
+                          - generic [ref=e5299]: loadSchemas
+                          - text: (ajv, dir);
+                          - generic [ref=e5300]: const
+                          - text: validate = ajv.
+                          - generic [ref=e5301]: getSchema
+                          - text: (schemaId);
+                          - generic [ref=e5302]: if
+                          - text: "(!validate) {"
+                          - generic [ref=e5303]: console
+                          - text: .
+                          - generic [ref=e5304]: error
+                          - text: (
+                          - generic [ref=e5306]: "`Schema not found/loaded: ${schemaId}"
+                          - text: "`); process."
+                          - generic [ref=e5307]: exit
+                          - text: (
+                          - generic [ref=e5308]: "1"
+                          - text: "); }"
+                          - generic [ref=e5309]: const
+                          - text: ok =
+                          - generic [ref=e5310]: validate
+                          - text: (packet);
+                          - generic [ref=e5311]: if
+                          - text: "(ok) { process."
+                          - generic [ref=e5312]: stdout
+                          - text: .
+                          - generic [ref=e5313]: write
+                          - text: (
+                          - generic [ref=e5315]: "`OK: ${msgType}"
+                          - text: (
+                          - generic [ref=e5316]: "${label}"
+                          - text: ")\\n`); process."
+                          - generic [ref=e5317]: exit
+                          - text: (
+                          - generic [ref=e5318]: "0"
+                          - text: "); }"
+                          - generic [ref=e5319]: else
+                          - text: "{ process."
+                          - generic [ref=e5320]: stderr
+                          - text: .
+                          - generic [ref=e5321]: write
+                          - text: (
+                          - generic [ref=e5323]: "`INVALID: ${msgType}"
+                          - text: (
+                          - generic [ref=e5324]: "${label}"
+                          - text: ")\\n`); process."
+                          - generic [ref=e5325]: stderr
+                          - text: .
+                          - generic [ref=e5326]: write
+                          - text: (
+                          - generic [ref=e5327]: formatErrors
+                          - text: (validate.
+                          - generic [ref=e5328]: errors
+                          - text: ) +
+                          - generic [ref=e5329]: "\"\\n\""
+                          - text: ); process.
+                          - generic [ref=e5330]: exit
+                          - text: (
+                          - generic [ref=e5331]: "2"
+                          - text: "); } })()."
+                          - generic [ref=e5332]: catch
+                          - text: (
+                          - generic [ref=e5334]: (err
+                          - text: ") => {"
+                          - generic [ref=e5335]: console
+                          - text: .
+                          - generic [ref=e5336]: error
+                          - text: (
+                          - generic [ref=e5338]: "`packet-validate error: ${err.message}"
+                          - text: "`); process."
+                          - generic [ref=e5339]: exit
+                          - text: (
+                          - generic [ref=e5340]: "1"
+                          - text: "); });"
+                    - separator [ref=e5341]
+                    - heading "Quick smoke test" [level=2] [ref=e5342]
+                    - list [ref=e5343]:
+                      - listitem [ref=e5344]:
+                        - paragraph [ref=e5345]: "Create a context file:"
+                    - heading "tmp/context.json" [level=3] [ref=e5346]:
+                      - code [ref=e5347]: tmp/context.json
+                    - generic [ref=e5349]:
+                      - generic [ref=e5350]: json
+                      - button "Copy" [ref=e5353] [cursor=pointer]:
+                        - img [ref=e5354]
+                        - text: Copy code
+                      - code [ref=e5357]:
+                        - generic [ref=e5358]:
+                          - generic [ref=e5359]: "{"
+                          - generic [ref=e5360]: "\"repo\""
+                          - generic [ref=e5361]: ":"
+                          - generic [ref=e5362]: "\"AgentCore\""
+                          - generic [ref=e5363]: ","
+                          - generic [ref=e5364]: "\"branch\""
+                          - generic [ref=e5365]: ":"
+                          - generic [ref=e5366]: "\"feature/agent-flywheel-protocol\""
+                          - generic [ref=e5367]: ","
+                          - generic [ref=e5368]: "\"goal\""
+                          - generic [ref=e5369]: ":"
+                          - generic [ref=e5370]: "\"Implement Flywheel ChatGPT protocol scaffolding\""
+                          - generic [ref=e5371]: ","
+                          - generic [ref=e5372]: "\"constraints\""
+                          - generic [ref=e5373]: ":"
+                          - generic [ref=e5374]: "["
+                          - generic [ref=e5375]: "\"json-only responses\""
+                          - generic [ref=e5376]: ","
+                          - generic [ref=e5377]: "\"single writer\""
+                          - generic [ref=e5378]: ","
+                          - generic [ref=e5379]: "\"schema validation\""
+                          - generic [ref=e5380]: "]"
+                          - generic [ref=e5381]: "}"
+                    - list [ref=e5382]:
+                      - listitem [ref=e5383]:
+                        - paragraph [ref=e5384]: "Build + validate:"
+                    - generic [ref=e5386]:
+                      - generic [ref=e5387]: bash
+                      - button "Copy" [ref=e5390] [cursor=pointer]:
+                        - img [ref=e5391]
+                        - text: Copy code
+                      - code [ref=e5394]:
+                        - generic [ref=e5395]:
+                          - text: node scripts/chatgpt/packet-build.mjs \ --
+                          - generic [ref=e5396]: type
+                          - text: RFP_PLAN \ --bead bd-1234 \ --sender QuietDune \ --context tmp/context.json \ --question
+                          - generic [ref=e5397]: "\"Produce an implementation plan and acceptance tests.\""
+                          - text: \ --out tmp/packet.json node scripts/chatgpt/packet-validate.mjs --file tmp/packet.json
+                    - separator [ref=e5398]
+                    - paragraph [ref=e5399]:
+                      - text: If you want the next step after this (Bridge work), the very next file is
+                      - code [ref=e5400]: scripts/chatgpt/packet-extract.mjs
+                      - text: (parse JSON from ChatGPT message text) and then a
+                      - code [ref=e5401]: bridge-run-once.mjs
+                      - text: that uses your
+                      - code [ref=e5402]: playwright-chatgpt
+                      - text: MCP to post + scrape + validate responses.
+                - generic [ref=e5403]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+            - article [ref=e5404]:
+              - heading "You said:" [level=5] [ref=e5405]
+              - generic [ref=e5407]:
+                - generic [ref=e5412]:
+                  - text: "Important design clarification: The agent system uses a **pool-based model**, not named agents. Here's why: 1. **Agents are general-purpose**, not specialized 2. **Agent pool is dynamic** - agents come and go 3. **Any agent should be able to pick up any task** So instead of:"
+                  - code [ref=e5414]: "json {\"task\": \"Install JWT\", \"assign_to\": \"agent-1\"}"
+                  - text: "We need:"
+                  - code [ref=e5416]: "json {\"task\": \"Install JWT\", \"assign_to\": \"any\", \"notes\": \"Step-by-step instructions...\"}"
+                  - text: "**Key changes needed:** 1. Make"
+                  - code [ref=e5417]: assign_to
+                  - text: optional or default to "any" 2. The
+                  - code [ref=e5418]: notes
+                  - text: field should contain **detailed, step-by-step instructions** that any agent can follow 3. ChatGPT should write verbose instructions, not assume agent capabilities Can you update the
+                  - code [ref=e5419]: next_action
+                  - text: schema and provide guidance on how to prompt you to generate pool-friendly tasks with detailed instructions?
+                - generic [ref=e5420]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Edit message":
+                      - generic:
+                        - img
+            - article [ref=e5421]:
+              - heading "ChatGPT said:" [level=6] [ref=e5422]
+              - generic [ref=e5424]:
+                - generic [ref=e5428]:
+                  - paragraph [ref=e5429]: Absolutely — pool-based is the right model, and the schema should reflect “dispatchable work” rather than “named assignees.”
+                  - 'heading "1) Schema update: pool-friendly next_action" [level=2] [ref=e5430]':
+                    - text: "1) Schema update: pool-friendly"
+                    - code [ref=e5431]: next_action
+                  - heading "What changes" [level=3] [ref=e5432]
+                  - list [ref=e5433]:
+                    - listitem [ref=e5434]:
+                      - paragraph [ref=e5435]:
+                        - code [ref=e5436]: assign_to
+                        - text: becomes
+                        - strong [ref=e5437]: optional
+                        - text: and defaults to
+                        - code [ref=e5438]: "\"any\""
+                        - text: .
+                    - listitem [ref=e5439]:
+                      - paragraph [ref=e5440]:
+                        - code [ref=e5441]: notes
+                        - text: becomes
+                        - strong [ref=e5442]: required
+                        - text: and is where the
+                        - strong [ref=e5443]: step-by-step instructions
+                        - text: live.
+                    - listitem [ref=e5444]:
+                      - paragraph [ref=e5445]:
+                        - text: Add optional
+                        - code [ref=e5446]: requirements
+                        - text: +
+                        - code [ref=e5447]: acceptance
+                        - text: to make tasks executable by any agent with no tribal knowledge.
+                  - heading "Replace $defs.next_action in schemas/flywheel/chatgpt/v1/common.schema.json with this" [level=3] [ref=e5448]:
+                    - text: Replace
+                    - code [ref=e5449]: $defs.next_action
+                    - text: in
+                    - code [ref=e5450]: schemas/flywheel/chatgpt/v1/common.schema.json
+                    - text: with this
+                  - generic [ref=e5452]:
+                    - generic [ref=e5453]: json
+                    - button "Copy" [ref=e5456] [cursor=pointer]:
+                      - img [ref=e5457]
+                      - text: Copy code
+                    - code [ref=e5460]:
+                      - generic [ref=e5461]:
+                        - generic [ref=e5462]: "\"next_action\""
+                        - generic [ref=e5463]: ":"
+                        - generic [ref=e5464]: "{"
+                        - generic [ref=e5465]: "\"type\""
+                        - generic [ref=e5466]: ":"
+                        - generic [ref=e5467]: "\"object\""
+                        - generic [ref=e5468]: ","
+                        - generic [ref=e5469]: "\"additionalProperties\""
+                        - generic [ref=e5470]: ":"
+                        - generic [ref=e5472]: "false"
+                        - generic [ref=e5473]: ","
+                        - generic [ref=e5474]: "\"required\""
+                        - generic [ref=e5475]: ":"
+                        - generic [ref=e5476]: "["
+                        - generic [ref=e5477]: "\"task\""
+                        - generic [ref=e5478]: ","
+                        - generic [ref=e5479]: "\"notes\""
+                        - generic [ref=e5480]: "]"
+                        - generic [ref=e5481]: ","
+                        - generic [ref=e5482]: "\"properties\""
+                        - generic [ref=e5483]: ":"
+                        - generic [ref=e5484]: "{"
+                        - generic [ref=e5485]: "\"task\""
+                        - generic [ref=e5486]: ":"
+                        - generic [ref=e5487]: "{"
+                        - generic [ref=e5488]: "\"type\""
+                        - generic [ref=e5489]: ":"
+                        - generic [ref=e5490]: "\"string\""
+                        - generic [ref=e5491]: ","
+                        - generic [ref=e5492]: "\"minLength\""
+                        - generic [ref=e5493]: ":"
+                        - generic [ref=e5494]: "1"
+                        - generic [ref=e5495]: "}"
+                        - generic [ref=e5496]: ","
+                        - generic [ref=e5497]: "\"assign_to\""
+                        - generic [ref=e5498]: ":"
+                        - generic [ref=e5499]: "{"
+                        - generic [ref=e5500]: "\"type\""
+                        - generic [ref=e5501]: ":"
+                        - generic [ref=e5502]: "\"string\""
+                        - generic [ref=e5503]: ","
+                        - generic [ref=e5504]: "\"default\""
+                        - generic [ref=e5505]: ":"
+                        - generic [ref=e5506]: "\"any\""
+                        - generic [ref=e5507]: ","
+                        - generic [ref=e5508]: "\"description\""
+                        - generic [ref=e5509]: ":"
+                        - generic [ref=e5510]: "\"Pool-based assignment. Use 'any' unless a special capability is required.\""
+                        - generic [ref=e5511]: "}"
+                        - generic [ref=e5512]: ","
+                        - generic [ref=e5513]: "\"priority\""
+                        - generic [ref=e5514]: ":"
+                        - generic [ref=e5515]: "{"
+                        - generic [ref=e5516]: "\"type\""
+                        - generic [ref=e5517]: ":"
+                        - generic [ref=e5518]: "\"string\""
+                        - generic [ref=e5519]: ","
+                        - generic [ref=e5520]: "\"enum\""
+                        - generic [ref=e5521]: ":"
+                        - generic [ref=e5522]: "["
+                        - generic [ref=e5523]: "\"P0\""
+                        - generic [ref=e5524]: ","
+                        - generic [ref=e5525]: "\"P1\""
+                        - generic [ref=e5526]: ","
+                        - generic [ref=e5527]: "\"P2\""
+                        - generic [ref=e5528]: ","
+                        - generic [ref=e5529]: "\"P3\""
+                        - generic [ref=e5530]: "]"
+                        - generic [ref=e5531]: ","
+                        - generic [ref=e5532]: "\"default\""
+                        - generic [ref=e5533]: ":"
+                        - generic [ref=e5534]: "\"P2\""
+                        - generic [ref=e5535]: "}"
+                        - generic [ref=e5536]: ","
+                        - generic [ref=e5537]: "\"blocking\""
+                        - generic [ref=e5538]: ":"
+                        - generic [ref=e5539]: "{"
+                        - generic [ref=e5540]: "\"type\""
+                        - generic [ref=e5541]: ":"
+                        - generic [ref=e5542]: "\"boolean\""
+                        - generic [ref=e5543]: ","
+                        - generic [ref=e5544]: "\"default\""
+                        - generic [ref=e5545]: ":"
+                        - generic [ref=e5547]: "false"
+                        - generic [ref=e5548]: "}"
+                        - generic [ref=e5549]: ","
+                        - generic [ref=e5550]: "\"notes\""
+                        - generic [ref=e5551]: ":"
+                        - generic [ref=e5552]: "{"
+                        - generic [ref=e5553]: "\"type\""
+                        - generic [ref=e5554]: ":"
+                        - generic [ref=e5555]: "\"string\""
+                        - generic [ref=e5556]: ","
+                        - generic [ref=e5557]: "\"minLength\""
+                        - generic [ref=e5558]: ":"
+                        - generic [ref=e5559]: "20"
+                        - generic [ref=e5560]: ","
+                        - generic [ref=e5561]: "\"description\""
+                        - generic [ref=e5562]: ":"
+                        - generic [ref=e5563]: "\"Step-by-step, copy/paste-ready instructions that any general-purpose agent can follow.\""
+                        - generic [ref=e5564]: "}"
+                        - generic [ref=e5565]: ","
+                        - generic [ref=e5566]: "\"requirements\""
+                        - generic [ref=e5567]: ":"
+                        - generic [ref=e5568]: "{"
+                        - generic [ref=e5569]: "\"type\""
+                        - generic [ref=e5570]: ":"
+                        - generic [ref=e5571]: "\"array\""
+                        - generic [ref=e5572]: ","
+                        - generic [ref=e5573]: "\"items\""
+                        - generic [ref=e5574]: ":"
+                        - generic [ref=e5575]: "{"
+                        - generic [ref=e5576]: "\"type\""
+                        - generic [ref=e5577]: ":"
+                        - generic [ref=e5578]: "\"string\""
+                        - generic [ref=e5579]: ","
+                        - generic [ref=e5580]: "\"minLength\""
+                        - generic [ref=e5581]: ":"
+                        - generic [ref=e5582]: "1"
+                        - generic [ref=e5583]: "}"
+                        - generic [ref=e5584]: ","
+                        - generic [ref=e5585]: "\"default\""
+                        - generic [ref=e5586]: ":"
+                        - generic [ref=e5587]: "["
+                        - generic [ref=e5588]: "]"
+                        - generic [ref=e5589]: ","
+                        - generic [ref=e5590]: "\"description\""
+                        - generic [ref=e5591]: ":"
+                        - generic [ref=e5592]: "\"Prereqs/tools/paths needed (e.g., 'Node 20', 'run from repo root', 'env var X set').\""
+                        - generic [ref=e5593]: "}"
+                        - generic [ref=e5594]: ","
+                        - generic [ref=e5595]: "\"acceptance\""
+                        - generic [ref=e5596]: ":"
+                        - generic [ref=e5597]: "{"
+                        - generic [ref=e5598]: "\"type\""
+                        - generic [ref=e5599]: ":"
+                        - generic [ref=e5600]: "\"array\""
+                        - generic [ref=e5601]: ","
+                        - generic [ref=e5602]: "\"items\""
+                        - generic [ref=e5603]: ":"
+                        - generic [ref=e5604]: "{"
+                        - generic [ref=e5605]: "\"type\""
+                        - generic [ref=e5606]: ":"
+                        - generic [ref=e5607]: "\"string\""
+                        - generic [ref=e5608]: ","
+                        - generic [ref=e5609]: "\"minLength\""
+                        - generic [ref=e5610]: ":"
+                        - generic [ref=e5611]: "1"
+                        - generic [ref=e5612]: "}"
+                        - generic [ref=e5613]: ","
+                        - generic [ref=e5614]: "\"default\""
+                        - generic [ref=e5615]: ":"
+                        - generic [ref=e5616]: "["
+                        - generic [ref=e5617]: "]"
+                        - generic [ref=e5618]: ","
+                        - generic [ref=e5619]: "\"description\""
+                        - generic [ref=e5620]: ":"
+                        - generic [ref=e5621]: "\"Concrete checks that prove completion (commands + expected output, tests passing, file exists).\""
+                        - generic [ref=e5622]: "}"
+                        - generic [ref=e5623]: "}"
+                        - generic [ref=e5624]: "}"
+                  - heading "Notes on compatibility" [level=3] [ref=e5625]
+                  - list [ref=e5626]:
+                    - listitem [ref=e5627]:
+                      - paragraph [ref=e5628]:
+                        - text: Your existing response schemas already reference
+                        - code [ref=e5629]: $defs.next_action
+                        - text: ", so"
+                        - strong [ref=e5630]: no other schema files need edits
+                        - text: besides
+                        - code [ref=e5631]: common.schema.json
+                        - text: .
+                    - listitem [ref=e5632]:
+                      - paragraph [ref=e5633]: After editing, re-run your validator against any sample packets.
+                  - separator [ref=e5634]
+                  - 'heading "2) Guidance: how to prompt ChatGPT for pool-friendly tasks" [level=2] [ref=e5635]'
+                  - paragraph [ref=e5636]: When you want tasks that any ephemeral agent can pick up, you need to explicitly constrain the response style and assumptions.
+                  - heading "Add this to every protocol request’s requested_output.notes" [level=3] [ref=e5637]:
+                    - text: Add this to every protocol request’s
+                    - code [ref=e5638]: requested_output.notes
+                  - paragraph [ref=e5639]: "Use it verbatim:"
+                  - blockquote [ref=e5640]:
+                    - paragraph [ref=e5641]:
+                      - strong [ref=e5642]: "Task-writing rules (pool-based):"
+                    - list [ref=e5643]:
+                      - listitem [ref=e5644]:
+                        - paragraph [ref=e5645]:
+                          - text: Produce
+                          - code [ref=e5646]: next_actions[]
+                          - text: where each item is executable by any general-purpose agent.
+                      - listitem [ref=e5647]:
+                        - paragraph [ref=e5648]:
+                          - text: Set
+                          - code [ref=e5649]: assign_to
+                          - text: to
+                          - code [ref=e5650]: "\"any\""
+                          - text: (or omit it). Do not use named agents.
+                      - listitem [ref=e5651]:
+                        - paragraph [ref=e5652]:
+                          - code [ref=e5653]: notes
+                          - text: MUST be detailed, step-by-step, copy/paste-ready. Assume no prior context beyond what’s in
+                          - code [ref=e5654]: inputs.artifacts
+                          - text: and
+                          - code [ref=e5655]: context
+                          - text: .
+                      - listitem [ref=e5656]:
+                        - paragraph [ref=e5657]: Include exact file paths, commands, and what to expect after each step.
+                      - listitem [ref=e5658]:
+                        - paragraph [ref=e5659]:
+                          - text: Include
+                          - code [ref=e5660]: requirements[]
+                          - text: and
+                          - code [ref=e5661]: acceptance[]
+                          - text: for each action.
+                      - listitem [ref=e5662]:
+                        - paragraph [ref=e5663]: Do not hand-wave (“just update X”). Specify the exact edits or commands.
+                  - heading "Also include a “capability assumption” line in the questions" [level=3] [ref=e5664]
+                  - paragraph [ref=e5665]: "Example question text:"
+                  - list [ref=e5666]:
+                    - listitem [ref=e5667]:
+                      - paragraph [ref=e5668]: “Assume agents are general-purpose, may be brand-new to this repo, and must succeed using only the instructions you provide.”
+                  - 'heading "Optional: enforce output structure hard" [level=3] [ref=e5669]'
+                  - paragraph [ref=e5670]: "Add this to the end of your prompt:"
+                  - list [ref=e5671]:
+                    - listitem [ref=e5672]:
+                      - paragraph [ref=e5673]:
+                        - text: “Return
+                        - strong [ref=e5674]: JSON only
+                        - text: . No commentary. If you cannot comply, return
+                        - code [ref=e5675]: verdict:"error"
+                        - text: and explain in
+                        - code [ref=e5676]: notes
+                        - text: .”
+                  - separator [ref=e5677]
+                  - 'heading "Small recommendation: bump packet-build defaults" [level=2] [ref=e5678]':
+                    - text: "Small recommendation: bump"
+                    - code [ref=e5679]: packet-build
+                    - text: defaults
+                  - paragraph [ref=e5680]:
+                    - text: Right now,
+                    - code [ref=e5681]: packet-build
+                    - text: sets
+                    - code [ref=e5682]: requested_output.fields
+                    - text: based on type. Keep that, but start routinely adding
+                    - code [ref=e5683]: requested_output.notes
+                    - text: (either via CLI flag later, or by editing the packet before posting) to include the rules above. That’s the easiest way to make “verbose pool tasks” the default behavior.
+                  - paragraph [ref=e5684]:
+                    - text: If you want, I can also patch
+                    - code [ref=e5685]: packet-build.mjs
+                    - text: to accept
+                    - code [ref=e5686]: "--output-notes <file>"
+                    - text: or
+                    - code [ref=e5687]: "--output-notes-text \"...\""
+                    - text: so you don’t have to hand-edit packets.
+                - generic [ref=e5688]:
+                  - generic:
+                    - button "Copy":
+                      - generic:
+                        - img
+                    - button "Good response":
+                      - generic:
+                        - img
+                    - button "Bad response":
+                      - generic:
+                        - img
+                    - button "Share":
+                      - generic:
+                        - img
+                    - generic:
+                      - button "Switch model":
+                        - generic:
+                          - img
+                    - button "More actions":
+                      - img
+          - generic [ref=e107]:
+            - generic [ref=e110]:
+              - generic [ref=e114]:
+                - paragraph [ref=e5693]: Ask anything
+                - button "Add files and more" [ref=e120] [cursor=pointer]:
+                  - img
+                - generic [ref=e122]:
+                  - button "Dictate button" [ref=e124] [cursor=pointer]:
+                    - img
+                  - button "Start Voice" [ref=e5698] [cursor=pointer]:
+                    - img [ref=e5699]
+              - button [ref=e129]
+              - button [ref=e130]
+            - generic [ref=e134]: ChatGPT can make mistakes. Check important info.

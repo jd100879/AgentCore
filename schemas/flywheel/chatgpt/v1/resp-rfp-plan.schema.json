@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "flywheel.chatgpt.v1/resp-rfp-plan.schema.json",
+  "title": "RFP_PLAN_RESPONSE (v1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["proto", "bead_id", "msg_type", "verdict", "plan", "risks", "acceptance_tests", "next_actions"],
+  "properties": {
+    "proto": { "$ref": "common.schema.json#/$defs/proto" },
+    "bead_id": { "$ref": "common.schema.json#/$defs/bead_id" },
+    "msg_type": { "const": "RFP_PLAN_RESPONSE" },
+    "verdict": { "$ref": "common.schema.json#/$defs/verdict" },
+
+    "plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["step", "action", "owner"],
+        "properties": {
+          "step": { "type": "integer", "minimum": 1 },
+          "action": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1 },
+          "evidence": { "type": "string" }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["risk", "mitigation"],
+        "properties": {
+          "risk": { "type": "string", "minLength": 1 },
+          "mitigation": { "type": "string", "minLength": 1 }
+        }
+      },
+      "default": []
+    },
+    "acceptance_tests": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": []
+    },
+    "next_actions": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/next_action" },
+      "default": []
+    },
+
+    "notes": { "type": "string" }
+  }
+}

@@ -1,0 +1,79 @@
+[
+  {
+    "bead_id": "bd-35z",
+    "plan": [
+      {
+        "step": 1,
+        "action": "Add a file lock to prevent duplicate mail monitor instances from starting",
+        "owner": "any",
+        "evidence": "Lock file is created before monitoring begins and blocks a second startup"
+      },
+      {
+        "step": 2,
+        "action": "Implement stale-lock detection and recovery for crash scenarios",
+        "owner": "any",
+        "evidence": "If the PID in the lock file is not running, the lock is treated as stale and replaced"
+      },
+      {
+        "step": 3,
+        "action": "Release the lock on graceful shutdown and handle SIGINT/SIGTERM cleanup",
+        "owner": "any",
+        "evidence": "Lock file is removed when the monitor exits normally"
+      }
+    ],
+    "risks": [
+      {
+        "risk": "A stale lock file could block monitoring after an unclean exit",
+        "mitigation": "Write PID + timestamp into lock file and verify PID liveness before refusing startup"
+      }
+    ],
+    "acceptance_tests": [
+      "Start the mail monitor twice; verify the second instance exits with a clear 'already running' message",
+      "Kill the monitor uncleanly; verify restart detects stale lock and starts successfully",
+      "Stop the monitor normally; verify the lock file is removed"
+    ],
+    "next_actions": [
+      {
+        "task": "Implement file lock guard in mail monitor startup",
+        "assign_to": "any",
+        "notes": "Add a deterministic lock file (e.g., .flywheel/bridge/monitor.lock). On startup, check if it exists. If it does not exist, create it atomically and write JSON {\"pid\": <PID>, \"ts\": \"<ISO8601>\"}. If it exists, read and parse it: if PID is running, log and exit; if PID is not running, treat as stale, overwrite lock atomically, and continue. Remove the lock on normal exit and trap SIGINT/SIGTERM to remove it. Add a small test (script or integration) to verify double-start is blocked and stale-lock recovery works."
+      }
+    ]
+  },
+  {
+    "bead_id": "bd-test",
+    "plan": [
+      {
+        "step": 1,
+        "action": "Run a batch planning request for both beads and capture the JSON response",
+        "owner": "any",
+        "evidence": "post-and-extract.mjs returns a valid JSON array"
+      },
+      {
+        "step": 2,
+        "action": "Verify JSON parsing and routing by bead_id in the bridge loop",
+        "owner": "any",
+        "evidence": "Bridge splits the array into per-bead plans and dispatches follow-up tasks"
+      },
+      {
+        "step": 3,
+        "action": "Verify idempotency and confirm the bridge logs stay small (no context burn)",
+        "owner": "any",
+        "evidence": "Duplicate request is skipped and logs include only JSON size, not snapshots"
+      }
+    ],
+    "risks": [],
+    "acceptance_tests": [
+      "JSON extraction returns a parseable JSON array (no placeholders)",
+      "Both beads receive correct plans and next_actions",
+      "Idempotency markers prevent duplicate processing"
+    ],
+    "next_actions": [
+      {
+        "task": "Execute end-to-end batch extraction test",
+        "assign_to": "any",
+        "notes": "Start the bridge (./scripts/start-bridge-agent.sh). Send a BATCH_PLAN request that includes bd-35z and bd-test. Confirm the bridge calls batch-plan.mjs then post-and-extract.mjs once, and JSON.parse succeeds on the returned array. Confirm per-bead routing and that the triggering message is archived. Confirm .flywheel/bridge/sent/ marker is written. Re-send the same request and confirm it is skipped. Record logged JSON size to confirm no context burn."
+      }
+    ]
+  }
+]

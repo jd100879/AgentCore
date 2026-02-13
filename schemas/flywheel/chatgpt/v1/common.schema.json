@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "flywheel.chatgpt.v1/common.schema.json",
+  "title": "Flywheel ChatGPT Protocol Common Types (v1)",
+  "type": "object",
+  "$defs": {
+    "proto": {
+      "type": "string",
+      "const": "flywheel.chatgpt.v1"
+    },
+    "bead_id": {
+      "type": "string",
+      "pattern": "^bd-[A-Za-z0-9][A-Za-z0-9_-]{1,63}$"
+    },
+    "iso_datetime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "msg_type_request": {
+      "type": "string",
+      "enum": ["RFP_PLAN", "RFP_ARBITRATE", "EVIDENCE_BUNDLE", "SPEC_LOCK", "ACCEPTANCE_GATE"]
+    },
+    "msg_type_response": {
+      "type": "string",
+      "enum": [
+        "RFP_PLAN_RESPONSE",
+        "RFP_ARBITRATE_RESPONSE",
+        "EVIDENCE_BUNDLE_RESPONSE",
+        "SPEC_LOCK_RESPONSE",
+        "ACCEPTANCE_GATE_RESPONSE"
+      ]
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["ok", "revise", "reject", "error"]
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "label", "content"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content": {
+          "type": "string"
+        }
+      }
+    },
+    "next_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task", "notes"],
+      "properties": {
+        "task": { "type": "string", "minLength": 1 },
+
+        "assign_to": {
+          "type": "string",
+          "default": "any",
+          "description": "Pool-based assignment. Use 'any' unless a special capability is required."
+        },
+
+        "priority": {
+          "type": "string",
+          "enum": ["P0", "P1", "P2", "P3"],
+          "default": "P2"
+        },
+
+        "blocking": { "type": "boolean", "default": false },
+
+        "notes": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Step-by-step, copy/paste-ready instructions that any general-purpose agent can follow."
+        },
+
+        "requirements": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "default": [],
+          "description": "Prereqs/tools/paths needed (e.g., 'Node 20', 'run from repo root', 'env var X set')."
+        },
+
+        "acceptance": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "default": [],
+          "description": "Concrete checks that prove completion (commands + expected output, tests passing, file exists)."
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repo", "branch", "goal", "constraints"],
+      "properties": {
+        "repo": { "type": "string", "minLength": 1 },
+        "branch": { "type": "string", "minLength": 1 },
+        "goal": { "type": "string", "minLength": 1 },
+        "constraints": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "default": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "repo": "AgentCore",
+  "branch": "feature/agent-flywheel-protocol",
+  "goal": "Test the packet build and validation tooling",
+  "constraints": ["json-only responses", "pool-based assignment"]
+}

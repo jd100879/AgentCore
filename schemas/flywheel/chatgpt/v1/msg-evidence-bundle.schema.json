@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "flywheel.chatgpt.v1/msg-evidence-bundle.schema.json",
+  "title": "EVIDENCE_BUNDLE (v1)",
+  "allOf": [
+    { "$ref": "envelope.schema.json" },
+    {
+      "type": "object",
+      "properties": {
+        "msg_type": { "const": "EVIDENCE_BUNDLE" }
+      }
+    }
+  ]
+}

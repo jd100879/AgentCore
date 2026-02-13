@@ -1,0 +1,31 @@
+{
+  "description": "Format for implementation plans returned by ChatGPT for beads",
+  "example": {
+    "id": "bd-XXXX",
+    "code": "pXa-01",
+    "title": "Short action-oriented title",
+    "priority": "P0",
+    "depends_on": ["bd-YYYY"],
+
+    "how_to_think": "One focused paragraph explaining the intent of this bead, what must be preserved (idempotency, transaction boundaries, additive changes), and when to stop/escalate.",
+
+    "acceptance_criteria": [
+      "Clear measurable outcome",
+      "Another measurable outcome"
+    ],
+
+    "files_to_create": [],
+    "files_to_modify": [],
+
+    "verification": [
+      "Docker-first command to run",
+      "What must be true afterward"
+    ]
+  },
+  "notes": [
+    "how_to_think: Critical for pool-based agents - sets the mindset/approach",
+    "files_to_create/files_to_modify: Makes scope crystal clear",
+    "verification: Must be concrete, runnable commands",
+    "depends_on: Explicit dependency array for bead ordering"
+  ]
+}

@@ -1,0 +1,33 @@
+Test batch plan for 2 beads:
+
+## Bead 1: bd-35z
+**Title:** Prevent duplicate mail monitors
+**Status:** open
+**Description:** Fix to prevent duplicate mail monitors with file lock
+
+## Bead 2: bd-test
+**Title:** Test bead for batch planning
+**Status:** open  
+**Description:** Simple test bead to validate batch planning extraction
+
+---
+
+Return ONLY a JSON array with plans for each bead:
+```json
+[
+  {
+    "bead_id": "bd-35z",
+    "plan": [{"step": 1, "action": "Add file lock", "owner": "any", "evidence": "Lock file created"}],
+    "risks": [],
+    "acceptance_tests": ["Test no duplicate monitors"],
+    "next_actions": [{"task": "Implement file lock", "assign_to": "any", "notes": "Add lock check before monitor start"}]
+  },
+  {
+    "bead_id": "bd-test",
+    "plan": [{"step": 1, "action": "Run test", "owner": "any", "evidence": "Test passes"}],
+    "risks": [],
+    "acceptance_tests": ["Verify batch planning works"],
+    "next_actions": [{"task": "Complete test", "assign_to": "any", "notes": "Validate extraction"}]
+  }
+]
+```

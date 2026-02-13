@@ -381,7 +381,11 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     process.stdout.write(output + "\n");
   }
 
-  process.exit(0);
+  // Don't exit - keep browser open for user to see the interaction
+  console.error("");
+  console.error("✓ Browser window left open. Press Ctrl+C to close.");
+  // Keep process alive
+  setInterval(() => {}, 1000);
 })().catch((err) => {
   console.error(`ERROR: ${err.message}`);
   process.exit(1);
