@@ -57,8 +57,9 @@ function parseArgs(argv) {
 
 async function postAndExtract(conversationUrl, message, storageStatePath, timeout = 60000) {
   // Launch browser with existing authentication (storage state)
+  // Headless mode - no visible window, no dock icon
   const browser = await chromium.launch({
-    headless: false,
+    headless: true,
     args: [
       '--disable-blink-features=AutomationControlled',
       '--no-sandbox',
@@ -322,8 +323,11 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     };
 
   } finally {
-    // Don't close context or page - keep browser alive with persistent profile
-    console.error("✓ Browser kept open (persistent profile)");
+    // Close browser cleanly (headless mode)
+    await page.close();
+    await context.close();
+    await browser.close();
+    console.error("✓ Browser closed");
   }
 }
 
@@ -377,12 +381,10 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     process.stdout.write(output + "\n");
   }
 
-  // Keep browser open for session reuse
+  // Headless mode - clean exit
   console.error("");
-  console.error("✓ Browser window left open (persistent profile)");
-  console.error("  (Process will stay alive - orchestrator should use run_in_background: true)");
-  // Keep process alive
-  setInterval(() => {}, 1000);
+  console.error("✓ Complete (headless mode - no visible browser)");
+  process.exit(0);
 })().catch((err) => {
   console.error(`ERROR: ${err.message}`);
   process.exit(1);
