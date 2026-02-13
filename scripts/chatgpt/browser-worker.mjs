@@ -134,12 +134,44 @@ while (true) {
       let extracted_json = null;
       let parse_ok = false;
 
+      // Try 1: Look for ```json fences
       const jsonMatch = rawText.match(/```json\s*([\s\S]*?)\s*```/i);
       if (jsonMatch) {
         try {
           extracted_json = JSON.parse(jsonMatch[1]);
           parse_ok = true;
         } catch (e) {}
+      }
+
+      // Try 2: Look for code blocks in DOM (ChatGPT renders JSON in <pre><code>)
+      if (!parse_ok) {
+        try {
+          const codeBlocks = await lastMessage.locator('pre code').all();
+          if (codeBlocks.length > 0) {
+            // Try the last code block first (most likely to be the answer)
+            for (let i = codeBlocks.length - 1; i >= 0; i--) {
+              const codeText = await codeBlocks[i].innerText();
+              try {
+                extracted_json = JSON.parse(codeText);
+                parse_ok = true;
+                break;
+              } catch (e) {
+                // Not valid JSON, try next
+              }
+            }
+          }
+        } catch (e) {}
+      }
+
+      // Try 3: Look for "JSON\n{" pattern (ChatGPT's fallback format)
+      if (!parse_ok) {
+        const simpleMatch = rawText.match(/^JSON\s*\n\s*(\{[\s\S]*\}|\[[\s\S]*\])\s*$/im);
+        if (simpleMatch) {
+          try {
+            extracted_json = JSON.parse(simpleMatch[1]);
+            parse_ok = true;
+          } catch (e) {}
+        }
       }
 
       // Write response
