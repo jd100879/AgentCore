@@ -57,9 +57,9 @@ function parseArgs(argv) {
 
 async function postAndExtract(conversationUrl, message, storageStatePath, timeout = 60000) {
   // Launch browser with existing authentication (storage state)
-  // Headless mode - no visible window, no dock icon
+  // Use visible browser - headless doesn't work well with ChatGPT
   const browser = await chromium.launch({
-    headless: true,
+    headless: false,
     args: [
       '--disable-blink-features=AutomationControlled',
       '--no-sandbox',
