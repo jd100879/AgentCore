@@ -1,1 +1,0 @@
-Quick test - just respond with "OK" so I can verify the browser stays open after extraction.

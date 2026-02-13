@@ -1,7 +1,0 @@
-{
-  "ok": true,
-  "raw_text": "json\nCopy code\n{\n  \"status\": \"received\",\n  \"timestamp\": \"2026-02-13\",\n  \"message\": \"Test successful\"\n}\n",
-  "parse_ok": false,
-  "extracted_json": null,
-  "error": "NO_JSON_STRUCTURE_FOUND"
-}

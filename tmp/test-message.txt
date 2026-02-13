@@ -1,9 +1,0 @@
-Test message from AgentCore orchestrator (QuietCreek). Please respond with:
-
-```json
-{
-  "status": "received",
-  "timestamp": "2026-02-13",
-  "message": "Test successful"
-}
-```

@@ -1,7 +1,0 @@
-{
-  "ok": true,
-  "raw_text": "{\"status\": \"ok\", \"test\": true}",
-  "parse_ok": false,
-  "extracted_json": null,
-  "error": "NO_JSON_STRUCTURE_FOUND"
-}

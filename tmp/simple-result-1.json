@@ -1,7 +1,0 @@
-{
-  "ok": true,
-  "raw_text": "Hi! 👋\nLooks like your test came through perfectly.\n\nHow can I help you today?",
-  "parse_ok": false,
-  "extracted_json": null,
-  "error": "NO_JSON_STRUCTURE_FOUND"
-}
