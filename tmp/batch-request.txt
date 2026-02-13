@@ -27,7 +27,7 @@ Return as valid JSON array where each element corresponds to a bead in order:
 
 [
   {
-    "id": "bd-test-001",
+    "id": "test",
     "code": "...",
     "title": "...",
     ...
@@ -36,7 +36,7 @@ Return as valid JSON array where each element corresponds to a bead in order:
 ]
 
 
-## Bead 1: bd-test-001
+## Bead 1: test
 **Title:** Failed to load
 **Status:** unknown
 **Description:**

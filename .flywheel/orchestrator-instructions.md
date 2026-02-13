@@ -14,20 +14,32 @@ You are the **Orchestrator Agent** - the coordination layer between ChatGPT and 
 
 ### 1. Get Plans from ChatGPT
 
-Call `batch-plan.mjs` directly with bead IDs:
+Call `batch-plan.mjs` in the **background** (browser stays open for session reuse):
 
-```bash
-node scripts/chatgpt/batch-plan.mjs \
-  --beads "bd-123,bd-456" \
-  --conversation-url "$(jq -r .crt_url .flywheel/chatgpt.json)" \
-  --out "tmp/batch-response.json"
+**Step 1: Start batch-plan in background**
+Use the Bash tool with `run_in_background: true`:
+
+```javascript
+{
+  "command": "node scripts/chatgpt/batch-plan.mjs --beads \"bd-123,bd-456\" --conversation-url \"$(jq -r .crt_url .flywheel/chatgpt.json)\" --out \"tmp/batch-response.json\"",
+  "run_in_background": true,
+  "description": "Send batch plan request to ChatGPT"
+}
 ```
 
-This will:
-- Post batch request to ChatGPT
-- Wait for response
-- Extract JSON plans
-- Save to output file
+**Step 2: Wait for output file and read it**
+The script writes the JSON as soon as available, then keeps browser open:
+
+```bash
+# Poll for output file (it appears quickly)
+while [ ! -f tmp/batch-response.json ]; do sleep 1; done
+cat tmp/batch-response.json
+```
+
+**Why run_in_background:**
+- Non-blocking - you can continue working
+- Browser stays open for session reuse (no re-login)
+- Can run multiple batches with same browser session
 
 **Important:** The conversation URL is stored in `.flywheel/chatgpt.json` for this project.
 

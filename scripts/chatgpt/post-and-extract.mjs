@@ -377,8 +377,12 @@ async function postAndExtract(conversationUrl, message, storageStatePath, timeou
     process.stdout.write(output + "\n");
   }
 
-  console.error("✓ Extraction complete");
-  process.exit(0);
+  // Keep browser open for session reuse
+  console.error("");
+  console.error("✓ Browser window left open for session reuse");
+  console.error("  (Process will stay alive - orchestrator should use run_in_background: true)");
+  // Keep process alive
+  setInterval(() => {}, 1000);
 })().catch((err) => {
   console.error(`ERROR: ${err.message}`);
   process.exit(1);

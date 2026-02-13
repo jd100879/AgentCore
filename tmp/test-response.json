@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "raw_text": "JSON\n[\n  {\n    \"id\": \"test\",\n    \"code\": \"pXa-01\",\n    \"title\": \"Fix bead info load failure and add diagnostics\",\n    \"priority\": \"P0\",\n    \"depends_on\": [],\n    \"how_to_think\": \"Treat this as a focused debugging and reliability bead. The goal is to restore the bead-info load path so a bead that currently shows 'Failed to load' resolves deterministically, while preserving idempotency (no duplicate bead creation, no repeated side effects on retries) and transaction boundaries (do not partially write state or mutate bead records during reads). Keep changes additive and minimal: prefer better error surfacing, logging, and guarded fallbacks over refactors. Stop and escalate if the failure is caused by missing upstream data (bead store outage/corruption), permissions/secrets, schema migrations, or a broad API contract mismatch—at that point produce a short root-cause report and propose the smallest follow-on bead(s).\",\n    \"acceptance_criteria\": [\n      \"Bead metadata for id 'test' loads successfully (title/description/status present) via the normal read path and no longer shows 'Failed to load'\",\n      \"On any bead-load failure, logs include a correlation id plus the underlying error class/status and the system returns a structured error object rather than a generic 'Failed to load'\"\n    ],\n    \"files_to_create\": [\n      \"docs/debug/bead-load-failure-test.md\"\n    ],\n    \"files_to_modify\": [\n      \"scripts/bridge/bridge-agent-loop.sh\",\n      \"scripts/agent-mail-helper.sh\"\n    ],\n    \"verification\": [\n      \"Docker-first: start the stack the same way production does (e.g., docker compose up -d) and run the bead read operation used by the system for id 'test' (e.g., ./scripts/<bead-read-command>.sh test) or trigger the UI/CLI path that loads bead metadata.\",\n      \"Expected: bead 'test' resolves with non-empty title/description/status; if failure is forced, returned error is structured and logs show correlation id + root error (status/exception) with no duplicate state writes.\"\n    ]\n  }\n]",
+  "parse_ok": true,
+  "extracted_json": [
+    {
+      "id": "test",
+      "code": "pXa-01",
+      "title": "Fix bead info load failure and add diagnostics",
+      "priority": "P0",
+      "depends_on": [],
+      "how_to_think": "Treat this as a focused debugging and reliability bead. The goal is to restore the bead-info load path so a bead that currently shows 'Failed to load' resolves deterministically, while preserving idempotency (no duplicate bead creation, no repeated side effects on retries) and transaction boundaries (do not partially write state or mutate bead records during reads). Keep changes additive and minimal: prefer better error surfacing, logging, and guarded fallbacks over refactors. Stop and escalate if the failure is caused by missing upstream data (bead store outage/corruption), permissions/secrets, schema migrations, or a broad API contract mismatch—at that point produce a short root-cause report and propose the smallest follow-on bead(s).",
+      "acceptance_criteria": [
+        "Bead metadata for id 'test' loads successfully (title/description/status present) via the normal read path and no longer shows 'Failed to load'",
+        "On any bead-load failure, logs include a correlation id plus the underlying error class/status and the system returns a structured error object rather than a generic 'Failed to load'"
+      ],
+      "files_to_create": [
+        "docs/debug/bead-load-failure-test.md"
+      ],
+      "files_to_modify": [
+        "scripts/bridge/bridge-agent-loop.sh",
+        "scripts/agent-mail-helper.sh"
+      ],
+      "verification": [
+        "Docker-first: start the stack the same way production does (e.g., docker compose up -d) and run the bead read operation used by the system for id 'test' (e.g., ./scripts/<bead-read-command>.sh test) or trigger the UI/CLI path that loads bead metadata.",
+        "Expected: bead 'test' resolves with non-empty title/description/status; if failure is forced, returned error is structured and logs show correlation id + root error (status/exception) with no duplicate state writes."
+      ]
+    }
+  ],
+  "error": null
+}
