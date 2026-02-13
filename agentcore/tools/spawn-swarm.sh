@@ -1,0 +1,1 @@
+../../scripts/spawn-swarm.sh

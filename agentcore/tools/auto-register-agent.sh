@@ -1,0 +1,1 @@
+../../scripts/auto-register-agent.sh
