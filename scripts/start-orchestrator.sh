@@ -18,7 +18,7 @@ AGENT_NAME="Orchestrator"
 # Print banner
 echo -e "${CYAN}"
 echo "  ╔═══════════════════════════════════════════════╗"
-echo "  ║     Orchestrator Agent (Simplified)           ║"
+echo "  ║          Orchestrator Agent                   ║"
 echo "  ║   ChatGPT Partner · Plan Orchestration        ║"
 echo "  ╚═══════════════════════════════════════════════╝"
 echo -e "${NC}"
@@ -51,8 +51,8 @@ AGENT_NAME="${ASSIGNED_NAME:-Orchestrator}"
 echo -e "${GREEN}✓ Registered as: $AGENT_NAME${NC}"
 echo ""
 
-# Use simplified instructions
-INSTRUCTIONS_FILE=".flywheel/orchestrator-instructions-simple.md"
+# Load orchestrator instructions
+INSTRUCTIONS_FILE=".flywheel/orchestrator-instructions.md"
 
 if [ ! -f "$INSTRUCTIONS_FILE" ]; then
   echo -e "${YELLOW}⚠ Instructions file not found: $INSTRUCTIONS_FILE${NC}"
