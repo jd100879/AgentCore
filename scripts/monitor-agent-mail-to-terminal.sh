@@ -36,6 +36,10 @@ PROJECT_KEY="$MAIL_PROJECT_KEY"
 AGENT_NAME="${1:-$AGENT_NAME}"
 POLL_INTERVAL="${2:-5}"
 
+# Input detection tuning (for notification queueing)
+MAIL_BUSY_WINDOW_SEC="${MAIL_BUSY_WINDOW_SEC:-12}"      # Consider pane "busy" if activity within last N seconds
+MAIL_REQUIRE_PANE_ACTIVE="${MAIL_REQUIRE_PANE_ACTIVE:-1}"  # 1 = only queue if this pane is active
+
 # Determine our safe-pane identity (stable across agent name changes)
 # This is the key used for PID files and identity files.
 # Sources: MONITOR_SAFE_PANE (set by mail-monitor-ctl.sh), or live tmux detection.
@@ -219,9 +223,53 @@ has_pending_input() {
     return 1  # No pending input
 }
 
-# Note: is_pane_idle() removed - we now simply retry delivery every poll interval
-# until the terminal is clear (no pending input). This is simpler and more reliable
-# than trying to track pane activity timestamps.
+# Comprehensive input detection for notification queueing
+# Returns 0 (true) if pane is busy → queue notifications
+# Returns 1 (false) if pane is idle → send notifications immediately
+#
+# Uses three signals:
+# 1. #{pane_last_activity} - Primary signal (detects typing & streaming output)
+# 2. #{pane_in_mode} - Detects copy-mode/scrollback
+# 3. has_pending_input() - Backward compatibility for CLI prompt detection
+is_pane_busy_for_notifications() {
+    # Defensive checks
+    command -v tmux >/dev/null 2>&1 || return 1
+    [ -n "${MY_PANE:-}" ] || return 1
+
+    # Optionally only suppress/queue when the user is actually viewing this pane
+    if [ "${MAIL_REQUIRE_PANE_ACTIVE}" = "1" ]; then
+        local is_active
+        is_active="$(tmux display-message -t "$MY_PANE" -p '#{pane_active}' 2>/dev/null || true)"
+        [ "$is_active" = "1" ] || return 1
+    fi
+
+    # If user is in copy-mode/scrollback/etc, do not interrupt
+    local in_mode
+    in_mode="$(tmux display-message -t "$MY_PANE" -p '#{pane_in_mode}' 2>/dev/null || true)"
+    if [ "$in_mode" = "1" ]; then
+        return 0
+    fi
+
+    # Primary: recent activity (covers typing + Claude streaming + any output)
+    local last now age
+    last="$(tmux display-message -t "$MY_PANE" -p '#{pane_last_activity}' 2>/dev/null || true)"
+    now="$(date +%s 2>/dev/null || true)"
+
+    if [[ "$last" =~ ^[0-9]+$ ]] && [[ "$now" =~ ^[0-9]+$ ]]; then
+        age=$(( now - last ))
+        if [ "$age" -lt 0 ]; then age=0; fi  # clock skew safety
+        if [ "$age" -le "${MAIL_BUSY_WINDOW_SEC}" ]; then
+            return 0
+        fi
+    fi
+
+    # Back-compat: if prompt is visible and user is actively typing, treat as busy
+    if has_pending_input; then
+        return 0
+    fi
+
+    return 1
+}
 
 # Function to add message to queue
 queue_message() {
@@ -325,9 +373,9 @@ flush_queue() {
 send_to_terminal() {
     local message="$1"
 
-    # Check if user is actively typing
-    if has_pending_input; then
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] Pending input detected - queueing message"
+    # Check if pane is busy (typing, active conversation, or copy-mode)
+    if is_pane_busy_for_notifications; then
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] Pane busy - queueing message"
         queue_message "$message"
         return
     fi
@@ -475,14 +523,14 @@ while true; do
     # Check for new messages
     check_new_messages
 
-    # Try to flush queue if terminal is clear (no pending input)
+    # Try to flush queue if terminal is clear (pane not busy)
     # This retries every poll interval until successful
     if [ -s "$QUEUE_FILE" ]; then
-        if ! has_pending_input; then
-            echo "[$(date '+%Y-%m-%d %H:%M:%S')] Terminal clear - flushing queue"
+        if ! is_pane_busy_for_notifications; then
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] Pane idle - flushing queue"
             flush_queue
         else
-            echo "[$(date '+%Y-%m-%d %H:%M:%S')] Queue waiting (user still typing)..."
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] Queue waiting (pane busy)..."
         fi
     fi
 
