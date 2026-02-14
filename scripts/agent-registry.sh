@@ -15,7 +15,13 @@
 set -euo pipefail
 
 # Project root and registry paths
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Resolve real path (symlink-aware)
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "Error: python3 required for path resolution" >&2
+  exit 1
+fi
+SCRIPT_PATH="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "${BASH_SOURCE[0]}")"
+PROJECT_ROOT="$(cd "$(dirname "$SCRIPT_PATH")/.." && pwd)"
 TYPES_FILE="$PROJECT_ROOT/.agent-profiles/types.yaml"
 INSTANCES_DIR="$PROJECT_ROOT/.agent-profiles/instances"
 
