@@ -1,0 +1,8 @@
+{
+  "name": "playwright-grok",
+  "plugin": "playwright",
+  "config": {
+    "storageState": "/Users/james/Projects/AgentCore/.browser-profiles/grok-state.json",
+    "startUrl": "https://x.com/i/grok"
+  }
+}
