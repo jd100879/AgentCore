@@ -6,8 +6,26 @@
 # Monitor should keep running even if curl/jq operations fail
 # set -e
 
+# Resolve real path (symlink-aware)
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "Error: python3 required for path resolution" >&2
+  exit 1
+fi
+SCRIPT_PATH="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+
+# Help message (check before sourcing config to avoid environment validation issues)
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+  echo "Usage: $0 [agent_name] [poll_interval]"
+  echo "Monitor agent mail and send notifications to terminal via tmux"
+  echo ""
+  echo "Arguments:"
+  echo "  agent_name     Name of agent to monitor (default: \$AGENT_NAME from env)"
+  echo "  poll_interval  Seconds between polls (default: 5)"
+  exit 0
+fi
+
 # Source shared project configuration
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib/project-config.sh"
 
 # Mail server configuration (can be overridden via environment variables)

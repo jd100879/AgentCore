@@ -5,9 +5,24 @@
 
 set -e
 
-# Detect agent-flywheel root dynamically (cross-platform)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Resolve real path (symlink-aware)
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "Error: python3 required for path resolution" >&2
+  exit 1
+fi
+SCRIPT_PATH="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
 readonly AGENTCORE_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# Help message
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+  echo "Usage: $0"
+  echo "Interactive Multi-Agent Tmux Session Creator"
+  echo ""
+  echo "Creates a tmux session with Claude and Codex agents with bypass permissions"
+  echo "Supports shared task lists via CLAUDE_CODE_TASK_LIST_ID"
+  exit 0
+fi
 
 # Configuration Constants
 readonly MAX_AGENTS_WARNING=10
