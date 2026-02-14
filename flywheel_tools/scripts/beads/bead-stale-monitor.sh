@@ -280,72 +280,72 @@ monitor_beads() {
     local bead_count
     bead_count=$(echo "$beads_json" | jq -r 'length')
 
+    # Check for stale beads only if there are beads in progress
     if [ "$bead_count" -eq 0 ]; then
         echo "No beads in progress." >&2
-        return 0
-    fi
+    else
+        echo "Found $bead_count beads in progress." >&2
 
-    echo "Found $bead_count beads in progress." >&2
+        local current_epoch
+        current_epoch=$(current_timestamp)
 
-    local current_epoch
-    current_epoch=$(current_timestamp)
+        # Process each bead
+        for i in $(seq 0 $((bead_count - 1))); do
+            local bead_id owner
+            bead_id=$(echo "$beads_json" | jq -r ".[$i].id")
+            owner=$(echo "$beads_json" | jq -r ".[$i].assignee")
 
-    # Process each bead
-    for i in $(seq 0 $((bead_count - 1))); do
-        local bead_id owner
-        bead_id=$(echo "$beads_json" | jq -r ".[$i].id")
-        owner=$(echo "$beads_json" | jq -r ".[$i].assignee")
+            if [ -z "$bead_id" ] || [ "$bead_id" = "null" ]; then
+                continue
+            fi
 
-        if [ -z "$bead_id" ] || [ "$bead_id" = "null" ]; then
-            continue
-        fi
+            # Get latest activity
+            local last_activity
+            last_activity=$(get_latest_activity "$bead_id")
 
-        # Get latest activity
-        local last_activity
-        last_activity=$(get_latest_activity "$bead_id")
+            if [ "$last_activity" -eq 0 ]; then
+                # No activity logged, use bead creation time?
+                echo "No activity logged for $bead_id, skipping." >&2
+                continue
+            fi
 
-        if [ "$last_activity" -eq 0 ]; then
-            # No activity logged, use bead creation time?
-            echo "No activity logged for $bead_id, skipping." >&2
-            continue
-        fi
+            # Calculate inactivity duration
+            local inactive_seconds=$((current_epoch - last_activity))
 
-        # Calculate inactivity duration
-        local inactive_seconds=$((current_epoch - last_activity))
+            # Get last reminder time
+            local last_reminder
+            last_reminder=$(get_last_reminder "$bead_id")
+            local reminder_seconds_ago=$((current_epoch - last_reminder))
 
-        # Get last reminder time
-        local last_reminder
-        last_reminder=$(get_last_reminder "$bead_id")
-        local reminder_seconds_ago=$((current_epoch - last_reminder))
+            # Determine if reminder needed
+            if [ $inactive_seconds -ge $FIRST_REMINDER_THRESHOLD ]; then
+                # Check if we already sent a reminder recently (within threshold)
+                if [ $reminder_seconds_ago -ge $FIRST_REMINDER_THRESHOLD ]; then
+                    # Send reminder
+                    local message
+                    if [ $inactive_seconds -ge $ESCALATION_THRESHOLD ]; then
+                        message="Bead $bead_id inactive for $((inactive_seconds / 60)) minutes. Consider closing or resuming work."
+                    else
+                        message="Still working on $bead_id? Last activity $((inactive_seconds / 60)) minutes ago."
+                    fi
 
-        # Determine if reminder needed
-        if [ $inactive_seconds -ge $FIRST_REMINDER_THRESHOLD ]; then
-            # Check if we already sent a reminder recently (within threshold)
-            if [ $reminder_seconds_ago -ge $FIRST_REMINDER_THRESHOLD ]; then
-                # Send reminder
-                local message
-                if [ $inactive_seconds -ge $ESCALATION_THRESHOLD ]; then
-                    message="Bead $bead_id inactive for $((inactive_seconds / 60)) minutes. Consider closing or resuming work."
+                    echo "Sending reminder for $bead_id (owner: $owner, inactive: ${inactive_seconds}s)" >&2
+                    send_notify "$owner" "$bead_id" "$message"
+
+                    # Log reminder sent
+                    if [ -f "$LOG_SCRIPT" ]; then
+                        "$LOG_SCRIPT" "$bead_id" "reminder_sent" "SystemNotify"
+                    fi
                 else
-                    message="Still working on $bead_id? Last activity $((inactive_seconds / 60)) minutes ago."
-                fi
-
-                echo "Sending reminder for $bead_id (owner: $owner, inactive: ${inactive_seconds}s)" >&2
-                send_notify "$owner" "$bead_id" "$message"
-
-                # Log reminder sent
-                if [ -f "$LOG_SCRIPT" ]; then
-                    "$LOG_SCRIPT" "$bead_id" "reminder_sent" "SystemNotify"
+                    echo "Reminder already sent $reminder_seconds_ago seconds ago for $bead_id" >&2
                 fi
             else
-                echo "Reminder already sent $reminder_seconds_ago seconds ago for $bead_id" >&2
+                echo "Bead $bead_id active ($inactive_seconds seconds ago)" >&2
             fi
-        else
-            echo "Bead $bead_id active ($inactive_seconds seconds ago)" >&2
-        fi
-    done
+        done
+    fi
 
-    # After checking stale beads, check for idle agents
+    # Always check for idle agents, regardless of whether there were stale beads
     check_idle_agents
 }
 
