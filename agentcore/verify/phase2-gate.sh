@@ -7,6 +7,7 @@
 # 2. Symlink integrity (all agentcore/tools/* point to valid targets)
 # 3. Mail pointer exists and is valid
 # 4. No git case collision (capital AgentCore/ vs lowercase agentcore/)
+# 5. Functional smoke tests (tools work via canonical paths from any CWD)
 #
 # Exit codes:
 #   0 - All checks passed
@@ -229,6 +230,73 @@ fi
 echo ""
 
 #
+# Check 5: Functional Smoke Tests
+#
+echo "========================================"
+echo "Check 5: Functional Smoke Tests"
+echo "----------------------------------------"
+echo "Verifying tools work when invoked via canonical paths"
+echo ""
+
+FUNCTIONAL_CHECK_FAILED=0
+
+# Test agent-mail-helper.sh from hostile CWD (/)
+echo "Testing agent-mail-helper.sh from hostile CWD (/)..."
+if (cd / && "$AGENTCORE_ROOT/tools/agent-mail-helper.sh" --help >/dev/null 2>&1); then
+  echo -e "${GREEN}✓${NC} agent-mail-helper.sh works via canonical path from /"
+else
+  echo -e "${RED}✗ FAIL${NC}: agent-mail-helper.sh fails when invoked via canonical path from /"
+  echo "  Command: (cd / && $AGENTCORE_ROOT/tools/agent-mail-helper.sh --help)"
+  echo "  Action: Check script for relative path assumptions"
+  FUNCTIONAL_CHECK_FAILED=1
+fi
+
+# Test agent-registry.sh from hostile CWD (/)
+echo "Testing agent-registry.sh from hostile CWD (/)..."
+if (cd / && "$AGENTCORE_ROOT/tools/agent-registry.sh" list >/dev/null 2>&1); then
+  echo -e "${GREEN}✓${NC} agent-registry.sh works via canonical path from /"
+else
+  echo -e "${RED}✗ FAIL${NC}: agent-registry.sh fails when invoked via canonical path from /"
+  echo "  Command: (cd / && $AGENTCORE_ROOT/tools/agent-registry.sh list)"
+  echo "  Action: Check script for relative path assumptions"
+  FUNCTIONAL_CHECK_FAILED=1
+fi
+
+# Test from repo root
+echo "Testing from repo root..."
+if (cd "$PROJECT_ROOT" && agentcore/tools/agent-mail-helper.sh --help >/dev/null 2>&1); then
+  echo -e "${GREEN}✓${NC} Tools work from repo root"
+else
+  echo -e "${RED}✗ FAIL${NC}: Tools fail from repo root"
+  echo "  Working directory: $PROJECT_ROOT"
+  echo "  Command: agentcore/tools/agent-mail-helper.sh --help"
+  echo "  Action: Check script path resolution"
+  FUNCTIONAL_CHECK_FAILED=1
+fi
+
+# Test from /tmp
+echo "Testing from /tmp..."
+if (cd /tmp && "$AGENTCORE_ROOT/tools/agent-mail-helper.sh" --help >/dev/null 2>&1); then
+  echo -e "${GREEN}✓${NC} Tools work from /tmp"
+else
+  echo -e "${RED}✗ FAIL${NC}: Tools fail from /tmp"
+  echo "  Command: (cd /tmp && $AGENTCORE_ROOT/tools/agent-mail-helper.sh --help)"
+  echo "  Action: Check script for working directory dependencies"
+  FUNCTIONAL_CHECK_FAILED=1
+fi
+
+echo ""
+if [ $FUNCTIONAL_CHECK_FAILED -eq 0 ]; then
+  echo -e "${GREEN}✓ PASS${NC}: Functional smoke tests passed"
+  echo "  Tools work correctly from all tested working directories"
+else
+  echo -e "${RED}✗ FAIL${NC}: One or more functional tests failed"
+  echo "  Tools must work when invoked via canonical paths from any CWD"
+  FAILED=1
+fi
+echo ""
+
+#
 # Final Summary
 #
 echo "========================================"
@@ -244,6 +312,7 @@ if [ $FAILED -eq 0 ]; then
   echo "  - All symlinks in agentcore/tools/ are valid"
   echo "  - Mail pointer exists and is valid"
   echo "  - No git case collision detected"
+  echo "  - Functional smoke tests passed"
   echo ""
   echo "Phase 2 gate: OPEN - Ready to proceed"
   exit 0
