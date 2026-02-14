@@ -169,6 +169,10 @@ _EMFILE_RETRY_TOOLS: frozenset[str] = frozenset(
     }
 )
 
+# System sender for automated notifications
+SYSTEM_SENDER_PRIMARY = "SystemNotify"
+SYSTEM_SENDER_NAMES: frozenset[str] = frozenset({SYSTEM_SENDER_PRIMARY, "System"})
+
 CLUSTER_SETUP = "infrastructure"
 CLUSTER_IDENTITY = "identity"
 CLUSTER_MESSAGING = "messaging"
@@ -2977,6 +2981,23 @@ async def _create_agent_record(
         return agent
 
 
+async def _get_or_create_system_agent(project: Project) -> Agent:
+    """
+    Get or create the reserved System sender for a project.
+    Keeps messages audit-friendly by using a real DB-backed agent instead of a synthetic record.
+    """
+    try:
+        return await _get_agent(project, SYSTEM_SENDER_PRIMARY)
+    except ToolExecutionError:
+        return await _create_agent_record(
+            project=project,
+            name=SYSTEM_SENDER_PRIMARY,
+            program="system",
+            model="system",
+            task_description="Automated system notifications",
+        )
+
+
 async def _get_or_create_agent(
     project: Project,
     name: Optional[str],
@@ -5419,7 +5440,11 @@ def build_mcp_server() -> FastMCP:
                 c.print(Panel(body, title=title, border_style="green"))
             except Exception:
                 pass
-        sender = await _get_agent(project, sender_name)
+        # Use system agent for SystemNotify, otherwise get regular agent
+        if sender_name in SYSTEM_SENDER_NAMES:
+            sender = await _get_or_create_system_agent(project)
+        else:
+            sender = await _get_agent(project, sender_name)
         # Enforce contact policies (per-recipient) with auto-allow heuristics
         settings_local = get_settings()
         if settings_local.contact_enforcement_enabled:
