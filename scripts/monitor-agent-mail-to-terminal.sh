@@ -429,40 +429,43 @@ EOF
         fi
 
         if [ -n "$newest_id" ] && [ -n "$last_seen" ] && [ "$newest_id" -gt "$last_seen" ]; then
-            # DEBUG: Log the check
-            echo "[DEBUG] newest_id=$newest_id, last_seen=$last_seen" >&2
-
             # Update last_seen IMMEDIATELY to prevent duplicate notifications
             # This must happen before sending notifications to avoid race condition
             echo "$newest_id" > "$LAST_MSG_FILE"
 
-            # DEBUG: Confirm file updated
-            echo "[DEBUG] Updated LAST_MSG_FILE to: $(cat "$LAST_MSG_FILE")" >&2
+            # Count new messages
+            local new_count=$((newest_id - last_seen))
 
-            # Format and send new messages to terminal
+            # Format notification message
             local notification=$(echo "$response" | jq -r --arg last "$last_seen" '
                 .result.structuredContent.result[] |
                 select(.id > ($last | tonumber)) |
                 "📨 NEW MAIL from \(.from)"
             ')
 
-            # DEBUG: Show what notifications will be sent
-            echo "[DEBUG] Notification count: $(echo "$notification" | wc -l)" >&2
-            echo "[DEBUG] Notifications: $notification" >&2
-
             if [ -n "$notification" ]; then
-                # Print to this script's output
+                # Print to this script's output for monitoring visibility
                 echo ""
                 echo "╔════════════════════════════════════════════╗"
                 echo "║  NEW MESSAGE RECEIVED                      ║"
                 echo "╚════════════════════════════════════════════╝"
                 echo "$notification"
+                echo ""
+                echo "[$(date '+%Y-%m-%d %H:%M:%S')] Sending SystemNotify to $AGENT_NAME (${new_count} new message(s))"
 
-                # Send visual notification to the terminal pane
-                echo "$notification" | while IFS= read -r line; do
-                    echo "[DEBUG] Sending line: $line" >&2
-                    send_to_terminal "$line"
-                done
+                # Send SystemNotify message instead of tmux injection
+                "$SCRIPT_DIR/agent-mail-helper.sh" send \
+                    --from SystemNotify \
+                    --to "$AGENT_NAME" \
+                    --subject "[System] 📨 New mail arrived" \
+                    --body "You have ${new_count} new message(s). Check your inbox with:
+
+\`\$PROJECT_ROOT/scripts/agent-mail-helper.sh inbox\`
+
+$notification" \
+                    --importance normal 2>&1 | grep -v "^Sending message" || true
+
+                echo "[$(date '+%Y-%m-%d %H:%M:%S')] SystemNotify sent successfully"
             fi
         fi
     fi
