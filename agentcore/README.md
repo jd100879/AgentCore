@@ -124,15 +124,32 @@ This directory is being established through a careful **3-phase migration**:
 
 **Rollback**: Delete `agentcore/` directory (nothing else affected)
 
-### Phase 2: Make Authoritative (FUTURE)
-**Status**: Not started
-**Trigger**: After Phase 1 proven stable for multiple work sessions
+### Phase 2: Canonical Interface — COMPLETE
+**Status**: ✅ Complete (2026-02-13)
 
-- Move coordination files **into agentcore**
-- Flip symlinks **inward** (old paths point to agentcore)
-- Scripts prefer `AGENTCORE_ROOT` paths
-- Rollback script ready before starting
-- **Do only after Phase 1 stability confirmed**
+**Accomplishments:**
+- Established agentcore/tools/ as canonical coordination interface
+- Applied symlink-safe path resolution patches to coordination scripts
+- Implemented functional gate validation (runtime behavior, not just structure)
+- Verified canonical invocation works from arbitrary working directories
+
+**Remediation:**
+- Scripts patched to resolve real filesystem paths (Python-based realpath)
+- Gate hardened with functional tests from hostile CWD
+- Regression verification passed
+
+**Evidence:**
+- Gate log: `.flywheel/logs/gates/phase2-20260213-1905.log`
+- All canonical paths functional from any CWD
+- Phase 2 gate: OPEN - Ready to proceed
+
+**Technical Details:**
+- Modified scripts: `agent-mail-helper.sh`, `agent-registry.sh`
+- Added python3-based realpath resolution for symlink-safe path handling
+- Gate validates: wrapper completeness, symlink integrity, mail pointer, case collision, functional smoke tests
+- Tests from multiple CWDs: /, /tmp, repo root
+
+**Next**: Phase 3 planning (interface strategy decisions, potential relocation)
 
 ### Phase 3: Complete Cleanup (FUTURE)
 **Status**: Not started
