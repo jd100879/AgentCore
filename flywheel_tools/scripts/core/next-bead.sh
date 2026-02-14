@@ -18,12 +18,20 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOCK_FILE="/tmp/next-bead-${TMUX_PANE:-$$}.lock"
 if [ -f "$LOCK_FILE" ]; then
     lock_age=$(( $(date +%s) - $(stat -f %m "$LOCK_FILE" 2>/dev/null || echo 0) ))
-    if [ "$lock_age" -lt 120 ]; then
+    # Auto-cleanup stale locks (max runtime + buffer = 240s)
+    if [ "$lock_age" -gt 240 ]; then
+        echo "Cleaning stale lock (age: ${lock_age}s)"
+        rm -f "$LOCK_FILE"
+    elif [ "$lock_age" -lt 120 ]; then
         echo "Transition already in progress (lock age: ${lock_age}s). Skipping."
         exit 0
     fi
 fi
 touch "$LOCK_FILE"
+
+# Set trap in foreground to ensure cleanup on ANY exit path
+# This is belt-and-suspenders with the background process trap
+trap "rm -f '$LOCK_FILE'" EXIT
 
 # Get agent identity for tracking file
 AGENT_NAME=$("$SCRIPT_DIR/agent-mail-helper.sh" whoami 2>/dev/null || echo "unknown")
