@@ -111,6 +111,163 @@ get_last_reminder() {
     iso_to_epoch "$latest_iso"
 }
 
+# Function to get last idle-agent notification timestamp for an agent
+get_last_idle_notification() {
+    local agent="$1"
+
+    local latest_iso
+    latest_iso=$(jq -c --arg ag "$agent" \
+        'select(.agent == $ag) |
+         select(.action == "idle_notification_sent") |
+         .timestamp' "$LOG_FILE" 2>/dev/null | tail -1)
+
+    if [ -z "$latest_iso" ] || [ "$latest_iso" = "null" ]; then
+        echo "0"
+        return
+    fi
+
+    # Remove quotes
+    latest_iso="${latest_iso%\"}"
+    latest_iso="${latest_iso#\"}"
+    iso_to_epoch "$latest_iso"
+}
+
+# Function to get active agents from tmux panes (current session only)
+get_active_agents() {
+    # Detect current tmux session
+    local current_session
+    if [ -n "${TMUX:-}" ]; then
+        current_session=$(tmux display-message -p '#{session_name}' 2>/dev/null || echo "")
+    else
+        current_session=""
+    fi
+
+    # If we can detect the session, filter for that session only
+    # Otherwise fall back to all sessions (for manual runs outside tmux)
+    if [ -n "$current_session" ]; then
+        tmux list-panes -t "$current_session" -F "#{@agent_name}" 2>/dev/null | grep -v '^$' | sort -u
+    else
+        # Fallback: try to guess session from project directory
+        # Look for sessions with panes in PROJECT_DIR
+        local matching_agents=$(tmux list-panes -a -F "#{pane_current_path} #{@agent_name}" 2>/dev/null | \
+            awk -v project="$PROJECT_DIR" '$1 ~ project && $2 != "" {print $2}' | sort -u)
+
+        if [ -n "$matching_agents" ]; then
+            echo "$matching_agents"
+        else
+            # Last resort: all agents (backward compat)
+            tmux list-panes -a -F "#{@agent_name}" 2>/dev/null | grep -v '^$' | sort -u
+        fi
+    fi
+}
+
+# Function to check if agent is idle (no active bead)
+is_agent_idle() {
+    local agent="$1"
+    local tracking_file="/tmp/agent-bead-${agent}.txt"
+
+    # Agent is idle if:
+    # 1. No tracking file exists, OR
+    # 2. Tracking file exists but is empty or contains no valid bead ID
+    if [ ! -f "$tracking_file" ]; then
+        return 0  # Idle
+    fi
+
+    local bead_id
+    bead_id=$(cat "$tracking_file" 2>/dev/null | tr -d '[:space:]')
+
+    if [ -z "$bead_id" ] || [ "$bead_id" = "null" ]; then
+        return 0  # Idle
+    fi
+
+    return 1  # Busy
+}
+
+# Function to send idle-agent notification
+send_idle_agent_notify() {
+    local agent="$1"
+    local available_count="$2"
+
+    local subject="[System] 🎯 Beads available for work"
+    local message="System notice: Work is available!
+
+Available beads: $available_count
+Status: You are currently idle
+
+Action: Run 'bv --robot-next' to claim the next bead
+
+Time: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+Project: $PROJECT_KEY"
+
+    # Send via agent mail using SystemNotify sender identity
+    MAIL_SENDER_NAME="SystemNotify" "$SCRIPT_DIR/agent-mail-helper.sh" send "$agent" "$subject" "$message" >/dev/null 2>&1 || true
+    echo "Sent idle-agent notification to $agent ($available_count beads available)" >&2
+}
+
+# Function to check for idle agents and notify if work available
+check_idle_agents() {
+    echo "Checking for idle agents..." >&2
+
+    # Get all open beads (available work)
+    local open_beads_json
+    open_beads_json=$(br list --status open --json 2>/dev/null || echo "[]")
+    local open_count
+    open_count=$(echo "$open_beads_json" | jq -r 'length')
+
+    if [ "$open_count" -eq 0 ]; then
+        echo "No open beads available, skipping idle agent notifications" >&2
+        return 0
+    fi
+
+    echo "Found $open_count open beads available for work" >&2
+
+    # Get active agents
+    local agents
+    agents=$(get_active_agents)
+
+    if [ -z "$agents" ]; then
+        echo "No active agents found" >&2
+        return 0
+    fi
+
+    local current_epoch
+    current_epoch=$(current_timestamp)
+
+    # Check each agent
+    while IFS= read -r agent; do
+        [ -z "$agent" ] && continue
+
+        # Skip if agent is busy
+        if ! is_agent_idle "$agent"; then
+            echo "Agent $agent is busy (has active bead)" >&2
+            continue
+        fi
+
+        # Agent is idle - check if we already notified recently
+        local last_notification
+        last_notification=$(get_last_idle_notification "$agent")
+        local notification_seconds_ago=$((current_epoch - last_notification))
+
+        # Don't spam - wait at least 5 minutes between idle notifications
+        local IDLE_NOTIFICATION_COOLDOWN=300  # 5 minutes
+
+        if [ "$last_notification" -ne 0 ] && [ $notification_seconds_ago -lt $IDLE_NOTIFICATION_COOLDOWN ]; then
+            echo "Idle notification already sent to $agent ${notification_seconds_ago}s ago (cooldown: ${IDLE_NOTIFICATION_COOLDOWN}s)" >&2
+            continue
+        fi
+
+        # Send notification
+        echo "Agent $agent is idle and beads are available, sending notification" >&2
+        send_idle_agent_notify "$agent" "$open_count"
+
+        # Log notification sent
+        if [ -f "$LOG_SCRIPT" ]; then
+            # Log with agent field instead of bead_id for idle notifications
+            echo "{\"timestamp\":\"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\",\"agent\":\"$agent\",\"action\":\"idle_notification_sent\",\"actor\":\"SystemNotify\"}" >> "$LOG_FILE"
+        fi
+    done <<< "$agents"
+}
+
 # Main monitoring function
 monitor_beads() {
     echo "Checking for stale beads (threshold: ${FIRST_REMINDER_THRESHOLD}s)..." >&2
@@ -187,6 +344,9 @@ monitor_beads() {
             echo "Bead $bead_id active ($inactive_seconds seconds ago)" >&2
         fi
     done
+
+    # After checking stale beads, check for idle agents
+    check_idle_agents
 }
 
 # Parse command line arguments
