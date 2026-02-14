@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Phase 2 Verification Gate
-# Validates Phase 2 completeness with git-aware checks
+# Phase 2 Verification Gate - PRODUCTION-GRADE TESTING
+# Validates Phase 2 completeness with comprehensive checks
 #
 # This script verifies:
 # 1. Wrapper completeness (all coordination scripts have wrappers)
-# 2. Symlink integrity (all agentcore/tools/* point to valid targets)
+# 2. Symlink integrity + executability (all agentcore/tools/* point to valid, executable targets)
 # 3. Mail pointer exists and is valid
 # 4. No git case collision (capital AgentCore/ vs lowercase agentcore/)
-# 5. Functional smoke tests (tools work via canonical paths from any CWD)
+# 5. Comprehensive functional tests (ALL 7 tools work from 4 CWDs including deep nested)
 #
 # Exit codes:
 #   0 - All checks passed
@@ -28,10 +28,10 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 echo "========================================"
-echo "Phase 2 Verification Gate"
+echo "Phase 2 Verification Gate (PRODUCTION)"
 echo "========================================"
 echo ""
-echo "Verifying Phase 2 infrastructure completeness..."
+echo "Verifying Phase 2 infrastructure with production-grade testing..."
 echo "Root: $AGENTCORE_ROOT"
 echo ""
 
@@ -101,12 +101,12 @@ fi
 echo ""
 
 #
-# Check 2: Symlink integrity
+# Check 2: Symlink integrity + executability
 #
 echo "========================================"
-echo "Check 2: Symlink Integrity"
+echo "Check 2: Symlink Integrity + Executability"
 echo "----------------------------------------"
-echo "Verifying all agentcore/tools/* symlinks are valid"
+echo "Verifying all agentcore/tools/* symlinks are valid and executable"
 echo ""
 
 SYMLINK_CHECK_FAILED=0
@@ -121,8 +121,12 @@ if [ -d "$AGENTCORE_ROOT/tools" ]; then
         echo "  Points to: $target"
         echo "  Action: Fix or remove broken symlink"
         SYMLINK_CHECK_FAILED=1
+      elif [ ! -x "$link_path" ]; then
+        echo -e "${RED}✗ FAIL${NC}: Not executable: tools/$link_name"
+        echo "  Action: chmod +x scripts/$link_name"
+        SYMLINK_CHECK_FAILED=1
       else
-        echo -e "${GREEN}✓${NC} tools/$link_name"
+        echo -e "${GREEN}✓${NC} tools/$link_name (executable)"
       fi
     fi
   done
@@ -134,9 +138,9 @@ fi
 
 echo ""
 if [ $SYMLINK_CHECK_FAILED -eq 0 ]; then
-  echo -e "${GREEN}✓ PASS${NC}: All symlinks in agentcore/tools/ are valid"
+  echo -e "${GREEN}✓ PASS${NC}: All symlinks in agentcore/tools/ are valid and executable"
 else
-  echo -e "${RED}✗ FAIL${NC}: One or more symlinks are broken"
+  echo -e "${RED}✗ FAIL${NC}: One or more symlinks are broken or not executable"
   FAILED=1
 fi
 echo ""
@@ -230,65 +234,88 @@ fi
 echo ""
 
 #
-# Check 5: Functional Smoke Tests
+# Check 5: Comprehensive Functional Smoke Tests
 #
 echo "========================================"
-echo "Check 5: Functional Smoke Tests"
+echo "Check 5: Comprehensive Functional Smoke Tests"
 echo "----------------------------------------"
-echo "Verifying tools work when invoked via canonical paths"
+echo "Testing ALL coordination tools from multiple CWDs (including deep nested)"
 echo ""
 
 FUNCTIONAL_CHECK_FAILED=0
 
-# Test agent-mail-helper.sh from hostile CWD (/)
-echo "Testing agent-mail-helper.sh from hostile CWD (/)..."
-if (cd / && "$AGENTCORE_ROOT/tools/agent-mail-helper.sh" --help >/dev/null 2>&1); then
-  echo -e "${GREEN}✓${NC} agent-mail-helper.sh works via canonical path from /"
-else
-  echo -e "${RED}✗ FAIL${NC}: agent-mail-helper.sh fails when invoked via canonical path from /"
-  echo "  Command: (cd / && $AGENTCORE_ROOT/tools/agent-mail-helper.sh --help)"
-  echo "  Action: Check script for relative path assumptions"
-  FUNCTIONAL_CHECK_FAILED=1
-fi
+# Define test commands for each coordination script
+declare -A TOOL_TEST_COMMANDS
+TOOL_TEST_COMMANDS["agent-control.sh"]="--help"
+TOOL_TEST_COMMANDS["agent-mail-helper.sh"]="--help"
+TOOL_TEST_COMMANDS["agent-registry.sh"]="list"
+TOOL_TEST_COMMANDS["auto-register-agent.sh"]="--help"
+TOOL_TEST_COMMANDS["mail-monitor-ctl.sh"]="--help"
+TOOL_TEST_COMMANDS["monitor-agent-mail-to-terminal.sh"]="--help"
+TOOL_TEST_COMMANDS["start-multi-agent-session.sh"]="--help"
 
-# Test agent-registry.sh from hostile CWD (/)
-echo "Testing agent-registry.sh from hostile CWD (/)..."
-if (cd / && "$AGENTCORE_ROOT/tools/agent-registry.sh" list >/dev/null 2>&1); then
-  echo -e "${GREEN}✓${NC} agent-registry.sh works via canonical path from /"
-else
-  echo -e "${RED}✗ FAIL${NC}: agent-registry.sh fails when invoked via canonical path from /"
-  echo "  Command: (cd / && $AGENTCORE_ROOT/tools/agent-registry.sh list)"
-  echo "  Action: Check script for relative path assumptions"
-  FUNCTIONAL_CHECK_FAILED=1
-fi
+# Test CWDs
+TEST_CWDS=(
+  "/"                           # Hostile: root
+  "/tmp"                        # Hostile: temp dir
+  "$PROJECT_ROOT"               # Friendly: repo root
+)
 
-# Test from repo root
-echo "Testing from repo root..."
-if (cd "$PROJECT_ROOT" && agentcore/tools/agent-mail-helper.sh --help >/dev/null 2>&1); then
-  echo -e "${GREEN}✓${NC} Tools work from repo root"
-else
-  echo -e "${RED}✗ FAIL${NC}: Tools fail from repo root"
-  echo "  Working directory: $PROJECT_ROOT"
-  echo "  Command: agentcore/tools/agent-mail-helper.sh --help"
-  echo "  Action: Check script path resolution"
-  FUNCTIONAL_CHECK_FAILED=1
-fi
+# Create deep nested CWD for testing
+DEEP_NESTED_DIR="/tmp/phase2-test/a/b/c/d/e"
+mkdir -p "$DEEP_NESTED_DIR"
+TEST_CWDS+=("$DEEP_NESTED_DIR")
 
-# Test from /tmp
-echo "Testing from /tmp..."
-if (cd /tmp && "$AGENTCORE_ROOT/tools/agent-mail-helper.sh" --help >/dev/null 2>&1); then
-  echo -e "${GREEN}✓${NC} Tools work from /tmp"
-else
-  echo -e "${RED}✗ FAIL${NC}: Tools fail from /tmp"
-  echo "  Command: (cd /tmp && $AGENTCORE_ROOT/tools/agent-mail-helper.sh --help)"
-  echo "  Action: Check script for working directory dependencies"
-  FUNCTIONAL_CHECK_FAILED=1
-fi
+echo "Testing from 4 different working directories:"
+echo "  - / (root)"
+echo "  - /tmp (temp)"
+echo "  - $PROJECT_ROOT (repo root)"
+echo "  - $DEEP_NESTED_DIR (deep nested)"
+echo ""
+
+# Test each tool from each CWD
+for script in "${COORDINATION_SCRIPTS[@]}"; do
+  test_cmd="${TOOL_TEST_COMMANDS[$script]}"
+  tool_failed=0
+
+  echo "Testing $script..."
+
+  for cwd in "${TEST_CWDS[@]}"; do
+    cwd_label="$cwd"
+    if [ "$cwd" = "$PROJECT_ROOT" ]; then
+      cwd_label="repo-root"
+    elif [ "$cwd" = "$DEEP_NESTED_DIR" ]; then
+      cwd_label="deep-nested"
+    fi
+
+    # Capture exit code properly
+    (cd "$cwd" && "$AGENTCORE_ROOT/tools/$script" $test_cmd >/dev/null 2>&1)
+    exit_code=$?
+
+    if [ $exit_code -eq 0 ]; then
+      echo -e "  ${GREEN}✓${NC} from $cwd_label"
+    else
+      echo -e "  ${RED}✗ FAIL${NC}: from $cwd_label (exit code: $exit_code)"
+      echo "    Command: (cd $cwd && $AGENTCORE_ROOT/tools/$script $test_cmd)"
+      tool_failed=1
+      FUNCTIONAL_CHECK_FAILED=1
+    fi
+  done
+
+  if [ $tool_failed -eq 0 ]; then
+    echo -e "${GREEN}✓${NC} $script works from all CWDs"
+  fi
+  echo ""
+done
+
+# Cleanup deep nested test directory
+rm -rf /tmp/phase2-test
 
 echo ""
 if [ $FUNCTIONAL_CHECK_FAILED -eq 0 ]; then
-  echo -e "${GREEN}✓ PASS${NC}: Functional smoke tests passed"
-  echo "  Tools work correctly from all tested working directories"
+  echo -e "${GREEN}✓ PASS${NC}: Comprehensive functional smoke tests passed"
+  echo "  All 7 coordination tools work from all 4 tested CWDs"
+  echo "  Including deep nested path: $DEEP_NESTED_DIR"
 else
   echo -e "${RED}✗ FAIL${NC}: One or more functional tests failed"
   echo "  Tools must work when invoked via canonical paths from any CWD"
@@ -300,19 +327,20 @@ echo ""
 # Final Summary
 #
 echo "========================================"
-echo "Phase 2 Verification Summary"
+echo "Phase 2 Verification Summary (PRODUCTION)"
 echo "========================================"
 echo ""
 
 if [ $FAILED -eq 0 ]; then
   echo -e "${GREEN}✓ All Phase 2 verification checks PASSED${NC}"
   echo ""
-  echo "Phase 2 infrastructure is complete:"
-  echo "  - All coordination scripts have wrappers"
-  echo "  - All symlinks in agentcore/tools/ are valid"
+  echo "Phase 2 infrastructure is production-ready:"
+  echo "  - All coordination scripts have valid wrappers"
+  echo "  - All symlinks are valid and executable"
   echo "  - Mail pointer exists and is valid"
   echo "  - No git case collision detected"
-  echo "  - Functional smoke tests passed"
+  echo "  - All 7 tools tested from 4 CWDs (including deep nested)"
+  echo "  - Production-grade test coverage achieved"
   echo ""
   echo "Phase 2 gate: OPEN - Ready to proceed"
   exit 0
