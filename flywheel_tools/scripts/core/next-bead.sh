@@ -159,6 +159,9 @@ wait_for_mail_queue_empty() {
 
 # Background: interrupt agent, wait for idle, send /clear, then send new bead assignment
 (
+    # Ensure lock cleanup on exit (success or failure)
+    trap "rm -f '$LOCK_FILE'" EXIT
+
     # Interrupt the agent if it's still working (Escape stops current operation)
     "$SCRIPT_DIR/terminal-inject.sh" --keys "Escape"
     sleep 2
