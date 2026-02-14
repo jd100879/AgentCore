@@ -1,0 +1,50 @@
+# Test Agent Type Registry
+# Minimal test data for registry integration tests
+#
+# This file is used by test-registry-ops.sh to validate that:
+# - Agent types are parsed correctly
+# - All operations work from any CWD
+# - YAML schema is stable
+
+agent_types:
+  # Minimal test type
+  - name: test-minimal
+    description: Minimal test agent with few capabilities
+    capabilities:
+      - testing
+    capacity_limit: 0
+
+  # Feature-rich test type
+  - name: test-full
+    description: Full-featured test agent with many capabilities
+    capabilities:
+      - testing
+      - debugging
+      - documentation
+      - bash
+      - git
+    capacity_limit: 5
+    constraints_template: |
+      TYPE: test-full
+
+      CONSTRAINTS:
+      - Test constraint 1
+      - Test constraint 2
+
+      ACCEPTANCE CRITERIA:
+      - Test passes
+      - No errors
+
+  # Edge case: type with special characters
+  - name: test-edge-case
+    description: Edge case agent with special chars in description !@#$%
+    capabilities:
+      - edge-testing
+      - validation
+    capacity_limit: 1
+
+  # Empty capabilities (edge case)
+  - name: test-no-caps
+    description: Agent with no capabilities (edge case)
+    capabilities: []
+    capacity_limit: 0
