@@ -293,7 +293,7 @@ monitor_beads() {
         for i in $(seq 0 $((bead_count - 1))); do
             local bead_id owner
             bead_id=$(echo "$beads_json" | jq -r ".[$i].id")
-            owner=$(echo "$beads_json" | jq -r ".[$i].assignee")
+            owner=$(echo "$beads_json" | jq -r ".[$i].created_by")
 
             if [ -z "$bead_id" ] || [ "$bead_id" = "null" ]; then
                 continue
