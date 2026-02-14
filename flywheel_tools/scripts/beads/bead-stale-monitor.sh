@@ -200,7 +200,7 @@ Time: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 Project: $PROJECT_KEY"
 
     # Send via agent mail using SystemNotify sender identity
-    MAIL_SENDER_NAME="SystemNotify" "$SCRIPT_DIR/agent-mail-helper.sh" send "$agent" "$subject" "$message" >/dev/null 2>&1 || true
+    MAIL_SENDER_NAME="SystemNotify" "$PROJECT_ROOT/scripts/agent-mail-helper.sh" send "$agent" "$subject" "$message"
     echo "Sent idle-agent notification to $agent ($available_count beads available)" >&2
 }
 
