@@ -88,7 +88,7 @@ install_scripts() {
     
     log_info "Installing scripts using $method..."
     
-    local categories=("core" "hooks" "beads" "terminal" "fleet" "monitoring" "dev" "adapters" "lib")
+    local categories=("core" "hooks" "beads" "terminal" "fleet" "monitoring" "dev" "adapters" "lib" "chatgpt")
     
     for category in "${categories[@]}"; do
         local src_dir="$FLYWHEEL_ROOT/scripts/$category"
@@ -116,7 +116,7 @@ install_scripts() {
             fi
             
             log_info "Installed $script_name"
-        done < <(find "$src_dir" -name "*.sh" -type f -print0)
+        done < <(find "$src_dir" \( -name "*.sh" -o -name "*.mjs" \) -type f -print0)
     done
 }
 

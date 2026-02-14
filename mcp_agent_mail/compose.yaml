@@ -1,6 +1,7 @@
 services:
   agent-mail:
     build: .
+    restart: unless-stopped
     environment:
       HTTP_HOST: "0.0.0.0"
       STORAGE_ROOT: "/data/mailbox"
