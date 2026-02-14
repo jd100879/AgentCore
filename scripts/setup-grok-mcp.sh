@@ -21,10 +21,11 @@ echo "✓ Storage state exists"
 
 # Add the MCP server
 echo "Adding playwright-grok MCP server..."
+# Note: --start-url is NOT supported by @playwright/mcp@latest
+# Navigation to Grok must be done manually after browser opens
 claude mcp add --scope local playwright-grok -- \
     npx -y @playwright/mcp@latest --isolated \
-    --storage-state "$STORAGE_STATE" \
-    --start-url "$START_URL"
+    --storage-state "$STORAGE_STATE"
 
 echo ""
 echo "✅ Grok MCP server added successfully!"
