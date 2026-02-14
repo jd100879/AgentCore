@@ -82,6 +82,11 @@ from .utils import (
     validate_agent_name_format,
     validate_thread_id_format,
 )
+from .agents import (
+    SYSTEM_SENDER_NAMES,
+    SYSTEM_SENDER_PRIMARY,
+    _get_or_create_system_agent,
+)
 
 PathSpec: Any
 try:
@@ -168,10 +173,6 @@ _EMFILE_RETRY_TOOLS: frozenset[str] = frozenset(
         "whois",
     }
 )
-
-# System sender for automated notifications
-SYSTEM_SENDER_PRIMARY = "SystemNotify"
-SYSTEM_SENDER_NAMES: frozenset[str] = frozenset({SYSTEM_SENDER_PRIMARY, "System"})
 
 CLUSTER_SETUP = "infrastructure"
 CLUSTER_IDENTITY = "identity"
@@ -2979,23 +2980,6 @@ async def _create_agent_record(
         await session.commit()
         await session.refresh(agent)
         return agent
-
-
-async def _get_or_create_system_agent(project: Project) -> Agent:
-    """
-    Get or create the reserved System sender for a project.
-    Keeps messages audit-friendly by using a real DB-backed agent instead of a synthetic record.
-    """
-    try:
-        return await _get_agent(project, SYSTEM_SENDER_PRIMARY)
-    except ToolExecutionError:
-        return await _create_agent_record(
-            project=project,
-            name=SYSTEM_SENDER_PRIMARY,
-            program="system",
-            model="system",
-            task_description="Automated system notifications",
-        )
 
 
 async def _get_or_create_agent(
