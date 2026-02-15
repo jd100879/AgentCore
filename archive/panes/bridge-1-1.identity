@@ -1,0 +1,6 @@
+{
+  "pane": "bridge:1.1",
+  "name": "ChatGPT Bridge",
+  "type": "bash-bridge",
+  "agent_mail_name": "RainyMarsh"
+}
