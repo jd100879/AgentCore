@@ -130,7 +130,7 @@ ensure_supervisord() {
 # Ensure orchestrator agent is running in tmux
 ensure_orchestrator() {
     local SESSION_NAME="${1:-agentcore}"  # Default to agentcore session
-    local ORCHESTRATOR_SCRIPT="$PROJECT_ROOT/flywheel_tools/scripts/fleet/start-orchestrator.sh"
+    local ORCHESTRATOR_SCRIPT="$PROJECT_ROOT/scripts/start-orchestrator.sh"
 
     # Check if orchestrator script exists
     if [ ! -f "$ORCHESTRATOR_SCRIPT" ]; then
@@ -153,14 +153,14 @@ ensure_orchestrator() {
     tmux new-window -t "$SESSION_NAME" -n "orchestrator" -c "$PROJECT_ROOT" \
         "$ORCHESTRATOR_SCRIPT" 2>/dev/null || true
 
-    # Wait a moment for orchestrator to register
+    # Wait a moment for orchestrator to start
     sleep 2
 
-    # Verify it registered (check for orchestrator-related description)
-    if "$SCRIPT_DIR/agent-mail-helper.sh" list --active 2>/dev/null | grep -q "Orchestrator"; then
+    # Verify it started (check if window still exists with process running)
+    if tmux list-windows -t "$SESSION_NAME" 2>/dev/null | grep -q "orchestrator"; then
         echo -e "${GREEN}✓ Orchestrator running in tmux window${NC}"
     else
-        echo -e "${YELLOW}⚠️  Orchestrator window created but may not have registered${NC}" >&2
+        echo -e "${YELLOW}⚠️  Orchestrator window may not have started${NC}" >&2
     fi
 
     return 0
