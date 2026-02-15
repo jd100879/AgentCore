@@ -79,6 +79,93 @@ ensure_disk_monitor() {
 
     return 0
 }
+
+# Ensure supervisord is running in tmux (foreground mode)
+ensure_supervisord() {
+    local SESSION_NAME="${1:-agentcore}"  # Default to agentcore session
+    local SOCKET_FILE="$PROJECT_ROOT/tmp/supervisor.sock"
+    local CONFIG_FILE="$PROJECT_ROOT/config/supervisord.conf"
+
+    # Check if config file exists
+    if [ ! -f "$CONFIG_FILE" ]; then
+        return 0  # Skip if no supervisord config
+    fi
+
+    # Check if supervisord is already running
+    if [ -S "$SOCKET_FILE" ]; then
+        if supervisorctl -c "$CONFIG_FILE" status >/dev/null 2>&1; then
+            return 0  # Already running
+        fi
+    fi
+
+    # Check if we're in a tmux session
+    if [ -z "${TMUX:-}" ]; then
+        echo -e "${YELLOW}⚠️  Not in tmux session, skipping supervisord${NC}" >&2
+        return 0
+    fi
+
+    # Check if supervisord window already exists
+    if tmux list-windows -t "$SESSION_NAME" 2>/dev/null | grep -q "supervisord"; then
+        return 0  # Window already exists
+    fi
+
+    # Create supervisord window and start in foreground mode
+    echo -e "${CYAN}Starting supervisord in tmux...${NC}"
+    tmux new-window -t "$SESSION_NAME" -n "supervisord" -c "$PROJECT_ROOT" \
+        "supervisord -c config/supervisord.conf -n" 2>/dev/null || true
+
+    # Wait a moment for supervisord to start
+    sleep 2
+
+    # Verify it started
+    if [ -S "$SOCKET_FILE" ]; then
+        echo -e "${GREEN}✓ Supervisord running in tmux window${NC}"
+    else
+        echo -e "${YELLOW}⚠️  Supervisord may not have started${NC}" >&2
+    fi
+
+    return 0
+}
+
+# Ensure orchestrator agent is running in tmux
+ensure_orchestrator() {
+    local SESSION_NAME="${1:-agentcore}"  # Default to agentcore session
+    local ORCHESTRATOR_SCRIPT="$PROJECT_ROOT/flywheel_tools/scripts/fleet/start-orchestrator.sh"
+
+    # Check if orchestrator script exists
+    if [ ! -f "$ORCHESTRATOR_SCRIPT" ]; then
+        return 0  # Skip if no orchestrator script
+    fi
+
+    # Check if we're in a tmux session
+    if [ -z "${TMUX:-}" ]; then
+        echo -e "${YELLOW}⚠️  Not in tmux session, skipping orchestrator${NC}" >&2
+        return 0
+    fi
+
+    # Check if orchestrator window already exists
+    if tmux list-windows -t "$SESSION_NAME" 2>/dev/null | grep -q "orchestrator"; then
+        return 0  # Window already exists
+    fi
+
+    # Create orchestrator window and start
+    echo -e "${CYAN}Starting orchestrator in tmux...${NC}"
+    tmux new-window -t "$SESSION_NAME" -n "orchestrator" -c "$PROJECT_ROOT" \
+        "$ORCHESTRATOR_SCRIPT" 2>/dev/null || true
+
+    # Wait a moment for orchestrator to register
+    sleep 2
+
+    # Verify it registered (check for orchestrator-related description)
+    if "$SCRIPT_DIR/agent-mail-helper.sh" list --active 2>/dev/null | grep -q "Orchestrator"; then
+        echo -e "${GREEN}✓ Orchestrator running in tmux window${NC}"
+    else
+        echo -e "${YELLOW}⚠️  Orchestrator window created but may not have registered${NC}" >&2
+    fi
+
+    return 0
+}
+
 # Check if fzf is installed
 check_fzf() {
     if ! command -v fzf &> /dev/null; then
@@ -190,6 +277,8 @@ resurrect_session() {
         # Ensure mail server is running for agent registration
         ensure_mail_server
         ensure_disk_monitor
+        ensure_supervisord "$session_name"
+        ensure_orchestrator "$session_name"
         # Sync beads workflow to the project
         if [ -n "$project_path" ] && [ -d "$project_path" ]; then
             "$SCRIPT_DIR/sync-beads-to-project.sh" "$project_path" 2>/dev/null || true
@@ -739,7 +828,9 @@ attach_sessions() {
 
     # Ensure mail server is running for agent registration
     ensure_mail_server
-        ensure_disk_monitor
+    ensure_disk_monitor
+    ensure_supervisord "$(tmux display-message -p "#{session_name}" 2>/dev/null || echo "agentcore")"
+    ensure_orchestrator "$(tmux display-message -p "#{session_name}" 2>/dev/null || echo "agentcore")"
 
     # Sync beads workflow to each session's project
     echo ""
@@ -973,7 +1064,9 @@ smart_start() {
 
     # Ensure mail server is running for agent registration
     ensure_mail_server
-        ensure_disk_monitor
+    ensure_disk_monitor
+    ensure_supervisord "$session_name"
+    ensure_orchestrator "$session_name"
 
     # Step 2: Analyze bead queue for the selected project
     echo -e "${CYAN}Analyzing bead queue...${NC}"
