@@ -59,6 +59,94 @@ cat tmp/batch-response.json
 
 **Full browser worker documentation:** See `.flywheel/browser-worker-instructions.md`
 
+### 1.5. Quick Research with Grok
+
+**When to use Grok vs ChatGPT:**
+
+Use **ChatGPT** (batch-plan.mjs) for:
+- Creating detailed execution plans for beads
+- Breaking down complex features into steps
+- Architectural decisions requiring deep analysis
+- Iterative planning with multiple rounds
+- Large context (multiple beads, files, dependencies)
+
+Use **Grok** (ask-grok.mjs) for:
+- Quick factual lookups ("What is X?")
+- Technology comparisons ("tmux vs screen?")
+- Best practice questions ("How to structure Y?")
+- Research before deep-dive planning
+- When you need a fast answer to keep moving
+
+**Grok query syntax:**
+
+```bash
+# Basic query
+node scripts/ask-grok.mjs \
+  --question "What is tmux?" \
+  --out tmp/grok-response.json
+
+# Read response
+jq -r '.answer' tmp/grok-response.json
+```
+
+**Example research workflow:**
+
+```bash
+# Quick research before planning
+node scripts/ask-grok.mjs \
+  --question "What are the pros and cons of using Redis vs Memcached for session storage?" \
+  --out tmp/cache-research.json
+
+# Review findings
+cat tmp/cache-research.json
+
+# If you need deeper analysis → use ChatGPT batch-plan.mjs
+# If answer is sufficient → proceed with bead planning
+```
+
+**Error handling:**
+
+```bash
+# If Grok query times out (default: 60s)
+node scripts/ask-grok.mjs \
+  --question "Your question" \
+  --out tmp/response.json \
+  --timeout 90000  # 90 seconds
+
+# If storage state is missing
+# Error: "Storage state not found: .browser-profiles/grok-state.json"
+# → Escalate to user (Grok authentication needs setup)
+
+# Check response structure before parsing
+jq '.ok' tmp/response.json  # Should be true
+jq '.answer' tmp/response.json  # Should contain text
+```
+
+**Response format:**
+
+```json
+{
+  "ok": true,
+  "question": "Your question here",
+  "answer": "Grok's response (isolated from UI)",
+  "full_text": "Complete conversation text",
+  "timestamp": "2026-02-15T20:47:33.834Z"
+}
+```
+
+**Key differences from ChatGPT:**
+
+| Aspect | ChatGPT (batch-plan.mjs) | Grok (ask-grok.mjs) |
+|--------|--------------------------|---------------------|
+| **Purpose** | Detailed planning, iteration | Quick research, facts |
+| **Context** | Multiple beads, files | Single question |
+| **Output** | Structured plans (7d format) | Text answer |
+| **Workflow** | Iterative (multiple rounds) | One-shot |
+| **Browser** | Persistent worker | Ephemeral (opens/closes) |
+| **Speed** | Slower (complex processing) | Fast (< 30s typical) |
+
+**When in doubt:** Start with Grok for quick research, escalate to ChatGPT if you need detailed planning.
+
 ### 2. Review & Enhance Plans
 
 **Be critical and collaborative:**

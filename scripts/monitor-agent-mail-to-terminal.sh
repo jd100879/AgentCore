@@ -451,21 +451,12 @@ EOF
                 echo "╚════════════════════════════════════════════╝"
                 echo "$notification"
                 echo ""
-                echo "[$(date '+%Y-%m-%d %H:%M:%S')] Sending SystemNotify to $AGENT_NAME (${new_count} new message(s))"
+                echo "[$(date '+%Y-%m-%d %H:%M:%S')] Sending terminal notification to $AGENT_NAME (${new_count} new message(s))"
 
-                # Send SystemNotify message instead of tmux injection
-                "$SCRIPT_DIR/agent-mail-helper.sh" send \
-                    --from SystemNotify \
-                    --to "$AGENT_NAME" \
-                    --subject "[System] 📨 New mail arrived" \
-                    --body "You have ${new_count} new message(s). Check your inbox with:
-
-\`\$PROJECT_ROOT/scripts/agent-mail-helper.sh inbox\`
-
-$notification" \
-                    --importance normal 2>&1 | grep -v "^Sending message" || true
-
-                echo "[$(date '+%Y-%m-%d %H:%M:%S')] SystemNotify sent successfully"
+                # Send notification to terminal (not inbox message)
+                while IFS= read -r line; do
+                    [ -n "$line" ] && send_to_terminal "$line"
+                done <<< "$notification"
             fi
         fi
     fi

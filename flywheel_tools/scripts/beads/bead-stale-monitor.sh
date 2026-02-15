@@ -5,7 +5,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+# Go up 3 levels: beads -> scripts -> flywheel_tools -> project root
+PROJECT_DIR="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 # Source shared project configuration
 source "$SCRIPT_DIR/lib/project-config.sh"
 LOG_FILE="${PROJECT_DIR}/.beads/agent-activity.jsonl"
