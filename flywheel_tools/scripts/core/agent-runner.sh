@@ -494,6 +494,9 @@ main() {
         local claude_args=(--dangerously-skip-permissions)
         [ -n "$system_prompt" ] && claude_args+=(--append-system-prompt "$system_prompt")
 
+        # Track start time to detect quick crashes vs. successful work
+        local start_time=$(date +%s)
+
         AGENT_RUNNER_BEAD="${bead_id:-}" \
         PROJECT_ROOT="$PROJECT_ROOT" \
         claude \
@@ -507,16 +510,35 @@ main() {
         log INFO "claude exited (code: $exit_code)"
         log_metric "exit" "code=$exit_code"
 
-        # Always restart — Ctrl+C (SHUTTING_DOWN) is the only way to stop
-        RESTART_COUNT=$((RESTART_COUNT + 1))
+        # Calculate runtime
+        local end_time=$(date +%s)
+        local runtime=$((end_time - start_time))
 
+        # Reset restart count if Claude ran for more than 30 seconds (did actual work)
+        if [ "$runtime" -ge 30 ]; then
+            if [ "$RESTART_COUNT" -gt 0 ]; then
+                log INFO "Claude ran for ${runtime}s - resetting restart count"
+            fi
+            RESTART_COUNT=0
+        else
+            # Quick crash - increment restart count
+            RESTART_COUNT=$((RESTART_COUNT + 1))
+            log WARN "Claude exited after only ${runtime}s (restart $RESTART_COUNT/$MAX_RESTARTS)"
+        fi
+
+        # Check if we've hit the crash limit
         if [ "$RESTART_COUNT" -ge "$MAX_RESTARTS" ]; then
-            log ERROR "Reached max restarts ($MAX_RESTARTS). Giving up."
+            log ERROR "Reached max restarts ($MAX_RESTARTS) due to repeated crashes. Giving up."
             log_metric "max_restarts" "giving_up"
             break
         fi
 
-        log INFO "REPL loop mode: Restarting claude (restart $RESTART_COUNT/$MAX_RESTARTS)..."
+        # Always restart — Ctrl+C (SHUTTING_DOWN) is the only way to stop
+        if [ "$RESTART_COUNT" -gt 0 ]; then
+            log INFO "Restarting claude (crash count: $RESTART_COUNT/$MAX_RESTARTS)..."
+        else
+            log INFO "Restarting claude..."
+        fi
     done
 
     log INFO "Agent runner finished."
