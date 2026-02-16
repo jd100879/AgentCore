@@ -103,7 +103,14 @@ console.error("");
 fs.writeFileSync(READY_FILE, Date.now().toString() + "\n");
 
 // Process loop
+let pollCount = 0;
 while (true) {
+  pollCount++;
+  if (pollCount % 10 === 0) {
+    // Log every 5 seconds (10 polls * 500ms)
+    console.error(`[POLLING] Checking for requests... (poll #${pollCount})`);
+  }
+
   // Check for request file
   if (fs.existsSync(REQUEST_FILE)) {
     try {
