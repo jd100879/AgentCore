@@ -497,6 +497,13 @@ main() {
         # Track start time to detect quick crashes vs. successful work
         local start_time=$(date +%s)
 
+        # Change to project directory so Claude can resolve relative paths correctly
+        cd "$PROJECT_ROOT" || {
+            log ERROR "Cannot cd to PROJECT_ROOT: $PROJECT_ROOT"
+            break
+        }
+        log INFO "Working directory: $PROJECT_ROOT"
+
         AGENT_RUNNER_BEAD="${bead_id:-}" \
         PROJECT_ROOT="$PROJECT_ROOT" \
         claude \
