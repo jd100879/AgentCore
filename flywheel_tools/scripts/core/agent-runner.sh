@@ -506,6 +506,7 @@ main() {
 
         AGENT_RUNNER_BEAD="${bead_id:-}" \
         PROJECT_ROOT="$PROJECT_ROOT" \
+        TMUX_PANE="$TMUX_PANE" \
         claude \
             "${claude_args[@]}" \
             ${initial_message:+"$initial_message"} || exit_code=$?
