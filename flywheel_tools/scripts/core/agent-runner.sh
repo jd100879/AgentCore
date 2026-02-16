@@ -18,7 +18,21 @@
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Detect location and set PROJECT_ROOT appropriately
+if [[ "$SCRIPT_DIR" == */node_modules/@agentcore/flywheel-tools/scripts/core ]]; then
+  # Running from npm-installed package: project/node_modules/@agentcore/flywheel-tools/scripts/core
+  # Go up 5 levels to reach project root
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../../../../" && pwd)"
+elif [[ "$SCRIPT_DIR" == */flywheel_tools/scripts/core ]]; then
+  # Running from AgentCore hub: AgentCore/flywheel_tools/scripts/core
+  # Go up 3 levels to reach AgentCore
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+else
+  # Fallback: assume we're in project/scripts/
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+fi
+
 METRICS_FILE="$PROJECT_ROOT/.beads/runner-cycles.jsonl"
 
 # Colors
@@ -39,15 +53,19 @@ SHUTTING_DOWN=false
 TARGET_BEAD=""
 MAX_RESTARTS=5
 DRY_RUN=false
+NO_EXIT=false
 
 #######################################
 # Print banner
 #######################################
 print_banner() {
+    local mode="Single-shot"
+    [ "$NO_EXIT" = true ] && mode="REPL loop"
+
     echo -e "${CYAN}"
     echo "  ╔═══════════════════════════════════════════════╗"
     echo "  ║          Agent Runner - Lifecycle Loop        ║"
-    echo "  ║   Continuous bead cycling · Clear on close    ║"
+    echo "  ║   Mode: ${mode} · Context preserved    ║"
     echo "  ╚═══════════════════════════════════════════════╝"
     echo -e "${NC}"
 }
@@ -93,7 +111,7 @@ cleanup() {
     log INFO "Shutting down agent runner..."
 
     # Stop the mail monitor (agent identity is gone, monitor no longer needed)
-    "$SCRIPT_DIR/mail-monitor-ctl.sh" stop >/dev/null 2>&1 || true
+    "$PROJECT_ROOT/scripts/mail-monitor-ctl.sh" stop >/dev/null 2>&1 || true
 
     # Clean up temp files
     rm -f "/tmp/agent-runner-prompt-${AGENT_NAME}.md" 2>/dev/null
@@ -125,6 +143,10 @@ parse_args() {
                 DRY_RUN=true
                 shift
                 ;;
+            --no-exit)
+                NO_EXIT=true
+                shift
+                ;;
             --help|-h)
                 cat <<EOF
 Usage: $(basename "$0") [OPTIONS]
@@ -136,11 +158,14 @@ restarts claude on crashes.
 Options:
   --bead BD-ID         Start with specific bead (skip initial claim)
   --max-restarts N     Max crash restarts before giving up (default: 5)
+  --no-exit            Keep cycling through beads (REPL loop mode)
   --dry-run            Show what would happen without running claude
   -h, --help           Show this help
 
 Behavior:
-  Always restarts claude on exit. Ctrl+C to stop.
+  Default: Exits after completing one bead (single-shot mode)
+  With --no-exit: Continuously cycles through beads (REPL loop)
+  Ctrl+C to stop at any time.
   If a bead is available, claude launches with it.
   If no beads, claude launches bare (check inbox/mail for work).
 
@@ -159,17 +184,23 @@ EOF
 # Determine agent identity
 #######################################
 get_agent_identity() {
-    AGENT_NAME=$("$SCRIPT_DIR/agent-mail-helper.sh" whoami 2>/dev/null || echo "")
+    AGENT_NAME=$("$PROJECT_ROOT/scripts/agent-mail-helper.sh" whoami 2>/dev/null || echo "")
     local os_user
     os_user=$(whoami)
 
     if [ -z "$AGENT_NAME" ] || [ "$AGENT_NAME" = "$os_user" ]; then
-        log ERROR "No agent identity found. Register first:"
-        log ERROR "  ./scripts/agent-mail-helper.sh register \"Your role\""
-        exit 1
-    fi
+        log INFO "No agent identity found. Auto-registering..."
+        "$PROJECT_ROOT/scripts/agent-mail-helper.sh" register "Worker agent - autonomously claims and executes beads" >/dev/null 2>&1 || true
+        AGENT_NAME=$("$PROJECT_ROOT/scripts/agent-mail-helper.sh" whoami 2>/dev/null || echo "")
 
-    log INFO "Agent identity: $AGENT_NAME"
+        if [ -z "$AGENT_NAME" ] || [ "$AGENT_NAME" = "$os_user" ]; then
+            log ERROR "Failed to register agent identity"
+            exit 1
+        fi
+        log INFO "Registered as: $AGENT_NAME"
+    else
+        log INFO "Agent identity: $AGENT_NAME"
+    fi
 }
 
 #######################################
@@ -396,10 +427,18 @@ main() {
     parse_args "$@"
     get_agent_identity
 
+    # Check for .no-exit file (similar to .no-clear in next-bead.sh)
+    NO_EXIT_FILE="$PROJECT_ROOT/.no-exit"
+    if [ "${AGENT_NO_EXIT:-0}" = "1" ] || { [ -f "$NO_EXIT_FILE" ] && grep -q "on" "$NO_EXIT_FILE" 2>/dev/null; }; then
+        NO_EXIT=true
+        log INFO "No-exit mode enabled (AGENT_NO_EXIT or .no-exit flag set)"
+    fi
+
     print_banner
     log INFO "Starting agent runner for $AGENT_NAME"
     log INFO "Project: $PROJECT_ROOT"
     log INFO "Max restarts: $MAX_RESTARTS"
+    log INFO "Mode: $([ "$NO_EXIT" = true ] && echo "REPL loop (continuous)" || echo "Single-shot (exit after bead)")"
 
     while true; do
         # Find a bead to start with
@@ -438,7 +477,7 @@ main() {
         fi
 
         # Ensure mail monitor is running before launching claude
-        if "$SCRIPT_DIR/mail-monitor-ctl.sh" ensure >/dev/null 2>&1; then
+        if "$PROJECT_ROOT/scripts/mail-monitor-ctl.sh" ensure >/dev/null 2>&1; then
             log INFO "Mail monitor: running"
         else
             log WARN "Mail monitor: could not ensure (notifications may not work)"
@@ -465,7 +504,14 @@ main() {
         log INFO "claude exited (code: $exit_code)"
         log_metric "exit" "code=$exit_code"
 
-        # Always restart — Ctrl+C (SHUTTING_DOWN) is the only way to stop
+        # Check if we should exit after one cycle
+        if [ "$NO_EXIT" != true ]; then
+            log INFO "Single-shot mode: Exiting after one bead cycle"
+            log_metric "single_shot_exit" "normal"
+            break
+        fi
+
+        # REPL loop mode: restart on exit
         RESTART_COUNT=$((RESTART_COUNT + 1))
 
         if [ "$RESTART_COUNT" -ge "$MAX_RESTARTS" ]; then
@@ -474,7 +520,7 @@ main() {
             break
         fi
 
-        log INFO "Restarting claude (restart $RESTART_COUNT/$MAX_RESTARTS)..."
+        log INFO "REPL loop mode: Restarting claude (restart $RESTART_COUNT/$MAX_RESTARTS)..."
     done
 
     log INFO "Agent runner finished."
