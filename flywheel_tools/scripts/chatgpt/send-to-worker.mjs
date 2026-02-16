@@ -5,6 +5,12 @@ import fs from "node:fs";
  * Send a message to the browser worker
  *
  * Usage:
+ *   # Simple: reads conversation URL from .flywheel/chatgpt.json
+ *   node scripts/chatgpt/send-to-worker.mjs \
+ *     --message-file tmp/message.txt \
+ *     --out tmp/response.json
+ *
+ *   # Override: specify different conversation URL
  *   node scripts/chatgpt/send-to-worker.mjs \
  *     --message-file tmp/message.txt \
  *     --conversation-url https://chatgpt.com/c/... \
@@ -32,12 +38,43 @@ function parseArgs(argv) {
 const args = parseArgs(process.argv);
 
 const messageFile = args["message-file"];
-const conversationUrl = args["conversation-url"];
+let conversationUrl = args["conversation-url"];
 const outFile = args["out"];
 const timeout = parseInt(args.timeout || "120000", 10);
 
-if (!messageFile || !conversationUrl) {
-  console.error("Usage: send-to-worker.mjs --message-file FILE --conversation-url URL [--out FILE]");
+// Validate message file
+if (!messageFile) {
+  console.error("Usage: send-to-worker.mjs --message-file FILE [--conversation-url URL] [--out FILE]");
+  console.error("");
+  console.error("If --conversation-url not provided, reads from .flywheel/chatgpt.json");
+  process.exit(1);
+}
+
+// If conversation URL not provided, try to read from config
+if (!conversationUrl) {
+  const CONFIG_FILE = ".flywheel/chatgpt.json";
+  if (fs.existsSync(CONFIG_FILE)) {
+    try {
+      const config = JSON.parse(fs.readFileSync(CONFIG_FILE, "utf8"));
+      conversationUrl = config.crt_url;
+      console.error(`✓ Using conversation URL from ${CONFIG_FILE}`);
+    } catch (err) {
+      console.error(`ERROR: Failed to read conversation URL from ${CONFIG_FILE}: ${err.message}`);
+      process.exit(1);
+    }
+  } else {
+    console.error(`ERROR: No --conversation-url provided and ${CONFIG_FILE} not found`);
+    console.error("");
+    console.error("Either:");
+    console.error("  1. Provide --conversation-url parameter");
+    console.error("  2. Create .flywheel/chatgpt.json with crt_url field");
+    process.exit(1);
+  }
+}
+
+// Final validation
+if (!conversationUrl) {
+  console.error("ERROR: No conversation URL available");
   process.exit(1);
 }
 
