@@ -437,18 +437,11 @@ main() {
     parse_args "$@"
     get_agent_identity
 
-    # Check for .no-exit file (similar to .no-clear in next-bead.sh)
-    NO_EXIT_FILE="$PROJECT_ROOT/.no-exit"
-    if [ "${AGENT_NO_EXIT:-0}" = "1" ] || { [ -f "$NO_EXIT_FILE" ] && grep -q "on" "$NO_EXIT_FILE" 2>/dev/null; }; then
-        NO_EXIT=true
-        log INFO "No-exit mode enabled (AGENT_NO_EXIT or .no-exit flag set)"
-    fi
-
     print_banner
     log INFO "Starting agent runner for $AGENT_NAME"
     log INFO "Project: $PROJECT_ROOT"
     log INFO "Max restarts: $MAX_RESTARTS"
-    log INFO "Mode: $([ "$NO_EXIT" = true ] && echo "REPL loop (continuous)" || echo "Single-shot (exit after bead)")"
+    log INFO "Mode: Continuous (always restart - Ctrl+C to stop)"
 
     while true; do
         # Find a bead to start with
@@ -514,14 +507,7 @@ main() {
         log INFO "claude exited (code: $exit_code)"
         log_metric "exit" "code=$exit_code"
 
-        # Check if we should exit after one cycle
-        if [ "$NO_EXIT" != true ]; then
-            log INFO "Single-shot mode: Exiting after one bead cycle"
-            log_metric "single_shot_exit" "normal"
-            break
-        fi
-
-        # REPL loop mode: restart on exit
+        # Always restart — Ctrl+C (SHUTTING_DOWN) is the only way to stop
         RESTART_COUNT=$((RESTART_COUNT + 1))
 
         if [ "$RESTART_COUNT" -ge "$MAX_RESTARTS" ]; then
