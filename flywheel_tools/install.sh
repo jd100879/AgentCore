@@ -120,6 +120,28 @@ install_scripts() {
     done
 }
 
+install_config_files() {
+    local target="$1"
+
+    log_info "Installing configuration files..."
+
+    # Create .flywheel directory
+    mkdir -p "$target/.flywheel"
+
+    # Copy orchestrator instructions if they exist
+    local orchestrator_instructions="$FLYWHEEL_ROOT/config/orchestrator-instructions.md"
+    if [ -f "$orchestrator_instructions" ]; then
+        local target_instructions="$target/.flywheel/orchestrator-instructions.md"
+
+        if [ -f "$target_instructions" ] && [ "$FORCE" != "true" ]; then
+            log_warn "Skipping orchestrator-instructions.md (already exists, use --force to overwrite)"
+        else
+            cp "$orchestrator_instructions" "$target_instructions"
+            log_info "Installed orchestrator-instructions.md"
+        fi
+    fi
+}
+
 update_claude_md() {
     local target="$1"
     local claude_md="$target/CLAUDE.md"
@@ -237,6 +259,7 @@ if [ "$SKIP_DEPS" != "true" ]; then
 fi
 
 create_directories "$TARGET_DIR"
+install_config_files "$TARGET_DIR"
 install_scripts "$TARGET_DIR" "$INSTALL_METHOD"
 update_claude_md "$TARGET_DIR"
 
