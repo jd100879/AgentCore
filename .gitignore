@@ -99,3 +99,17 @@ pids/
 tmp/*.txt
 tmp/*.json
 tmp/*.sh
+
+# Agent runtime state
+flywheel_tools/scripts/.beads/beads.db
+flywheel_tools/scripts/.beads/last-touched
+*.state
+*.pid
+
+# Backup/old directories
+flywheel_tools/scripts/chatgpt/modules-copies/
+flywheel_tools/scripts/chatgpt/platform-old-chatgpt/
+flywheel_tools/scripts/chatgpt/platform-old/
+
+# Temporary files
+tmp/
