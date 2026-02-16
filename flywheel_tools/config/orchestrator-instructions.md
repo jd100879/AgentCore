@@ -29,9 +29,9 @@ To verify current configuration:
 ### 1. Start planning with ChatGPT
 
 ```bash
-./scripts/chatgpt/check-worker.sh || ./scripts/chatgpt/start-worker.sh
+./scripts/check-worker.sh || ./scripts/start-worker.sh
 
-node scripts/chatgpt/batch-plan.mjs \
+node scripts/batch-plan.mjs \
   --beads "bd-123,bd-456" \
   --conversation-url "$(jq -r .crt_url .flywheel/chatgpt.json)" \
   --out tmp/batch-response.json
