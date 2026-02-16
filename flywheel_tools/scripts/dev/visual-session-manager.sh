@@ -21,6 +21,146 @@ BOLD='\033[1m'
 # Create state directory for session resurrection
 mkdir -p "$STATE_DIR"
 
+# Auto-install flywheel_tools if needed
+ensure_flywheel_tools() {
+    # Skip if we're in AgentCore (has flywheel_tools as subdirectory)
+    if [ -d "$PROJECT_ROOT/flywheel_tools" ]; then
+        return 0
+    fi
+
+    # Check if AgentCore exists as sibling project
+    local AGENTCORE_PATH="$PROJECT_ROOT/../AgentCore"
+    if [ ! -d "$AGENTCORE_PATH/flywheel_tools" ]; then
+        echo -e "${YELLOW}⚠️  AgentCore not found at: $AGENTCORE_PATH${NC}" >&2
+        return 0
+    fi
+
+    # Check if scripts need installation (check a few key scripts)
+    local NEEDS_INSTALL=false
+    if [ ! -L "$PROJECT_ROOT/scripts/agent-runner.sh" ] || \
+       [ ! -L "$PROJECT_ROOT/scripts/br-create.sh" ] || \
+       [ ! -L "$PROJECT_ROOT/scripts/visual-session-manager.sh" ]; then
+        NEEDS_INSTALL=true
+    fi
+
+    if [ "$NEEDS_INSTALL" = true ]; then
+        echo -e "${BLUE}⚡ Installing flywheel_tools symlinks...${NC}"
+        "$AGENTCORE_PATH/flywheel_tools/install.sh" --symlink "$PROJECT_ROOT" >/dev/null 2>&1 || {
+            echo -e "${YELLOW}⚠️  Failed to auto-install flywheel_tools${NC}" >&2
+            return 0
+        }
+        echo -e "${GREEN}✓ Flywheel tools installed${NC}"
+    fi
+}
+
+ensure_flywheel_tools
+
+# Ensure mail server is running
+ensure_mail_server() {
+    local MCP_AGENT_MAIL_DIR="${MCP_AGENT_MAIL_DIR:-$HOME/mcp_agent_mail}"
+    local PIDS_DIR="$PROJECT_ROOT/pids"
+    local PID_FILE="$PIDS_DIR/mail-server.pid"
+
+    # Check if mail server directory exists
+    if [ ! -d "$MCP_AGENT_MAIL_DIR" ]; then
+        echo -e "${YELLOW}⚠️  Mail server not installed at: $MCP_AGENT_MAIL_DIR${NC}" >&2
+        echo -e "${YELLOW}   Agents will not be able to register automatically${NC}" >&2
+        return 1
+    fi
+
+    # Check if already running
+    if [ -f "$PID_FILE" ]; then
+        local PID=$(cat "$PID_FILE")
+        if ps -p "$PID" > /dev/null 2>&1; then
+            return 0  # Already running
+        else
+            rm -f "$PID_FILE"
+        fi
+    fi
+
+    # Start mail server if available
+    if [ -f "$SCRIPT_DIR/start-mail-server.sh" ]; then
+        echo -e "${CYAN}Starting agent mail server...${NC}"
+        "$SCRIPT_DIR/start-mail-server.sh" >/dev/null 2>&1 || true
+    elif [ -f "$PROJECT_ROOT/../AgentCore/flywheel_tools/scripts/adapters/start-mail-server.sh" ]; then
+        echo -e "${CYAN}Starting agent mail server...${NC}"
+        "$PROJECT_ROOT/../AgentCore/flywheel_tools/scripts/adapters/start-mail-server.sh" >/dev/null 2>&1 || true
+    fi
+
+    return 0
+}
+
+
+# Ensure disk space monitor is running
+ensure_disk_monitor() {
+    local PID_FILE="$PROJECT_ROOT/pids/disk-monitor.pid"
+
+    # Check if already running
+    if [ -f "$PID_FILE" ]; then
+        local PID=$(cat "$PID_FILE")
+        if ps -p "$PID" > /dev/null 2>&1; then
+            return 0  # Already running
+        else
+            rm -f "$PID_FILE"
+        fi
+    fi
+
+    # Start disk monitor if available
+    if [ -f "$SCRIPT_DIR/disk-space-monitor.sh" ]; then
+        echo -e "${CYAN}Starting disk space monitor...${NC}"
+        "$SCRIPT_DIR/disk-space-monitor.sh" start >/dev/null 2>&1 || true
+    fi
+
+    return 0
+}
+
+# Ensure supervisord is running in tmux (foreground mode)
+ensure_supervisord() {
+    local SESSION_NAME="${1:-agentcore}"  # Default to agentcore session
+    local SOCKET_FILE="$PROJECT_ROOT/tmp/supervisor.sock"
+    local CONFIG_FILE="$PROJECT_ROOT/config/supervisord.conf"
+
+    # Check if config file exists
+    if [ ! -f "$CONFIG_FILE" ]; then
+        return 0  # Skip if no supervisord config
+    fi
+
+    # Check if supervisord is already running
+    if [ -S "$SOCKET_FILE" ]; then
+        if supervisorctl -c "$CONFIG_FILE" status >/dev/null 2>&1; then
+            return 0  # Already running
+        fi
+    fi
+
+    # Check if we're in a tmux session
+    if [ -z "${TMUX:-}" ]; then
+        echo -e "${YELLOW}⚠️  Not in tmux session, skipping supervisord${NC}" >&2
+        return 0
+    fi
+
+    # Check if supervisord window already exists
+    if tmux list-windows -t "$SESSION_NAME" 2>/dev/null | grep -q "supervisord"; then
+        return 0  # Window already exists
+    fi
+
+    # Create supervisord window and start in foreground mode
+    echo -e "${CYAN}Starting supervisord in tmux...${NC}"
+    tmux new-window -t "$SESSION_NAME" -n "supervisord" -c "$PROJECT_ROOT" \
+        "supervisord -c config/supervisord.conf -n" 2>/dev/null || true
+
+    # Wait a moment for supervisord to start
+    sleep 2
+
+    # Verify it started
+    if [ -S "$SOCKET_FILE" ]; then
+        echo -e "${GREEN}✓ Supervisord running in tmux window${NC}"
+    else
+        echo -e "${YELLOW}⚠️  Supervisord may not have started${NC}" >&2
+    fi
+
+    return 0
+}
+
 # Ensure orchestrator agent is running in tmux
 ensure_orchestrator() {
     local SESSION_NAME="${1:-agentcore}"  # Default to agentcore session
@@ -168,6 +308,10 @@ resurrect_session() {
 
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ Resurrected: $session_name${NC}"
+        # Ensure mail server is running for agent registration
+        ensure_mail_server
+        ensure_disk_monitor
+        ensure_supervisord "$session_name"
         ensure_orchestrator "$session_name"
         # Sync beads workflow to the project
         if [ -n "$project_path" ] && [ -d "$project_path" ]; then
@@ -716,6 +860,12 @@ attach_sessions() {
         return
     fi
 
+    # Ensure mail server is running for agent registration
+    ensure_mail_server
+    ensure_disk_monitor
+    ensure_supervisord "$(tmux display-message -p "#{session_name}" 2>/dev/null || echo "agentcore")"
+    ensure_orchestrator "$(tmux display-message -p "#{session_name}" 2>/dev/null || echo "agentcore")"
+
     # Sync beads workflow to each session's project
     echo ""
     echo -e "${CYAN}Syncing beads workflow to projects...${NC}"
@@ -726,8 +876,6 @@ attach_sessions() {
             "$SCRIPT_DIR/sync-beads-to-project.sh" "$proj_path" 2>/dev/null || true
         fi
     done
-
-    ensure_orchestrator "$(tmux display-message -p "#{session_name}" 2>/dev/null || echo "agentcore")"
 
     local count=$(echo "$all_sessions" | wc -l | tr -d ' ')
 
@@ -948,7 +1096,11 @@ smart_start() {
     "$SCRIPT_DIR/sync-beads-to-project.sh" "$project_path" 2>/dev/null || true
     echo ""
 
-    ensure_orchestrator "$(tmux display-message -p "#{session_name}" 2>/dev/null || echo "agentcore")"
+    # Ensure mail server is running for agent registration
+    ensure_mail_server
+    ensure_disk_monitor
+    ensure_supervisord "$session_name"
+    ensure_orchestrator "$session_name"
 
     # Step 2: Analyze bead queue for the selected project
     echo -e "${CYAN}Analyzing bead queue...${NC}"
