@@ -1,1 +1,0 @@
-../flywheel_tools/scripts/beads/log-bead-activity.sh

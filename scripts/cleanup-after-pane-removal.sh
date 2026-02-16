@@ -1,1 +1,0 @@
-../flywheel_tools/scripts/terminal/cleanup-after-pane-removal.sh

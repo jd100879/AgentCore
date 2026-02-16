@@ -21,6 +21,40 @@ BOLD='\033[1m'
 # Create state directory for session resurrection
 mkdir -p "$STATE_DIR"
 
+# Auto-install flywheel_tools if needed
+ensure_flywheel_tools() {
+    # Skip if we're in AgentCore (has flywheel_tools as subdirectory)
+    if [ -d "$PROJECT_ROOT/flywheel_tools" ]; then
+        return 0
+    fi
+
+    # Check if AgentCore exists as sibling project
+    local AGENTCORE_PATH="$PROJECT_ROOT/../AgentCore"
+    if [ ! -d "$AGENTCORE_PATH/flywheel_tools" ]; then
+        echo -e "${YELLOW}⚠️  AgentCore not found at: $AGENTCORE_PATH${NC}" >&2
+        return 0
+    fi
+
+    # Check if scripts need installation (check a few key scripts)
+    local NEEDS_INSTALL=false
+    if [ ! -L "$PROJECT_ROOT/scripts/agent-runner.sh" ] || \
+       [ ! -L "$PROJECT_ROOT/scripts/br-create.sh" ] || \
+       [ ! -L "$PROJECT_ROOT/scripts/visual-session-manager.sh" ]; then
+        NEEDS_INSTALL=true
+    fi
+
+    if [ "$NEEDS_INSTALL" = true ]; then
+        echo -e "${BLUE}⚡ Installing flywheel_tools symlinks...${NC}"
+        "$AGENTCORE_PATH/flywheel_tools/install.sh" --symlink "$PROJECT_ROOT" >/dev/null 2>&1 || {
+            echo -e "${YELLOW}⚠️  Failed to auto-install flywheel_tools${NC}" >&2
+            return 0
+        }
+        echo -e "${GREEN}✓ Flywheel tools installed${NC}"
+    fi
+}
+
+ensure_flywheel_tools
+
 # Ensure mail server is running
 ensure_mail_server() {
     local MCP_AGENT_MAIL_DIR="${MCP_AGENT_MAIL_DIR:-$HOME/mcp_agent_mail}"

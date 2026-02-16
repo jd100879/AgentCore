@@ -1,1 +1,0 @@
-../flywheel_tools/scripts/dev/validate-agent-session.sh

@@ -1,1 +1,0 @@
-../flywheel_tools/scripts/beads/br-start-work.sh

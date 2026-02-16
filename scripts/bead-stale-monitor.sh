@@ -1,1 +1,0 @@
-../flywheel_tools/scripts/beads/bead-stale-monitor.sh
