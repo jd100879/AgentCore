@@ -99,23 +99,37 @@ while (true) {
         throw new Error("Timeout waiting for response");
       }
 
-      // Wait for completion
-      const stopButton = page.locator('button').filter({ hasText: /stop generating/i });
+      // Wait for completion - check for stop button (submit button transforms to stop during generation)
+      console.error(`  Looking for stop button...`);
+
+      // Check for stop button by aria-label (the submit button changes its aria-label)
+      const stopButton = page.locator('button[aria-label*="Stop" i], button[aria-label*="stop generating" i]');
       let stopButtonGone = false;
       const startTime = Date.now();
+      const lastMessage = page.locator('[data-message-author-role="assistant"]').last();
 
       while (!stopButtonGone && (Date.now() - startTime < 120000)) {
-        await page.waitForTimeout(3000);
         const isGenerating = await stopButton.isVisible().catch(() => false);
-        if (!isGenerating) {
+        const currentText = await lastMessage.innerText().catch(() => "");
+        const charCount = currentText.length;
+
+        if (isGenerating) {
+          console.error(`  Polling... (${charCount} chars, still generating)`);
+        } else {
+          console.error(`  Stop button not visible (${charCount} chars)`);
           stopButtonGone = true;
+        }
+
+        if (!stopButtonGone) {
+          await page.waitForTimeout(3000);
         }
       }
 
       // Wait for stability
+      console.error(`  Waiting 5s for text stability...`);
       await page.waitForTimeout(5000);
-      const lastMessage = page.locator('[data-message-author-role="assistant"]').last();
       const rawText = await lastMessage.innerText().catch(() => "");
+      console.error(`  Final response: ${rawText.length} chars`);
 
       // Extract JSON if present
       let extracted_json = null;
