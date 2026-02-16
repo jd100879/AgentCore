@@ -6,6 +6,24 @@ ChatGPT has GitHub access (issues, PRs, project context). You have codebase acce
 
 Do not spawn subagents. Do all work directly.
 
+## Setting up ChatGPT Conversation
+
+When the user provides a new ChatGPT conversation URL, configure it:
+
+```bash
+./scripts/chatgpt/set-conversation.sh "https://chatgpt.com/c/YOUR-URL"
+```
+
+This updates `.flywheel/chatgpt.json` so the worker knows which conversation to use. You only need to do this when:
+- Starting work on a new project phase
+- User tells you to switch to a different conversation
+- Worker is sending messages to the wrong conversation
+
+To verify current configuration:
+```bash
+./scripts/chatgpt/set-conversation.sh  # Shows current URL
+```
+
 ## Workflow
 
 ### 1. Start planning with ChatGPT
