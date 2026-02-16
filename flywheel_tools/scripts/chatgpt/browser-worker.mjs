@@ -165,10 +165,60 @@ while (true) {
         }
       }
 
-      // Wait for stability
+      // Wait for initial DOM settle
       await page.waitForTimeout(5000);
+
+      // Verify text stability (check every 3 seconds, max 3 checks)
       const lastMessage = page.locator('[data-message-author-role="assistant"]').last();
-      const rawText = await lastMessage.innerText().catch(() => "");
+      let lastText = await lastMessage.innerText().catch(() => "");
+      let stableChecks = 0;
+      let emptyChecks = 0; // Guard #9: Count consecutive empty checks
+      const maxStabilityChecks = 3;
+
+      console.error(`  Initial text length: ${lastText.length} chars`);
+
+      while (stableChecks < maxStabilityChecks) {
+        await page.waitForTimeout(3000);
+
+        const currentText = await lastMessage.innerText().catch(() => "");
+
+        if (currentText === lastText && currentText.length > 0) {
+          stableChecks++;
+          emptyChecks = 0; // Reset empty counter when we have content
+          console.error(`  Text stable (check ${stableChecks}/${maxStabilityChecks})`);
+          if (stableChecks >= 2) {
+            // Stable for 2 checks (6 seconds) is enough
+            break;
+          }
+        } else if (currentText.length === 0 && lastText.length === 0) {
+          // Guard #9: Empty message detection
+          emptyChecks++;
+          console.error(`  Text empty (check ${emptyChecks}/2)`);
+          if (emptyChecks >= 2) {
+            // Empty for 2 checks (6 seconds) - likely a failed/duplicate request
+            console.error("  Message remains empty after stability wait - treating as empty response");
+            break;
+          }
+        } else {
+          console.error(`  Text changed: ${lastText.length} -> ${currentText.length} chars`);
+          lastText = currentText;
+          stableChecks = 0;
+          emptyChecks = 0;
+        }
+      }
+
+      console.error(`  Final text length: ${lastText.length} chars`);
+
+      // Guard #9 fallback: If last message is empty, try second-to-last
+      let rawText = lastText;
+      if (!rawText || rawText.length === 0) {
+        console.error("  Last message empty - trying second-to-last message");
+        const allMessages = await page.locator('[data-message-author-role="assistant"]').all();
+        if (allMessages.length >= 2) {
+          rawText = await allMessages[allMessages.length - 2].innerText().catch(() => "");
+          console.error(`  Second-to-last message: ${rawText.length} chars`);
+        }
+      }
 
       // Extract JSON if present
       let extracted_json = null;
