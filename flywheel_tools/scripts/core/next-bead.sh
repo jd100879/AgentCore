@@ -90,121 +90,17 @@ else
     echo "Claimed bead $bead_id: $bead_title"
 fi
 
-# Check if /clear is disabled via env var or flag file
-NO_CLEAR_FILE="$SCRIPT_DIR/../.no-clear"
-if [ "${AGENT_NO_CLEAR:-0}" = "1" ] || { [ -f "$NO_CLEAR_FILE" ] && grep -q "on" "$NO_CLEAR_FILE" 2>/dev/null; }; then
-    echo "Skipping /clear (AGENT_NO_CLEAR or .no-clear flag set)"
-    [ -n "$bead_id" ] && echo "Next bead: $bead_id"
-    [ -n "$prompt" ] && echo "Prompt: $prompt"
-    rm -f "$LOCK_FILE"
-    exit 0
+
+# Just report the claimed bead - no automatic /clear
+if [ -n "$bead_id" ]; then
+    echo ""
+    echo "✓ Claimed next bead: $bead_id"
+    echo "  $prompt"
+    echo ""
+    echo "Work on this bead now. No automatic /clear - context preserved."
+else
+    echo ""
+    echo "No beads available. Check your inbox for work."
 fi
-
-echo "Clearing context..."
-
-# Get the tmux pane we're running in
-pane="${TMUX_PANE:-}"
-if [ -z "$pane" ]; then
-    echo "Not in a tmux pane. Run /clear manually."
-    [ -n "$bead_id" ] && echo "  br show $bead_id"
-    exit 0
-fi
-
-# Helper: wait for claude input prompt (❯) to be stable in pane
-# Checks that ❯ is visible AND pane content hasn't changed for 3 consecutive checks.
-# This avoids sending keys while claude is still rendering output.
-wait_for_prompt() {
-    local last_capture=""
-    local stable=0
-    for i in $(seq 1 90); do
-        local current
-        current=$(tmux capture-pane -t "$pane" -p 2>/dev/null)
-        if echo "$current" | tail -5 | grep -q "❯"; then
-            if [ "$current" = "$last_capture" ]; then
-                stable=$((stable + 1))
-                if [ $stable -ge 3 ]; then
-                    return 0
-                fi
-            else
-                stable=0
-            fi
-            last_capture="$current"
-        else
-            stable=0
-            last_capture=""
-        fi
-        sleep 1
-    done
-    return 1
-}
-
-# Helper: wait for mail queue to be empty
-# Ensures pending mail notifications are delivered before /clear
-# Prevents race condition where notifications arrive after /clear
-wait_for_mail_queue_empty() {
-    local pids_dir="$SCRIPT_DIR/../pids"
-    local agent_name_lower
-    agent_name_lower=$(echo "$AGENT_NAME" | tr 'A-Z' 'a-z')
-    local queue_file="$pids_dir/${agent_name_lower}.mail-queue"
-
-    # If queue file doesn't exist, nothing to wait for
-    if [ ! -f "$queue_file" ]; then
-        return 0
-    fi
-
-    # Wait up to 30 seconds for queue to be empty
-    for i in $(seq 1 30); do
-        if [ ! -s "$queue_file" ]; then
-            # Queue is empty
-            return 0
-        fi
-        sleep 1
-    done
-
-    # Timeout - proceed anyway (queue might be stuck)
-    return 0
-}
-
-# Background: interrupt agent, wait for idle, send /clear, then send new bead assignment
-(
-    # Ensure lock cleanup on exit (success or failure)
-    trap "rm -f '$LOCK_FILE'" EXIT
-
-    # Interrupt the agent if it's still working (Escape stops current operation)
-    "$SCRIPT_DIR/terminal-inject.sh" --keys "Escape"
-    sleep 2
-
-    wait_for_prompt
-
-    # Wait for mail queue to be empty before /clear
-    # This prevents notifications from arriving after context is cleared
-    wait_for_mail_queue_empty
-
-    # Extra settle time after prompt stabilizes
-    sleep 3
-
-    # Queue commands via unified terminal injection queue
-    # The mail monitor will deliver them when terminal is clear
-
-    # /clear: first Enter opens autocomplete dropdown
-    "$SCRIPT_DIR/terminal-inject.sh" --keys "/clear"
-    "$SCRIPT_DIR/terminal-inject.sh" --keys "Enter"
-    sleep 2
-
-    # Second Enter selects + executes /clear
-    "$SCRIPT_DIR/terminal-inject.sh" --keys "Enter"
-
-    # Wait for /clear to complete and prompt to stabilize again
-    sleep 3
-    wait_for_prompt
-
-    # Send prompt text with literal mode to prevent key interpretation
-    "$SCRIPT_DIR/terminal-inject.sh" --keys "$prompt" --literal
-
-    # Wait for paste bracket to close before submitting
-    sleep 3
-    "$SCRIPT_DIR/terminal-inject.sh" --keys "Enter"
-) &
-disown
 
 exit 0

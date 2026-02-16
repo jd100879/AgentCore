@@ -4,7 +4,14 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Detect location and set paths appropriately
-if [[ "$SCRIPT_DIR" == */flywheel_tools/scripts/core ]]; then
+if [[ "$SCRIPT_DIR" == */node_modules/@agentcore/flywheel-tools/scripts/core ]]; then
+  # Running from npm-installed package in consumer project
+  # Path: project/node_modules/@agentcore/flywheel-tools/scripts/core
+  # Go up 5 levels: core -> scripts -> flywheel-tools -> @agentcore -> node_modules -> project
+  FLYWHEEL_TOOLS_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+  PROJECT_ROOT="$(cd "$FLYWHEEL_TOOLS_ROOT/../../.." && pwd)"
+  INSTRUCTIONS_FILE="$FLYWHEEL_TOOLS_ROOT/config/orchestrator-instructions.md"
+elif [[ "$SCRIPT_DIR" == */flywheel_tools/scripts/core ]]; then
   # Running from flywheel_tools in AgentCore hub
   FLYWHEEL_TOOLS_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
   PROJECT_ROOT="$(cd "$FLYWHEEL_TOOLS_ROOT/.." && pwd)"
