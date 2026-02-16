@@ -20,6 +20,58 @@ const READY_FILE = ".flywheel/browser-ready.txt";
 
 console.error("=== Browser Worker Starting ===");
 
+// Validate storage state exists and is complete
+if (!fs.existsSync(STORAGE_STATE)) {
+  console.error(`✗ ERROR: Storage state file not found: ${STORAGE_STATE}`);
+  console.error("");
+  console.error("Run this to create it:");
+  console.error("  node scripts/init-chatgpt-storage-state.mjs");
+  console.error("");
+  process.exit(1);
+}
+
+// Check storage state has authentication cookies
+let storageData;
+try {
+  storageData = JSON.parse(fs.readFileSync(STORAGE_STATE, 'utf8'));
+  const cookieCount = storageData.cookies?.length || 0;
+
+  console.error(`✓ Storage state found: ${STORAGE_STATE}`);
+  console.error(`  Cookies: ${cookieCount}`);
+
+  // ChatGPT requires substantial authentication - check for minimum cookies
+  if (cookieCount < 15) {
+    console.error("");
+    console.error(`✗ WARNING: Storage state appears incomplete (only ${cookieCount} cookies)`);
+    console.error("  Expected: 15+ cookies for authenticated session");
+    console.error("");
+    console.error("This will likely result in unauthenticated browser.");
+    console.error("Run: node scripts/init-chatgpt-storage-state.mjs");
+    console.error("");
+    process.exit(1);
+  }
+
+  // Check for chatgpt.com cookies specifically
+  const chatgptCookies = storageData.cookies.filter(c =>
+    c.domain && (c.domain.includes('chatgpt.com') || c.domain.includes('openai.com'))
+  );
+
+  if (chatgptCookies.length === 0) {
+    console.error("");
+    console.error("✗ ERROR: No ChatGPT cookies found in storage state");
+    console.error("Run: node scripts/init-chatgpt-storage-state.mjs");
+    console.error("");
+    process.exit(1);
+  }
+
+  console.error(`  ChatGPT/OpenAI cookies: ${chatgptCookies.length}`);
+
+} catch (err) {
+  console.error(`✗ ERROR: Failed to parse storage state: ${err.message}`);
+  console.error("Run: node scripts/init-chatgpt-storage-state.mjs");
+  process.exit(1);
+}
+
 // Launch browser ONCE - visible so user can see ChatGPT responses
 const browser = await chromium.launch({
   headless: false,
@@ -40,6 +92,7 @@ const context = await browser.newContext({
 
 const page = await context.newPage();
 
+console.error("✓ Browser context created with authentication");
 console.error("✓ Browser opened (visible)");
 console.error("");
 console.error("Worker ready. Watching for requests at:", REQUEST_FILE);
