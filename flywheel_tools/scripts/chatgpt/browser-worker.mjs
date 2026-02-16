@@ -29,9 +29,21 @@ const browser = await chromium.launch({
     '--disable-setuid-sandbox',
     '--disable-dev-shm-usage',
     '--disable-web-security',
-    '--app=https://chatgpt.com'  // Launch as app to avoid dock pinning
+    '--window-position=3000,3000',
+    '--window-size=1,1'
   ]
 });
+
+// Hide immediately
+setTimeout(() => {
+  try {
+    execSync('osascript -e \'tell application "System Events" to set visible of process "Chromium" to false\'', { timeout: 1000 });
+  } catch (e) {
+    try {
+      execSync('osascript -e \'tell application "System Events" to set visible of process "Google Chrome" to false\'', { timeout: 1000 });
+    } catch (e2) {}
+  }
+}, 300);
 
 const context = await browser.newContext({
   storageState: STORAGE_STATE,
@@ -39,9 +51,9 @@ const context = await browser.newContext({
   userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 });
 
-let page = await context.newPage();
+const page = await context.newPage();
 
-console.error("✓ Browser opened (visible, no dock icon)");
+console.error("✓ Browser opened and hidden");
 console.error("");
 console.error("Worker ready. Watching for requests at:", REQUEST_FILE);
 console.error("Press Ctrl+C to stop.");
@@ -63,28 +75,12 @@ while (true) {
       console.error(`[${new Date().toISOString()}] Processing request: ${request.conversation_url}`);
 
       // Navigate to conversation
-      await page.goto(request.conversation_url, { waitUntil: "domcontentloaded", timeout: 60000 });
+      await page.goto(request.conversation_url, { waitUntil: "domcontentloaded", timeout: 30000 });
 
-      // Wait for input (handle both regular ChatGPT and custom GPTs)
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      let input;
-      // Try contenteditable first (regular ChatGPT)
-      const contentEditableInput = page.locator('[contenteditable="true"]').last();
-      const textareaInput = page.locator('textarea').first();
-      const textboxInput = page.locator('[role="textbox"]').first();
-
-      if (await contentEditableInput.isVisible().catch(() => false)) {
-        input = contentEditableInput;
-      } else if (await textareaInput.isVisible().catch(() => false)) {
-        input = textareaInput;
-      } else if (await textboxInput.isVisible().catch(() => false)) {
-        input = textboxInput;
-      } else {
-        throw new Error("Could not find input element (tried contenteditable, textarea, and textbox)");
-      }
-
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Wait for input
+      const input = page.locator('[contenteditable="true"]').last();
+      await input.waitFor({ state: "visible", timeout: 10000 });
+      await page.waitForTimeout(1000);
 
       // Capture baseline
       const baselineCount = await page.locator('[data-message-author-role="assistant"]').count();
@@ -95,7 +91,7 @@ while (true) {
         el.dispatchEvent(new Event("input", { bubbles: true }));
       }, request.message);
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await page.waitForTimeout(1000);
       await input.press('Enter');
 
       // Wait for response
@@ -108,7 +104,7 @@ while (true) {
         if (currentCount > baselineCount) {
           newMessageAppeared = true;
         } else {
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await page.waitForTimeout(500);
         }
       }
 
@@ -122,7 +118,7 @@ while (true) {
       const startTime = Date.now();
 
       while (!stopButtonGone && (Date.now() - startTime < 120000)) {
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await page.waitForTimeout(3000);
         const isGenerating = await stopButton.isVisible().catch(() => false);
         if (!isGenerating) {
           stopButtonGone = true;
@@ -130,7 +126,7 @@ while (true) {
       }
 
       // Wait for stability
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      await page.waitForTimeout(5000);
       const lastMessage = page.locator('[data-message-author-role="assistant"]').last();
       const rawText = await lastMessage.innerText().catch(() => "");
 
@@ -204,5 +200,5 @@ while (true) {
   }
 
   // Sleep before next check
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await page.waitForTimeout(500);
 }
