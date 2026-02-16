@@ -21,6 +21,45 @@ BOLD='\033[1m'
 # Create state directory for session resurrection
 mkdir -p "$STATE_DIR"
 
+# Ensure orchestrator agent is running in tmux
+ensure_orchestrator() {
+    local SESSION_NAME="${1:-agentcore}"  # Default to agentcore session
+    local ORCHESTRATOR_SCRIPT="$PROJECT_ROOT/scripts/start-orchestrator.sh"
+
+    # Check if orchestrator script exists
+    if [ ! -f "$ORCHESTRATOR_SCRIPT" ]; then
+        return 0  # Skip if no orchestrator script
+    fi
+
+    # Check if we're in a tmux session
+    if [ -z "${TMUX:-}" ]; then
+        echo -e "${YELLOW}⚠️  Not in tmux session, skipping orchestrator${NC}" >&2
+        return 0
+    fi
+
+    # Check if orchestrator window already exists
+    if tmux list-windows -t "$SESSION_NAME" 2>/dev/null | grep -q "orchestrator"; then
+        return 0  # Window already exists
+    fi
+
+    # Create orchestrator window and start
+    echo -e "${CYAN}Starting orchestrator in tmux...${NC}"
+    tmux new-window -t "$SESSION_NAME" -n "orchestrator" -c "$PROJECT_ROOT" \
+        "$ORCHESTRATOR_SCRIPT" 2>/dev/null || true
+
+    # Wait a moment for orchestrator to start
+    sleep 2
+
+    # Verify it started (check if window still exists with process running)
+    if tmux list-windows -t "$SESSION_NAME" 2>/dev/null | grep -q "orchestrator"; then
+        echo -e "${GREEN}✓ Orchestrator running in tmux window${NC}"
+    else
+        echo -e "${YELLOW}⚠️  Orchestrator window may not have started${NC}" >&2
+    fi
+
+    return 0
+}
+
 # Check if fzf is installed
 check_fzf() {
     if ! command -v fzf &> /dev/null; then
@@ -129,6 +168,7 @@ resurrect_session() {
 
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ Resurrected: $session_name${NC}"
+        ensure_orchestrator "$session_name"
         # Sync beads workflow to the project
         if [ -n "$project_path" ] && [ -d "$project_path" ]; then
             "$SCRIPT_DIR/sync-beads-to-project.sh" "$project_path" 2>/dev/null || true
@@ -687,6 +727,8 @@ attach_sessions() {
         fi
     done
 
+    ensure_orchestrator "$(tmux display-message -p "#{session_name}" 2>/dev/null || echo "agentcore")"
+
     local count=$(echo "$all_sessions" | wc -l | tr -d ' ')
 
     if [ "$count" -eq 1 ]; then
@@ -905,6 +947,8 @@ smart_start() {
     echo -e "${CYAN}Syncing beads workflow...${NC}"
     "$SCRIPT_DIR/sync-beads-to-project.sh" "$project_path" 2>/dev/null || true
     echo ""
+
+    ensure_orchestrator "$(tmux display-message -p "#{session_name}" 2>/dev/null || echo "agentcore")"
 
     # Step 2: Analyze bead queue for the selected project
     echo -e "${CYAN}Analyzing bead queue...${NC}"
