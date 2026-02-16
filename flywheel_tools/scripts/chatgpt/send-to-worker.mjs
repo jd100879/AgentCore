@@ -57,7 +57,9 @@ if (!conversationUrl) {
     try {
       const config = JSON.parse(fs.readFileSync(CONFIG_FILE, "utf8"));
       conversationUrl = config.crt_url;
-      console.error(`✓ Using conversation URL from ${CONFIG_FILE}`);
+      console.error(`✓ Using conversation URL from ${CONFIG_FILE}:`);
+      console.error(`  ${conversationUrl}`);
+      console.error(`  (Use --conversation-url to override if this is wrong)`);
     } catch (err) {
       console.error(`ERROR: Failed to read conversation URL from ${CONFIG_FILE}: ${err.message}`);
       process.exit(1);
