@@ -20,7 +20,7 @@ const READY_FILE = ".flywheel/browser-ready.txt";
 
 console.error("=== Browser Worker Starting ===");
 
-// Launch browser ONCE
+// Launch browser ONCE - visible so user can see ChatGPT responses
 const browser = await chromium.launch({
   headless: false,
   args: [
@@ -28,22 +28,9 @@ const browser = await chromium.launch({
     '--no-sandbox',
     '--disable-setuid-sandbox',
     '--disable-dev-shm-usage',
-    '--disable-web-security',
-    '--window-position=3000,3000',
-    '--window-size=1,1'
+    '--disable-web-security'
   ]
 });
-
-// Hide immediately
-setTimeout(() => {
-  try {
-    execSync('osascript -e \'tell application "System Events" to set visible of process "Chromium" to false\'', { timeout: 1000 });
-  } catch (e) {
-    try {
-      execSync('osascript -e \'tell application "System Events" to set visible of process "Google Chrome" to false\'', { timeout: 1000 });
-    } catch (e2) {}
-  }
-}, 300);
 
 const context = await browser.newContext({
   storageState: STORAGE_STATE,
@@ -53,7 +40,7 @@ const context = await browser.newContext({
 
 const page = await context.newPage();
 
-console.error("✓ Browser opened and hidden");
+console.error("✓ Browser opened (visible)");
 console.error("");
 console.error("Worker ready. Watching for requests at:", REQUEST_FILE);
 console.error("Press Ctrl+C to stop.");
