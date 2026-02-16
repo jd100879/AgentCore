@@ -110,8 +110,15 @@ console.error(`Request sent (${message.length} chars)`);
 
 // Wait for response
 const startTime = Date.now();
+let pollCount = 0;
+let lastDot = 0;
+
+console.error("Waiting for worker response", { newline: false });
+process.stderr.write("Waiting for worker response");
+
 while (true) {
   if (fs.existsSync(RESPONSE_FILE)) {
+    process.stderr.write("\n");
     const response = fs.readFileSync(RESPONSE_FILE, "utf8");
 
     if (outFile) {
@@ -125,8 +132,22 @@ while (true) {
   }
 
   if (Date.now() - startTime > timeout) {
+    process.stderr.write("\n");
     console.error("ERROR: Timeout waiting for response");
     process.exit(1);
+  }
+
+  pollCount++;
+  if (pollCount % 5 === 0) {
+    // Print dot every second (5 polls * 200ms)
+    process.stderr.write(".");
+    lastDot++;
+    if (lastDot >= 60) {
+      // New line every 60 seconds
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      process.stderr.write(` ${elapsed}s\nWaiting for worker response`);
+      lastDot = 0;
+    }
   }
 
   await new Promise(resolve => setTimeout(resolve, 200));
