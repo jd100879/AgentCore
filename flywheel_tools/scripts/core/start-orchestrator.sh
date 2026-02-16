@@ -1,7 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Detect location and set paths appropriately
+if [[ "$SCRIPT_DIR" == */flywheel_tools/scripts/core ]]; then
+  # Running from flywheel_tools in AgentCore hub
+  FLYWHEEL_TOOLS_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+  PROJECT_ROOT="$(cd "$FLYWHEEL_TOOLS_ROOT/.." && pwd)"
+  INSTRUCTIONS_FILE="$FLYWHEEL_TOOLS_ROOT/config/orchestrator-instructions.md"
+else
+  # Running from installed location in spoke (scripts/)
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+  # Look for flywheel_tools/config/, fallback to .flywheel/
+  if [ -f "$PROJECT_ROOT/flywheel_tools/config/orchestrator-instructions.md" ]; then
+    INSTRUCTIONS_FILE="$PROJECT_ROOT/flywheel_tools/config/orchestrator-instructions.md"
+  else
+    INSTRUCTIONS_FILE="$PROJECT_ROOT/.flywheel/orchestrator-instructions.md"
+  fi
+fi
+
 cd "$PROJECT_ROOT"
 
 # Colors
@@ -52,8 +70,6 @@ echo -e "${GREEN}✓ Registered as: $AGENT_NAME${NC}"
 echo ""
 
 # Load orchestrator instructions
-INSTRUCTIONS_FILE=".flywheel/orchestrator-instructions.md"
-
 if [ ! -f "$INSTRUCTIONS_FILE" ]; then
   echo -e "${YELLOW}⚠ Instructions file not found: $INSTRUCTIONS_FILE${NC}"
   exit 1

@@ -130,7 +130,7 @@ ensure_supervisord() {
 # Ensure orchestrator agent is running in tmux
 ensure_orchestrator() {
     local SESSION_NAME="${1:-agentcore}"  # Default to agentcore session
-    local ORCHESTRATOR_SCRIPT="$PROJECT_ROOT/scripts/start-orchestrator.sh"
+    local ORCHESTRATOR_SCRIPT="$PROJECT_ROOT/flywheel_tools/scripts/core/start-orchestrator.sh"
 
     # Check if orchestrator script exists
     if [ ! -f "$ORCHESTRATOR_SCRIPT" ]; then
