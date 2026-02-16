@@ -514,8 +514,15 @@ main() {
         log INFO "claude exited (code: $exit_code)"
         log_metric "exit" "code=$exit_code"
 
-        # Check if we should exit after one cycle
-        if [ "$NO_EXIT" != true ]; then
+        # Check for explicit /exit command flag
+        local exit_restart_flag="$PROJECT_ROOT/.agent-exit-restart"
+        if [ -f "$exit_restart_flag" ]; then
+            rm -f "$exit_restart_flag"
+            log INFO "/exit command detected: Restarting regardless of NO_EXIT setting"
+            log_metric "exit_command_restart" "forced"
+            # Fall through to restart logic below
+        elif [ "$NO_EXIT" != true ]; then
+            # No /exit flag and NO_EXIT is false: exit after one cycle
             log INFO "Single-shot mode: Exiting after one bead cycle"
             log_metric "single_shot_exit" "normal"
             break
