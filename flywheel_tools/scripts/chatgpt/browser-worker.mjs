@@ -13,7 +13,7 @@ import { chromium } from "playwright";
  * 3. Never closing the browser until the process exits
  */
 
-const STORAGE_STATE = ".browser-profiles/chatgpt-state.json";
+const STORAGE_STATE = path.join(process.env.HOME, ".flywheel", "browser-profiles", "chatgpt-state.json");
 const REQUEST_FILE = ".flywheel/browser-request.json";
 const RESPONSE_FILE = ".flywheel/browser-response.json";
 const READY_FILE = ".flywheel/browser-ready.txt";
@@ -25,7 +25,7 @@ if (!fs.existsSync(STORAGE_STATE)) {
   console.error(`✗ ERROR: Storage state file not found: ${STORAGE_STATE}`);
   console.error("");
   console.error("Run this to create it:");
-  console.error("  node scripts/init-chatgpt-storage-state.mjs");
+  console.error("  flywheel init-chatgpt");
   console.error("");
   process.exit(1);
 }
@@ -46,7 +46,7 @@ try {
     console.error("  Expected: 10+ cookies for authenticated session");
     console.error("");
     console.error("This will likely result in unauthenticated browser.");
-    console.error("Run: node scripts/init-chatgpt-storage-state.mjs");
+    console.error("Run: flywheel init-chatgpt");
     console.error("");
     process.exit(1);
   }
@@ -59,7 +59,7 @@ try {
   if (chatgptCookies.length === 0) {
     console.error("");
     console.error("✗ ERROR: No ChatGPT cookies found in storage state");
-    console.error("Run: node scripts/init-chatgpt-storage-state.mjs");
+    console.error("Run: flywheel init-chatgpt");
     console.error("");
     process.exit(1);
   }
@@ -68,7 +68,7 @@ try {
 
 } catch (err) {
   console.error(`✗ ERROR: Failed to parse storage state: ${err.message}`);
-  console.error("Run: node scripts/init-chatgpt-storage-state.mjs");
+  console.error("Run: flywheel init-chatgpt");
   process.exit(1);
 }
 

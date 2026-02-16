@@ -3,6 +3,9 @@
 
 set -e
 
+# Find where THIS script lives (works via symlink too)
+SCRIPT_DIR="$( cd "$( dirname "$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || readlink "${BASH_SOURCE[0]}" 2>/dev/null || echo "${BASH_SOURCE[0]}")" )" && pwd )"
+
 # Use current directory as project root (script should be called from project dir)
 PROJECT_ROOT="$(pwd)"
 
@@ -20,8 +23,8 @@ fi
 
 echo "Starting browser worker..."
 
-# Start worker
-node scripts/browser-worker.mjs > .flywheel/browser-worker.log 2>&1 &
+# Start worker (use absolute path to browser-worker.mjs)
+node "$SCRIPT_DIR/browser-worker.mjs" > .flywheel/browser-worker.log 2>&1 &
 WORKER_PID=$!
 echo $WORKER_PID > .flywheel/browser-worker-pid.txt
 
