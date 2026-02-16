@@ -6,12 +6,38 @@ ChatGPT has GitHub access (issues, PRs, project context). You have codebase acce
 
 Do not spawn subagents. Do all work directly.
 
+## ChatGPT Access: Use Browser Worker (NOT MCP)
+
+**IMPORTANT:** ChatGPT access is via the browser worker scripts, NOT the Playwright MCP server.
+
+**Why use the worker instead of MCP:**
+- Avoids context burn (worker runs in separate process)
+- Uses persistent browser (one window stays open, reused for all messages)
+- Shows real-time progress (text stability, polling visibility)
+- Complete response extraction (no truncation)
+
+**How it works:**
+1. Browser worker runs in background (`browser-worker.mjs`)
+2. You send messages via `send-to-worker.mjs`
+3. Worker shows real-time progress in terminal
+4. Worker waits for text stability before extracting
+5. Responses written to JSON files
+
+**Never use:** `mcp__playwright-chatgpt__*` tools for ChatGPT - they burn context and lack stability checks.
+
 ## Setting up ChatGPT Conversation
 
 When the user provides a new ChatGPT conversation URL, configure it:
 
 ```bash
-./scripts/chatgpt/set-conversation.sh "https://chatgpt.com/c/YOUR-URL"
+# Detect correct script path
+if [ -d "flywheel_tools" ]; then
+  SET_CONV="./flywheel_tools/scripts/chatgpt/set-conversation.sh"
+else
+  SET_CONV="./scripts/set-conversation.sh"
+fi
+
+$SET_CONV "https://chatgpt.com/c/YOUR-URL"
 ```
 
 This updates `.flywheel/chatgpt.json` so the worker knows which conversation to use. You only need to do this when:
@@ -21,21 +47,37 @@ This updates `.flywheel/chatgpt.json` so the worker knows which conversation to 
 
 To verify current configuration:
 ```bash
-./scripts/chatgpt/set-conversation.sh  # Shows current URL
+$SET_CONV  # Shows current URL
 ```
 
 ## Workflow
 
 ### 1. Start planning with ChatGPT
 
-```bash
-./scripts/check-worker.sh || ./scripts/start-worker.sh
+**Start the browser worker** (if not already running):
 
-node scripts/batch-plan.mjs \
+```bash
+# Detect correct script path
+if [ -d "flywheel_tools" ]; then
+  # Running in AgentCore
+  WORKER_SCRIPTS="./flywheel_tools/scripts/chatgpt"
+else
+  # Running in consumer project with symlinks
+  WORKER_SCRIPTS="./scripts"
+fi
+
+$WORKER_SCRIPTS/check-worker.sh || $WORKER_SCRIPTS/start-worker.sh
+
+node $WORKER_SCRIPTS/batch-plan.mjs \
   --beads "bd-123,bd-456" \
   --conversation-url "$(jq -r .crt_url .flywheel/chatgpt.json)" \
   --out tmp/batch-response.json
 ```
+
+You'll see real-time output showing:
+- Worker polling for requests
+- Text stability checks
+- Character counts as ChatGPT responds
 
 Review what ChatGPT proposes. Read the files it references. Verify paths, dependencies, assumptions. Send corrections back using diff-first communication:
 
