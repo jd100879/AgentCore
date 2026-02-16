@@ -188,10 +188,20 @@ get_agent_identity() {
     local os_user
     os_user=$(whoami)
 
+    # Check if AGENT_NAME contains error message (whoami outputs error to stdout when not registered)
+    if [[ "$AGENT_NAME" == *"Error:"* ]]; then
+        AGENT_NAME=""
+    fi
+
     if [ -z "$AGENT_NAME" ] || [ "$AGENT_NAME" = "$os_user" ]; then
         log INFO "No agent identity found. Auto-registering..."
         "$PROJECT_ROOT/scripts/agent-mail-helper.sh" register "Worker agent - autonomously claims and executes beads" >/dev/null 2>&1 || true
         AGENT_NAME=$("$PROJECT_ROOT/scripts/agent-mail-helper.sh" whoami 2>/dev/null || echo "")
+
+        # Check again for error message after registration attempt
+        if [[ "$AGENT_NAME" == *"Error:"* ]]; then
+            AGENT_NAME=""
+        fi
 
         if [ -z "$AGENT_NAME" ] || [ "$AGENT_NAME" = "$os_user" ]; then
             log ERROR "Failed to register agent identity"
