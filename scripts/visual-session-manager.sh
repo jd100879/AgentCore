@@ -1202,15 +1202,23 @@ smart_start() {
     # Apply tiled layout to distribute panes evenly
     tmux select-layout -t "$smart_session_name:1" tiled
 
-    # Select first pane (orchestrator)
+    # Create window 2 for bv (beads viewer)
+    echo -e "${CYAN}  Window 2: Beads Viewer (bv)${NC}"
+    tmux new-window -t "$smart_session_name:2" -n "bv" -c "$project_path"
+    tmux send-keys -t "$smart_session_name:2" "bv" C-m
+
+    # Select window 1 and first pane (orchestrator)
+    tmux select-window -t "$smart_session_name:1"
     tmux select-pane -t "$smart_session_name:1.1"
 
     echo ""
-    echo -e "${GREEN}✓ Created session with 1 orchestrator + $agent_count workers${NC}"
+    echo -e "${GREEN}✓ Created session with 1 orchestrator + $agent_count workers + bv${NC}"
+    echo -e "${CYAN}  Window 1: Agents (orchestrator + workers)${NC}"
+    echo -e "${CYAN}  Window 2: Beads Viewer (bv)${NC}"
     echo -e "${CYAN}  Attach with: tmux attach -t \"$smart_session_name\"${NC}"
     echo ""
 
-    # Attach to session
+    # Attach to session (will show window 1 by default)
     if [ -n "${TMUX:-}" ]; then
         # We're inside tmux, switch to new session
         tmux switch-client -t "$smart_session_name"
