@@ -3,8 +3,8 @@
 
 set -e
 
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-cd "$PROJECT_ROOT"
+# Use current directory as project root (script should be called from project dir)
+PROJECT_ROOT="$(pwd)"
 
 # Check if already running
 if [ -f .flywheel/browser-worker-pid.txt ]; then
@@ -21,7 +21,7 @@ fi
 echo "Starting browser worker..."
 
 # Start worker
-node scripts/chatgpt/browser-worker.mjs > .flywheel/browser-worker.log 2>&1 &
+node scripts/browser-worker.mjs > .flywheel/browser-worker.log 2>&1 &
 WORKER_PID=$!
 echo $WORKER_PID > .flywheel/browser-worker-pid.txt
 
