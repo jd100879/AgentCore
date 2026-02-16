@@ -40,10 +40,10 @@ try {
   console.error(`  Cookies: ${cookieCount}`);
 
   // ChatGPT requires substantial authentication - check for minimum cookies
-  if (cookieCount < 15) {
+  if (cookieCount < 10) {
     console.error("");
     console.error(`✗ WARNING: Storage state appears incomplete (only ${cookieCount} cookies)`);
-    console.error("  Expected: 15+ cookies for authenticated session");
+    console.error("  Expected: 10+ cookies for authenticated session");
     console.error("");
     console.error("This will likely result in unauthenticated browser.");
     console.error("Run: node scripts/init-chatgpt-storage-state.mjs");
