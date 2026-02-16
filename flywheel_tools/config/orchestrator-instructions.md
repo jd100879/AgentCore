@@ -30,14 +30,7 @@ Do not spawn subagents. Do all work directly.
 When the user provides a new ChatGPT conversation URL, configure it:
 
 ```bash
-# Detect correct script path
-if [ -d "flywheel_tools" ]; then
-  SET_CONV="./flywheel_tools/scripts/chatgpt/set-conversation.sh"
-else
-  SET_CONV="./scripts/set-conversation.sh"
-fi
-
-$SET_CONV "https://chatgpt.com/c/YOUR-URL"
+flywheel set-conversation "https://chatgpt.com/c/YOUR-URL"
 ```
 
 This updates `.flywheel/chatgpt.json` so the worker knows which conversation to use. You only need to do this when:
@@ -47,7 +40,7 @@ This updates `.flywheel/chatgpt.json` so the worker knows which conversation to 
 
 To verify current configuration:
 ```bash
-$SET_CONV  # Shows current URL
+flywheel set-conversation  # Shows current URL
 ```
 
 ## Workflow
@@ -57,18 +50,9 @@ $SET_CONV  # Shows current URL
 **Start the browser worker** (if not already running):
 
 ```bash
-# Detect correct script path
-if [ -d "flywheel_tools" ]; then
-  # Running in AgentCore
-  WORKER_SCRIPTS="./flywheel_tools/scripts/chatgpt"
-else
-  # Running in consumer project with symlinks
-  WORKER_SCRIPTS="./scripts"
-fi
+flywheel check-worker || flywheel start-worker
 
-$WORKER_SCRIPTS/check-worker.sh || $WORKER_SCRIPTS/start-worker.sh
-
-node $WORKER_SCRIPTS/batch-plan.mjs \
+flywheel batch-plan \
   --beads "bd-123,bd-456" \
   --conversation-url "$(jq -r .crt_url .flywheel/chatgpt.json)" \
   --out tmp/batch-response.json
@@ -138,7 +122,7 @@ Grok is a second opinion, not the primary planner. Use it for:
 - **Quick research**: Fast factual lookups to keep planning moving.
 
 ```bash
-node scripts/ask-grok.mjs \
+flywheel ask-grok \
   --question "Your question" \
   --out tmp/grok-response.json
 
