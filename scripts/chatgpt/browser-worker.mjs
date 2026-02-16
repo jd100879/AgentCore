@@ -1,52 +1,39 @@
 #!/usr/bin/env node
 import fs from "node:fs";
-import path from "node:path";
-import { execSync } from "node:child_process";
 import { chromium } from "playwright";
 
 /**
  * Browser Worker - keeps ONE browser open and processes messages
  *
  * This solves the window popup problem by:
- * 1. Opening browser ONCE and hiding it immediately
+ * 1. Opening browser ONCE and hiding it offscreen
  * 2. Keeping it alive and processing messages in a loop
  * 3. Never closing the browser until the process exits
+ *
+ * Uses storageState for authentication (same as open-authenticated-browser.mjs).
  */
 
-const STORAGE_STATE = ".browser-profiles/chatgpt-state.json";
+const STORAGE_STATE_PATH = ".browser-profiles/chatgpt-state.json";
 const REQUEST_FILE = ".flywheel/browser-request.json";
 const RESPONSE_FILE = ".flywheel/browser-response.json";
 const READY_FILE = ".flywheel/browser-ready.txt";
 
 console.error("=== Browser Worker Starting ===");
+console.error(`Using storage state: ${STORAGE_STATE_PATH}`);
 
-// Launch browser ONCE
+// Launch browser with storage state — same as open-authenticated-browser.mjs
 const browser = await chromium.launch({
   headless: false,
   args: [
     '--disable-blink-features=AutomationControlled',
     '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--disable-dev-shm-usage',
-    '--disable-web-security',
     '--window-position=3000,3000',
     '--window-size=1,1'
   ]
 });
 
-// Hide immediately
-setTimeout(() => {
-  try {
-    execSync('osascript -e \'tell application "System Events" to set visible of process "Chromium" to false\'', { timeout: 1000 });
-  } catch (e) {
-    try {
-      execSync('osascript -e \'tell application "System Events" to set visible of process "Google Chrome" to false\'', { timeout: 1000 });
-    } catch (e2) {}
-  }
-}, 300);
-
 const context = await browser.newContext({
-  storageState: STORAGE_STATE,
+  storageState: STORAGE_STATE_PATH,
   viewport: { width: 1280, height: 800 },
   userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 });
