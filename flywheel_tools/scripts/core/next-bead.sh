@@ -25,20 +25,39 @@ fi
 touch "$LOCK_FILE"
 trap "rm -f '$LOCK_FILE'" EXIT
 
-# Check .no-exit flag — if set, stay in session (REPL loop mode)
+# Check .no-exit flag — per-agent first, then project-level fallback
 PROJECT_ROOT="${PROJECT_ROOT:-${CLAUDE_PROJECT_DIR:-$(pwd)}}"
-NO_EXIT_FILE="$PROJECT_ROOT/.no-exit"
-if [ -f "$NO_EXIT_FILE" ] && grep -q "on" "$NO_EXIT_FILE" 2>/dev/null; then
+pane="${TMUX_PANE:-}"
+
+# Resolve SAFE_PANE for per-agent flag lookup
+SAFE_PANE=""
+if [ -n "$pane" ]; then
+    PANE_ID=$(tmux display-message -t "$pane" -p "#{session_name}:#{window_index}.#{pane_index}" 2>/dev/null || echo "")
+    [ -n "$PANE_ID" ] && SAFE_PANE=$(echo "$PANE_ID" | tr ':.' '-')
+fi
+
+# Per-agent flag takes priority; fall back to project-level .no-exit
+NO_EXIT_ON=false
+if [ -n "$SAFE_PANE" ] && [ -f "$PROJECT_ROOT/pids/${SAFE_PANE}.no-exit" ]; then
+    grep -q "on" "$PROJECT_ROOT/pids/${SAFE_PANE}.no-exit" 2>/dev/null && NO_EXIT_ON=true
+elif [ -f "$PROJECT_ROOT/.no-exit" ]; then
+    grep -q "on" "$PROJECT_ROOT/.no-exit" 2>/dev/null && NO_EXIT_ON=true
+fi
+
+if [ "$NO_EXIT_ON" = true ]; then
     echo "(.no-exit is on — staying in session)"
     exit 0
 fi
 
 # Send /exit to the agent's tmux pane to trigger clean restart via agent-runner
-pane="${TMUX_PANE:-}"
 if [ -n "$pane" ]; then
     echo "Sending /exit to pane $pane (agent-runner will claim next bead on restart)"
     sleep 2
     tmux send-keys -t "$pane" "/exit" Enter
+    # Slash-command autocomplete may consume the first Enter (selecting the completion).
+    # A second Enter after a short delay actually executes /exit.
+    sleep 0.5
+    tmux send-keys -t "$pane" "" Enter
 else
     echo "No TMUX_PANE — cannot send /exit automatically"
 fi
