@@ -441,7 +441,11 @@ main() {
     log INFO "Starting agent runner for $AGENT_NAME"
     log INFO "Project: $PROJECT_ROOT"
     log INFO "Max restarts: $MAX_RESTARTS"
-    log INFO "Mode: Continuous (always restart - Ctrl+C to stop)"
+    if [ "$NO_EXIT" = true ]; then
+        log INFO "Mode: Continuous (--no-exit, Ctrl+C to stop)"
+    else
+        log INFO "Mode: Single-shot (exit after bead completion)"
+    fi
 
     while true; do
         # Find a bead to start with
@@ -543,11 +547,18 @@ main() {
             break
         fi
 
-        # Always restart — Ctrl+C (SHUTTING_DOWN) is the only way to stop
+        # In single-shot mode (default), only restart on crashes — exit cleanly otherwise
+        if [ "$NO_EXIT" = false ] && [ "$RESTART_COUNT" -eq 0 ]; then
+            log INFO "Bead complete. Exiting (single-shot mode)."
+            log_metric "clean_exit" "single-shot"
+            break
+        fi
+
+        # Still running: either NO_EXIT mode or crash recovery
         if [ "$RESTART_COUNT" -gt 0 ]; then
             log INFO "Restarting claude (crash count: $RESTART_COUNT/$MAX_RESTARTS)..."
         else
-            log INFO "Restarting claude..."
+            log INFO "Restarting claude (--no-exit mode)..."
         fi
     done
 
