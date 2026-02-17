@@ -389,7 +389,7 @@ You are $AGENT_NAME, an autonomous agent working through beads (tasks).
 ## Executing a Bead
 
 1. Read the bead details. The Mindset section defines your approach — follow it.
-2. Check mail: \`\$PROJECT_ROOT/scripts/agent-mail-helper.sh inbox\`
+2. Check mail: \`TMUX_PANE="\$TMUX_PANE" \$PROJECT_ROOT/scripts/agent-mail-helper.sh inbox\`
 3. Read acceptance criteria — these are your definition of done.
 4. Stay in scope: only touch files listed in files_to_create and files_to_modify. If you need to change other files, that's a new bead.
 5. Implement. Commit often with \`[BEAD-ID]\` prefix. Small, focused commits.
