@@ -94,6 +94,13 @@ while true; do
     echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
 
+    # Ensure mail monitor is running (runs inside this pane, TMUX_PANE inherited)
+    if monitor_output=$("$PROJECT_ROOT/scripts/mail-monitor-ctl.sh" ensure 2>&1); then
+        echo -e "${GREEN}✓ Mail monitor: running${NC}"
+    else
+        echo -e "${YELLOW}⚠ Mail monitor: $monitor_output${NC}"
+    fi
+
     # Load instructions into system prompt
     SYSTEM_PROMPT=$(cat "$INSTRUCTIONS_FILE")
 
