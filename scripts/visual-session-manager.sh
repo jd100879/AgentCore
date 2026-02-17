@@ -352,10 +352,8 @@ resurrect_session() {
         return 1
     fi
 
-    # Ensure mail server and monitors are running
-    ensure_mail_server
+    # Ensure disk monitor is running
     ensure_disk_monitor
-    ensure_supervisord
 
     # Sync beads workflow to the project
     if [ -n "$project_path" ] && [ -d "$project_path" ]; then
@@ -969,10 +967,8 @@ attach_sessions() {
         return
     fi
 
-    # Ensure mail server is running for agent registration
-    ensure_mail_server
+    # Ensure disk monitor and orchestrator are running
     ensure_disk_monitor
-    ensure_supervisord
     ensure_orchestrator "$(tmux display-message -p "#{session_name}" 2>/dev/null || echo "agentcore")"
 
     # Sync beads workflow to each session's project
@@ -1242,10 +1238,8 @@ smart_start() {
     )
     echo ""
 
-    # Ensure mail server is running for agent registration
-    ensure_mail_server
+    # Ensure disk monitor is running
     ensure_disk_monitor
-    ensure_supervisord
 
     # Step 2: How many worker agents?
     echo -e "${BLUE}Step 2: Number of worker agents${NC}"
@@ -1701,6 +1695,8 @@ create_new_session() {
 # Main entry point
 main() {
     check_fzf
+    ensure_mail_server
+    ensure_supervisord
     show_visual_interface
 }
 
