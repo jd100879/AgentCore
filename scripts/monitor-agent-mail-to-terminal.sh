@@ -25,25 +25,6 @@ if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
   exit 0
 fi
 
-# CRITICAL: Validate running inside tmux pane
-# Mail monitor MUST have TMUX_PANE set to inject notifications
-if [ -z "${TMUX_PANE:-}" ]; then
-  cat >&2 <<'EOF'
-ERROR: Mail monitor requires TMUX_PANE to be set
-
-The monitor injects notifications into the terminal via tmux commands.
-TMUX_PANE must be set so the monitor knows which pane to target.
-
-Do NOT use nohup (it strips the tmux environment).
-Background & inside a tmux pane is fine — TMUX_PANE is inherited.
-
-How to fix:
-  1. Ensure you're in a tmux session (or TMUX_PANE is exported)
-  2. Run via mail-monitor-ctl.sh (handles this automatically)
-EOF
-  exit 1
-fi
-
 # Source shared project configuration
 source "$SCRIPT_DIR/lib/project-config.sh"
 
@@ -64,7 +45,8 @@ MAIL_REQUIRE_PANE_ACTIVE="${MAIL_REQUIRE_PANE_ACTIVE:-1}"  # 1 = only queue if t
 # Sources: MONITOR_SAFE_PANE (set by mail-monitor-ctl.sh), or live tmux detection.
 SAFE_PANE="${MONITOR_SAFE_PANE:-}"
 if [ -z "$SAFE_PANE" ] && [ -n "${TMUX_PANE:-}" ]; then
-    PANE_ID=$(tmux display-message -p "#{session_name}:#{window_index}.#{pane_index}" 2>/dev/null || echo "")
+    # Use -t "$TMUX_PANE" to get THIS pane's identity, not the focused pane
+    PANE_ID=$(tmux display-message -t "$TMUX_PANE" -p "#{session_name}:#{window_index}.#{pane_index}" 2>/dev/null || echo "")
     [ -n "$PANE_ID" ] && SAFE_PANE=$(echo "$PANE_ID" | tr ':.' '-')
 fi
 
