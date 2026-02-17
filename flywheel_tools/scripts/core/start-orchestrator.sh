@@ -94,13 +94,6 @@ while true; do
     echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
 
-    # Ensure mail monitor is running (runs inside this pane, TMUX_PANE inherited)
-    if monitor_output=$("$PROJECT_ROOT/scripts/mail-monitor-ctl.sh" ensure 2>&1); then
-        echo -e "${GREEN}✓ Mail monitor: running${NC}"
-    else
-        echo -e "${YELLOW}⚠ Mail monitor: $monitor_output${NC}"
-    fi
-
     # Load instructions into system prompt
     SYSTEM_PROMPT=$(cat "$INSTRUCTIONS_FILE")
 
@@ -110,6 +103,11 @@ while true; do
     echo ""
 
     # Launch Claude with orchestrator instructions
+    # ORCHESTRATOR=1 tells SessionStart hook to skip bead-related work
+    # (mail monitor is handled by the SessionStart hook — no need to duplicate here)
+    ORCHESTRATOR=1 \
+    PROJECT_ROOT="$PROJECT_ROOT" \
+    TMUX_PANE="${TMUX_PANE:-}" \
     claude \
         --dangerously-skip-permissions \
         --append-system-prompt "$SYSTEM_PROMPT" \
@@ -119,8 +117,6 @@ while true; do
 
     echo ""
     echo -e "${YELLOW}Orchestrator exited (code: $exit_code)${NC}"
-    echo -e "${GREEN}Restarting in 2 seconds... (restart $RESTART_COUNT)${NC}"
+    echo -e "${GREEN}Restarting... (restart $RESTART_COUNT)${NC}"
     echo ""
-
-    sleep 2
 done

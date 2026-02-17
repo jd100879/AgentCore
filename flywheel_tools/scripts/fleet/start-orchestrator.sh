@@ -80,6 +80,10 @@ while true; do
     echo ""
 
     # Launch Claude with orchestrator instructions
+    # ORCHESTRATOR=1 tells SessionStart hook to skip bead-related work
+    ORCHESTRATOR=1 \
+    PROJECT_ROOT="$PROJECT_ROOT" \
+    TMUX_PANE="${TMUX_PANE:-}" \
     claude \
         --dangerously-skip-permissions \
         --append-system-prompt "$SYSTEM_PROMPT" \
@@ -89,8 +93,6 @@ while true; do
 
     echo ""
     echo -e "${YELLOW}Orchestrator exited (code: $exit_code)${NC}"
-    echo -e "${GREEN}Restarting in 2 seconds... (restart $RESTART_COUNT)${NC}"
+    echo -e "${GREEN}Restarting... (restart $RESTART_COUNT)${NC}"
     echo ""
-
-    sleep 2
 done
