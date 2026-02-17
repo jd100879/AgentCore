@@ -114,9 +114,8 @@ ensure_disk_monitor() {
     return 0
 }
 
-# Ensure supervisord is running in tmux (foreground mode)
+# Ensure supervisord is running (as daemon, independent of tmux sessions)
 ensure_supervisord() {
-    local SESSION_NAME="${1:-agentcore}"  # Default to agentcore session
     local SOCKET_FILE="$PROJECT_ROOT/tmp/supervisor.sock"
     local CONFIG_FILE="$PROJECT_ROOT/config/supervisord.conf"
 
@@ -130,32 +129,22 @@ ensure_supervisord() {
         if supervisorctl -c "$CONFIG_FILE" status >/dev/null 2>&1; then
             return 0  # Already running
         fi
+        # Stale socket - clean up
+        rm -f "$SOCKET_FILE"
     fi
 
-    # Check if we're in a tmux session
-    if [ -z "${TMUX:-}" ]; then
-        echo -e "${YELLOW}⚠️  Not in tmux session, skipping supervisord${NC}" >&2
-        return 0
-    fi
+    # Start supervisord as a daemon (nodaemon=false in config)
+    echo -e "${CYAN}Starting supervisord...${NC}"
+    supervisord -c "$CONFIG_FILE" 2>/dev/null || true
 
-    # Check if supervisord window already exists
-    if tmux list-windows -t "$SESSION_NAME" 2>/dev/null | grep -q "supervisord"; then
-        return 0  # Window already exists
-    fi
-
-    # Create supervisord window and start in foreground mode
-    echo -e "${CYAN}Starting supervisord in tmux...${NC}"
-    tmux new-window -t "$SESSION_NAME" -n "supervisord" -c "$PROJECT_ROOT" \
-        "supervisord -c config/supervisord.conf -n" 2>/dev/null || true
-
-    # Wait a moment for supervisord to start
+    # Wait for it to start
     sleep 2
 
     # Verify it started
-    if [ -S "$SOCKET_FILE" ]; then
-        echo -e "${GREEN}✓ Supervisord running in tmux window${NC}"
+    if [ -S "$SOCKET_FILE" ] && supervisorctl -c "$CONFIG_FILE" status >/dev/null 2>&1; then
+        echo -e "${GREEN}✓ Supervisord running (manages mail monitors for all projects)${NC}"
     else
-        echo -e "${YELLOW}⚠️  Supervisord may not have started${NC}" >&2
+        echo -e "${YELLOW}⚠️  Supervisord may not have started — check logs/supervisord.log${NC}" >&2
     fi
 
     return 0
@@ -366,7 +355,7 @@ resurrect_session() {
     # Ensure mail server and monitors are running
     ensure_mail_server
     ensure_disk_monitor
-    ensure_supervisord "$session_name"
+    ensure_supervisord
 
     # Sync beads workflow to the project
     if [ -n "$project_path" ] && [ -d "$project_path" ]; then
@@ -983,7 +972,7 @@ attach_sessions() {
     # Ensure mail server is running for agent registration
     ensure_mail_server
     ensure_disk_monitor
-    ensure_supervisord "$(tmux display-message -p "#{session_name}" 2>/dev/null || echo "agentcore")"
+    ensure_supervisord
     ensure_orchestrator "$(tmux display-message -p "#{session_name}" 2>/dev/null || echo "agentcore")"
 
     # Sync beads workflow to each session's project
@@ -1256,7 +1245,7 @@ smart_start() {
     # Ensure mail server is running for agent registration
     ensure_mail_server
     ensure_disk_monitor
-    ensure_supervisord "$session_name"
+    ensure_supervisord
 
     # Step 2: How many worker agents?
     echo -e "${BLUE}Step 2: Number of worker agents${NC}"
