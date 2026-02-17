@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# next-bead.sh - Transition to next bead with context clear
+# next-bead.sh - Transition to next bead after completion
 #
-# Called by claude (via Bash tool) after closing a bead.
-# Claims the next bead, then sends /clear + new prompt to the tmux pane
-# so claude starts the next bead with fresh context.
+# Called by post-bead-close hook after br close.
+# Claims the next bead, then sends /exit to the tmux pane
+# so agent-runner.sh restarts claude with fresh context.
 #
 # Usage (from within claude):
 #   ./scripts/next-bead.sh
@@ -91,16 +91,32 @@ else
 fi
 
 
-# Just report the claimed bead - no automatic /clear
+# Report what was claimed
 if [ -n "$bead_id" ]; then
     echo ""
-    echo "✓ Claimed next bead: $bead_id"
-    echo "  $prompt"
-    echo ""
-    echo "Work on this bead now. No automatic /clear - context preserved."
+    echo "Claimed bead $bead_id"
 else
     echo ""
-    echo "No beads available. Check your inbox for work."
+    echo "No beads available."
+fi
+
+# Check .no-exit flag — if set, stay in session (REPL loop mode)
+PROJECT_ROOT="${PROJECT_ROOT:-${CLAUDE_PROJECT_DIR:-$(pwd)}}"
+NO_EXIT_FILE="$PROJECT_ROOT/.no-exit"
+if [ -f "$NO_EXIT_FILE" ] && grep -q "on" "$NO_EXIT_FILE" 2>/dev/null; then
+    echo "(.no-exit is on — staying in session)"
+    exit 0
+fi
+
+# Send /exit to the agent's tmux pane to trigger clean restart via agent-runner
+pane="${TMUX_PANE:-}"
+if [ -n "$pane" ]; then
+    echo "Sending /exit to pane $pane (agent-runner will restart with next bead)"
+    # Small delay to let claude finish processing the br close output
+    sleep 2
+    tmux send-keys -t "$pane" "/exit" Enter
+else
+    echo "No TMUX_PANE — cannot send /exit automatically"
 fi
 
 exit 0
