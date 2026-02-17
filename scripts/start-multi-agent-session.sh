@@ -29,7 +29,6 @@ readonly MAX_AGENTS_WARNING=10
 readonly HISTORY_LIMIT=50000
 readonly AGENT_INIT_WAIT=5
 readonly REGISTRATION_SETTLE_WAIT=2
-readonly MONITOR_START_WAIT=3
 readonly LOG_DIR="$HOME/.agent-flywheel"
 readonly LOG_FILE="$LOG_DIR/session-creation.log"
 readonly FLYWHEEL_DIR="$AGENTCORE_ROOT"  # For backward compatibility, use dynamic root
@@ -626,6 +625,13 @@ else
                     echo -e "${YELLOW}🔄 Killing existing '$SESSION_SAFE' session...${NC}"
                     tmux kill-session -t "$SESSION_SAFE"
                     log "Killed existing session: $SESSION_NAME"
+                    # Clean up old agent-name and pid files so fresh names are assigned
+                    if [ -d "$PROJECT_PATH/pids" ]; then
+                        for old_file in "$PROJECT_PATH/pids/${SESSION_SAFE}-"*.agent-name "$PROJECT_PATH/pids/${SESSION_SAFE}-"*.mail-monitor.pid; do
+                            [ -f "$old_file" ] && rm -f "$old_file"
+                        done
+                        log "Cleaned up old agent files for killed session"
+                    fi
                     break
                     ;;
                 [Aa])
@@ -986,31 +992,28 @@ if [ ${#PANE_IDS[@]} -ne "$TOTAL_AGENTS" ]; then
     exit 1
 fi
 
-# Cleanup stale pid/agent-name files for this session only
-echo -e "${GREEN}Cleaning up stale pid files for session...${NC}"
+# Cleanup ALL agent-name, pid, and identity files for this session
+# Fresh session = fresh names. Old files would cause name reuse because
+# auto-register-agent.sh skips registration when an agent-name file exists,
+# and discover.sh skips registration when identity has agent_mail_name.
+echo -e "${GREEN}Cleaning up agent files for session...${NC}"
 ARCHIVE_PIDS_DIR="$PROJECT_PATH/archive/pids"
 mkdir -p "$ARCHIVE_PIDS_DIR"
-VALID_SAFE_PANES=()
-for pane_num in "${PANE_IDS[@]}"; do
-    VALID_SAFE_PANES+=("$(echo "$SESSION_SAFE:1.$pane_num" | tr ':.' '-')")
-done
-is_valid_safe_pane() {
-    local candidate="$1"
-    for valid in "${VALID_SAFE_PANES[@]}"; do
-        [ "$candidate" = "$valid" ] && return 0
-    done
-    return 1
-}
 for file in "$PROJECT_PATH/pids/${SESSION_SAFE}-"*.agent-name "$PROJECT_PATH/pids/${SESSION_SAFE}-"*.mail-monitor.pid; do
     [ -f "$file" ] || continue
     base_name=$(basename "$file")
-    safe_pane="${base_name%.agent-name}"
-    safe_pane="${safe_pane%.mail-monitor.pid}"
-    if ! is_valid_safe_pane "$safe_pane"; then
-        mv "$file" "$ARCHIVE_PIDS_DIR/"
-        log "Archived stale pid file: $base_name"
-    fi
+    mv "$file" "$ARCHIVE_PIDS_DIR/"
+    log "Archived old session file: $base_name"
 done
+# Also clean up pane identity files (contain agent_mail_name from previous session)
+if [ -d "$PROJECT_PATH/panes" ]; then
+    for file in "$PROJECT_PATH/panes/${SESSION_SAFE}-"*.identity; do
+        [ -f "$file" ] || continue
+        base_name=$(basename "$file")
+        mv "$file" "$ARCHIVE_PIDS_DIR/"
+        log "Archived old identity file: $base_name"
+    done
+fi
 
 # Set up Claude agents using actual pane IDs
 echo -e "${GREEN}Starting $CLAUDE_COUNT Claude agents...${NC}"
@@ -1027,9 +1030,10 @@ for ((i=0; i<CLAUDE_COUNT; i++)); do
         log "Starting Claude agent $((i+1)) with shared task list: $TASK_LIST_ID"
     fi
 
-    # Export environment variables and start Claude
-    tmux send-keys -t "$PANE" "$EXPORT_CMD && claude --dangerously-skip-permissions" C-m
-    log "Started Claude agent $((i+1)) in pane $PANE_NUM"
+    # Start mail monitor as background job, then launch Claude — both inside the pane
+    # so TMUX_PANE is naturally set for the monitor
+    tmux send-keys -t "$PANE" "$EXPORT_CMD && \"$PROJECT_PATH/scripts/mail-monitor-ctl.sh\" start >/dev/null 2>&1; claude --dangerously-skip-permissions" C-m
+    log "Started Claude agent $((i+1)) in pane $PANE_NUM (with mail monitor)"
 done
 
 # Set up Codex (Qodo) agents using actual pane IDs
@@ -1044,9 +1048,9 @@ for ((i=0; i<CODEX_COUNT; i++)); do
     # Build export command (Codex doesn't use task lists, but include for consistency)
     EXPORT_CMD="export PROJECT_ROOT='$PROJECT_PATH' MAIL_PROJECT_KEY='$PROJECT_PATH'"
 
-    # Export environment variables and start Codex
-    tmux send-keys -t "$PANE" "$EXPORT_CMD && cd \"$PROJECT_PATH\" && codex --dangerously-bypass-approvals-and-sandbox" C-m
-    log "Started Codex agent $((i+1)) in pane $PANE_NUM"
+    # Start mail monitor as background job, then launch Codex — both inside the pane
+    tmux send-keys -t "$PANE" "$EXPORT_CMD && cd \"$PROJECT_PATH\" && \"$PROJECT_PATH/scripts/mail-monitor-ctl.sh\" start >/dev/null 2>&1; codex --dangerously-bypass-approvals-and-sandbox" C-m
+    log "Started Codex agent $((i+1)) in pane $PANE_NUM (with mail monitor)"
 done
 
 # Set up ChatGPT agents using actual pane IDs
@@ -1061,9 +1065,9 @@ for ((i=0; i<CHATGPT_COUNT; i++)); do
     # Build export command
     EXPORT_CMD="export PROJECT_ROOT='$PROJECT_PATH' MAIL_PROJECT_KEY='$PROJECT_PATH'"
 
-    # Export environment variables and start Codex (ChatGPT)
-    tmux send-keys -t "$PANE" "$EXPORT_CMD && cd \"$PROJECT_PATH\" && codex" C-m
-    log "Started ChatGPT agent $((i+1)) in pane $PANE_NUM"
+    # Start mail monitor as background job, then launch ChatGPT agent — both inside the pane
+    tmux send-keys -t "$PANE" "$EXPORT_CMD && cd \"$PROJECT_PATH\" && \"$PROJECT_PATH/scripts/mail-monitor-ctl.sh\" start >/dev/null 2>&1; codex" C-m
+    log "Started ChatGPT agent $((i+1)) in pane $PANE_NUM (with mail monitor)"
 done
 
 # Set up DeepSeek agents using actual pane IDs
@@ -1081,9 +1085,9 @@ for ((i=0; i<DEEPSEEK_COUNT; i++)); do
         EXPORT_CMD="$EXPORT_CMD DEEPSEEK_API_KEY='$DEEPSEEK_API_KEY'"
     fi
 
-    # Export environment variables and start DeepSeek agent (via Claude Code wrapper)
-    tmux send-keys -t "$PANE" "$EXPORT_CMD && cd \"$PROJECT_PATH\" && ./scripts/deepseek-claude-wrapper.sh" C-m
-    log "Started DeepSeek agent $((i+1)) in pane $PANE_NUM"
+    # Start mail monitor as background job, then launch DeepSeek — both inside the pane
+    tmux send-keys -t "$PANE" "$EXPORT_CMD && cd \"$PROJECT_PATH\" && \"$PROJECT_PATH/scripts/mail-monitor-ctl.sh\" start >/dev/null 2>&1; ./scripts/deepseek-claude-wrapper.sh" C-m
+    log "Started DeepSeek agent $((i+1)) in pane $PANE_NUM (with mail monitor)"
 done
 
 # Set up Grok agents using actual pane IDs
@@ -1101,9 +1105,9 @@ for ((i=0; i<GROK_COUNT; i++)); do
         EXPORT_CMD="$EXPORT_CMD XAI_API_KEY='$XAI_API_KEY'"
     fi
 
-    # Export environment variables and start Grok via Claude wrapper
-    tmux send-keys -t "$PANE" "$EXPORT_CMD && cd \"$PROJECT_PATH\" && ./scripts/grok-claude-wrapper.sh" C-m
-    log "Started Grok agent $((i+1)) in pane $PANE_NUM"
+    # Start mail monitor as background job, then launch Grok — both inside the pane
+    tmux send-keys -t "$PANE" "$EXPORT_CMD && cd \"$PROJECT_PATH\" && \"$PROJECT_PATH/scripts/mail-monitor-ctl.sh\" start >/dev/null 2>&1; ./scripts/grok-claude-wrapper.sh" C-m
+    log "Started Grok agent $((i+1)) in pane $PANE_NUM (with mail monitor)"
 done
 
 # Auto-register all agents with mail system
@@ -1148,48 +1152,10 @@ for ((i=0; i<TOTAL_AGENTS; i++)); do
     fi
 done
 
-# Start mail monitors for agents (verify start)
-echo -e "${GREEN}Starting mail monitors for agents...${NC}"
-for ((i=0; i<TOTAL_AGENTS; i++)); do
-    PANE_NUM=${PANE_IDS[$i]}
-    PANE_ID="$SESSION_SAFE:1.$PANE_NUM"
-    SAFE_PANE=$(echo "$PANE_ID" | tr ':.' '-')
-
-    # Use PROJECT_PATH for agent name file (project-specific identities)
-    AGENT_NAME_FILE="$PROJECT_PATH/pids/${SAFE_PANE}.agent-name"
-
-    if [ -f "$AGENT_NAME_FILE" ]; then
-        AGENT_NAME=$(cat "$AGENT_NAME_FILE")
-        log "Starting mail monitor for $AGENT_NAME (pane $PANE_NUM)"
-
-        # Run monitor from PROJECT_PATH with PROJECT_ROOT set and explicit pane parameter
-        if (cd "$PROJECT_PATH" && \
-            PROJECT_ROOT="$PROJECT_PATH" \
-            MAIL_PROJECT_KEY="$PROJECT_PATH" \
-            AGENT_NAME="$AGENT_NAME" \
-            "$PROJECT_PATH/scripts/mail-monitor-ctl.sh" --pane "$PANE_ID" start 2>/dev/null); then
-            if (cd "$PROJECT_PATH" && \
-                PROJECT_ROOT="$PROJECT_PATH" \
-                MAIL_PROJECT_KEY="$PROJECT_PATH" \
-                AGENT_NAME="$AGENT_NAME" \
-                "$PROJECT_PATH/scripts/mail-monitor-ctl.sh" --pane "$PANE_ID" status >/dev/null 2>&1); then
-                log "Mail monitor started for $AGENT_NAME"
-            else
-                echo -e "${YELLOW}Warning: Monitor status check failed for $AGENT_NAME${NC}"
-                log "WARNING: Mail monitor status check failed for $AGENT_NAME"
-            fi
-        else
-            echo -e "${YELLOW}Warning: Failed to start monitor for $AGENT_NAME${NC}"
-            log "WARNING: Mail monitor failed for $AGENT_NAME"
-        fi
-    else
-        echo -e "${YELLOW}Warning: No agent name file for pane $PANE_NUM${NC}"
-        log "WARNING: Missing agent name file: $AGENT_NAME_FILE"
-    fi
-done
-
-log "Waiting ${MONITOR_START_WAIT}s for monitors to start"
-sleep "$MONITOR_START_WAIT"
+# Mail monitors are started inline before each agent launch (see agent startup loops above).
+# This avoids the old pattern of launching monitors from outside the pane (which lost TMUX_PANE)
+# and avoids sending commands to panes where agents are already running.
+log "Mail monitors were started inline with agent launches"
 
 # Run validation on all panes (Part C: Session Init Fix)
 echo -e "${GREEN}Validating agent setup...${NC}"
