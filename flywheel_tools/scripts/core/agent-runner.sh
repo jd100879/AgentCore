@@ -214,10 +214,10 @@ get_agent_identity() {
 }
 
 #######################################
-# Claim next bead from BV
-# Returns: bead ID via stdout, or empty string
+# Suggest next bead from BV (does NOT claim — agent claims it after start)
+# Returns: "bead_id|bead_title" via stdout, or empty string
 #######################################
-claim_next_bead() {
+suggest_next_bead() {
     log INFO "Checking BV for next recommended bead..."
 
     # Sync beads data
@@ -230,58 +230,27 @@ claim_next_bead() {
     local task_id
     task_id=$(echo "$bv_output" | jq -r '.id // empty' 2>/dev/null)
 
-    if [ -z "$task_id" ] || [ "$task_id" = "null" ]; then
+    if [ -n "$task_id" ] && [ "$task_id" != "null" ]; then
+        local task_title
+        task_title=$(echo "$bv_output" | jq -r '.title // "untitled"' 2>/dev/null)
+        echo "${task_id}|${task_title}"
+        return
+    fi
+
+    # BV has no suggestion, try br ready
+    log INFO "BV has no suggestion, checking br ready..."
+    local first_ready
+    first_ready=$(br ready --json 2>/dev/null | jq -r '.[0].id // empty' 2>/dev/null || echo "")
+
+    if [ -z "$first_ready" ]; then
+        log INFO "No beads available"
         echo ""
         return
     fi
 
-    local task_title
-    task_title=$(echo "$bv_output" | jq -r '.title // "untitled"' 2>/dev/null)
-
-    # In dry-run mode, don't actually claim
-    if [ "$DRY_RUN" = true ]; then
-        log INFO "[DRY RUN] Would claim bead: $task_id - $task_title"
-        echo "$task_id"
-        return
-    fi
-
-    # Try to claim BV recommendation
-    local claimed_bead
-    claimed_bead=$(try_claim_bead "$task_id" "$task_title")
-
-    if [ -n "$claimed_bead" ]; then
-        echo "$claimed_bead"
-        return
-    fi
-
-    # BV recommendation failed, try beads from br ready
-    log INFO "BV recommendation unavailable, trying br ready..."
-    local ready_beads
-    ready_beads=$(br ready --json 2>/dev/null | jq -r '.[].id' 2>/dev/null || echo "")
-
-    if [ -z "$ready_beads" ]; then
-        log INFO "No ready beads available"
-        echo ""
-        return
-    fi
-
-    # Try each ready bead until we successfully claim one
-    local bead_id
-    while IFS= read -r bead_id; do
-        [ -z "$bead_id" ] && continue
-
-        local bead_title
-        bead_title=$(br show "$bead_id" --json 2>/dev/null | jq -r '.[0].title // "untitled"' 2>/dev/null)
-
-        claimed_bead=$(try_claim_bead "$bead_id" "$bead_title")
-        if [ -n "$claimed_bead" ]; then
-            echo "$claimed_bead"
-            return
-        fi
-    done <<< "$ready_beads"
-
-    log INFO "All ready beads are claimed or unavailable"
-    echo ""
+    local ready_title
+    ready_title=$(br show "$first_ready" --json 2>/dev/null | jq -r '.[0].title // "untitled"' 2>/dev/null)
+    echo "${first_ready}|${ready_title}"
 }
 
 #######################################
@@ -382,7 +351,6 @@ get_bead_details() {
 # This persists across /clear — it's the durable agent behavior
 #######################################
 build_system_prompt() {
-    local bead_id="$1"
     cat <<PROMPT
 You are $AGENT_NAME, an autonomous agent working through beads (tasks).
 
@@ -444,29 +412,37 @@ main() {
     log INFO "Mode: Continuous (Ctrl+C to stop)"
 
     while true; do
-        # Find a bead to start with
+        # Find a bead to suggest (NOT pre-claimed — agent claims it after starting)
         local bead_id=""
+        local bead_title=""
 
         if [ -n "$TARGET_BEAD" ]; then
             bead_id="$TARGET_BEAD"
             TARGET_BEAD=""  # Only use once
         else
-            bead_id=$(claim_next_bead)
+            local suggestion
+            suggestion=$(suggest_next_bead)
+            if [ -n "$suggestion" ]; then
+                bead_id="${suggestion%%|*}"
+                bead_title="${suggestion##*|}"
+            fi
         fi
 
         if [ -z "$bead_id" ]; then
             log INFO "No beads available. Launching claude without a bead..."
-            bead_id=""
+        else
+            log INFO "Suggesting bead: $bead_id - $bead_title"
         fi
 
-        # Build launch args based on whether we have a bead
+        # Build launch args
         local system_prompt=""
         local initial_message=""
 
         if [ -n "$bead_id" ]; then
-            write_tracking_file "$bead_id"
-            system_prompt=$(build_system_prompt "$bead_id")
-            initial_message=$(get_bead_details "$bead_id")
+            system_prompt=$(build_system_prompt "")
+            initial_message="Bead ${bead_id} is available: \"${bead_title}\". Claim it and begin work:
+  br update ${bead_id} --status in_progress --assignee ${AGENT_NAME}
+  br show ${bead_id}"
         fi
 
         if [ "$DRY_RUN" = true ]; then
@@ -506,7 +482,7 @@ main() {
         }
         log INFO "Working directory: $PROJECT_ROOT"
 
-        AGENT_RUNNER_BEAD="${bead_id:-}" \
+        AGENT_RUNNER=1 \
         PROJECT_ROOT="$PROJECT_ROOT" \
         TMUX_PANE="$TMUX_PANE" \
         claude \
@@ -543,11 +519,11 @@ main() {
             break
         fi
 
-        # Always restart — claim next bead at top of loop
+        # Always restart — suggest next bead at top of loop
         if [ "$RESTART_COUNT" -gt 0 ]; then
             log INFO "Restarting claude (crash count: $RESTART_COUNT/$MAX_RESTARTS)..."
         else
-            log INFO "Restarting claude (claiming next bead)..."
+            log INFO "Restarting claude..."
         fi
     done
 
