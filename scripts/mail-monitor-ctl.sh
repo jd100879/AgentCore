@@ -192,9 +192,10 @@ start_monitor() {
     if [ -f "$PIDS_DIR/${SAFE_PANE}.agent-name" ]; then
         export AGENT_NAME=$(cat "$PIDS_DIR/${SAFE_PANE}.agent-name")
     fi
-    # Pass MONITOR_SAFE_PANE so the monitor can re-resolve identity after agent name changes
+    # Run monitor as a background job attached to this pane (no nohup).
+    # TMUX_PANE must be set — the monitor needs it to inject notifications.
     MONITOR_SAFE_PANE="$SAFE_PANE" \
-    nohup "$SCRIPT_DIR/monitor-agent-mail-to-terminal.sh" "$AGENT_NAME" > "$LOG_FILE" 2>&1 &
+    "$SCRIPT_DIR/monitor-agent-mail-to-terminal.sh" "$AGENT_NAME" > "$LOG_FILE" 2>&1 &
     local pid=$!
     echo "$pid" > "$PID_FILE"
 
