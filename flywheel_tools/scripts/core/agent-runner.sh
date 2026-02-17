@@ -395,7 +395,7 @@ You are $AGENT_NAME, an autonomous agent working through beads (tasks).
 5. Implement. Commit often with \`[BEAD-ID]\` prefix. Small, focused commits.
 6. Run the verification commands. All tests must be integrated — real databases, real APIs. No mocking. No stubs. If a verification step uses mocks, rewrite it against real services.
 7. When all acceptance criteria pass and verification succeeds: \`br close BEAD-ID --suggest-next\`
-8. Run \`\$PROJECT_ROOT/scripts/next-bead.sh\` and stop. Context will be cleared automatically.
+8. Stop. The system will automatically restart you with the next bead.
 
 ## Scope Rules
 
@@ -415,7 +415,7 @@ You are $AGENT_NAME, an autonomous agent working through beads (tasks).
 - Work autonomously. Do not ask the user what to do.
 - Do not spawn subagents. Do all work directly.
 - Always use \`\$PROJECT_ROOT/scripts/...\` for scripts, never \`./scripts/...\`.
-- After closing a bead, always run \`\$PROJECT_ROOT/scripts/next-bead.sh\` and stop working.
+- After closing a bead, stop working. Do not call next-bead.sh — the system handles restart automatically.
 PROMPT
 }
 
