@@ -25,7 +25,7 @@ fi
 touch "$LOCK_FILE"
 trap "rm -f '$LOCK_FILE'" EXIT
 
-# Check .no-exit flag — per-agent first, then project-level fallback
+# Check per-agent .no-exit flag (pids/{SAFE_PANE}.no-exit)
 PROJECT_ROOT="${PROJECT_ROOT:-${CLAUDE_PROJECT_DIR:-$(pwd)}}"
 pane="${TMUX_PANE:-}"
 
@@ -36,17 +36,11 @@ if [ -n "$pane" ]; then
     [ -n "$PANE_ID" ] && SAFE_PANE=$(echo "$PANE_ID" | tr ':.' '-')
 fi
 
-# Per-agent flag takes priority; fall back to project-level .no-exit
-NO_EXIT_ON=false
 if [ -n "$SAFE_PANE" ] && [ -f "$PROJECT_ROOT/pids/${SAFE_PANE}.no-exit" ]; then
-    grep -q "on" "$PROJECT_ROOT/pids/${SAFE_PANE}.no-exit" 2>/dev/null && NO_EXIT_ON=true
-elif [ -f "$PROJECT_ROOT/.no-exit" ]; then
-    grep -q "on" "$PROJECT_ROOT/.no-exit" 2>/dev/null && NO_EXIT_ON=true
-fi
-
-if [ "$NO_EXIT_ON" = true ]; then
-    echo "(.no-exit is on — staying in session)"
-    exit 0
+    if grep -q "on" "$PROJECT_ROOT/pids/${SAFE_PANE}.no-exit" 2>/dev/null; then
+        echo "(.no-exit is on — staying in session)"
+        exit 0
+    fi
 fi
 
 # Send /exit to the agent's tmux pane to trigger clean restart via agent-runner
