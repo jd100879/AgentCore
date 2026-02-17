@@ -493,7 +493,7 @@ main() {
         log_metric "launch" "${bead_id:-no-bead}"
 
         local exit_code=0
-        local claude_args=(--dangerously-skip-permissions)
+        local claude_args=(--dangerously-skip-permissions --model sonnet)
         [ -n "$system_prompt" ] && claude_args+=(--append-system-prompt "$system_prompt")
 
         # Track start time to detect quick crashes vs. successful work
