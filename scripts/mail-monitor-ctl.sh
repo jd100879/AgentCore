@@ -56,9 +56,18 @@ validate_environment() {
     local retry_delay=2
     local attempt=1
 
-    # Use TARGET_PANE if provided (explicit pane parameter), otherwise auto-detect
+    # Use TARGET_PANE if provided (explicit pane parameter), otherwise auto-detect.
+    # IMPORTANT: Use -t "$TMUX_PANE" when available — plain `tmux display-message -p`
+    # returns the FOCUSED pane, not the pane where this script is running.
+    # Without -t, multiple agents racing will all detect the same (focused) pane.
     if [ -n "$TARGET_PANE" ]; then
         PANE_ID="$TARGET_PANE"
+    elif [ -n "${TMUX_PANE:-}" ]; then
+        PANE_ID=$(tmux display-message -t "$TMUX_PANE" -p "#{session_name}:#{window_index}.#{pane_index}" 2>/dev/null || echo "")
+        if [ -z "$PANE_ID" ]; then
+            echo "Error: Could not resolve pane from TMUX_PANE=$TMUX_PANE"
+            return 1
+        fi
     else
         PANE_ID=$(tmux display-message -p "#{session_name}:#{window_index}.#{pane_index}" 2>/dev/null || echo "")
         if [ -z "$PANE_ID" ]; then
