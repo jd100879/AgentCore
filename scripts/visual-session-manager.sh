@@ -1178,6 +1178,25 @@ smart_start() {
         return 1
     fi
 
+    # Clean up old agent-name, pid, and identity files for this session
+    # Fresh session = fresh names. Old files cause auto-register to reuse previous names.
+    local safe_session
+    safe_session=$(echo "$smart_session_name" | tr ' ' '_')
+    if [ -d "$project_path/pids" ]; then
+        local archive_dir="$project_path/archive/pids"
+        mkdir -p "$archive_dir"
+        for old_file in "$project_path/pids/${safe_session}-"*.agent-name "$project_path/pids/${safe_session}-"*.mail-monitor.pid; do
+            [ -f "$old_file" ] && mv "$old_file" "$archive_dir/"
+        done
+    fi
+    if [ -d "$project_path/panes" ]; then
+        local archive_dir="$project_path/archive/pids"
+        mkdir -p "$archive_dir"
+        for old_file in "$project_path/panes/${safe_session}-"*.identity; do
+            [ -f "$old_file" ] && mv "$old_file" "$archive_dir/"
+        done
+    fi
+
     # Create new session (window 1 will contain all agents)
     tmux new-session -d -s "$smart_session_name" -c "$project_path" -n "agents"
 
