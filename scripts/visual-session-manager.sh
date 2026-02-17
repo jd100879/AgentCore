@@ -252,25 +252,74 @@ get_killed_sessions() {
     fi
 }
 
+# Resolve agent launch commands based on what scripts are available in project
+resolve_launch_commands() {
+    local project_path="$1"
+    ORCHESTRATOR_CMD=""
+    WORKER_CMD=""
+
+    if [ -f "$project_path/node_modules/@agentcore/flywheel-tools/scripts/core/start-orchestrator.sh" ]; then
+        ORCHESTRATOR_CMD="cd \"$project_path\" && ./node_modules/@agentcore/flywheel-tools/scripts/core/start-orchestrator.sh"
+        WORKER_CMD="cd \"$project_path\" && ./node_modules/@agentcore/flywheel-tools/scripts/core/agent-runner.sh"
+    elif [ -f "$project_path/flywheel_tools/scripts/core/start-orchestrator.sh" ]; then
+        ORCHESTRATOR_CMD="cd \"$project_path\" && ./flywheel_tools/scripts/core/start-orchestrator.sh"
+        WORKER_CMD="cd \"$project_path\" && ./flywheel_tools/scripts/core/agent-runner.sh"
+    elif [ -f "$project_path/scripts/start-orchestrator.sh" ]; then
+        ORCHESTRATOR_CMD="cd \"$project_path\" && ./scripts/start-orchestrator.sh"
+        WORKER_CMD="cd \"$project_path\" && ./scripts/agent-runner.sh"
+    fi
+}
+
 # Save session state before killing (for resurrection)
 save_session_state() {
     local session_name="$1"
     local state_file="$STATE_DIR/${session_name}.state"
+
+    # Get project path from first pane of window 1 (agents window)
+    local project_path
+    project_path=$(tmux display-message -t "${session_name}:1.1" -p "#{pane_current_path}" 2>/dev/null || echo "")
+
+    # Count panes in window 1 (the agents window)
+    local pane_count
+    pane_count=$(tmux list-panes -t "${session_name}:1" 2>/dev/null | wc -l | tr -d ' ')
+
+    # Get layout string for window 1
+    local pane_layout
+    pane_layout=$(tmux display-message -t "${session_name}:1" -p "#{window_layout}" 2>/dev/null || echo "tiled")
 
     # Save session metadata
     {
         echo "SESSION_NAME=$session_name"
         echo "KILLED_AT=$(date +%s)"
         echo "KILLED_DATE=$(date '+%Y-%m-%d %H:%M:%S')"
+        echo "PROJECT_PATH=$project_path"
+        echo "PANE_COUNT=$pane_count"
+        echo "PANE_LAYOUT=$pane_layout"
 
-        # Save session details
+        # Save session details (window names)
         tmux list-windows -t "$session_name" -F "WINDOW_#{window_index}=#{window_name}" 2>/dev/null || true
 
-        # Save pane information
+        # Save pane information (paths and commands)
         tmux list-panes -t "$session_name" -a -F "PANE_#{window_index}_#{pane_index}=#{pane_current_path}|#{pane_current_command}" 2>/dev/null || true
 
-        # Save agent names if available
+        # Save agent names from tmux pane option (fallback)
         tmux list-panes -t "$session_name" -a -F "AGENT_#{window_index}_#{pane_index}=#{@agent_name}" 2>/dev/null | grep -v "AGENT.*=$" || true
+
+        # Save agent types and names from .agent-name files (authoritative source)
+        if [ -n "$project_path" ] && [ -d "$project_path/pids" ]; then
+            for p in $(seq 1 "$pane_count"); do
+                local safe_pane="${session_name}-1-${p}"
+                local name_file="$project_path/pids/${safe_pane}.agent-name"
+                if [ -f "$name_file" ]; then
+                    echo "AGENT_NAME_1_${p}=$(cat "$name_file")"
+                fi
+                if [ "$p" -eq 1 ]; then
+                    echo "AGENT_TYPE_1_${p}=orchestrator"
+                else
+                    echo "AGENT_TYPE_1_${p}=worker"
+                fi
+            done
+        fi
     } > "$state_file"
 
     echo -e "${GREEN}✓ Saved session state: $session_name${NC}" >&2
@@ -293,9 +342,10 @@ resurrect_session() {
     fi
 
     # Read saved state
-    local project_path=""
-    if [ -f "$state_file" ]; then
-        # Extract project path from first pane's current path
+    local project_path
+    project_path=$(grep "^PROJECT_PATH=" "$state_file" | cut -d'=' -f2-)
+    if [ -z "$project_path" ]; then
+        # Legacy fallback: extract from first PANE_ entry
         project_path=$(grep "^PANE_" "$state_file" | head -1 | cut -d'=' -f2 | cut -d'|' -f1)
     fi
 
@@ -303,25 +353,95 @@ resurrect_session() {
         project_path="$HOME"
     fi
 
-    # Create basic tmux session in the background
-    tmux new-session -d -s "$session_name" -c "$project_path" 2>/dev/null
+    local pane_count
+    pane_count=$(grep "^PANE_COUNT=" "$state_file" | cut -d'=' -f2)
+    pane_count=${pane_count:-1}
 
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✓ Resurrected: $session_name${NC}"
-        # Ensure mail server is running for agent registration
-        ensure_mail_server
-        ensure_disk_monitor
-        ensure_supervisord "$session_name"
-        ensure_orchestrator "$session_name"
-        # Sync beads workflow to the project
-        if [ -n "$project_path" ] && [ -d "$project_path" ]; then
-            "$SCRIPT_DIR/sync-beads-to-project.sh" "$project_path" 2>/dev/null || true
-        fi
-        return 0
-    else
-        echo -e "${RED}❌ Failed to resurrect: $session_name${NC}"
+    # Create tmux session with first pane (window 1, pane 1)
+    if ! tmux new-session -d -s "$session_name" -c "$project_path" -n "agents" 2>/dev/null; then
+        echo -e "${RED}❌ Failed to create session: $session_name${NC}"
         return 1
     fi
+
+    # Ensure mail server and monitors are running
+    ensure_mail_server
+    ensure_disk_monitor
+    ensure_supervisord "$session_name"
+
+    # Sync beads workflow to the project
+    if [ -n "$project_path" ] && [ -d "$project_path" ]; then
+        "$SCRIPT_DIR/sync-beads-to-project.sh" "$project_path" 2>/dev/null || true
+    fi
+
+    # Restore saved agent names into .agent-name files so agents reuse their identities
+    local p
+    for p in $(seq 1 "$pane_count"); do
+        local saved_name
+        saved_name=$(grep "^AGENT_NAME_1_${p}=" "$state_file" | cut -d'=' -f2-)
+        if [ -n "$saved_name" ]; then
+            local safe_pane="${session_name}-1-${p}"
+            local name_file="$project_path/pids/${safe_pane}.agent-name"
+            mkdir -p "$project_path/pids"
+            printf "%s" "$saved_name" > "$name_file"
+            echo -e "${CYAN}  Restoring identity: pane $p → $saved_name${NC}"
+        fi
+    done
+
+    # Resolve launch commands for this project
+    local ORCHESTRATOR_CMD WORKER_CMD
+    resolve_launch_commands "$project_path"
+
+    if [ -z "$ORCHESTRATOR_CMD" ]; then
+        echo -e "${YELLOW}⚠️  Could not find orchestrator script — starting shell only${NC}"
+    fi
+
+    # Start orchestrator in pane 1
+    if [ -n "$ORCHESTRATOR_CMD" ]; then
+        echo -e "${CYAN}  Starting orchestrator in pane 1...${NC}"
+        tmux send-keys -t "${session_name}:1.1" "$ORCHESTRATOR_CMD" C-m
+    fi
+
+    # Create additional panes and start workers
+    local i
+    for i in $(seq 2 "$pane_count"); do
+        tmux split-window -t "${session_name}:1" -c "$project_path"
+        if [ -n "$WORKER_CMD" ]; then
+            echo -e "${CYAN}  Starting worker in pane $i...${NC}"
+            tmux send-keys -t "${session_name}:1.${i}" "$WORKER_CMD" C-m
+        fi
+    done
+
+    # Apply tiled layout to distribute panes evenly
+    if [ "$pane_count" -gt 1 ]; then
+        tmux select-layout -t "${session_name}:1" tiled 2>/dev/null || true
+    fi
+
+    # Create bv window (window 2)
+    tmux new-window -t "${session_name}:2" -n "bv" -c "$project_path" 2>/dev/null || true
+    tmux send-keys -t "${session_name}:2" "bv" C-m
+
+    # Focus on agents window, pane 1
+    tmux select-window -t "${session_name}:1" 2>/dev/null || true
+    tmux select-pane -t "${session_name}:1.1" 2>/dev/null || true
+
+    # Wait for agents to start, then run discover.sh to register identities
+    local discover_script="$project_path/panes/discover.sh"
+    if [ -f "$discover_script" ]; then
+        echo -e "${CYAN}  Waiting for agents to initialize (10s)...${NC}"
+        sleep 10
+        echo -e "${CYAN}  Registering agent identities...${NC}"
+        for p in $(seq 1 "$pane_count"); do
+            local pane_id="${session_name}:1.${p}"
+            if PROJECT_ROOT="$project_path" bash "$discover_script" --pane "$pane_id" --quiet 2>/dev/null; then
+                echo -e "${GREEN}  ✓ Pane $p registered${NC}"
+            else
+                echo -e "${YELLOW}  ⚠ Pane $p registration failed${NC}"
+            fi
+        done
+    fi
+
+    echo -e "${GREEN}✓ Resurrected: $session_name (${pane_count} panes, agents restarted)${NC}"
+    return 0
 }
 
 # Permanently delete a killed session state and clean up all artifacts
