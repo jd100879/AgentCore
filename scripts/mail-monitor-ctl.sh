@@ -293,6 +293,12 @@ ensure_monitor() {
         rm -f "$PID_FILE"
     fi
 
+    # Check if an external process (e.g. supervisord) already monitors this agent.
+    # This prevents duplicate monitors when supervisord manages mail monitors.
+    if pgrep -f "monitor-agent-mail-to-terminal.sh ${AGENT_NAME}" > /dev/null 2>&1; then
+        return 0
+    fi
+
     # Not running — start it (quiet output for hook usage)
     start_monitor
 }
