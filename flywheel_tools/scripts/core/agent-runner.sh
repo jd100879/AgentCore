@@ -480,10 +480,12 @@ main() {
         fi
 
         # Ensure mail monitor is running before launching claude
-        if "$PROJECT_ROOT/scripts/mail-monitor-ctl.sh" ensure >/dev/null 2>&1; then
+        local monitor_output
+        if monitor_output=$("$PROJECT_ROOT/scripts/mail-monitor-ctl.sh" ensure 2>&1); then
             log INFO "Mail monitor: running"
         else
             log WARN "Mail monitor: could not ensure (notifications may not work)"
+            log WARN "Mail monitor output: $monitor_output"
         fi
 
         # Launch claude in FOREGROUND — user can interact in the pane
