@@ -25,6 +25,30 @@ if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
   exit 0
 fi
 
+# CRITICAL: Validate running inside tmux pane
+# Mail monitor MUST be attached to a tmux pane to inject notifications
+if [ -z "${TMUX_PANE:-}" ]; then
+  cat >&2 <<'EOF'
+ERROR: Mail monitor must run inside a tmux pane
+
+The monitor injects notifications into the terminal via tmux commands.
+Running detached (nohup, background &, or outside tmux) will fail silently.
+
+Current environment: TMUX_PANE not set
+
+Do NOT use:
+  - nohup (detaches from terminal)
+  - background & (detaches from terminal)
+  - Run outside tmux (no pane to inject into)
+
+How to fix:
+  1. Ensure you're in a tmux session
+  2. Run this script directly in the pane (no nohup/background)
+  3. Or use supervisord to manage it (recommended)
+EOF
+  exit 1
+fi
+
 # Source shared project configuration
 source "$SCRIPT_DIR/lib/project-config.sh"
 
