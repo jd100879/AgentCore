@@ -1202,6 +1202,60 @@ smart_start() {
     # Apply tiled layout to distribute panes evenly
     tmux select-layout -t "$smart_session_name:1" tiled
 
+    # Register agents and create identity files (required for mail monitors)
+    # discover.sh creates panes/<safe_pane>.identity so mail monitors can find the agent's pane
+    echo ""
+    echo -e "${CYAN}Waiting for agents to initialize (10s)...${NC}"
+    sleep 10
+
+    echo -e "${CYAN}Registering agents and creating identity files...${NC}"
+    local discover_script="$project_path/panes/discover.sh"
+    if [ -f "$discover_script" ]; then
+        local total_panes=$((agent_count + 1))  # workers + orchestrator
+        for ((p=1; p<=total_panes; p++)); do
+            local pane_id="$smart_session_name:1.$p"
+            echo -e "${CYAN}  Registering pane $pane_id...${NC}"
+            if PROJECT_ROOT="$project_path" bash "$discover_script" --pane "$pane_id" --quiet 2>/dev/null; then
+                echo -e "${GREEN}  ✓ Pane $pane_id registered${NC}"
+            else
+                echo -e "${YELLOW}  ⚠ Pane $pane_id registration failed (agent may still be initializing)${NC}"
+            fi
+        done
+
+        # Restart mail monitors now that identity files exist
+        echo -e "${CYAN}Restarting mail monitors with identity files...${NC}"
+        for ((p=1; p<=total_panes; p++)); do
+            local pane_id="$smart_session_name:1.$p"
+            local safe_pane=$(echo "$pane_id" | tr ':.' '-')
+            local agent_name_file="$project_path/pids/${safe_pane}.agent-name"
+            local pid_file="$project_path/pids/${safe_pane}.mail-monitor.pid"
+            if [ -f "$agent_name_file" ]; then
+                local agent_name
+                agent_name=$(cat "$agent_name_file")
+                # Kill stale monitor if running
+                if [ -f "$pid_file" ]; then
+                    local old_pid
+                    old_pid=$(cat "$pid_file")
+                    kill "$old_pid" 2>/dev/null || true
+                    rm -f "$pid_file"
+                fi
+                # Start fresh monitor for this project
+                local log_file="$project_path/.ntm/logs/${safe_pane}.mail-monitor.log"
+                mkdir -p "$project_path/.ntm/logs"
+                PROJECT_ROOT="$project_path" nohup \
+                    "$project_path/scripts/monitor-agent-mail-to-terminal.sh" \
+                    "$agent_name" \
+                    > "$log_file" 2>&1 &
+                local new_pid=$!
+                echo "$new_pid" > "$pid_file"
+                echo -e "${GREEN}  ✓ Monitor started for $agent_name (PID $new_pid)${NC}"
+            fi
+        done
+    else
+        echo -e "${YELLOW}  ⚠ discover.sh not found at $discover_script — skipping identity registration${NC}"
+        echo -e "${YELLOW}  Agents will need to be manually registered for mail notifications${NC}"
+    fi
+
     # Create window 2 for bv (beads viewer)
     echo -e "${CYAN}  Window 2: Beads Viewer (bv)${NC}"
     tmux new-window -t "$smart_session_name:2" -n "bv" -c "$project_path"
