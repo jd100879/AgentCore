@@ -6,13 +6,10 @@
 # Monitor should keep running even if curl/jq operations fail
 # set -e
 
-# Resolve real path (symlink-aware)
-if ! command -v python3 >/dev/null 2>&1; then
-  echo "Error: python3 required for path resolution" >&2
-  exit 1
-fi
-SCRIPT_PATH="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "${BASH_SOURCE[0]}")"
-SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+# Use BASH_SOURCE without resolving symlinks — keeps SCRIPT_DIR in the calling
+# project (e.g. 7D-Solutions Platform/scripts), not the symlink target.
+# PROJECT_ROOT is passed via environment (supervisord config) for each project.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Help message (check before sourcing config to avoid environment validation issues)
 if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
@@ -399,7 +396,7 @@ check_new_messages() {
       "project_key": "$PROJECT_KEY",
       "agent_name": "$AGENT_NAME",
       "limit": 50,
-      "include_bodies": true
+      "include_bodies": false
     }
   },
   "id": $(date +%s)

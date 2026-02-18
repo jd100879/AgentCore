@@ -147,14 +147,6 @@ Return your response in this EXACT format with no additional text:
 
   const beadIds = beadsArg.split(",").map(s => s.trim());
 
-  // Guard #5: Cap batch size at 5 beads for MVP
-  const MAX_BATCH_SIZE = 5;
-  if (beadIds.length > MAX_BATCH_SIZE) {
-    console.error(`ERROR: Batch size ${beadIds.length} exceeds maximum of ${MAX_BATCH_SIZE}`);
-    console.error(`Please split into smaller batches to avoid truncation/continue behavior.`);
-    process.exit(1);
-  }
-
   console.error(`Fetching info for ${beadIds.length} beads...`);
   const beads = beadIds.map(id => {
     const info = getBeadInfo(id);

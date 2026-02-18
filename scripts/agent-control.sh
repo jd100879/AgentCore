@@ -19,14 +19,8 @@ set -euo pipefail
 # Allow glob patterns that don't match to expand to nothing
 shopt -s nullglob
 
-# Resolve real path (symlink-aware)
-if ! command -v python3 >/dev/null 2>&1; then
-  echo "Error: python3 required for path resolution" >&2
-  exit 1
-fi
-SCRIPT_PATH="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "${BASH_SOURCE[0]}")"
-SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
-PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="${PROJECT_ROOT:-$(dirname "$SCRIPT_DIR")}"
 
 # Source shared project configuration
 source "$SCRIPT_DIR/lib/project-config.sh"

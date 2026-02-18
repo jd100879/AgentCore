@@ -5,13 +5,7 @@
 
 set -e
 
-# Resolve real path (symlink-aware)
-if ! command -v python3 >/dev/null 2>&1; then
-  echo "Error: python3 required for path resolution" >&2
-  exit 1
-fi
-SCRIPT_PATH="$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "${BASH_SOURCE[0]}")"
-SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly AGENTCORE_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Help message
