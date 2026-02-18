@@ -481,8 +481,16 @@ main() {
         local system_prompt=""
         local initial_message=""
 
-        if [ -n "$bead_id" ]; then
-            system_prompt=$(build_system_prompt "")
+        system_prompt=$(build_system_prompt "")
+
+        if [ -z "$bead_id" ]; then
+            initial_message="No beads are available for you right now.
+
+1. Check your inbox for direction from the orchestrator:
+   \$PROJECT_ROOT/scripts/agent-mail-helper.sh inbox
+2. If no messages, send the orchestrator your idle status and wait:
+   \$PROJECT_ROOT/scripts/agent-mail-helper.sh send Orchestrator \"Idle\" \"No beads available. Waiting for direction.\""
+        else
             if [ "$bead_was_resumed" = true ]; then
                 initial_message="You already have bead ${bead_id} in progress: \"${bead_title}\". Resume work:
   br show ${bead_id}"
