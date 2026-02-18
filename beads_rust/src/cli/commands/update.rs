@@ -89,6 +89,28 @@ pub fn execute(args: &UpdateArgs, cli: &config::CliOverrides, ctx: &OutputContex
             ));
         }
 
+        // Reassignment safeguard: prevent silently stealing an in_progress bead from
+        // another agent. Require --claim (atomic) or --force (explicit override).
+        if !args.claim && !args.force {
+            if let Some(ref new_assignee) = args.assignee {
+                if !new_assignee.is_empty() {
+                    if let Some(ref before) = issue_before {
+                        if before.status == Status::InProgress {
+                            let current = before.assignee.as_deref().unwrap_or("").trim();
+                            if !current.is_empty() && current != new_assignee.as_str() {
+                                return Err(BeadsError::validation(
+                                    "reassign",
+                                    format!(
+                                        "{id} is actively in progress by {current} — use --claim to take ownership or --force to override"
+                                    ),
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // Apply basic field updates
         if !update.is_empty() {
             storage.update_issue(id, &update, &actor)?;

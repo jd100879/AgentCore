@@ -214,10 +214,44 @@ get_agent_identity() {
 }
 
 #######################################
-# Suggest next bead from BV (does NOT claim — agent claims it after start)
+# Check if this agent already has an in_progress bead
+# Returns: bead_id via stdout, or empty string
+#######################################
+check_agent_current_bead() {
+    local current_bead
+    current_bead=$(br list --status in_progress --assignee "$AGENT_NAME" --json 2>/dev/null \
+        | jq -r '.[0].id // empty' 2>/dev/null || echo "")
+    echo "$current_bead"
+}
+
+#######################################
+# Attempt to claim a bead for this agent (atomic: claim + verify)
+# Arguments: $1 = bead ID
+# Returns: bead_id via stdout on success, or empty string on failure
+#######################################
+try_claim_bead() {
+    local bead_id="$1"
+
+    # Use --assignee (not --claim) so the assignee is set to AGENT_NAME, not the
+    # system user. The beads_rust reassignment safeguard (update.rs lines 92-104)
+    # prevents stealing: if another agent already has this bead in_progress, br
+    # returns a non-zero exit code and we fall through to the next candidate.
+    br update "$bead_id" --status in_progress --owner "$AGENT_NAME" --assignee "$AGENT_NAME" >/dev/null 2>&1 || {
+        log WARN "Claim of $bead_id failed (already taken by another agent)"
+        echo ""
+        return
+    }
+
+    write_tracking_file "$bead_id"
+    log INFO "Successfully claimed $bead_id"
+    echo "$bead_id"
+}
+
+#######################################
+# Find and claim the next bead (pre-claims before agent starts)
 # Returns: "bead_id|bead_title" via stdout, or empty string
 #######################################
-suggest_next_bead() {
+claim_next_bead() {
     log INFO "Checking BV for next recommended bead..."
 
     # Sync beads data
@@ -233,67 +267,64 @@ suggest_next_bead() {
     if [ -n "$task_id" ] && [ "$task_id" != "null" ]; then
         local task_title
         task_title=$(echo "$bv_output" | jq -r '.title // "untitled"' 2>/dev/null)
-        echo "${task_id}|${task_title}"
-        return
+
+        # Verify the bead is not actively in progress by another agent
+        local bead_info bead_status bead_assignee
+        bead_info=$(br show "$task_id" --json 2>/dev/null)
+        bead_status=$(echo "$bead_info" | jq -r '.[0].status // empty' 2>/dev/null)
+        bead_assignee=$(echo "$bead_info" | jq -r '.[0].assignee // empty' 2>/dev/null)
+
+        if [ "$bead_status" = "in_progress" ] && [ -n "$bead_assignee" ] && [ "$bead_assignee" != "$AGENT_NAME" ]; then
+            log WARN "BV suggested $task_id but it is actively claimed by $bead_assignee — skipping"
+        else
+            local claimed_id
+            claimed_id=$(try_claim_bead "$task_id")
+            if [ -n "$claimed_id" ]; then
+                echo "${claimed_id}|${task_title}"
+                return
+            fi
+            log WARN "Could not claim BV suggestion $task_id — checking br ready..."
+        fi
     fi
 
-    # BV has no suggestion, try br ready
-    log INFO "BV has no suggestion, checking br ready..."
-    local first_ready
-    first_ready=$(br ready --json 2>/dev/null | jq -r '.[0].id // empty' 2>/dev/null || echo "")
+    # BV has no suggestion or claim failed, iterate br ready list
+    log INFO "Checking br ready list..."
+    local ready_beads
+    ready_beads=$(br ready --json 2>/dev/null | jq -r '.[].id' 2>/dev/null || echo "")
 
-    if [ -z "$first_ready" ]; then
+    if [ -z "$ready_beads" ]; then
         log INFO "No beads available"
         echo ""
         return
     fi
 
-    local ready_title
-    ready_title=$(br show "$first_ready" --json 2>/dev/null | jq -r '.[0].title // "untitled"' 2>/dev/null)
-    echo "${first_ready}|${ready_title}"
-}
+    # Try each ready bead until one is successfully claimed
+    while IFS= read -r bid; do
+        [ -z "$bid" ] && continue
 
-#######################################
-# Try to claim a specific bead
-# Args: bead_id, bead_title
-# Returns: bead_id if successful, empty string otherwise
-#######################################
-try_claim_bead() {
-    local task_id="$1"
-    local task_title="${2:-untitled}"
+        # Fetch bead info once; use it for status check and title
+        local bid_info bid_status bid_assignee btitle
+        bid_info=$(br show "$bid" --json 2>/dev/null)
+        bid_status=$(echo "$bid_info" | jq -r '.[0].status // empty' 2>/dev/null)
+        bid_assignee=$(echo "$bid_info" | jq -r '.[0].assignee // empty' 2>/dev/null)
 
-    # Check if already in progress by someone else
-    local task_status
-    task_status=$(br show "$task_id" --json 2>/dev/null | jq -r '.[0].status // empty' 2>/dev/null)
-    if [ "$task_status" = "in_progress" ]; then
-        local current_owner
-        current_owner=$(br show "$task_id" --json 2>/dev/null | jq -r '.[0].assignee // empty' 2>/dev/null)
-        if [ -n "$current_owner" ] && [ "$current_owner" != "$AGENT_NAME" ]; then
-            log WARN "Bead $task_id already claimed by $current_owner, skipping"
-            echo ""
+        # Skip beads already in_progress by another agent (br ready may include them)
+        if [ "$bid_status" = "in_progress" ] && [ -n "$bid_assignee" ] && [ "$bid_assignee" != "$AGENT_NAME" ]; then
+            log WARN "Bead $bid is in_progress by $bid_assignee — skipping"
+            continue
+        fi
+
+        btitle=$(echo "$bid_info" | jq -r '.[0].title // "untitled"' 2>/dev/null)
+        local claimed_id
+        claimed_id=$(try_claim_bead "$bid")
+        if [ -n "$claimed_id" ]; then
+            echo "${claimed_id}|${btitle}"
             return
         fi
-    fi
+        log WARN "Could not claim $bid — trying next..."
+    done <<< "$ready_beads"
 
-    # Claim it
-    claim_output=$(br update "$task_id" --status in_progress --owner "$AGENT_NAME" --assignee "$AGENT_NAME" 2>&1)
-    claim_status=$?
-
-    if [ $claim_status -eq 0 ]; then
-        local verify_owner
-        verify_owner=$(br show "$task_id" --json 2>/dev/null | jq -r '.[0].assignee // empty' 2>/dev/null)
-        if [ "$verify_owner" = "$AGENT_NAME" ]; then
-            log INFO "Claimed bead: $task_id - $task_title"
-            echo "$task_id"
-            return
-        else
-            log WARN "Lost race for $task_id (owned by $verify_owner)"
-            echo ""
-            return
-        fi
-    fi
-
-    log WARN "Failed to claim $task_id: $claim_output"
+    log INFO "All ready beads were claimed by other runners"
     echo ""
 }
 
@@ -412,26 +443,38 @@ main() {
     log INFO "Mode: Continuous (Ctrl+C to stop)"
 
     while true; do
-        # Find a bead to suggest (NOT pre-claimed — agent claims it after starting)
+        # Find and claim a bead before launching agent
         local bead_id=""
         local bead_title=""
+        local bead_was_resumed=false
 
         if [ -n "$TARGET_BEAD" ]; then
             bead_id="$TARGET_BEAD"
             TARGET_BEAD=""  # Only use once
         else
-            local suggestion
-            suggestion=$(suggest_next_bead)
-            if [ -n "$suggestion" ]; then
-                bead_id="${suggestion%%|*}"
-                bead_title="${suggestion##*|}"
+            # Check if this agent already has an in_progress bead (e.g. after /exit restart)
+            local current_bead
+            current_bead=$(check_agent_current_bead)
+            if [ -n "$current_bead" ]; then
+                bead_id="$current_bead"
+                bead_title=$(br show "$current_bead" --json 2>/dev/null | jq -r '.[0].title // "unknown"' 2>/dev/null)
+                log INFO "Agent already has bead in progress: $bead_id - $bead_title"
+                write_tracking_file "$bead_id"
+                bead_was_resumed=true
+            else
+                local suggestion
+                suggestion=$(claim_next_bead)
+                if [ -n "$suggestion" ]; then
+                    bead_id="${suggestion%%|*}"
+                    bead_title="${suggestion##*|}"
+                fi
             fi
         fi
 
         if [ -z "$bead_id" ]; then
             log INFO "No beads available. Launching claude without a bead..."
         else
-            log INFO "Suggesting bead: $bead_id - $bead_title"
+            log INFO "Claimed bead: $bead_id - $bead_title"
         fi
 
         # Build launch args
@@ -440,9 +483,22 @@ main() {
 
         if [ -n "$bead_id" ]; then
             system_prompt=$(build_system_prompt "")
-            initial_message="Bead ${bead_id} is available: \"${bead_title}\". Claim it and begin work:
+            if [ "$bead_was_resumed" = true ]; then
+                initial_message="You already have bead ${bead_id} in progress: \"${bead_title}\". Resume work:
+  br show ${bead_id}"
+            else
+                # Pre-claimed beads are in_progress; --bead flag may be open
+                local bead_status
+                bead_status=$(br show "$bead_id" --json 2>/dev/null | jq -r '.[0].status // empty' 2>/dev/null)
+                if [ "$bead_status" = "in_progress" ]; then
+                    initial_message="Bead ${bead_id} has been claimed for you: \"${bead_title}\". Begin work:
+  br show ${bead_id}"
+                else
+                    initial_message="Bead ${bead_id} is available: \"${bead_title}\". Claim it and begin work:
   br update ${bead_id} --status in_progress --assignee ${AGENT_NAME}
   br show ${bead_id}"
+                fi
+            fi
         fi
 
         if [ "$DRY_RUN" = true ]; then
@@ -482,9 +538,17 @@ main() {
         }
         log INFO "Working directory: $PROJECT_ROOT"
 
+        # Prepend project bin/ to PATH if it exists (allows shims like bin/cargo)
+        local project_bin="$PROJECT_ROOT/bin"
+        local effective_path="$PATH"
+        if [ -d "$project_bin" ]; then
+            effective_path="$project_bin:$PATH"
+        fi
+
         AGENT_RUNNER=1 \
         PROJECT_ROOT="$PROJECT_ROOT" \
         TMUX_PANE="$TMUX_PANE" \
+        PATH="$effective_path" \
         claude \
             "${claude_args[@]}" \
             ${initial_message:+"$initial_message"} || exit_code=$?
