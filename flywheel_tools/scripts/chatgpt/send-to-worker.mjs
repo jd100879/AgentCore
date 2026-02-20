@@ -41,7 +41,6 @@ const args = parseArgs(process.argv);
 const messageFile = args["message-file"];
 let conversationUrl = args["conversation-url"];
 const outFile = args["out"];
-const timeout = parseInt(args.timeout || "120000", 10);
 
 // Validate message file
 if (!messageFile) {
@@ -116,12 +115,7 @@ if (fs.existsSync(WORKER_LOG)) {
   tailProcess = spawn("tail", ["-f", WORKER_LOG], { stdio: ["ignore", "inherit", "inherit"] });
 }
 
-// Wait for response
-const startTime = Date.now();
-let pollCount = 0;
-let lastDot = 0;
-
-console.error("Waiting for worker response", { newline: false });
+// Wait for response - no timeout, worker uses text stability to know when done
 process.stderr.write("Waiting for worker response");
 
 while (true) {
@@ -137,12 +131,6 @@ while (true) {
     }
 
     process.exit(0);
-  }
-
-  if (Date.now() - startTime > timeout) {
-    if (tailProcess) tailProcess.kill();
-    console.error("\nERROR: Timeout waiting for response");
-    process.exit(1);
   }
 
   await new Promise(resolve => setTimeout(resolve, 200));

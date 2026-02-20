@@ -159,12 +159,11 @@ while (true) {
         throw new Error("Timeout waiting for response");
       }
 
-      // Wait for completion
+      // Wait for completion - no timeout, stop button disappearing is the signal
       const stopButton = page.locator('button').filter({ hasText: /stop generating/i });
       let stopButtonGone = false;
-      const startTime = Date.now();
 
-      while (!stopButtonGone && (Date.now() - startTime < 120000)) {
+      while (!stopButtonGone) {
         await page.waitForTimeout(3000);
         const isGenerating = await stopButton.isVisible().catch(() => false);
         if (!isGenerating) {

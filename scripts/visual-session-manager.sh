@@ -1309,20 +1309,32 @@ smart_start() {
         "cd \"$project_path\" && ./node_modules/@agentcore/flywheel-tools/scripts/core/start-orchestrator.sh" C-m
 
     # Create worker PANES in window 1 (panes 2 through N+1)
+    local workers_created=0
     for ((i=1; i<=agent_count; i++)); do
-        local pane_num=$((i + 1))
-        echo -e "${CYAN}  Window 1, Pane $pane_num: Worker $i${NC}"
+        echo -e "${CYAN}  Window 1, Pane $((i + 1)): Worker $i${NC}"
 
-        # Split window to create new pane
-        tmux split-window -t "$smart_session_name:1" -c "$project_path"
+        # Split window and capture the actual pane index assigned (don't assume i+1).
+        # If the terminal is too small to split further, warn and stop cleanly.
+        local new_pane_index
+        if ! new_pane_index=$(tmux split-window -t "$smart_session_name:1" -c "$project_path" -P -F "#{pane_index}" 2>/dev/null); then
+            echo -e "${YELLOW}  ⚠ Terminal too small to fit worker $i — created $workers_created of $agent_count workers${NC}"
+            echo -e "${YELLOW}    Enlarge your terminal window and re-run to get more agents.${NC}"
+            break
+        fi
 
-        # Launch agent-runner in the new pane
-        tmux send-keys -t "$smart_session_name:1.$pane_num" \
+        # Redistribute space immediately so subsequent splits don't hit minimum-size limits.
+        # Use || true so a layout failure never aborts the loop.
+        tmux select-layout -t "$smart_session_name:1" tiled 2>/dev/null || true
+
+        # Launch agent-runner in the pane we just created
+        tmux send-keys -t "$smart_session_name:1.$new_pane_index" \
             "cd \"$project_path\" && ./node_modules/@agentcore/flywheel-tools/scripts/core/agent-runner.sh" C-m
+
+        workers_created=$((workers_created + 1))
     done
 
-    # Apply tiled layout to distribute panes evenly
-    tmux select-layout -t "$smart_session_name:1" tiled
+    # Final tiled layout pass
+    tmux select-layout -t "$smart_session_name:1" tiled 2>/dev/null || true
 
     # Register agents and create identity files (required for mail monitors)
     # discover.sh creates panes/<safe_pane>.identity so mail monitors can find the agent's pane
@@ -1361,11 +1373,34 @@ smart_start() {
     tmux select-pane -t "$smart_session_name:1.1"
 
     echo ""
-    echo -e "${GREEN}✓ Created session with 1 orchestrator + $agent_count workers + bv${NC}"
+    echo -e "${GREEN}✓ Created session with 1 orchestrator + $workers_created workers + bv${NC}"
     echo -e "${CYAN}  Window 1: Agents (orchestrator + workers)${NC}"
     echo -e "${CYAN}  Window 2: Beads Viewer (bv)${NC}"
     echo -e "${CYAN}  Attach with: tmux attach -t \"$smart_session_name\"${NC}"
     echo ""
+
+    # Open a dedicated, labeled BV tab in iTerm2
+    if [[ "${TERM_PROGRAM:-}" == "iTerm.app" ]]; then
+        local bv_title="${smart_session_name} BV"
+        local bv_cmd
+        bv_cmd="cd $(printf '%q' "$project_path") && printf '\\033]1;${bv_title}\\007' && bv"
+        osascript - "$bv_title" "$bv_cmd" 2>/dev/null <<'APPLESCRIPT' || true
+on run argv
+    set tabTitle to item 1 of argv
+    set tabCmd to item 2 of argv
+    tell application "iTerm"
+        tell current window
+            set bvTab to (create tab with default profile)
+            tell current session of bvTab
+                set name to tabTitle
+                write text tabCmd
+            end tell
+        end tell
+    end tell
+end run
+APPLESCRIPT
+        echo -e "${GREEN}✓ Opened BV tab: \"${bv_title}\"${NC}"
+    fi
 
     # Attach to session (will show window 1 by default)
     if [ -n "${TMUX:-}" ]; then

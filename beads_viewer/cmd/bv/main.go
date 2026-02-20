@@ -4656,8 +4656,14 @@ func main() {
 	}
 
 	if len(issues) == 0 {
-		fmt.Println("No issues found. Create some with 'br create'!")
-		os.Exit(0)
+		fmt.Println("No issues found. Watching for beads... (Ctrl-C to exit)")
+		for {
+			time.Sleep(2 * time.Second)
+			issues, _ = datasource.LoadIssues("")
+			if len(issues) > 0 {
+				break
+			}
+		}
 	}
 
 	// Apply recipe filters and sorting if specified
