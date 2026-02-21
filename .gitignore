@@ -38,6 +38,8 @@ Cargo.lock
 
 # Logs
 *.log
+*.err
+logs/
 
 # Environment
 .env
@@ -113,3 +115,5 @@ flywheel_tools/scripts/chatgpt/platform-old/
 
 # Temporary files
 tmp/
+tmp-*.mjs
+read-convo.mjs
