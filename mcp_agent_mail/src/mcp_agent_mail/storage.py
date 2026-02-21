@@ -1132,7 +1132,11 @@ async def _ensure_repo(root: Path, settings: Settings) -> Repo:
             attributes_path = root / ".gitattributes"
             if not attributes_path.exists():
                 await _write_text(attributes_path, "*.json text\n*.md text\n")
-            await _commit(repo, settings, "chore: initialize archive", [".gitattributes"])
+            gitignore_path = root / ".gitignore"
+            if not gitignore_path.exists():
+                await _write_text(gitignore_path, "projects/*/file_reservations/\n")
+            init_paths = [".gitattributes", ".gitignore"]
+            await _commit(repo, settings, "chore: initialize archive", init_paths)
         return repo
 
 
@@ -1158,8 +1162,6 @@ async def write_file_reservation_records(
 ) -> None:
     if not file_reservations:
         return
-    rel_paths: list[str] = []
-    entries: list[tuple[str, str]] = []
     for file_reservation in file_reservations:
         path_pattern = str(file_reservation.get("path_pattern") or file_reservation.get("path") or "").strip()
         if not path_pattern:
@@ -1168,22 +1170,15 @@ async def write_file_reservation_records(
         normalized_file_reservation["path_pattern"] = path_pattern
         normalized_file_reservation.pop("path", None)
         digest = hashlib.sha1(path_pattern.encode("utf-8")).hexdigest()
-        # Legacy path: digest of path_pattern (kept to avoid stale artifacts in existing installs)
         legacy_path = archive.root / "file_reservations" / f"{digest}.json"
         await _write_json(legacy_path, normalized_file_reservation)
-        rel_paths.append(legacy_path.relative_to(archive.repo_root).as_posix())
 
-        # Stable per-reservation artifact to avoid collisions across shared reservations
         reservation_id = normalized_file_reservation.get("id")
         id_token = str(reservation_id).strip() if reservation_id is not None else ""
         if id_token.isdigit():
             id_path = archive.root / "file_reservations" / f"id-{id_token}.json"
             await _write_json(id_path, normalized_file_reservation)
-            rel_paths.append(id_path.relative_to(archive.repo_root).as_posix())
-        agent_name = str(normalized_file_reservation.get("agent", "unknown"))
-        entries.append((agent_name, path_pattern))
-    commit_message = _build_file_reservation_commit_message(entries)
-    await _commit(archive.repo, archive.settings, commit_message, rel_paths)
+    # file_reservations/ is gitignored — write to disk for the guard but do not commit
 
 
 async def write_file_reservation_record(archive: ProjectArchive, file_reservation: dict[str, object]) -> None:
